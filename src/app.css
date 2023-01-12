@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  h1 {
+    @apply text-2xl;
+  }
+  h2 {
+    @apply text-xl;
+  }
+}
+
+@layer components {
+  input {
+    @apply my-2 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight;
+  }
+  .input:focus {
+   @apply shadow;
+  }
+
+  select {
+    @apply my-2 shadow bg-white border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded leading-tight;
+  }
+
+  select:focus {
+    @apply outline-none bg-white;
+  }
+  
+}
+
+
+
