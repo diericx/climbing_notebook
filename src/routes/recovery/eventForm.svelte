@@ -1,6 +1,23 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { presetEvents, presetTrainingEvents, presetRecoveryEvents } from '$lib/events.js';
+	import {
+		presetTrainingEvents,
+		presetWorkTrainingEvents,
+		presetRecoveryTrainingEvents,
+		TrainingEventMaker
+	} from '$lib/trainingEvents.js';
+	import type { FormEventHandler } from '$lib/helperTypes';
+	import { TrainingEvent } from '$lib/trainingEvents.js';
+
+	export let newTrainingEvent: TrainingEvent;
+
+	export let labelHidden: boolean,
+		typeHidden: boolean,
+		amountHidden: boolean,
+		amountUnitHidden: boolean,
+		pointsPerUnitHidden: boolean,
+		presetTrainingEventsHidden: boolean = false;
+
 	let now = new Date(),
 		month,
 		day,
@@ -13,47 +30,92 @@
 		if (day.length < 2) day = '0' + day;
 
 		dateString = [year, month, day].join('-');
-	});
-	let formSelections = {
-		type: presetEvents[0].type,
-		amount: 0,
-		event: presetEvents[0]
-	};
-	function onFormChange(_event) {
-		if (formSelections.type == 'training') {
-			formSelections.event = presetEvents.find((event) => event.label == _event.target.value);
-		} else {
-			formSelections.event = presetEvents.find((event) => event.label == _event.target.value);
+
+		// If we are going to use preset training events, apply the values of the first one
+		// immediately after loading.
+		if (!presetTrainingEventsHidden) {
+			applyPresetTrainingEvent(presetTrainingEvents[0]);
 		}
+	});
+
+	// Take every value from the selected preset event and apply it onto our new event
+	function applyPresetTrainingEvent(e: TrainingEvent) {
+		newTrainingEvent.type = e.type;
+		newTrainingEvent.pointsPerUnit = e.pointsPerUnit;
+		newTrainingEvent.amountUnit = e.amountUnit;
+		newTrainingEvent.label = e.label;
+	}
+
+	function onFormChange(_event: FormEventHandler<HTMLInputElement>) {
+		const target = _event.target as HTMLInputElement;
+		let trainingEvent = presetTrainingEvents.find((event) => event.label == target.value);
+		if (trainingEvent == null) {
+			console.error('Event not found by label.');
+			return;
+		}
+		applyPresetTrainingEvent(trainingEvent);
 	}
 </script>
 
 <form method="POST" action="?/addRecoveryItem">
-	<select name="label" on:change={onFormChange}>
+	<select
+		name="presetEvent"
+		on:change={onFormChange}
+		style={presetTrainingEventsHidden ? 'display: none' : ''}
+	>
 		<optgroup label="training">
-			{#each presetTrainingEvents as event}
+			{#each presetWorkTrainingEvents as event}
 				<option value={event.label}>{event.label}</option>
 			{/each}
 		</optgroup>
 		<optgroup label="recovery">
-			{#each presetRecoveryEvents as event}
+			{#each presetRecoveryTrainingEvents as event}
 				<option value={event.label}>{event.label}</option>
 			{/each}
 		</optgroup>
 	</select>
-	<input name="type" bind:value={formSelections.event.type} style="display: none" />
-	<input type="number" name="amount" bind:value={formSelections.amount} style="width: 75px" />
-	<input type="hidden" name="amountUnit" value={formSelections.event.amountUnit} />
-	{formSelections.event.amountUnit}
-	on
+
 	<input
-		style="display:none"
+		type="label"
+		name="label"
+		placeholder="label"
+		bind:value={newTrainingEvent.label}
+		style="min-width: 75px; {labelHidden ? 'display: none' : ''}"
+	/>
+
+	<select name="type" bind:value={newTrainingEvent.type} style={typeHidden ? 'display: none' : ''}>
+		<option value="work">work</option>
+		<option value="recovery">recovery</option>
+	</select>
+
+	<input
+		type="number"
+		name="amount"
+		bind:value={newTrainingEvent.amount}
+		style="min-width: 75px; {amountHidden ? 'display: none' : ''}"
+		placeholder="amount"
+	/>
+
+	<input
+		name="amountUnit"
+		bind:value={newTrainingEvent.amountUnit}
+		placeholder="amount unit"
+		style={amountUnitHidden ? 'display: none' : ''}
+	/>
+	{#if amountUnitHidden === true}
+		{newTrainingEvent.amountUnit}
+	{/if}
+
+	<input
+		style={pointsPerUnitHidden ? 'display: none' : ''}
 		type="number"
 		name="pointsPerUnit"
-		value={formSelections.event.pointsPerUnit}
+		bind:value={newTrainingEvent.pointsPerUnit}
+		placeholder="points per unit"
 	/>
-	<input type="date" name="date" value={dateString} style="width: 150px" />
-	for {formSelections.amount * formSelections.event.pointsPerUnit} points
+	on
+	<input type="date" name="date" bind:value={dateString} style="width: 150px" />
+	for {newTrainingEvent.amount * newTrainingEvent.pointsPerUnit || 0} points
 	<br />
 	<button class="bg-green-300 hover:bg-green-400 text-white font-bold px-2 rounded">Submit</button>
 </form>

@@ -1,6 +1,7 @@
-<script>
+<script type="ts">
 	import { onMount } from 'svelte';
 	import EventForm from './eventForm.svelte';
+	import { TrainingEvent } from '$lib/trainingEvents.ts';
 	/** @type {import('./$types').PageData} */
 	export let data;
 
@@ -140,80 +141,22 @@
 <div class="grid grid-cols-1 gap-4 px-4">
 	<div>
 		<h2>Add Preset Event</h2>
-		<form method="POST" action="?/addRecoveryItem">
-			<select name="label" on:change={onPresetEventFormChange}>
-				<optgroup label="training">
-					{#each trainingEvents() as event}
-						<option value={event.label}>{event.label}</option>
-					{/each}
-				</optgroup>
-				<optgroup label="recovery">
-					{#each recoveryEvents() as event}
-						<option value={event.label}>{event.label}</option>
-					{/each}
-				</optgroup>
-			</select>
-			<input name="type" bind:value={presetFormSelections.event.type} style="display: none" />
-			<input
-				type="number"
-				name="amount"
-				bind:value={presetFormSelections.amount}
-				style="width: 75px"
-			/>
-			<input type="hidden" name="amountUnit" value={presetFormSelections.event.amountUnit} />
-			{presetFormSelections.event.amountUnit}
-			on
-			<input
-				style="display:none"
-				type="number"
-				name="pointsPerUnit"
-				value={presetFormSelections.event.pointsPerUnit}
-			/>
-			<input type="date" name="date" value={dateString} style="width: 150px" />
-			for {presetFormSelections.amount * presetFormSelections.event.pointsPerUnit} points
-			<br />
-			<button class="bg-green-300 hover:bg-green-400 text-white font-bold px-2 rounded"
-				>Submit</button
-			>
-		</form>
+		<EventForm
+			labelHidden
+			typeHidden
+			amountUnitHidden
+			pointsPerUnitHidden
+			newTrainingEvent={new TrainingEvent()}
+		/>
 	</div>
 </div>
 
 <div class="grid grid-cols-1 gap-4 px-4">
 	<div>
 		<h2>Add Custom Event</h2>
-		<form method="POST" action="?/addRecoveryItem">
-			<select name="type">
-				<option value="training">training</option>
-				<option value="recovery">recovery</option>
-			</select>
-			<input type="label" name="label" placeholder="label" />
-			<input
-				style="max-width: 150px"
-				type="number"
-				name="amount"
-				placeholder="amount"
-				value:bind={customEventForm.amount}
-			/>
-			<br />
-			<input name="amountUnit" placeholder="unit" />
-			<input
-				type="number"
-				name="pointsPerUnit"
-				value:bind={customEventForm.pointsPerUnit}
-				placeholder="points per unit"
-			/>
-			on <input style="max-width: 150px" type="date" name="date" value={dateString} />
-			{customEventForm.amount * customEventForm.pointsPerUnit} points
-			<br />
-			<button class="bg-green-300 hover:bg-green-400 text-white font-bold px-2 rounded"
-				>Submit</button
-			>
-		</form>
+		<EventForm presetTrainingEventsHidden newTrainingEvent={new TrainingEvent()} />
 	</div>
 </div>
-
-<EventForm />
 
 <h2>Today's Events</h2>
 <hr />
