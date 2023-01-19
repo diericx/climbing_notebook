@@ -5,22 +5,22 @@ export class TrainingEvent {
     public amountUnit: string,
     public pointsPerUnit: number,
     public type: string,
+    public id: number,
+    public created_at: Date,
   ) {}
 }
 
-export class TrainingEventMaker {
-  static create(e: TrainingEvent) {
-    return new TrainingEvent(
-      e.label,
-      e.amount,
-      e.amountUnit,
-      e.pointsPerUnit,
-      e.type,
-    );
-  }
+export class TrainingEventTemplate {
+  constructor(
+    public label: string,
+    public amount: number,
+    public amountUnit: string,
+    public pointsPerUnit: number,
+    public type: string,
+  ) {}
 }
 
-export const presetTrainingEvents: TrainingEvent[] = [
+export const trainingEventTemplates: TrainingEventTemplate[] = [
   {
     label: "Bouldering",
     amountUnit: "hour",
@@ -106,7 +106,9 @@ export const presetTrainingEvents: TrainingEvent[] = [
     amount: 0,
   },
 ];
-export let presetWorkTrainingEvents: TrainingEvent[] = presetTrainingEvents
-  .filter((event) => event.type == "work");
-export let presetRecoveryTrainingEvents: TrainingEvent[] = presetTrainingEvents
-  .filter((event) => event.type == "recovery");
+export const workTrainingEventTemplates: TrainingEventTemplate[] =
+  trainingEventTemplates
+    .filter((event) => event.type == "work");
+export const recoveryTrainingEventTemplates: TrainingEventTemplate[] =
+  trainingEventTemplates
+    .filter((event) => event.type == "recovery");

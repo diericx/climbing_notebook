@@ -1,22 +1,22 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import {
-		presetTrainingEvents,
-		presetWorkTrainingEvents,
-		presetRecoveryTrainingEvents,
-		TrainingEventMaker
+		trainingEventTemplates,
+		workTrainingEventTemplates,
+		recoveryTrainingEventTemplates,
+		TrainingEvent,
+		TrainingEventTemplate
 	} from '$lib/trainingEvents.js';
 	import type { FormEventHandler } from '$lib/helperTypes';
-	import { TrainingEvent } from '$lib/trainingEvents.js';
 
 	export let newTrainingEvent: TrainingEvent;
 
-	export let labelHidden: boolean,
-		typeHidden: boolean,
-		amountHidden: boolean,
-		amountUnitHidden: boolean,
-		pointsPerUnitHidden: boolean,
-		presetTrainingEventsHidden: boolean = false;
+	export let labelHidden: boolean = false,
+		typeHidden: boolean = false,
+		amountHidden: boolean = false,
+		amountUnitHidden: boolean = false,
+		pointsPerUnitHidden: boolean = false,
+		trainingEventTemplatesHidden: boolean = false;
 
 	let now = new Date(),
 		month,
@@ -33,13 +33,13 @@
 
 		// If we are going to use preset training events, apply the values of the first one
 		// immediately after loading.
-		if (!presetTrainingEventsHidden) {
-			applyPresetTrainingEvent(presetTrainingEvents[0]);
+		if (!trainingEventTemplatesHidden) {
+			applyTrainingEventTemplate(trainingEventTemplates[0]);
 		}
 	});
 
 	// Take every value from the selected preset event and apply it onto our new event
-	function applyPresetTrainingEvent(e: TrainingEvent) {
+	function applyTrainingEventTemplate(e: TrainingEventTemplate) {
 		newTrainingEvent.type = e.type;
 		newTrainingEvent.pointsPerUnit = e.pointsPerUnit;
 		newTrainingEvent.amountUnit = e.amountUnit;
@@ -48,12 +48,12 @@
 
 	function onFormChange(_event: FormEventHandler<HTMLInputElement>) {
 		const target = _event.target as HTMLInputElement;
-		let trainingEvent = presetTrainingEvents.find((event) => event.label == target.value);
+		let trainingEvent = trainingEventTemplates.find((event) => event.label == target.value);
 		if (trainingEvent == null) {
 			console.error('Event not found by label.');
 			return;
 		}
-		applyPresetTrainingEvent(trainingEvent);
+		applyTrainingEventTemplate(trainingEvent);
 	}
 </script>
 
@@ -61,15 +61,15 @@
 	<select
 		name="presetEvent"
 		on:change={onFormChange}
-		style={presetTrainingEventsHidden ? 'display: none' : ''}
+		style={trainingEventTemplatesHidden ? 'display: none' : ''}
 	>
 		<optgroup label="training">
-			{#each presetWorkTrainingEvents as event}
+			{#each workTrainingEventTemplates as event}
 				<option value={event.label}>{event.label}</option>
 			{/each}
 		</optgroup>
 		<optgroup label="recovery">
-			{#each presetRecoveryTrainingEvents as event}
+			{#each recoveryTrainingEventTemplates as event}
 				<option value={event.label}>{event.label}</option>
 			{/each}
 		</optgroup>

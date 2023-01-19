@@ -1,124 +1,10 @@
-<script type="ts">
-	import { onMount } from 'svelte';
+<script lang="ts">
+	import type { PageData } from './$types';
+
 	import EventForm from './eventForm.svelte';
-	import { TrainingEvent } from '$lib/trainingEvents.ts';
-	/** @type {import('./$types').PageData} */
-	export let data;
+	import { TrainingEvent } from '$lib/trainingEvents';
 
-	let events = [
-		{
-			label: 'Bouldering',
-			amountUnit: 'hour',
-			pointsPerUnit: 10,
-			type: 'training'
-		},
-		{
-			label: 'Hard Route Climbing',
-			amountUnit: 'hour',
-			pointsPerUnit: 10,
-			type: 'training'
-		},
-		{
-			label: 'Weight Training',
-			amountUnit: 'hour',
-			pointsPerUnit: 10,
-			type: 'training'
-		},
-		{
-			label: 'Easy Climbing (at OS level or below)',
-			amountUnit: 'hour',
-			pointsPerUnit: 10,
-			type: 'training'
-		},
-		{
-			label: 'Sleep, hours before midnight',
-			amountUnit: 'hour',
-			pointsPerUnit: 3,
-			type: 'recovery'
-		},
-		{
-			label: 'Post-training meal',
-			amountUnit: 'meal',
-			pointsPerUnit: 2,
-			type: 'recovery'
-		},
-		{
-			label: 'Water',
-			amountUnit: 'liter',
-			pointsPerUnit: 1,
-			type: 'recovery'
-		},
-		{
-			label: 'Nap',
-			amountUnit: 'nap',
-			pointsPerUnit: 5,
-			type: 'recovery'
-		},
-		{
-			label: 'Easy Walk',
-			amountUnit: 'walk',
-			pointsPerUnit: 2,
-			type: 'recovery'
-		},
-		{
-			label: 'Easy cycle',
-			amountUnit: 'walk',
-			pointsPerUnit: 2,
-			type: 'recovery'
-		},
-		{
-			label: 'Hit Protein Goal',
-			amountUnit: 'protein goal reached',
-			pointsPerUnit: 3,
-			type: 'recovery'
-		},
-		{
-			label: 'Stretch for 15 min',
-			amountUnit: 'stretch',
-			pointsPerUnit: 1,
-			type: 'recovery'
-		}
-	];
-
-	let now = new Date(),
-		month,
-		day,
-		year;
-	let dateString = '';
-
-	onMount(() => {
-		(month = '' + (now.getMonth() + 1)), (day = '' + now.getDate()), (year = now.getFullYear());
-
-		if (month.length < 2) month = '0' + month;
-		if (day.length < 2) day = '0' + day;
-
-		dateString = [year, month, day].join('-');
-	});
-
-	let presetFormSelections = {
-		type: 'training',
-		amount: 0,
-		event: trainingEvents()[0]
-	};
-	let customEventForm = {
-		amount: 0,
-		pointsPerUnit: 0
-	};
-
-	function trainingEvents() {
-		return events.filter((event) => event.type == 'training') || [];
-	}
-	function recoveryEvents() {
-		return events.filter((event) => event.type == 'recovery') || [];
-	}
-
-	function onPresetEventFormChange(_event) {
-		if (presetFormSelections.type == 'training') {
-			presetFormSelections.event = events.find((event) => event.label == _event.target.value);
-		} else {
-			presetFormSelections.event = events.find((event) => event.label == _event.target.value);
-		}
-	}
+	export let data: PageData;
 </script>
 
 <div>
@@ -154,7 +40,7 @@
 <div class="grid grid-cols-1 gap-4 px-4">
 	<div>
 		<h2>Add Custom Event</h2>
-		<EventForm presetTrainingEventsHidden newTrainingEvent={new TrainingEvent()} />
+		<EventForm trainingEventTemplatesHidden newTrainingEvent={new TrainingEvent()} />
 	</div>
 </div>
 
