@@ -1,16 +1,21 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { PageData, ActionData } from './$types';
 
-	import EventForm from './eventForm.svelte';
-	import { TrainingEvent } from '$lib/trainingEvents';
+	import EventForm from '../trainingEvents/form.svelte';
+	import { TrainingEvent } from '$lib/trainingEvent';
 
 	export let data: PageData;
+	export let form: ActionData;
+	const newTrainingEvent: TrainingEvent =
+		(form?.newTrainingEvent as TrainingEvent) || (TrainingEvent.newEmpty() as TrainingEvent);
 </script>
 
 <div>
-	<h1 class="text-gray-600">Recovery Tracker</h1>
+	<h1 class="text-gray-600">Training Events</h1>
 	<hr />
 </div>
+
+{#if form?.message}<p class="error">{form?.message}</p>{/if}
 
 <div class="flex justify-around">
 	<div>
@@ -26,21 +31,8 @@
 
 <div class="grid grid-cols-1 gap-4 px-4">
 	<div>
-		<h2>Add Preset Event</h2>
-		<EventForm
-			labelHidden
-			typeHidden
-			amountUnitHidden
-			pointsPerUnitHidden
-			newTrainingEvent={new TrainingEvent()}
-		/>
-	</div>
-</div>
-
-<div class="grid grid-cols-1 gap-4 px-4">
-	<div>
-		<h2>Add Custom Event</h2>
-		<EventForm trainingEventTemplatesHidden newTrainingEvent={new TrainingEvent()} />
+		<h2>Add Event</h2>
+		<EventForm labelHidden typeHidden amountUnitHidden pointsPerUnitHidden {newTrainingEvent} />
 	</div>
 </div>
 

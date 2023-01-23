@@ -1,15 +1,3 @@
-export class TrainingEvent {
-  constructor(
-    public label: string,
-    public amount: number,
-    public amountUnit: string,
-    public pointsPerUnit: number,
-    public type: string,
-    public id: number,
-    public created_at: Date,
-  ) {}
-}
-
 export class TrainingEventTemplate {
   constructor(
     public label: string,
@@ -17,7 +5,7 @@ export class TrainingEventTemplate {
     public amountUnit: string,
     public pointsPerUnit: number,
     public type: string,
-  ) {}
+  ) { }
 }
 
 export const trainingEventTemplates: TrainingEventTemplate[] = [

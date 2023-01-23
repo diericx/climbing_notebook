@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import type { TrainingEvent } from '$lib/trainingEvent';
 	import {
 		trainingEventTemplates,
 		workTrainingEventTemplates,
 		recoveryTrainingEventTemplates,
-		TrainingEvent,
 		TrainingEventTemplate
-	} from '$lib/trainingEvents.js';
+	} from '$lib/trainingEventTemplate.js';
 	import type { FormEventHandler } from '$lib/helperTypes';
 
 	export let newTrainingEvent: TrainingEvent;
@@ -57,7 +57,7 @@
 	}
 </script>
 
-<form method="POST" action="?/addRecoveryItem">
+<form method="POST" action="?/new">
 	<select
 		name="presetEvent"
 		on:change={onFormChange}

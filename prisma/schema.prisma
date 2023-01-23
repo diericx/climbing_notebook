@@ -9,3 +9,23 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model TrainingEvent {
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime
+  date          DateTime
+  label         String
+  amount        Int
+  amountUnit    String
+  pointsPerUnit Int
+  type          String
+  ownerId       Int
+  owner         User     @relation(fields: [ownerId], references: [id])
+}
+
+model User {
+  id            Int             @id @default(autoincrement())
+  username      String          @unique
+  email         String          @unique
+  TrainingEvent TrainingEvent[]
+}
