@@ -58,6 +58,8 @@
 </script>
 
 <form method="POST" action="?/new">
+	<label for="presetEvent">Preset Event (custom events coming soon)</label>
+	<br />
 	<select
 		name="presetEvent"
 		on:change={onFormChange}
@@ -74,6 +76,8 @@
 			{/each}
 		</optgroup>
 	</select>
+
+	<br />
 
 	<input
 		type="label"
@@ -92,6 +96,8 @@
 		<option value="recovery">recovery</option>
 	</select>
 
+	<label for="amount">Amount</label>
+	<br />
 	<input
 		type="number"
 		name="amount"
@@ -117,9 +123,12 @@
 		bind:value={trainingEventInput.pointsPerUnit}
 		placeholder="points per unit"
 	/>
-	on
+	<br />
+	<label for="date">Date</label>
+	<br />
 	<input type="date" name="date" bind:value={dateString} style="width: 150px" />
-	for {trainingEventInput.amount * trainingEventInput.pointsPerUnit || 0} points
+	<br />
+	For {trainingEventInput.amount * trainingEventInput.pointsPerUnit || 0} points
 	<br />
 	<button class="bg-green-300 hover:bg-green-400 text-white font-bold px-2 rounded">Submit</button>
 </form>

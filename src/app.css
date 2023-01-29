@@ -38,6 +38,10 @@
   a {
     @apply hover:no-underline
   }
+
+  th {
+    @apply bg-gray-800 text-gray-200
+  }
 }
 
 
