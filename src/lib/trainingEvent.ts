@@ -1,81 +1,61 @@
-import type { TrainingEvent as Prisma_TrainingEvent } from "@prisma/client";
-
-export type ValidationResponse = {
-  isValid: boolean,
-  message: string,
-}
-
-export class TrainingEvent implements Prisma_TrainingEvent {
+export class TrainingEventInput {
   constructor(
-    public id: number,
-    public createdAt: Date,
-    public date: Date,
-    public label: string,
-    public amount: number,
-    public amountUnit: string,
-    public pointsPerUnit: number,
-    public type: string,
-    public ownerId: number,
+    public date: string = "",
+    public label: string = "",
+    public amount: number = 0,
+    public amountUnit: string = "",
+    public pointsPerUnit: number = 0,
+    public type: string = "",
   ) { }
 
-  static fromFormData(data: FormData): TrainingEvent {
-    return new TrainingEvent(
-      Number(data.get("id")),
-      new Date(),
-      new Date(data.get("date")!.toString()),
-      data.get("label")!.toString(),
-      Number(data.get("amount")),
-      data.get("amountUnit")!.toString(),
-      Number(data.get("pointsPerUnit")),
-      data.get("type")!.toString(),
-      Number(data.get("ownerId")),
-    )
+  // Create a TrainingEvent from an object 
+  static fromObject({ date, label, amount, amountUnit, pointsPerUnit, type }): TrainingEventInput {
+    return Object.assign(new TrainingEventInput(), {
+      date: new Date(Date.parse(date)),
+      label,
+      amount: Number(amount),
+      amountUnit,
+      pointsPerUnit: Number(pointsPerUnit),
+      type,
+    });
   }
 
-  static newEmpty(): TrainingEvent {
-    return new TrainingEvent(
-      0,
-      new Date(),
-      new Date(),
-      "",
-      0,
-      "",
-      0,
-      "",
-      0,
-    )
-  }
-
-  public validate(): ValidationResponse {
-    if (!this.date) {
-      return { isValid: false, message: "Date is required." };
-    }
+  validate() {
     if (!this.label || this.label == "") {
-      return { isValid: false, message: "Label is required." };
+      return {
+        isValid: false,
+        message: "A label is required."
+      }
     }
-    if (!this.amount || this.amount == 0) {
-      return { isValid: false, message: "Amount must be greater than 0." };
+    if (!this.amount || this.amount == 0 || isNaN(Number(this.amount))) {
+      return {
+        isValid: false,
+        message: "An number amount is required and must be greater than 0."
+      }
     }
     if (!this.amountUnit || this.amountUnit == "") {
-      return { isValid: false, message: "Amount Unit is required." };
+      return {
+        isValid: false,
+        message: "An amount unit is required."
+      }
     }
-    if (!this.pointsPerUnit || this.pointsPerUnit == 0) {
-      return { isValid: false, message: "Points Per Unit is required." };
+    if (!this.pointsPerUnit || this.pointsPerUnit == 0 || isNaN(Number(this.pointsPerUnit))) {
+      return {
+        isValid: false,
+        message: "A number points per unit is required and must be greater than 0."
+      }
     }
     if (!this.type || this.type == "") {
-      return { isValid: false, message: "Type is required." };
+      return {
+        isValid: false,
+        message: "A type is required."
+      }
     }
 
-    return { isValid: true, message: "" };
+    return {
+      isValid: true,
+      message: "",
+    }
   }
-
-  public isValid(): boolean {
-    return this.validate().isValid;
-  }
-
-  public validationMessage(): string {
-    return this.validate().message;
-  }
-
 }
 

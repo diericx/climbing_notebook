@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import type { TrainingEvent } from '$lib/trainingEvent';
+	import type { TrainingEventInput } from '$lib/trainingEvent';
 	import {
 		trainingEventTemplates,
 		workTrainingEventTemplates,
@@ -9,7 +9,7 @@
 	} from '$lib/trainingEventTemplate.js';
 	import type { FormEventHandler } from '$lib/helperTypes';
 
-	export let newTrainingEvent: TrainingEvent;
+	export let trainingEventInput: TrainingEventInput;
 
 	export let labelHidden: boolean = false,
 		typeHidden: boolean = false,
@@ -40,10 +40,10 @@
 
 	// Take every value from the selected preset event and apply it onto our new event
 	function applyTrainingEventTemplate(e: TrainingEventTemplate) {
-		newTrainingEvent.type = e.type;
-		newTrainingEvent.pointsPerUnit = e.pointsPerUnit;
-		newTrainingEvent.amountUnit = e.amountUnit;
-		newTrainingEvent.label = e.label;
+		trainingEventInput.type = e.type;
+		trainingEventInput.pointsPerUnit = e.pointsPerUnit;
+		trainingEventInput.amountUnit = e.amountUnit;
+		trainingEventInput.label = e.label;
 	}
 
 	function onFormChange(_event: FormEventHandler<HTMLInputElement>) {
@@ -79,11 +79,15 @@
 		type="label"
 		name="label"
 		placeholder="label"
-		bind:value={newTrainingEvent.label}
+		bind:value={trainingEventInput.label}
 		style="min-width: 75px; {labelHidden ? 'display: none' : ''}"
 	/>
 
-	<select name="type" bind:value={newTrainingEvent.type} style={typeHidden ? 'display: none' : ''}>
+	<select
+		name="type"
+		bind:value={trainingEventInput.type}
+		style={typeHidden ? 'display: none' : ''}
+	>
 		<option value="work">work</option>
 		<option value="recovery">recovery</option>
 	</select>
@@ -91,31 +95,31 @@
 	<input
 		type="number"
 		name="amount"
-		bind:value={newTrainingEvent.amount}
+		bind:value={trainingEventInput.amount}
 		style="min-width: 75px; {amountHidden ? 'display: none' : ''}"
 		placeholder="amount"
 	/>
 
 	<input
 		name="amountUnit"
-		bind:value={newTrainingEvent.amountUnit}
+		bind:value={trainingEventInput.amountUnit}
 		placeholder="amount unit"
 		style={amountUnitHidden ? 'display: none' : ''}
 	/>
 	{#if amountUnitHidden === true}
-		{newTrainingEvent.amountUnit}
+		{trainingEventInput.amountUnit}
 	{/if}
 
 	<input
 		style={pointsPerUnitHidden ? 'display: none' : ''}
 		type="number"
 		name="pointsPerUnit"
-		bind:value={newTrainingEvent.pointsPerUnit}
+		bind:value={trainingEventInput.pointsPerUnit}
 		placeholder="points per unit"
 	/>
 	on
 	<input type="date" name="date" bind:value={dateString} style="width: 150px" />
-	for {newTrainingEvent.amount * newTrainingEvent.pointsPerUnit || 0} points
+	for {trainingEventInput.amount * trainingEventInput.pointsPerUnit || 0} points
 	<br />
 	<button class="bg-green-300 hover:bg-green-400 text-white font-bold px-2 rounded">Submit</button>
 </form>

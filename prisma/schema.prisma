@@ -12,20 +12,41 @@ datasource db {
 
 model TrainingEvent {
   id            Int      @id @default(autoincrement())
-  createdAt     DateTime
+  createdAt     DateTime @map("created_at")
   date          DateTime
   label         String
   amount        Int
-  amountUnit    String
-  pointsPerUnit Int
+  amountUnit    String   @map("amount_unit")
+  pointsPerUnit Int      @map("points_per_unit")
   type          String
-  ownerId       Int
+  ownerId       Int      @map("owner_id")
   owner         User     @relation(fields: [ownerId], references: [id])
+
+  @@map("training_event")
 }
 
 model User {
-  id            Int             @id @default(autoincrement())
-  username      String          @unique
-  email         String          @unique
-  TrainingEvent TrainingEvent[]
+  id       Int    @id @default(autoincrement())
+  username String @unique
+
+  // Prisma Required
+  provider_id     String          @unique
+  hashed_password String?
+  // session         Session[]
+  TrainingEvent   TrainingEvent[]
+  Session         Session[]
+
+  @@map("user")
+}
+
+// Maybe not required?
+model Session {
+  id           String @id @unique
+  user_id      Int
+  expires      BigInt
+  idle_expires BigInt
+  user         User   @relation(references: [id], fields: [user_id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("session")
 }

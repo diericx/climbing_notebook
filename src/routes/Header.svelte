@@ -1,95 +1,97 @@
-<script>
-	import { page } from '$app/stores';
-	import logo from '$lib/images/svelte-logo.svg';
-	import github from '$lib/images/github.svg';
+<script lang="ts">
+	import { signOut, getUser } from '@lucia-auth/sveltekit/client';
+	import { invalidateAll } from '$app/navigation';
+	const user = getUser();
+
+	import logo from '$lib/images/logo.svg';
+	let showMenu = false;
+
+	function toggleNavbar() {
+		showMenu = !showMenu;
+	}
 </script>
 
 <header>
-	<nav>
-		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
-		</svg>
-		<ul>
-			<li aria-current={$page.url.pathname === '/' ? 'page' : undefined}>
-				<a href="/">Home</a>
-			</li>
-			<li aria-current={$page.url.pathname === '/about' ? 'page' : undefined}>
-				<a href="/about">About</a>
-			</li>
-		</ul>
-		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
-		</svg>
-	</nav>
+	<div>
+		<div class="bg-white">
+			<nav class="px-6 py-3 mx-auto md:flex  md:items-center">
+				<div class="flex items-center justify-between">
+					<a href="/" class="flex items-center">
+						<img src={logo} class="h-6 mr-3 sm:h-9" alt="Logo" />
+						<span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white"
+							>Climbing Notebook</span
+						>
+					</a>
+
+					<!-- Mobile menu button -->
+					<div on:click={toggleNavbar} class="flex md:hidden">
+						<button
+							type="button"
+							class="py-1 text-gray-300 hover:text-gray-400 focus:outline-none focus:text-gray-400"
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="1.5"
+								stroke="currentColor"
+								class="w-6 h-6"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+								/>
+							</svg>
+						</button>
+					</div>
+				</div>
+
+				<!-- Mobile Menu open: "block", Menu closed: "hidden" -->
+				<div
+					class="flex flex-1 flex-col justify-between mt-8 space-y-4 md:flex-row md:flex md:space-y-0 md:items-center md:space-x-10 md:mt-0 {showMenu
+						? 'flex'
+						: 'hidden'}"
+				>
+					<div class="mx-3 flex flex-col md:flex-row">
+						<a class="px-3 text-gray-600 hover:text-blue-400 text-left" href="/"> Home </a>
+						<a class="px-3 text-gray-600 hover:text-blue-400" href="/trainingEvents">Training Log</a
+						>
+					</div>
+
+					<div
+						class="w-fit-content flex flex-col md:flex-none md:flex-row"
+						style="min-width: 130px"
+					>
+						{#if $user}
+							<a
+								href="/profile"
+								class="px-4 text-center border text-gray-800 bg-white hover:text-indigo-600 rounded-md lg:inline border-0"
+							>
+								{$user.username}
+							</a>
+
+							<div class="hidden md:inline">|</div>
+
+							<button
+								class="border-0 shadow-none"
+								style="margin-top: 0px"
+								on:click={async () => {
+									await signOut();
+									invalidateAll();
+								}}>Logout</button
+							>
+						{:else}
+							<a
+								href="/login"
+								class="py-3 px-4 text-center border text-gray-800 bg-white hover:text-indigo-600 rounded-md block lg:inline border-0"
+							>
+								Login
+							</a>
+						{/if}
+					</div>
+				</div>
+			</nav>
+		</div>
+	</div>
 </header>
-
-<style>
-	header {
-		display: flex;
-		justify-content: space-between;
-	}
-
-	nav {
-		display: flex;
-		justify-content: center;
-		--background: rgba(255, 255, 255, 0.7);
-	}
-
-	svg {
-		width: 2em;
-		height: 3em;
-		display: block;
-	}
-
-	path {
-		fill: var(--background);
-	}
-
-	ul {
-		position: relative;
-		padding: 0;
-		margin: 0;
-		height: 3em;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		list-style: none;
-		background: var(--background);
-		background-size: contain;
-	}
-
-	li {
-		position: relative;
-		height: 100%;
-	}
-
-	li[aria-current='page']::before {
-		--size: 6px;
-		content: '';
-		width: 0;
-		height: 0;
-		position: absolute;
-		top: 0;
-		left: calc(50% - var(--size));
-		border: var(--size) solid transparent;
-		border-top: var(--size) solid var(--color-theme-1);
-	}
-
-	nav a {
-		display: flex;
-		height: 100%;
-		align-items: center;
-		padding: 0 0.5rem;
-		color: var(--color-text);
-		font-weight: 700;
-		font-size: 0.8rem;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		text-decoration: none;
-		transition: color 0.2s linear;
-	}
-
-	a:hover {
-		color: var(--color-theme-1);
-	}
-</style>

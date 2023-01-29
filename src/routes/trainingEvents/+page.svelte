@@ -2,12 +2,12 @@
 	import type { PageData, ActionData } from './$types';
 
 	import EventForm from '../trainingEvents/form.svelte';
-	import { TrainingEvent } from '$lib/trainingEvent';
+	import { TrainingEventInput } from '$lib/trainingEvent';
 
 	export let data: PageData;
 	export let form: ActionData;
-	const newTrainingEvent: TrainingEvent =
-		(form?.newTrainingEvent as TrainingEvent) || (TrainingEvent.newEmpty() as TrainingEvent);
+	const trainingEventInput: TrainingEventInput =
+		(form?.trainingEventInput as TrainingEventInput) || new TrainingEventInput();
 </script>
 
 <div>
@@ -20,11 +20,11 @@
 <div class="flex justify-around">
 	<div>
 		<div
-			class="{data.trainingPoints - data.recoveryPoints > 0
+			class="{data.workPoints - data.recoveryPoints > 0
 				? 'bg-orange-200'
 				: 'bg-sky-200'} grid place-items-center rounded-full w-28 h-28 text-center"
 		>
-			<div class="text-5xl py-6 text-white">{data.trainingPoints - data.recoveryPoints}</div>
+			<div class="text-5xl py-6 text-white">{data.workPoints - data.recoveryPoints}</div>
 		</div>
 	</div>
 </div>
@@ -32,7 +32,7 @@
 <div class="grid grid-cols-1 gap-4 px-4">
 	<div>
 		<h2>Add Event</h2>
-		<EventForm labelHidden typeHidden amountUnitHidden pointsPerUnitHidden {newTrainingEvent} />
+		<EventForm labelHidden typeHidden amountUnitHidden pointsPerUnitHidden {trainingEventInput} />
 	</div>
 </div>
 
@@ -51,7 +51,7 @@
 				</tr>
 			</thead>
 			<tbody class="divide-y text-gray-600">
-				{#each data.events as item}
+				{#each data.trainingEvents as item}
 					<tr>
 						<td class="px-6 py-3">{item.label}</td>
 						<td class="px-6 py-3">{item.type}</td>

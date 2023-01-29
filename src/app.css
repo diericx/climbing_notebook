@@ -27,6 +27,17 @@
     @apply outline-none bg-white;
   }
   
+  label {
+    @apply text-gray-400
+  }
+
+  button {
+    @apply px-2 bg-white rounded shadow border-gray-200
+  }
+
+  a {
+    @apply hover:no-underline
+  }
 }
 
 
