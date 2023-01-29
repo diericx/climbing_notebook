@@ -58,5 +58,24 @@ export const actions: Actions = {
       })
     }
     return data;
+  },
+
+  delete: async ({ request, fetch }) => {
+    const formData = await request.formData();
+    const input = Object.fromEntries(formData.entries());
+
+    const response = await fetch(`/api/trainingEvents/${input.id}`, {
+      method: "DELETE",
+    })
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return fail(response.status, {
+        message: data.message,
+      })
+    }
+
+    return data;
   }
 };

@@ -105,11 +105,23 @@ export const PATCH = (async ({ locals, request, url }) => {
   return json({}, { status: 204 })
 }) satisfies RequestHandler;
 
-export const DELETE = (async ({ url }) => {
+export const DELETE = (async ({ url, locals }) => {
+  // Validate session and get user
+  let { user, session } = await locals.validateUser();
+  if (!session || session.state !== 'active') {
+    throw error(403, { message: "unauthorized" })
+  }
+
+  let id = Number(url.searchParams.get('id'))
+  if (isNaN(id)) {
+    throw error(401, { message: "" })
+  }
+
   try {
-    await prisma.trainingEvent.delete({
+    await prisma.trainingEvent.deleteMany({
       where: {
-        id: Number(url.searchParams.get('trainingEventId')),
+        id: Number(url.searchParams.get('id')),
+        ownerId: Number(user?.userId),
       },
     });
   } catch (e) {

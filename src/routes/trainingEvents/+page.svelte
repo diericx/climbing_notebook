@@ -57,7 +57,12 @@
 							<td class="px-6 py-3">{item.type}</td>
 							<td class="px-6 py-3">{item.amount} {item.amountUnit}</td>
 							<td class="px-6 py-3">{item.amount * item.pointsPerUnit}</td>
-							<td class="px-6 py-3"><button>delete</button></td>
+							<td class="px-6 py-3">
+								<form method="POST" action="?/delete">
+									<input type="hidden" name="id" value={item.id} />
+									<button>delete</button>
+								</form>
+							</td>
 						</tr>
 					{/each}
 				</tbody>
