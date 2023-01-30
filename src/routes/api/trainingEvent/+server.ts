@@ -1,11 +1,10 @@
 import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
-import PrismaClient from "$lib/prisma";
 import { TrainingEventInput } from "$lib/trainingEvent";
 import type { TrainingEvent } from "@prisma/client";
 import { SERVER_ERROR } from "$lib/helperTypes";
 import { protectedEndpoint } from "$lib/auth";
-const prisma = new PrismaClient();
+import { prisma } from "$lib/prisma";
 
 export const GET: RequestHandler = protectedEndpoint(async ({ locals }) => {
   const { user } = locals;

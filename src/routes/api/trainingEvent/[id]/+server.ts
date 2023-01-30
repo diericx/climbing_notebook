@@ -1,9 +1,8 @@
 import { error, json } from "@sveltejs/kit";
-import PrismaClient from "$lib/prisma";
 import type { RequestHandler } from "../$types";
 import { SERVER_ERROR } from "$lib/helperTypes";
 import { protectedEndpoint } from "$lib/auth";
-const prisma = new PrismaClient();
+import { prisma } from "$lib/prisma";
 
 export const DELETE: RequestHandler = protectedEndpoint(async ({ locals, params }) => {
   const { id } = params;

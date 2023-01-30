@@ -1,12 +1,11 @@
 // lib/server/lucia.ts
 import lucia from "lucia-auth";
-import prisma from "@lucia-auth/adapter-prisma";
+import luciaPrismaAdapter from "@lucia-auth/adapter-prisma";
 import { dev } from "$app/environment";
-import PrismaClient from "$lib/prisma";
-const prismaClient = new PrismaClient();
+import { prisma } from "$lib/prisma";
 
 export const auth = lucia({
-  adapter: prisma(prismaClient),
+  adapter: luciaPrismaAdapter(prisma),
   env: dev ? "DEV" : "PROD",
   transformUserData: (userData) => {
     return {
