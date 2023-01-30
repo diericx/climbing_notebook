@@ -41,11 +41,13 @@ export const actions: Actions = {
     const data = await request.formData();
     const redirectTo = data.get("redirectTo");
     const username = data.get("username");
+    const email = data.get("email");
     const password = data.get("password");
     const response = await fetch("/api/register", {
       method: "POST",
       body: JSON.stringify({
         username,
+        email,
         password,
       })
     })
@@ -59,6 +61,7 @@ export const actions: Actions = {
     return fail(500, {
       message: result.message,
       username,
+      email,
       redirectTo
     })
   }

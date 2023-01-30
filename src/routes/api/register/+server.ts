@@ -1,12 +1,12 @@
 import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { auth } from "$lib/server/lucia";
-import { isUsernameValid, isPasswordValid } from "$lib/user";
+import { isUsernameValid, isPasswordValid, isEmailValid } from "$lib/user";
 import { Prisma } from "@prisma/client";
 import { LuciaError } from "lucia-auth";
 
 export const POST: RequestHandler = async ({ request, locals }) => {
-  const { username, password } = await request.json();
+  const { username, password, email } = await request.json();
 
   if (!isUsernameValid(username)) {
     throw error(401, { message: "Username cannot be empty" });
@@ -14,12 +14,16 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   if (!isPasswordValid(password)) {
     throw error(401, { message: "Password cannot be empty" });
   }
+  if (!isEmailValid(email)) {
+    throw error(401, { message: "Email must be valid" });
+  }
 
   let user
   try {
     user = await auth.createUser("username", username, {
       password,
       attributes: {
+        email: email,
         username: username,
       }
     })

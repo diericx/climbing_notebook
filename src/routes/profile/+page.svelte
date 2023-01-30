@@ -7,10 +7,11 @@
 <h1>Profile</h1>
 
 <p>Username: {$user?.username}</p>
+<p>Email: {$user?.email}</p>
 
 <button
 	on:click={async () => {
 		await signOut();
 		invalidateAll();
-	}}>Sign out</button
+	}}>Logout</button
 >

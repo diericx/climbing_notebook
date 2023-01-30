@@ -35,6 +35,10 @@
 		<br />
 		<input type="username" name="username" value={form?.username || ''} />
 		<br />
+		<label for="email">email</label>
+		<br />
+		<input type="email" name="email" value={form?.email || ''} />
+		<br />
 		<label for="password">password</label>
 		<br />
 		<input type="password" name="password" />
