@@ -8,9 +8,12 @@
 	export let form: ActionData;
 	const trainingEventInput: TrainingEventInput =
 		(form?.trainingEventInput as TrainingEventInput) || new TrainingEventInput();
+	const recoveryPoints = data.workPoints - data.recoveryPoints;
 </script>
 
 {#if form?.message}<p class="error">{form?.message}</p>{/if}
+
+<br />
 
 <!-- <div class="flex justify-around"> -->
 <!-- 	<div> -->
@@ -26,17 +29,16 @@
 
 <div class="grid grid-cols-1">
 	<div>
-		<h2>New Training Event</h2>
+		<h2>New Activity</h2>
 		<EventForm labelHidden typeHidden amountUnitHidden pointsPerUnitHidden {trainingEventInput} />
 	</div>
 </div>
 
 <div class="pt-8">
-	<h2>All Events and Info</h2>
-	<p><b>Recovery Status:</b> {data.workPoints - data.recoveryPoints}</p>
+	<h2>All Activities and Recovery Info</h2>
+	<p><b>Recovery Status:</b> {recoveryPoints > 0 ? '+' : ''}{recoveryPoints}</p>
 	<p class="text-gray-400">
-		Your recovery status is calculated by subtracting our total Work Points from your Recovery
-		Points
+		Your recovery status is calculated by subtracting your Work Points from your Recovery Points
 	</p>
 	<div class="grid">
 		<div class="relative overflow-x-auto border-2 rounded">

@@ -58,7 +58,7 @@
 </script>
 
 <form method="POST" action="?/new">
-	<label for="presetEvent">Preset Event (custom events coming soon)</label>
+	<label for="presetEvent">Preset Activity (custom activities coming soon)</label>
 	<br />
 	<select
 		name="presetEvent"
