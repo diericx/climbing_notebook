@@ -7,7 +7,7 @@
     @apply text-2xl;
   }
   h2 {
-    @apply text-xl;
+    @apply text-lg;
   }
 }
 
@@ -61,6 +61,3 @@
     @apply bg-red-300 text-white
   }
 }
-
-
-
