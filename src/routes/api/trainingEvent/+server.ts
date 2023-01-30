@@ -37,11 +37,6 @@ export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }
     throw error(403, { message: inputValidation.message })
   }
 
-  // Validate date string
-  if (isNaN(Date.parse(input.date))) {
-    throw error(403, { message: "A valid date is required." })
-  }
-
   let trainingEvent: TrainingEvent;
   try {
     trainingEvent = await prisma.trainingEvent.create({

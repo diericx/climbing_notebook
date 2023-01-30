@@ -51,6 +51,13 @@ export class TrainingEventInput {
         message: "A type is required."
       }
     }
+    // Validate date string
+    if (isNaN(Date.parse(this.date))) {
+      return {
+        isValid: false,
+        message: "Invalid date."
+      }
+    }
 
     return {
       isValid: true,

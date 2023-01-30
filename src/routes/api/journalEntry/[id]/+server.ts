@@ -68,11 +68,6 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
     throw error(401, { message })
   }
 
-  // Validate date string
-  if (isNaN(Date.parse(input.date))) {
-    throw error(403, { message: "A valid date is required." })
-  }
-
   let result
   try {
     result = await prisma.journalEntry.updateMany({
