@@ -4,14 +4,11 @@ import PrismaClient from "$lib/prisma";
 import { TrainingEventInput } from "$lib/trainingEvent";
 import type { TrainingEvent } from "@prisma/client";
 import { SERVER_ERROR } from "$lib/helperTypes";
+import { protectedEndpoint } from "$lib/auth";
 const prisma = new PrismaClient();
 
-export const GET = (async ({ locals }) => {
-  // Validate session and get user
-  let { user, session } = await locals.validateUser();
-  if (!session || session.state !== 'active') {
-    return json({ message: "unauthorized" }, { status: 403 });
-  }
+export const GET: RequestHandler = protectedEndpoint(async ({ locals }) => {
+  const { user } = locals;
 
   // Fetch trainingEvents
   let trainingEvents: TrainingEvent[];
@@ -27,10 +24,11 @@ export const GET = (async ({ locals }) => {
   }
 
   return json({ trainingEvents }, { status: 200 });
-}) satisfies RequestHandler;
+});
 
-export const POST = (async ({ request, locals }) => {
+export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }) => {
   let data = await request.json();
+  const { user } = locals;
 
   // Validate input fields
   let input = TrainingEventInput.fromObject(data)
@@ -42,12 +40,6 @@ export const POST = (async ({ request, locals }) => {
   // Validate date string
   if (isNaN(Date.parse(input.date))) {
     throw error(403, { message: "A valid date is required." })
-  }
-
-  // Validate session and get user
-  let { user, session } = await locals.validateUser();
-  if (!session || session.state !== 'active') {
-    throw error(403, { message: "unauthorized" })
   }
 
   let trainingEvent: TrainingEvent;
@@ -66,21 +58,17 @@ export const POST = (async ({ request, locals }) => {
   }
 
   return json({ trainingEvent }, { status: 201 });
-}) satisfies RequestHandler;
+});
 
-export const PATCH = (async ({ locals, request, url }) => {
+export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request, url }) => {
   let data = await request.json();
+  const { user } = locals;
 
   // Get trainingEvent from form data
-  let newTrainingEvent = data as TrainingEvent;
-  if (!newTrainingEvent.isValid()) {
-    throw error(401, { message: newTrainingEvent.validationMessage() })
-  }
-
-  // Validate session and get user
-  let { user, session } = await locals.validateUser();
-  if (!session || session.state !== 'active') {
-    throw error(403, { message: "unauthorized" })
+  let input = data as TrainingEventInput;
+  let { isValid, message } = input.validate()
+  if (!isValid) {
+    throw error(401, { message })
   }
 
   try {
@@ -103,14 +91,10 @@ export const PATCH = (async ({ locals, request, url }) => {
   }
 
   return json({}, { status: 204 })
-}) satisfies RequestHandler;
+});
 
-export const DELETE = (async ({ url, locals }) => {
-  // Validate session and get user
-  let { user, session } = await locals.validateUser();
-  if (!session || session.state !== 'active') {
-    throw error(403, { message: "unauthorized" })
-  }
+export const DELETE: RequestHandler = protectedEndpoint(async ({ url, locals }) => {
+  const { user } = locals;
 
   let id = Number(url.searchParams.get('id'))
   if (isNaN(id)) {
@@ -130,5 +114,5 @@ export const DELETE = (async ({ url, locals }) => {
   }
 
   return json({}, { status: 204 });
-}) satisfies RequestHandler;
+});
 
