@@ -16,7 +16,10 @@ export const GET: RequestHandler = protectedEndpoint(async ({ locals }) => {
     trainingEvents = await prisma.trainingEvent.findMany({
       where: {
         ownerId: Number(user?.userId),
-      }
+      },
+      orderBy: {
+        date: 'desc',
+      },
     }) as TrainingEvent[];
   } catch (e) {
     console.error(e);

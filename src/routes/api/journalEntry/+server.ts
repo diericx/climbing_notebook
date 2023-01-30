@@ -16,7 +16,10 @@ export const GET: RequestHandler = protectedEndpoint(async ({ locals }) => {
     journalEntries = await prisma.journalEntry.findMany({
       where: {
         ownerId: Number(user?.userId),
-      }
+      },
+      orderBy: {
+        date: 'desc',
+      },
     }) as JournalEntry[];
   } catch (e) {
     console.error(e);
