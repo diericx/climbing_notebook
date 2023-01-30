@@ -61,6 +61,11 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
   const { user } = locals;
   const { id } = params;
 
+  // Validate params
+  if (!id || isNaN(Number(id))) {
+    throw error(401, { message: "Valid id required" })
+  }
+
   // Get journalEntry from form data
   let input = JournalEntryInput.fromObject(data)
   let { isValid, message } = input.validate()
