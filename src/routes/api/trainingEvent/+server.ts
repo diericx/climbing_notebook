@@ -88,26 +88,3 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
   return json({}, { status: 204 })
 });
 
-export const DELETE: RequestHandler = protectedEndpoint(async ({ url, locals }) => {
-  const { user } = locals;
-
-  let id = Number(url.searchParams.get('id'))
-  if (isNaN(id)) {
-    throw error(401, { message: "" })
-  }
-
-  try {
-    await prisma.trainingEvent.deleteMany({
-      where: {
-        id: Number(url.searchParams.get('id')),
-        ownerId: Number(user?.userId),
-      },
-    });
-  } catch (e) {
-    console.error(e);
-    throw error(500, { message: SERVER_ERROR })
-  }
-
-  return json({}, { status: 204 });
-});
-
