@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { PageData, ActionData } from './$types';
 
-	import EventForm from '../trainingEvents/form.svelte';
+	import EventForm from '../activity/form.svelte';
 	import { TrainingEventInput } from '$lib/trainingEvent';
 
 	export let data: PageData;

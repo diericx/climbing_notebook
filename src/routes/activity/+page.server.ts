@@ -8,10 +8,10 @@ export const load: PageServerLoad = async ({ locals, fetch }) => {
   // Protected page
   const session = await locals.validate();
   if (!session) {
-    throw redirect(302, "/login?redirectTo=trainingEvents")
+    throw redirect(302, "/login?redirectTo=activity")
   }
 
-  const response = await fetch("/api/trainingEvents", {
+  const response = await fetch("/api/trainingEvent", {
     method: "GET",
   })
   const data = await response.json();
@@ -44,7 +44,7 @@ export const actions: Actions = {
     const formData = await request.formData();
     const input = Object.fromEntries(formData.entries());
 
-    const response = await fetch("/api/trainingEvents", {
+    const response = await fetch("/api/trainingEvent", {
       method: "POST",
       body: JSON.stringify(input),
     })
@@ -64,7 +64,7 @@ export const actions: Actions = {
     const formData = await request.formData();
     const input = Object.fromEntries(formData.entries());
 
-    const response = await fetch(`/api/trainingEvents/${input.id}`, {
+    const response = await fetch(`/api/trainingEvent/${input.id}`, {
       method: "DELETE",
     })
 
