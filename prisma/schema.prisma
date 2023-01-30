@@ -25,6 +25,18 @@ model TrainingEvent {
   @@map("training_event")
 }
 
+model JournalEntry {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @map("created_at")
+  date      DateTime
+  type      String
+  content   String
+  ownerId   Int      @map("owner_id")
+  owner     User     @relation(fields: [ownerId], references: [id])
+
+  @@map("journal_entry")
+}
+
 model User {
   id       Int    @id @default(autoincrement())
   username String @unique
@@ -35,6 +47,7 @@ model User {
   // session         Session[]
   TrainingEvent   TrainingEvent[]
   Session         Session[]
+  JournalEntry    JournalEntry[]
 
   @@map("user")
 }

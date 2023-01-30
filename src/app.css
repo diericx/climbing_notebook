@@ -18,6 +18,13 @@
   .input:focus {
    @apply shadow;
   }
+  
+  textarea {
+    @apply my-2 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight;
+  }
+  .textarea:focus {
+   @apply shadow;
+  }
 
   select {
     @apply my-2 shadow bg-white border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded leading-tight;
@@ -35,12 +42,23 @@
     @apply px-2 bg-white rounded shadow border-gray-200
   }
 
-  a {
-    @apply hover:no-underline
-  }
-
   th {
     @apply bg-gray-800 text-gray-200
+  }
+
+  a {
+    @apply text-blue-500
+  }
+
+  .server-message {
+    @apply w-full rounded py-2 pl-3 mt-3
+  }
+  .success {
+    @apply bg-green-300 text-white
+  }
+
+  .error {
+    @apply bg-red-300 text-white
   }
 }
 
