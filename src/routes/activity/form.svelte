@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import type { TrainingEventInput } from '$lib/trainingEvent';
+	import type { TrainingEventFormData } from '$lib/trainingEvent';
 	import {
 		trainingEventTemplates,
 		workTrainingEventTemplates,
@@ -9,7 +9,7 @@
 	} from '$lib/trainingEventTemplate.js';
 	import type { FormEventHandler } from '$lib/helperTypes';
 
-	export let trainingEventInput: TrainingEventInput;
+	export let trainingEventInput: TrainingEventFormData;
 
 	export let labelHidden: boolean = false,
 		typeHidden: boolean = false,

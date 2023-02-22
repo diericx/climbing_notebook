@@ -2,30 +2,18 @@
 	import type { PageData, ActionData } from './$types';
 
 	import EventForm from '../activity/form.svelte';
-	import { TrainingEventInput } from '$lib/trainingEvent';
+	import { TrainingEventFormData } from '$lib/trainingEvent';
 
 	export let data: PageData;
 	export let form: ActionData;
-	const trainingEventInput: TrainingEventInput =
-		(form?.trainingEventInput as TrainingEventInput) || new TrainingEventInput();
+	const trainingEventInput: TrainingEventFormData =
+		(form?.trainingEventInput as TrainingEventFormData) || new TrainingEventFormData();
 	const recoveryPoints = data.workPoints - data.recoveryPoints;
 </script>
 
 {#if form?.message}<p class="error">{form?.message}</p>{/if}
 
 <br />
-
-<!-- <div class="flex justify-around"> -->
-<!-- 	<div> -->
-<!-- 		<div -->
-<!-- 			class="{data.workPoints - data.recoveryPoints > 0 -->
-<!-- 				? 'bg-orange-200' -->
-<!-- 				: 'bg-sky-200'} grid place-items-center rounded-full w-28 h-28 text-center" -->
-<!-- 		> -->
-<!-- 			<div class="text-5xl py-6 text-white">{data.workPoints - data.recoveryPoints}</div> -->
-<!-- 		</div> -->
-<!-- 	</div> -->
-<!-- </div> -->
 
 <div class="grid grid-cols-1">
 	<div>

@@ -1,6 +1,6 @@
 import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
-import { TrainingEventInput } from "$lib/trainingEvent";
+import { TrainingEventFormData } from "$lib/trainingEvent";
 import type { TrainingEvent } from "@prisma/client";
 import { SERVER_ERROR } from "$lib/helperTypes";
 import { protectedEndpoint } from "$lib/auth";
@@ -33,7 +33,7 @@ export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }
   const { user } = locals;
 
   // Validate input fields
-  let input = TrainingEventInput.fromObject(data)
+  let input = TrainingEventFormData.fromObject(data)
   let inputValidation = input.validate()
   if (!inputValidation.isValid) {
     throw error(403, { message: inputValidation.message })
@@ -62,7 +62,7 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
   const { user } = locals;
 
   // Get trainingEvent from form data
-  let input = data as TrainingEventInput;
+  let input = data as TrainingEventFormData;
   let { isValid, message } = input.validate()
   if (!isValid) {
     throw error(401, { message })

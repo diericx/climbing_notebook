@@ -1,4 +1,4 @@
-export class TrainingEventInput {
+export class TrainingEventFormData {
   constructor(
     public date: string = "",
     public label: string = "",
@@ -9,8 +9,8 @@ export class TrainingEventInput {
   ) { }
 
   // Create a TrainingEvent from an object 
-  static fromObject({ date, label, amount, amountUnit, pointsPerUnit, type }): TrainingEventInput {
-    return Object.assign(new TrainingEventInput(), {
+  static fromObject({ date, label, amount, amountUnit, pointsPerUnit, type }): TrainingEventFormData {
+    return Object.assign(new TrainingEventFormData(), {
       date: new Date(Date.parse(date)),
       label,
       amount: Number(amount),
