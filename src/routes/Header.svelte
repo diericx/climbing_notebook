@@ -55,10 +55,7 @@
 				>
 					<div class="mx-3 flex flex-col md:flex-row">
 						<a class="px-3 text-gray-600 hover:text-blue-400 text-left" href="/"> Home </a>
-						<a class="px-3 text-gray-600 hover:text-blue-400" href="/activity">Activity Log</a>
-						<a class="px-3 text-gray-600 hover:text-blue-400" href="/climbingJournal"
-							>Climbing Journal</a
-						>
+						<a class="px-3 text-gray-600 hover:text-blue-400" href="/climbingJournal">Journal</a>
 					</div>
 
 					<div
