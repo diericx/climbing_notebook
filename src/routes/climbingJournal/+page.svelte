@@ -8,6 +8,12 @@
 	export let form: ActionData;
 	const journalEntryInput: JournalEntryInput =
 		(form?.journalEntryInput as JournalEntryInput) || new JournalEntryInput();
+
+	function confirmDelete(e: MouseEvent) {
+		if (!confirm('Are you sure you want to delete this journal entry?')) {
+			e.preventDefault();
+		}
+	}
 </script>
 
 {#if form?.message}<p class="error">{form?.message}</p>{/if}
@@ -33,7 +39,7 @@
 					<h3 class="underline inline">{new Date(item.date).toLocaleDateString('en-US')}</h3>
 					<form method="POST" action="?/delete" class="inline">
 						<input type="hidden" name="id" value={item.id} />
-						<button formaction="?/delete">Delete</button>
+						<button formaction="?/delete" on:click={confirmDelete}>Delete</button>
 					</form>
 					<a href="/climbingJournal/{item.id}/edit?redirectTo=/climbingJournal">Edit</a>
 					<p class="whitespace-pre bg-white w-full px-1 py-3">{item.content}</p>

@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { JournalEntryInput } from '$lib/journalEntry';
-	import type { FormEventHandler } from '$lib/helperTypes';
 
 	export let journalEntryInput: JournalEntryInput;
-	export let action: String;
-	export let redirectTo: String;
+	// Form action to execute, which may need to be specified if this is
+	// used outside of this route
+	export let action: string = '?/new';
+	export let redirectTo: string = '';
 
 	let now = new Date(),
 		month,
@@ -21,11 +22,17 @@
 		dateString = [year, month, day].join('-');
 	});
 
-	const onKeyDown = (e) => {
+	const onKeyDown = (e: KeyboardEvent) => {
 		if (e.key == 'Tab') {
+			let target = e.target as HTMLInputElement;
 			e.preventDefault();
-			var start = e.originalTarget.selectionStart;
-			var end = e.originalTarget.selectionEnd;
+			var start = target.selectionStart;
+			var end = target.selectionEnd;
+			// If either start or end is null, this logic cannot be applied here
+			// and it will be best to simply disable the key
+			if (start == null || end == null) {
+				return;
+			}
 			// set textarea value to: text before caret + tab + text after caret
 			journalEntryInput.content =
 				journalEntryInput.content.substring(0, start) +
@@ -35,7 +42,7 @@
 	};
 </script>
 
-<form method="POST" action={action || '?/new'}>
+<form method="POST" {action}>
 	<input type="hidden" name="type" value="climbing" />
 	<input type="hidden" name="redirectTo" value={redirectTo} />
 
