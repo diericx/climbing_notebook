@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import type { JournalEntryInput } from '$lib/journalEntry';
+	import type { JournalEntryFormData } from '$lib/journalEntry';
 
-	export let journalEntryInput: JournalEntryInput;
+	export let journalEntryFormData: JournalEntryFormData;
 	// Form action to execute, which may need to be specified if this is
 	// used outside of this route
 	export let action: string = '?/new';
@@ -34,10 +34,10 @@
 				return;
 			}
 			// set textarea value to: text before caret + tab + text after caret
-			journalEntryInput.content =
-				journalEntryInput.content.substring(0, start) +
+			journalEntryFormData.content =
+				journalEntryFormData.content.substring(0, start) +
 				'\t' +
-				journalEntryInput.content.substring(end);
+				journalEntryFormData.content.substring(end);
 		}
 	};
 </script>
@@ -65,7 +65,7 @@
 Injuries
 - Left ring finger pain (3) in A2 pulley
 - Right shoulder pain mid session, went away by end"
-		bind:value={journalEntryInput.content}
+		bind:value={journalEntryFormData.content}
 		on:keydown={onKeyDown}
 	/>
 

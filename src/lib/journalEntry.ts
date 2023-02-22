@@ -1,4 +1,4 @@
-export class JournalEntryInput {
+export class JournalEntryFormData {
   constructor(
     public date: string = "",
     public content: string = "",
@@ -6,11 +6,11 @@ export class JournalEntryInput {
   ) { }
 
   // Create a TrainingEvent from an object 
-  static fromObject({ date, content, type }): JournalEntryInput {
-    return Object.assign(new JournalEntryInput(), {
-      date: new Date(Date.parse(date)),
-      content,
-      type,
+  static fromObject(object: JournalEntryFormData): JournalEntryFormData {
+    return Object.assign(new JournalEntryFormData(), {
+      date: object.date,
+      content: object.content,
+      type: object.type,
     });
   }
 

@@ -2,7 +2,7 @@ import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "../$types";
 import { SERVER_ERROR } from "$lib/helperTypes";
 import { protectedEndpoint } from "$lib/auth";
-import { JournalEntryInput } from "$lib/journalEntry";
+import { JournalEntryFormData } from "$lib/journalEntry";
 import type { JournalEntry } from "@prisma/client";
 import { prisma } from "$lib/prisma";
 
@@ -65,8 +65,8 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
     throw error(401, { message: "Valid id required" })
   }
 
-  // Get journalEntry from form data
-  let input = JournalEntryInput.fromObject(data)
+  // Get form data
+  let input = JournalEntryFormData.fromObject(data)
   let { isValid, message } = input.validate()
   if (!isValid) {
     throw error(401, { message })

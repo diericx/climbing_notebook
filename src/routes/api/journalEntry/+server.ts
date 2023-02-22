@@ -1,6 +1,6 @@
 import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
-import { JournalEntryInput } from "$lib/journalEntry";
+import { JournalEntryFormData } from "$lib/journalEntry";
 import type { JournalEntry } from "@prisma/client";
 import { SERVER_ERROR } from "$lib/helperTypes";
 import { protectedEndpoint } from "$lib/auth";
@@ -33,7 +33,7 @@ export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }
   const { user } = locals;
 
   // Validate input fields
-  let input = JournalEntryInput.fromObject(data)
+  let input = JournalEntryFormData.fromObject(data)
   let inputValidation = input.validate()
   if (!inputValidation.isValid) {
     throw error(403, { message: inputValidation.message })

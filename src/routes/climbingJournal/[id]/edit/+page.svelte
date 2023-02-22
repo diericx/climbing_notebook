@@ -3,14 +3,14 @@
 	import { page } from '$app/stores';
 
 	import JournalEntryForm from '../../form.svelte';
-	import { JournalEntryInput } from '$lib/journalEntry';
+	import { JournalEntryFormData } from '$lib/journalEntry';
 
 	export let data: PageData;
 	export let form: ActionData;
-	const journalEntryInput: JournalEntryInput =
-		(form?.journalEntry as JournalEntryInput) ||
-		(data?.journalEntry as JournalEntryInput) ||
-		new JournalEntryInput();
+	const journalEntryFormData: JournalEntryFormData =
+		(form?.journalEntry as JournalEntryFormData) ||
+		(data?.journalEntry as JournalEntryFormData) ||
+		new JournalEntryFormData();
 	let redirectTo = form?.redirectTo || data.redirectTo || '';
 </script>
 
@@ -23,6 +23,6 @@
 <div class="grid grid-cols-1">
 	<div>
 		<h2>Edit Journal Entry</h2>
-		<JournalEntryForm action="?/edit" {redirectTo} {journalEntryInput} />
+		<JournalEntryForm action="?/edit" {redirectTo} {journalEntryFormData} />
 	</div>
 </div>

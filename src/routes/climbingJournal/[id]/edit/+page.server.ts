@@ -50,7 +50,7 @@ export const actions: Actions = {
     if (!response.ok) {
       return fail(response.status, {
         message: data.message,
-        journalEntryInput: input,
+        journalEntryFormData: input,
         redirectTo
       })
     }

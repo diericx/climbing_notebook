@@ -2,12 +2,12 @@
 	import type { PageData, ActionData } from './$types';
 
 	import JournalEntryForm from './form.svelte';
-	import { JournalEntryInput } from '$lib/journalEntry';
+	import { JournalEntryFormData } from '$lib/journalEntry';
 
 	export let data: PageData;
 	export let form: ActionData;
-	const journalEntryInput: JournalEntryInput =
-		(form?.journalEntryInput as JournalEntryInput) || new JournalEntryInput();
+	const journalEntryFormData: JournalEntryFormData =
+		(form?.journalEntryFormData as JournalEntryFormData) || new JournalEntryFormData();
 
 	function confirmDelete(e: MouseEvent) {
 		if (!confirm('Are you sure you want to delete this journal entry?')) {
@@ -23,7 +23,7 @@
 <div class="grid grid-cols-1">
 	<div>
 		<h2>New Journal Entry</h2>
-		<JournalEntryForm {journalEntryInput} />
+		<JournalEntryForm {journalEntryFormData} />
 	</div>
 </div>
 
