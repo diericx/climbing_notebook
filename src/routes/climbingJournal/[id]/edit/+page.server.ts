@@ -1,9 +1,10 @@
 import type { Actions } from "./$types";
-import { error, fail } from '@sveltejs/kit';
+import { error, fail, json } from '@sveltejs/kit';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { JournalEntry } from "@prisma/client";
 import { SERVER_ERROR } from "$lib/helperTypes";
+import { JournalEntryFormData } from "$lib/journalEntry";
 
 export const load: PageServerLoad = async ({ locals, fetch, params, url }) => {
   const { id } = params;

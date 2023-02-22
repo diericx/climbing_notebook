@@ -7,10 +7,13 @@
 
 	export let data: PageData;
 	export let form: ActionData;
+
+	// Either grab form data from the Sveltekit form obj,
+	// or generate a new one from incoming page data
 	const journalEntryFormData: JournalEntryFormData =
-		(form?.journalEntry as JournalEntryFormData) ||
-		(data?.journalEntry as JournalEntryFormData) ||
-		new JournalEntryFormData();
+		(form?.journalEntryFormData as JournalEntryFormData) ||
+		JournalEntryFormData.fromObject(data?.journalEntry);
+
 	let redirectTo = form?.redirectTo || data.redirectTo || '';
 </script>
 

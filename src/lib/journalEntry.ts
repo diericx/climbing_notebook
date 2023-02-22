@@ -6,11 +6,11 @@ export class JournalEntryFormData {
   ) { }
 
   // Create a TrainingEvent from an object 
-  static fromObject(object: JournalEntryFormData): JournalEntryFormData {
+  static fromObject({ date, content, type }): JournalEntryFormData {
     return Object.assign(new JournalEntryFormData(), {
-      date: object.date,
-      content: object.content,
-      type: object.type,
+      date,
+      content,
+      type,
     });
   }
 
