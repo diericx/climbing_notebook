@@ -30,24 +30,23 @@
 	</p>
 	<div class="grid">
 		<div class="relative overflow-x-auto border-2 rounded">
-			<table class="w-full table-auto text-left text-gray-400">
-				<thead class="bg-slate-50">
-					<tr class="border-b-2">
-						<th class="px-6 py-3">Label</th>
-						<th class="px-6 py-3">Type</th>
-						<th class="px-6 py-3">Amount</th>
-						<th class="px-6 py-3">Points</th>
-						<th class="px-6 py-3" />
+			<table>
+				<thead>
+					<tr>
+						<th>Label</th>
+						<th>Type</th>
+						<th>Amount</th>
+						<th>Points</th>
 					</tr>
 				</thead>
-				<tbody class="divide-y text-gray-600">
+				<tbody>
 					{#each data.trainingEvents as item}
 						<tr>
-							<td class="px-6 py-3">{item.label}</td>
-							<td class="px-6 py-3">{item.type}</td>
-							<td class="px-6 py-3">{item.amount} {item.amountUnit}</td>
-							<td class="px-6 py-3">{item.amount * item.pointsPerUnit}</td>
-							<td class="px-6 py-3">
+							<td>{item.label}</td>
+							<td>{item.type}</td>
+							<td>{item.amount} {item.amountUnit}</td>
+							<td>{item.amount * item.pointsPerUnit}</td>
+							<td>
 								<form method="POST" action="?/delete">
 									<input type="hidden" name="id" value={item.id} />
 									<button>delete</button>

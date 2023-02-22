@@ -42,8 +42,23 @@
     @apply px-2 bg-white rounded shadow border-gray-200
   }
 
+  table {
+    @apply w-full table-auto text-left text-gray-400
+  }
+  tbody {
+    @apply divide-y text-gray-600
+  }
+  thead {
+    @apply bg-slate-50
+  }
   th {
-    @apply bg-gray-800 text-gray-200
+    @apply bg-gray-800 text-gray-200 px-6 py-3
+  }
+  tr {
+    @apply border-b-2
+  }
+  td {
+    @apply px-6 py-3
   }
 
   a {

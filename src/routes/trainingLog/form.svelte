@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import type { JournalEntryFormData } from '$lib/journalEntry';
+	import type { ExerciseEventFormData } from '$lib/exerciseEvent';
 	import TabEnabledTextArea from '$lib/components/tabEnabledTextArea.svelte';
 
-	export let journalEntryFormData: JournalEntryFormData;
+	export let exerciseEventFormData: ExerciseEventFormData;
 	// Form action to execute, which may need to be specified if this is
 	// used outside of this route
 	export let action: string = '?/new';
@@ -25,7 +25,6 @@
 </script>
 
 <form method="POST" {action}>
-	<input type="hidden" name="type" value="climbing" />
 	<input type="hidden" name="redirectTo" value={redirectTo} />
 
 	<label for="date">Date</label>
@@ -33,22 +32,46 @@
 	<input type="date" name="date" bind:value={dateString} style="width: 150px" />
 	<br />
 
-	<label for="content">Content</label>
+	<label for="name">Name</label>
+	<br />
+	<input
+		name="name"
+		placeholder="Pull-Ups 3x7"
+		bind:value={exerciseEventFormData.name}
+		style="width: 150px"
+	/>
+	<br />
+
+	<label for="weight">Weight</label>
+	<br />
+	<input
+		type="number"
+		name="weight"
+		style="width: 150px"
+		bind:value={exerciseEventFormData.weight}
+	/>
+	<br />
+
+	<label for="difficulty">Difficulty</label>
+	<br />
+	<input
+		type="number"
+		name="difficulty"
+		style="width: 150px"
+		bind:value={exerciseEventFormData.difficulty}
+	/>
+	<br />
+
+	<label for="notes">Notes</label>
 	<br />
 	<TabEnabledTextArea
-		name="content"
+		name="notes"
 		cols="40"
-		rows="10"
-		class="w-full"
-		placeholder="Climbing
-- max bouldering session
-- white C+ in back
-	- get high left foot before bumping left hand
-Injuries
-- Left ring finger pain (3) in A2 pulley
-- Right shoulder pain mid session, went away by end"
-		bind:value={journalEntryFormData.content}
+		rows="3"
+		placeholder=""
+		bind:value={exerciseEventFormData.notes}
 	/>
+	<br />
 
 	<br />
 
