@@ -52,19 +52,30 @@ model JournalEntry {
   @@map("journal_entry")
 }
 
+model Profile {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @map("created_at")
+  goals     String
+  ownerId   Int      @unique @map("owner_id")
+  owner     User     @relation(fields: [ownerId], references: [id])
+
+  @@map("profile")
+}
+
 model User {
   id       Int    @id @default(autoincrement())
   username String @unique
   email    String @unique
 
   // Prisma Required
-  provider_id     String          @unique
+  provider_id     String  @unique
   hashed_password String?
-  // session         Session[]
-  TrainingEvent   TrainingEvent[]
-  Session         Session[]
-  JournalEntry    JournalEntry[]
-  ExerciseEvents  ExerciseEvent[]
+
+  TrainingEvent  TrainingEvent[]
+  Session        Session[]
+  JournalEntry   JournalEntry[]
+  ExerciseEvents ExerciseEvent[]
+  Profile        Profile?
 
   @@map("user")
 }

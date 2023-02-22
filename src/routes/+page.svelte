@@ -1,4 +1,22 @@
+<script lang="ts">
+	import type { PageData } from './$types';
+	import { getUser } from '@lucia-auth/sveltekit/client';
+
+	export let data: PageData;
+	const user = getUser();
+</script>
+
 <br />
+
+{#if data.profile}
+	<h1 class="inline">Your Goals</h1>
+	<a href={`/profile/${$user?.userId}/edit?redirectTo=/`}>Edit</a>
+
+	<hr />
+	<div class="whitespace-pre bg-white w-full px-1 py-3 rounded ">
+		{data.profile.goals}
+	</div>
+{/if}
 
 <h1>Welcome to the Climbing Notebook</h1>
 <hr />

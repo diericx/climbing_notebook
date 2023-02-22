@@ -2,8 +2,9 @@ import { json, error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { auth } from "$lib/server/lucia";
 import { isUsernameValid, isPasswordValid, isEmailValid } from "$lib/user";
-import { Prisma } from "@prisma/client";
+import { Prisma, type Profile } from "@prisma/client";
 import { LuciaError } from "lucia-auth";
+import { prisma } from "$lib/prisma";
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   const { username, password, email } = await request.json();
@@ -40,6 +41,22 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       })
     }
 
+    // Catch UNKNOWN errors and return 500
+    console.error(e);
+    throw error(500, {
+      message: "An error occured on our end. Please try again later."
+    })
+  }
+
+  try {
+    await prisma.profile.create({
+      data: {
+        goals: "",
+        ownerId: Number(user?.userId),
+        createdAt: new Date(),
+      },
+    }) as Profile;
+  } catch (e) {
     // Catch UNKNOWN errors and return 500
     console.error(e);
     throw error(500, {
