@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { TrainingProgramDayFormData, type TrainingProgramFormData } from '$lib/trainingProgram';
+	import { type TrainingProgramFormData } from '$lib/trainingProgram';
 	import TabEnabledTextArea from '$lib/components/tabEnabledTextArea.svelte';
 	import ExerciseEventForm from '../trainingLog/minimalInlineForm.svelte';
 	import { ExerciseEventFormData } from '$lib/exerciseEvent';

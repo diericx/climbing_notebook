@@ -46,7 +46,7 @@ export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }
         name: input.name,
         ownerId: Number(user?.userId),
         days: {
-          create: Array(7).map((_, i) => {
+          create: Array.apply(null, Array(7)).map((_, i) => {
             return {
               assignedBy: Number(user?.userId),
               dayOfTheWeek: i,
