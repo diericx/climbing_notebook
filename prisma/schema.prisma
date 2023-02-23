@@ -34,10 +34,39 @@ model ExerciseEvent {
   difficulty Int
   notes      String
 
-  ownerId Int  @map("owner_id")
-  owner   User @relation(fields: [ownerId], references: [id])
+  ownerId              Int                 @map("owner_id")
+  owner                User                @relation(fields: [ownerId], references: [id])
+  trainingProgramDay   TrainingProgramDay? @relation(fields: [trainingProgramDayId], references: [id])
+  trainingProgramDayId Int?
 
   @@map("exercise_event")
+}
+
+model TrainingProgramDay {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @map("created_at")
+  assignedBy Int      @map("assigned_by")
+
+  dayOfTheWeek Int
+  description  String
+
+  trainingProgramId Int             @map("training_program_id")
+  trainingProgram   TrainingProgram @relation(fields: [trainingProgramId], references: [id])
+  exercises         ExerciseEvent[]
+
+  @@map("training_program_day")
+}
+
+model TrainingProgram {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @map("created_at")
+  name      String
+
+  ownerId Int                  @map("owner_id")
+  owner   User                 @relation(fields: [ownerId], references: [id])
+  days    TrainingProgramDay[]
+
+  @@map("training_program")
 }
 
 model JournalEntry {
@@ -71,11 +100,12 @@ model User {
   provider_id     String  @unique
   hashed_password String?
 
-  TrainingEvent  TrainingEvent[]
-  Session        Session[]
-  JournalEntry   JournalEntry[]
-  ExerciseEvents ExerciseEvent[]
-  Profile        Profile?
+  TrainingEvent   TrainingEvent[]
+  Session         Session[]
+  JournalEntry    JournalEntry[]
+  ExerciseEvents  ExerciseEvent[]
+  Profile         Profile?
+  TrainingProgram TrainingProgram[]
 
   @@map("user")
 }
