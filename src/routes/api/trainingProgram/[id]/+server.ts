@@ -3,32 +3,39 @@ import type { RequestHandler } from "../$types";
 import { SERVER_ERROR } from "$lib/helperTypes";
 import { protectedEndpoint } from "$lib/auth";
 import { prisma } from "$lib/prisma";
-import type { ExerciseEvent } from "@prisma/client";
+import type { TrainingProgram } from "@prisma/client";
 import { ExerciseEventFormData } from "$lib/exerciseEvent";
+import { TrainingProgramFormData } from "$lib/trainingProgram";
 
 export const GET: RequestHandler = protectedEndpoint(async ({ locals, params }) => {
   const { user } = locals;
   const { id } = params;
 
-  // Fetch exercise events
-  let exerciseEvent: ExerciseEvent;
+  let trainingProgram: TrainingProgram;
   try {
-    let exerciseEvents = await prisma.exerciseEvent.findMany({
+    let trainingPrograms = await prisma.trainingProgram.findMany({
       where: {
         ownerId: Number(user?.userId),
         id: Number(id),
+      },
+      include: {
+        days: {
+          include: {
+            exercises: true,
+          }
+        }
       }
-    }) as ExerciseEvent[];
-    if (exerciseEvents.length == 0) {
-      throw error(404, { message: "Exercise event not found." })
+    }) as TrainingProgram[];
+    if (trainingPrograms.length == 0) {
+      return json({ message: "Training program not found." }, { status: 404 })
     }
-    exerciseEvent = exerciseEvents[0]
+    trainingProgram = trainingPrograms[0]
   } catch (e) {
     console.error(e);
     throw error(500, { message: SERVER_ERROR })
   }
 
-  return json({ exerciseEvent }, { status: 200 });
+  return json({ trainingProgram }, { status: 200 });
 });
 
 export const DELETE: RequestHandler = protectedEndpoint(async ({ locals, params }) => {
@@ -41,7 +48,7 @@ export const DELETE: RequestHandler = protectedEndpoint(async ({ locals, params 
   }
 
   try {
-    await prisma.exerciseEvent.deleteMany({
+    await prisma.trainingProgram.deleteMany({
       where: {
         id: Number(id),
         ownerId: Number(user?.userId),
@@ -52,7 +59,7 @@ export const DELETE: RequestHandler = protectedEndpoint(async ({ locals, params 
     throw error(500, { message: SERVER_ERROR })
   }
 
-  return json({}, { status: 200 });
+  return json({ message: "Successfuly deleted" }, { status: 200 });
 });
 
 export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request, url, params }) => {
@@ -66,25 +73,17 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
   }
 
   // Get form data
-  let input = ExerciseEventFormData.fromObject(data)
-  let { isValid, message } = input.validate()
-  if (!isValid) {
-    throw error(401, { message })
-  }
+  let input = TrainingProgramFormData.fromObject(data)
 
   let result
   try {
-    result = await prisma.exerciseEvent.updateMany({
-      data: {
-        date: new Date(Date.parse(input.date)),
-        name: input.name,
-        weight: input.weight,
-        difficulty: input.difficulty,
-        notes: input.notes
-      },
+    result = await prisma.trainingProgram.updateMany({
       where: {
         id: Number(id),
         ownerId: Number(user?.userId),
+      },
+      data: {
+        name: input.name,
       },
     });
   } catch (e) {
@@ -93,9 +92,9 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
   }
 
   if (result.count == 0) {
-    throw error(404, { message: "Journal entry not found" })
+    throw error(404, { message: "Training program not found" })
   }
 
-  return json({ message: "Training event was updated succesfully" }, { status: 200 })
+  return json({ message: "Training program was updated succesfully" }, { status: 200 })
 });
 

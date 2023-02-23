@@ -36,7 +36,7 @@ model ExerciseEvent {
 
   ownerId              Int                 @map("owner_id")
   owner                User                @relation(fields: [ownerId], references: [id])
-  trainingProgramDay   TrainingProgramDay? @relation(fields: [trainingProgramDayId], references: [id])
+  trainingProgramDay   TrainingProgramDay? @relation(fields: [trainingProgramDayId], references: [id], onDelete: Cascade)
   trainingProgramDayId Int?
 
   @@map("exercise_event")
@@ -51,7 +51,7 @@ model TrainingProgramDay {
   description  String
 
   trainingProgramId Int             @map("training_program_id")
-  trainingProgram   TrainingProgram @relation(fields: [trainingProgramId], references: [id])
+  trainingProgram   TrainingProgram @relation(fields: [trainingProgramId], references: [id], onDelete: Cascade)
   exercises         ExerciseEvent[]
 
   @@map("training_program_day")
