@@ -28,7 +28,6 @@ export const actions: Actions = {
     const formData = await request.formData();
     const formDataAsObj = Object.fromEntries(formData.entries());
 
-    console.log(formData)
     const response = await fetch("/api/trainingProgram", {
       method: "POST",
       body: JSON.stringify(formDataAsObj),

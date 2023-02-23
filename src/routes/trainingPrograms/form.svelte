@@ -20,12 +20,6 @@
 		'Saturday',
 		'Sunday'
 	];
-
-	function addExercise(e, d: TrainingProgramDayFormData, i) {
-		e.preventDefault();
-		d.exercises = [...d.exercises, new ExerciseEventFormData()];
-		trainingProgramFormData.days = [...trainingProgramFormData.days];
-	}
 </script>
 
 <form method="POST" {action}>
@@ -40,35 +34,6 @@
 		style="min-width: 300px"
 	/>
 	<br />
-	<br />
-
-	{#each trainingProgramFormData.days as day, i}
-		<div class="pb-8">
-			<h2>
-				<b>{daysOfTheWeek[i]}</b>
-			</h2>
-
-			<div class="pl-3">
-				<label for="description">Description</label>
-				<br />
-				<input
-					name="description"
-					placeholder="Rest Day"
-					bind:value={day.description}
-					style="min-width: 300px"
-				/>
-
-				<h3>Exercises</h3>
-				<hr />
-
-				<br />
-				{#each day.exercises as exercise, j}
-					<ExerciseEventForm exerciseEventFormData={exercise} inline={true} />
-				{/each}
-				<button on:click={(e) => addExercise(e, day, i)}>Add Exercise</button>
-			</div>
-		</div>
-	{/each}
 
 	<button class="bg-green-300 hover:bg-green-400 text-white font-bold px-2 rounded">Submit</button>
 </form>
