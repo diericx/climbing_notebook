@@ -26,6 +26,11 @@
 
 <form method="POST" {action}>
 	<input type="hidden" name="redirectTo" value={redirectTo} />
+	<input
+		type="hidden"
+		name="trainingProgramDayId"
+		value={exerciseEventFormData.trainingProgramDayId}
+	/>
 
 	<div class="flex grid-cols-3">
 		<div>
@@ -61,4 +66,5 @@
 			/>
 		</div>
 	</div>
+	<button class="bg-green-300 hover:bg-green-400 text-white font-bold px-2 rounded">Submit</button>
 </form>

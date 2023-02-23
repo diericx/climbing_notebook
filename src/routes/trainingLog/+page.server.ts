@@ -41,6 +41,11 @@ export const actions: Actions = {
         exerciseEventFormData: formDataAsObj
       })
     }
+
+    if (formDataAsObj.redirectTo && formDataAsObj.redirectTo != "") {
+      throw redirect(303, formDataAsObj.redirectTo)
+    }
+
     return data;
   },
 

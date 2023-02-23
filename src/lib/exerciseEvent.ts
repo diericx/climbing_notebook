@@ -28,7 +28,7 @@ export class ExerciseEventFormData {
       }
     }
     // Validate date string
-    if (isNaN(Date.parse(this.date))) {
+    if (this.date && isNaN(Date.parse(this.date))) {
       return {
         isValid: false,
         message: "Invalid date"

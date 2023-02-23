@@ -24,7 +24,6 @@ export const load: PageServerLoad = async ({ locals, fetch, params, url }) => {
 
   const data = await response.json();
   const trainingProgram: TrainingProgramFormData = data.trainingProgram;
-  console.log(trainingProgram)
 
   return {
     trainingProgram,

@@ -16,7 +16,7 @@
 <br />
 
 <div>
-	<h2>Training Programs</h2>
+	<h1>Training Programs</h1>
 	<hr />
 	<br />
 
