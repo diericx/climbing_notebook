@@ -12,7 +12,7 @@ datasource db {
 
 model TrainingEvent {
   id            Int      @id @default(autoincrement())
-  createdAt     DateTime @map("created_at")
+  createdAt     DateTime @default(now()) @map("created_at")
   date          DateTime
   label         String
   amount        Int
@@ -27,12 +27,12 @@ model TrainingEvent {
 
 model ExerciseEvent {
   id         Int      @id @default(autoincrement())
-  createdAt  DateTime @map("created_at")
-  date       DateTime
+  createdAt  DateTime @default(now()) @map("created_at")
+  date       DateTime @default(now())
   name       String
-  weight     Int
-  difficulty Int
-  notes      String
+  weight     Int      @default(0)
+  difficulty Int      @default(0)
+  notes      String   @default("")
 
   ownerId              Int                 @map("owner_id")
   owner                User                @relation(fields: [ownerId], references: [id])
@@ -44,7 +44,7 @@ model ExerciseEvent {
 
 model TrainingProgramDay {
   id         Int      @id @default(autoincrement())
-  createdAt  DateTime @map("created_at")
+  createdAt  DateTime @default(now()) @map("created_at")
   assignedBy Int      @map("assigned_by")
 
   dayOfTheWeek Int
@@ -59,7 +59,7 @@ model TrainingProgramDay {
 
 model TrainingProgram {
   id        Int      @id @default(autoincrement())
-  createdAt DateTime @map("created_at")
+  createdAt DateTime @default(now()) @map("created_at")
   name      String
 
   ownerId Int                  @map("owner_id")
@@ -71,7 +71,7 @@ model TrainingProgram {
 
 model JournalEntry {
   id        Int      @id @default(autoincrement())
-  createdAt DateTime @map("created_at")
+  createdAt DateTime @default(now()) @map("created_at")
   date      DateTime
   type      String
   content   String
@@ -83,7 +83,7 @@ model JournalEntry {
 
 model Profile {
   id        Int      @id @default(autoincrement())
-  createdAt DateTime @map("created_at")
+  createdAt DateTime @default(now()) @map("created_at")
   goals     String
   ownerId   Int      @unique @map("owner_id")
   owner     User     @relation(fields: [ownerId], references: [id])
@@ -92,9 +92,10 @@ model Profile {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  username String @unique
-  email    String @unique
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  username  String   @unique
+  email     String   @unique
 
   // Prisma Required
   provider_id     String  @unique
