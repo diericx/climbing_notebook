@@ -1,8 +1,8 @@
 import type { Actions } from "./$types";
 import { fail, redirect } from '@sveltejs/kit';
-import type { PageLoad } from "../$types";
+import type { PageServerLoad } from "../$types";
 
-export const load: PageLoad = ({ url }) => {
+export const load: PageServerLoad = ({ url }) => {
   return {
     redirectTo: url.searchParams.get("redirectTo")
   }

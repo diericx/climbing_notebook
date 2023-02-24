@@ -1,19 +1,11 @@
 <script lang="ts">
-	import type { PageData, ActionData } from './$types';
-
 	import TrainingProgramForm from '../form.svelte';
 	import { TrainingProgramFormData } from '$lib/trainingProgram';
+	import type { ActionData } from '../$types';
 
-	export let data: PageData;
 	export let form: ActionData;
 	const trainingProgramFormData: TrainingProgramFormData =
 		(form?.journalEntryFormData as TrainingProgramFormData) || new TrainingProgramFormData();
-
-	function confirmDelete(e: MouseEvent) {
-		if (!confirm('Are you sure you want to delete this exercise?')) {
-			e.preventDefault();
-		}
-	}
 </script>
 
 {#if form?.message}<p class="error">{form?.message}</p>{/if}

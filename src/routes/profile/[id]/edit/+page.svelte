@@ -4,7 +4,6 @@
 
 	import ProfileForm from '../../form.svelte';
 	import { ProfileFormData } from '$lib/profile';
-	import { redirect } from '@sveltejs/kit';
 
 	export let data: PageData;
 	export let form: ActionData;

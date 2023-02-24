@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PageData, ActionData } from './$types';
+	import type { PageData } from './$types';
 	import { page } from '$app/stores';
 	import { ExerciseEventFormData } from '$lib/exerciseEvent';
 	import ExerciseEventForm from '../../exerciseEvent/minimalInlineForm.svelte';

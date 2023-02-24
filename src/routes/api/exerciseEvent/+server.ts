@@ -1,5 +1,5 @@
-import { error, json } from "@sveltejs/kit";
-import type { RequestHandler } from "./$types";
+import { json } from "@sveltejs/kit";
+import type { RequestHandler } from '@sveltejs/kit';
 import { ExerciseEventFormData } from "$lib/exerciseEvent";
 import type { ExerciseEvent } from "@prisma/client";
 import { SERVER_ERROR } from "$lib/helperTypes";

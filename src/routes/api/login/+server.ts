@@ -1,6 +1,6 @@
-import { json, error } from "@sveltejs/kit";
+import { json } from "@sveltejs/kit";
 import { auth } from "$lib/server/lucia";
-import type { RequestHandler } from "./$types";
+import type { RequestHandler } from '@sveltejs/kit';
 import { isPasswordValid, isUsernameValid } from "$lib/user";
 import { LuciaError } from "lucia-auth";
 import { SERVER_ERROR } from "$lib/helperTypes";

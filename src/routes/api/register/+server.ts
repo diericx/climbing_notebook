@@ -1,5 +1,5 @@
-import { json, error } from "@sveltejs/kit";
-import type { RequestHandler } from "./$types";
+import { json } from "@sveltejs/kit";
+import type { RequestHandler } from '@sveltejs/kit';
 import { auth } from "$lib/server/lucia";
 import { isUsernameValid, isPasswordValid, isEmailValid } from "$lib/user";
 import { Prisma, type Profile } from "@prisma/client";

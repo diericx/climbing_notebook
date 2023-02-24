@@ -1,5 +1,5 @@
-import { error, json } from "@sveltejs/kit";
-import type { RequestHandler } from "../$types";
+import { json } from "@sveltejs/kit";
+import type { RequestHandler } from '@sveltejs/kit';
 import { SERVER_ERROR } from "$lib/helperTypes";
 import { protectedEndpoint } from "$lib/auth";
 import { JournalEntryFormData } from "$lib/journalEntry";

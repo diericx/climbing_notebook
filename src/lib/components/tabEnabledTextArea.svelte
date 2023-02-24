@@ -1,5 +1,10 @@
 <script lang="ts">
-	export let cols, rows, name, placeholder, value, style;
+	export let cols,
+		rows,
+		name,
+		placeholder,
+		value,
+		style = '';
 	let className;
 	export { className as class };
 

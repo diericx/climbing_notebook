@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import type { JournalEntryFormData } from '$lib/journalEntry';
 	import TabEnabledTextArea from '$lib/components/tabEnabledTextArea.svelte';
 	import dayjs from 'dayjs';
