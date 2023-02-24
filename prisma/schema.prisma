@@ -12,7 +12,7 @@ datasource db {
 
 model TrainingEvent {
   id            Int      @id @default(autoincrement())
-  createdAt     DateTime @map("created_at")
+  createdAt     DateTime @default(now()) @map("created_at")
   date          DateTime
   label         String
   amount        Int
@@ -27,22 +27,51 @@ model TrainingEvent {
 
 model ExerciseEvent {
   id         Int      @id @default(autoincrement())
-  createdAt  DateTime @map("created_at")
-  date       DateTime
+  createdAt  DateTime @default(now()) @map("created_at")
+  date       DateTime @default(now())
   name       String
-  weight     Int
-  difficulty Int
-  notes      String
+  weight     Int      @default(0)
+  difficulty Int      @default(0)
+  notes      String   @default("")
 
-  ownerId Int  @map("owner_id")
-  owner   User @relation(fields: [ownerId], references: [id])
+  ownerId              Int                 @map("owner_id")
+  owner                User                @relation(fields: [ownerId], references: [id])
+  trainingProgramDay   TrainingProgramDay? @relation(fields: [trainingProgramDayId], references: [id], onDelete: Cascade)
+  trainingProgramDayId Int?
 
   @@map("exercise_event")
 }
 
+model TrainingProgramDay {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now()) @map("created_at")
+  assignedBy Int      @map("assigned_by")
+
+  dayOfTheWeek Int
+  description  String
+
+  trainingProgramId Int             @map("training_program_id")
+  trainingProgram   TrainingProgram @relation(fields: [trainingProgramId], references: [id], onDelete: Cascade)
+  exercises         ExerciseEvent[]
+
+  @@map("training_program_day")
+}
+
+model TrainingProgram {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  name      String
+
+  ownerId Int                  @map("owner_id")
+  owner   User                 @relation(fields: [ownerId], references: [id])
+  days    TrainingProgramDay[]
+
+  @@map("training_program")
+}
+
 model JournalEntry {
   id        Int      @id @default(autoincrement())
-  createdAt DateTime @map("created_at")
+  createdAt DateTime @default(now()) @map("created_at")
   date      DateTime
   type      String
   content   String
@@ -54,7 +83,7 @@ model JournalEntry {
 
 model Profile {
   id        Int      @id @default(autoincrement())
-  createdAt DateTime @map("created_at")
+  createdAt DateTime @default(now()) @map("created_at")
   goals     String
   ownerId   Int      @unique @map("owner_id")
   owner     User     @relation(fields: [ownerId], references: [id])
@@ -63,19 +92,21 @@ model Profile {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  username String @unique
-  email    String @unique
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  username  String   @unique
+  email     String   @unique
 
   // Prisma Required
   provider_id     String  @unique
   hashed_password String?
 
-  TrainingEvent  TrainingEvent[]
-  Session        Session[]
-  JournalEntry   JournalEntry[]
-  ExerciseEvents ExerciseEvent[]
-  Profile        Profile?
+  TrainingEvent   TrainingEvent[]
+  Session         Session[]
+  JournalEntry    JournalEntry[]
+  ExerciseEvents  ExerciseEvent[]
+  Profile         Profile?
+  TrainingProgram TrainingProgram[]
 
   @@map("user")
 }

@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let cols, rows, name, placeholder, value;
+	export let cols, rows, name, placeholder, value, style;
 	let className;
 	export { className as class };
 
@@ -19,4 +19,13 @@
 	};
 </script>
 
-<textarea {name} {cols} {rows} {placeholder} class={className} bind:value on:keydown={onKeyDown} />
+<textarea
+	{name}
+	{cols}
+	{rows}
+	{placeholder}
+	class={className}
+	{style}
+	bind:value
+	on:keydown={onKeyDown}
+/>

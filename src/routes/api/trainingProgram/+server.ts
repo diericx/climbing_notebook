@@ -1,7 +1,7 @@
 import { error, json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
-import { ExerciseEventFormData } from "$lib/exerciseEvent";
-import type { ExerciseEvent } from "@prisma/client";
+import { TrainingProgramFormData } from "$lib/trainingProgram";
+import type { ExerciseEvent, TrainingProgram } from "@prisma/client";
 import { SERVER_ERROR } from "$lib/helperTypes";
 import { protectedEndpoint } from "$lib/auth";
 import { prisma } from "$lib/prisma";
@@ -9,15 +9,15 @@ import { prisma } from "$lib/prisma";
 export const GET: RequestHandler = protectedEndpoint(async ({ locals }) => {
   const { user } = locals;
 
-  // Fetch exercise events
-  let exercises: ExerciseEvent[];
+  // Fetch 
+  let trainingPrograms: TrainingProgram[];
   try {
-    exercises = await prisma.exerciseEvent.findMany({
+    trainingPrograms = await prisma.trainingProgram.findMany({
       where: {
         ownerId: Number(user?.userId),
       },
       orderBy: {
-        date: 'desc',
+        createdAt: 'desc',
       },
     }) as ExerciseEvent[];
   } catch (e) {
@@ -25,7 +25,7 @@ export const GET: RequestHandler = protectedEndpoint(async ({ locals }) => {
     throw error(500, { message: SERVER_ERROR })
   }
 
-  return json({ exercises }, { status: 200 });
+  return json({ trainingPrograms }, { status: 200 });
 });
 
 export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }) => {
@@ -33,31 +33,34 @@ export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }
   const { user } = locals;
 
   // Validate input fields
-  let input = ExerciseEventFormData.fromObject(data)
+  let input = TrainingProgramFormData.fromObject(data)
   let inputValidation = input.validate()
   if (!inputValidation.isValid) {
     throw error(403, { message: inputValidation.message })
   }
 
-  let exerciseEvent: ExerciseEvent;
+  let trainingProgram: TrainingProgram;
   try {
-    exerciseEvent = await prisma.exerciseEvent.create({
+    trainingProgram = await prisma.trainingProgram.create({
       data: {
-        name: input.name ? input.name : undefined,
-        difficulty: input.difficulty ? input.difficulty : undefined,
-        weight: input.weight ? input.weight : undefined,
-        notes: input.notes ? input.notes : undefined,
-        date: input.date ? new Date(Date.parse(input.date)) : undefined,
+        name: input.name,
         ownerId: Number(user?.userId),
-        trainingProgramDayId: Number(input.trainingProgramDayId),
-        createdAt: new Date(),
-      },
-    }) as ExerciseEvent;
+        days: {
+          create: Array.apply(null, Array(7)).map((_, i) => {
+            return {
+              assignedBy: Number(user?.userId),
+              dayOfTheWeek: i,
+              description: "",
+            }
+          })
+        },
+      }
+    }) as TrainingProgram;
   } catch (e) {
     console.error(e)
     throw error(500, { message: SERVER_ERROR });
   }
 
-  return json({ exerciseEvent }, { status: 201 });
+  return json({ trainingProgram }, { status: 201 });
 });
 

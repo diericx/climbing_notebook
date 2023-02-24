@@ -5,16 +5,18 @@ export class ExerciseEventFormData {
     public weight: number = 0,
     public difficulty: number = 0,
     public notes: string = "",
+    public trainingProgramDayId?: number
   ) { }
 
   // Create an Exercise from an object 
-  static fromObject({ date, name, weight, difficulty, notes }): ExerciseEventFormData {
+  static fromObject({ date, name, weight, difficulty, notes, trainingProgramDayId }): ExerciseEventFormData {
     return Object.assign(new ExerciseEventFormData(), {
       date,
       name,
       weight: Number(weight),
       difficulty: Number(difficulty),
       notes,
+      trainingProgramDayId
     });
   }
 
@@ -26,7 +28,7 @@ export class ExerciseEventFormData {
       }
     }
     // Validate date string
-    if (isNaN(Date.parse(this.date))) {
+    if (this.date && isNaN(Date.parse(this.date))) {
       return {
         isValid: false,
         message: "Invalid date"

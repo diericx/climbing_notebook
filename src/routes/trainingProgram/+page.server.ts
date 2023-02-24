@@ -2,7 +2,7 @@ import type { Actions } from "./$types";
 import { fail } from '@sveltejs/kit';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import type { ExerciseEvent } from "@prisma/client";
+import type { TrainingProgram } from "@prisma/client";
 
 export const load: PageServerLoad = async ({ locals, fetch }) => {
   // Protected page
@@ -11,14 +11,14 @@ export const load: PageServerLoad = async ({ locals, fetch }) => {
     throw redirect(302, "/login?redirectTo=climbingJournal")
   }
 
-  const response = await fetch("/api/exerciseEvent", {
+  const response = await fetch("/api/trainingProgram", {
     method: "GET",
   })
   const data = await response.json();
-  const exerciseEvents: ExerciseEvent[] = data.exercises;
+  const trainingPrograms: TrainingProgram[] = data.trainingPrograms;
 
   return {
-    exerciseEvents,
+    trainingPrograms,
   };
 }
 
@@ -28,7 +28,7 @@ export const actions: Actions = {
     const formData = await request.formData();
     const formDataAsObj = Object.fromEntries(formData.entries());
 
-    const response = await fetch("/api/exerciseEvent", {
+    const response = await fetch("/api/trainingProgram", {
       method: "POST",
       body: JSON.stringify(formDataAsObj),
     })
@@ -38,14 +38,9 @@ export const actions: Actions = {
     if (!response.ok) {
       return fail(response.status, {
         message: data.message,
-        exerciseEventFormData: formDataAsObj
+        trainingProgramFormData: formDataAsObj
       })
     }
-
-    if (formDataAsObj.redirectTo && formDataAsObj.redirectTo != "") {
-      throw redirect(303, formDataAsObj.redirectTo)
-    }
-
     return data;
   },
 
@@ -53,7 +48,7 @@ export const actions: Actions = {
     const formData = await request.formData();
     const input = Object.fromEntries(formData.entries());
 
-    const response = await fetch(`/api/exerciseEvent/${input.id}`, {
+    const response = await fetch(`/api/trainingProgram/${input.id}`, {
       method: "DELETE",
     })
 
