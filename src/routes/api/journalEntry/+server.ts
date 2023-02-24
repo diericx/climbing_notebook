@@ -22,7 +22,7 @@ export const GET: RequestHandler = protectedEndpoint(async ({ locals }) => {
     }) as JournalEntry[];
   } catch (e) {
     console.error(e);
-    throw error(500, { message: SERVER_ERROR })
+    return json({ message: SERVER_ERROR }, { status: 500 })
   }
 
   return json({ journalEntries }, { status: 200 });
@@ -34,9 +34,9 @@ export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }
 
   // Validate input fields
   let input = JournalEntryFormData.fromObject(data)
-  let inputValidation = input.validate()
-  if (!inputValidation.isValid) {
-    throw error(403, { message: inputValidation.message })
+  let { message, isValid } = input.validate()
+  if (!isValid) {
+    return json({ message }, { status: 401 })
   }
 
   let journalEntry: JournalEntry;
@@ -51,7 +51,7 @@ export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }
     }) as JournalEntry;
   } catch (e) {
     console.error(e)
-    throw error(500, { message: SERVER_ERROR });
+    return json({ message: SERVER_ERROR }, { status: 500 })
   }
 
   return json({ journalEntry }, { status: 201 });

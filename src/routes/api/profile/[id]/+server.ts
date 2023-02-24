@@ -36,14 +36,14 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
 
   // Validate params
   if (!id || isNaN(Number(id))) {
-    throw error(401, { message: "Valid id required" })
+    return json({ message: "Valid id required" }, { status: 401 })
   }
 
   // Get form data
   let input = ProfileFormData.fromObject(data)
   let { isValid, message } = input.validate()
   if (!isValid) {
-    throw error(401, { message })
+    return json({ message }, { status: 401 })
   }
 
   let result
@@ -58,11 +58,11 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
     });
   } catch (e) {
     console.error(e)
-    throw error(500, { message: SERVER_ERROR })
+    return json({ message: SERVER_ERROR }, { status: 500 })
   }
 
   if (result.count == 0) {
-    throw error(404, { message: "Profile not found" })
+    return json({ message: "Profile not found" }, { status: 404 })
   }
 
   return json({ message: "Profile was updated succesfully" }, { status: 200 })

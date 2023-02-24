@@ -20,12 +20,12 @@ export const GET: RequestHandler = protectedEndpoint(async ({ locals, params }) 
       }
     }) as JournalEntry[];
     if (journalEntries.length == 0) {
-      throw error(404, { message: "Journal entry not found." })
+      return json({ message: "Journal entry not found." }, { status: 404 })
     }
     journalEntry = journalEntries[0]
   } catch (e) {
     console.error(e);
-    throw error(500, { message: SERVER_ERROR })
+    return json({ message: SERVER_ERROR }, { status: 500 })
   }
 
   return json({ journalEntry }, { status: 200 });
@@ -37,7 +37,7 @@ export const DELETE: RequestHandler = protectedEndpoint(async ({ locals, params 
 
   // Validate params
   if (!id || isNaN(Number(id))) {
-    throw error(401, { message: "Valid id required" })
+    return json({ message: "Valid id required" }, { status: 401 })
   }
 
   try {
@@ -49,7 +49,7 @@ export const DELETE: RequestHandler = protectedEndpoint(async ({ locals, params 
     });
   } catch (e) {
     console.error(e);
-    throw error(500, { message: SERVER_ERROR })
+    return json({ message: SERVER_ERROR }, { status: 500 })
   }
 
   return json({}, { status: 200 });
@@ -62,14 +62,14 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
 
   // Validate params
   if (!id || isNaN(Number(id))) {
-    throw error(401, { message: "Valid id required" })
+    return json({ message: "Valid id required" }, { status: 401 })
   }
 
   // Get form data
   let input = JournalEntryFormData.fromObject(data)
   let { isValid, message } = input.validate()
   if (!isValid) {
-    throw error(401, { message })
+    return json({ message }, { status: 401 })
   }
 
   let result
@@ -87,11 +87,11 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
     });
   } catch (e) {
     console.error(e)
-    throw error(500, { message: SERVER_ERROR })
+    return json({ message: SERVER_ERROR }, { status: 500 })
   }
 
   if (result.count == 0) {
-    throw error(404, { message: "Journal entry not found" })
+    return json({ message: "Journal entry not found." }, { status: 404 })
   }
 
   return json({ message: "Journal entry was updated succesfully" }, { status: 200 })

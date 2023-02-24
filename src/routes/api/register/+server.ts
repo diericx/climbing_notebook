@@ -5,18 +5,19 @@ import { isUsernameValid, isPasswordValid, isEmailValid } from "$lib/user";
 import { Prisma, type Profile } from "@prisma/client";
 import { LuciaError } from "lucia-auth";
 import { prisma } from "$lib/prisma";
+import { SERVER_ERROR } from "$lib/helperTypes";
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   const { username, password, email } = await request.json();
 
   if (!isUsernameValid(username)) {
-    throw error(401, { message: "Username cannot be empty" });
+    return json({ message: "Username cannot be empty" }, { status: 401 })
   }
   if (!isPasswordValid(password)) {
-    throw error(401, { message: "Password cannot be empty" });
+    return json({ message: "Password cannot be empty" }, { status: 401 })
   }
   if (!isEmailValid(email)) {
-    throw error(401, { message: "Email must be valid" });
+    return json({ message: "Email must be valid" }, { status: 401 })
   }
 
   let user
@@ -36,16 +37,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       e.message?.includes('username')) ||
       (e instanceof LuciaError && e.message === 'AUTH_DUPLICATE_PROVIDER_ID')
     ) {
-      throw error(400, {
-        message: "Username already taken"
-      })
+      return json({ message: "Username already taken" }, { status: 400 })
     }
 
     // Catch UNKNOWN errors and return 500
     console.error(e);
-    throw error(500, {
-      message: "An error occured on our end. Please try again later."
-    })
+    return json({ message: SERVER_ERROR }, { status: 500 })
   }
 
   try {
@@ -59,9 +56,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   } catch (e) {
     // Catch UNKNOWN errors and return 500
     console.error(e);
-    throw error(500, {
-      message: "An error occured on our end. Please try again later."
-    })
+    return json({ message: SERVER_ERROR }, { status: 500 })
   }
 
   const session = await auth.createSession(user.userId);
