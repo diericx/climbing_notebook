@@ -10,7 +10,7 @@ export const DELETE: RequestHandler = protectedEndpoint(async ({ locals, params 
 
   // Validate params
   if (!id || isNaN(Number(id))) {
-    throw error(401, { message: "Valid id required" })
+    return json({ message: "Valid id required" }, { status: 401 })
   }
 
   try {
@@ -22,7 +22,7 @@ export const DELETE: RequestHandler = protectedEndpoint(async ({ locals, params 
     });
   } catch (e) {
     console.error(e);
-    throw error(500, { message: SERVER_ERROR })
+    return json({ message: SERVER_ERROR }, { status: 500 })
   }
 
   return json({}, { status: 200 });

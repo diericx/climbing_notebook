@@ -22,7 +22,7 @@ export const GET: RequestHandler = protectedEndpoint(async ({ locals }) => {
     }) as TrainingEvent[];
   } catch (e) {
     console.error(e);
-    throw error(500, { message: SERVER_ERROR })
+    return json({ message: SERVER_ERROR }, { status: 500 })
   }
 
   return json({ trainingEvents }, { status: 200 });
@@ -34,9 +34,9 @@ export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }
 
   // Validate input fields
   let input = TrainingEventFormData.fromObject(data)
-  let inputValidation = input.validate()
-  if (!inputValidation.isValid) {
-    throw error(403, { message: inputValidation.message })
+  let { isValid, message } = input.validate()
+  if (!isValid) {
+    return json({ message }, { status: 403 })
   }
 
   let trainingEvent: TrainingEvent;
@@ -51,7 +51,7 @@ export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }
     }) as TrainingEvent;
   } catch (e) {
     console.error(e)
-    throw error(500, { message: SERVER_ERROR });
+    return json({ message: SERVER_ERROR }, { status: 500 })
   }
 
   return json({ trainingEvent }, { status: 201 });
@@ -65,7 +65,7 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
   let input = data as TrainingEventFormData;
   let { isValid, message } = input.validate()
   if (!isValid) {
-    throw error(401, { message })
+    return json({ message }, { status: 401 })
   }
 
   try {
@@ -84,7 +84,7 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
       },
     });
   } catch (e) {
-    throw error(500, { message: SERVER_ERROR })
+    return json({ message: SERVER_ERROR }, { status: 500 })
   }
 
   return json({}, { status: 204 })
