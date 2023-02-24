@@ -22,7 +22,7 @@ export const GET: RequestHandler = protectedEndpoint(async ({ locals }) => {
     }) as ExerciseEvent[];
   } catch (e) {
     console.error(e);
-    throw error(500, { message: SERVER_ERROR })
+    return json({ message: SERVER_ERROR }, { status: 500 });
   }
 
   return json({ trainingPrograms }, { status: 200 });
@@ -34,9 +34,9 @@ export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }
 
   // Validate input fields
   let input = TrainingProgramFormData.fromObject(data)
-  let inputValidation = input.validate()
-  if (!inputValidation.isValid) {
-    throw error(403, { message: inputValidation.message })
+  let { isValid, message } = input.validate()
+  if (!isValid) {
+    return json({ message }, { status: 403 });
   }
 
   let trainingProgram: TrainingProgram;
@@ -58,7 +58,7 @@ export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }
     }) as TrainingProgram;
   } catch (e) {
     console.error(e)
-    throw error(500, { message: SERVER_ERROR });
+    return json({ message: SERVER_ERROR }, { status: 500 });
   }
 
   return json({ trainingProgram }, { status: 201 });
