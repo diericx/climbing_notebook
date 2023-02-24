@@ -1,9 +1,9 @@
 export class ExerciseEventFormData {
   constructor(
-    public date: string = "",
+    public date?: string,
     public name: string = "",
     public weight: number = 0,
-    public difficulty: number = 0,
+    public difficulty?: number,
     public notes: string = "",
     public trainingProgramDayId?: number
   ) { }
@@ -14,7 +14,7 @@ export class ExerciseEventFormData {
       date,
       name,
       weight: Number(weight),
-      difficulty: Number(difficulty),
+      difficulty: Number(difficulty) || undefined,
       notes,
       trainingProgramDayId
     });

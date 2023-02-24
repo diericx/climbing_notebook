@@ -20,7 +20,7 @@
 	<hr />
 	<br />
 
-	<a href="/trainingPrograms/new">New Training Program</a>
+	<a href="/trainingProgram/new?redirectTo=/trainingProgram">New Training Program</a>
 
 	<div>
 		<table>
