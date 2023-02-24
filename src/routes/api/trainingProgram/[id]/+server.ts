@@ -22,7 +22,11 @@ export const GET: RequestHandler = protectedEndpoint(async ({ locals, params }) 
         days: {
           include: {
             exercises: true,
-          }
+          },
+          orderBy: {
+            // Note: ui depends on this being sorted in this way
+            dayOfTheWeek: 'asc',
+          },
         }
       }
     }) as TrainingProgram[];

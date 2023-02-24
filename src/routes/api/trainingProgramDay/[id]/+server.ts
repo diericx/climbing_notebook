@@ -18,6 +18,9 @@ export const GET: RequestHandler = protectedEndpoint(async ({ locals, params }) 
         assignedBy: Number(user?.userId),
         id: Number(id),
       },
+      orderBy: {
+        dayOfTheWeek: 'asc',
+      },
     }) as TrainingProgramDay[];
     if (trainingProgramDays.length == 0) {
       return json({ message: "Training program not found." }, { status: 404 })
