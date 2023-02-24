@@ -2,7 +2,7 @@
 	import type { PageData, ActionData } from './$types';
 	import { page } from '$app/stores';
 	import { ExerciseEventFormData } from '$lib/exerciseEvent';
-	import ExerciseEventForm from '../../trainingLog/minimalInlineForm.svelte';
+	import ExerciseEventForm from '../../exerciseEvent/minimalInlineForm.svelte';
 
 	export let data: PageData;
 
@@ -76,7 +76,7 @@
 					</table>
 
 					<ExerciseEventForm
-						action="/trainingLog?/new"
+						action="/exerciseEvent?/new"
 						redirectTo={`/trainingProgram/${$page.params.id}`}
 						exerciseEventFormData={ExerciseEventFormData.fromObject({
 							name: '',

@@ -40,7 +40,7 @@
 								<button formaction="?/delete" on:click={confirmDelete}>Delete</button>
 							</form>
 							<a href="/trainingProgram/{item.id}">Show</a>
-							<a href="/trainingProgram/{item.id}/edit?redirectTo=/trainingLog">Edit</a>
+							<a href="/trainingProgram/{item.id}/edit?redirectTo=/exerciseEvent">Edit</a>
 						</td>
 					</tr>
 				{/each}

@@ -58,7 +58,7 @@
 								<input type="hidden" name="id" value={item.id} />
 								<button formaction="?/delete" on:click={confirmDelete}>Delete</button>
 							</form>
-							<a href="/trainingLog/{item.id}/edit?redirectTo=/trainingLog">Edit</a>
+							<a href="/exerciseEvent/{item.id}/edit?redirectTo=/trainingLog">Edit</a>
 						</td>
 					</tr>
 				{/each}

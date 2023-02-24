@@ -1,25 +1,11 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { type TrainingProgramFormData } from '$lib/trainingProgram';
-	import TabEnabledTextArea from '$lib/components/tabEnabledTextArea.svelte';
-	import ExerciseEventForm from '../trainingLog/minimalInlineForm.svelte';
-	import { ExerciseEventFormData } from '$lib/exerciseEvent';
+	import type { TrainingProgramFormData } from '$lib/trainingProgram';
 
 	export let trainingProgramFormData: TrainingProgramFormData;
 	// Form action to execute, which may need to be specified if this is
 	// used outside of this route
 	export let action: string = '?/new';
 	export let redirectTo: string = '';
-
-	let daysOfTheWeek = [
-		'Monday',
-		'Tuesday',
-		'Wednesday',
-		'Thursday',
-		'Friday',
-		'Saturday',
-		'Sunday'
-	];
 </script>
 
 <form method="POST" {action}>
