@@ -41,7 +41,7 @@
 						<input type="hidden" name="id" value={item.id} />
 						<button formaction="?/delete" on:click={confirmDelete}>Delete</button>
 					</form>
-					<a href="/climbingJournal/{item.id}/edit?redirectTo=/climbingJournal">Edit</a>
+					<a href="/journalEntry/{item.id}/edit?redirectTo=/journalEntry">Edit</a>
 					<p class="whitespace-pre bg-white w-full px-1 py-3">{item.content}</p>
 				</div>
 			</div>

@@ -8,7 +8,7 @@ export const load: PageServerLoad = async ({ locals, fetch }) => {
   // Protected page
   const session = await locals.validate();
   if (!session) {
-    throw redirect(302, "/login?redirectTo=climbingJournal")
+    throw redirect(302, "/login?redirectTo=journalEntry")
   }
 
   const response = await fetch("/api/journalEntry", {
