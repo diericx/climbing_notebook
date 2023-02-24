@@ -43,6 +43,7 @@
 		"@lucia-auth/adapter-prisma": "^0.2.2",
 		"@lucia-auth/sveltekit": "^0.5.2",
 		"@prisma/client": "^4.9.0",
+		"dayjs": "^1.11.7",
 		"lucia-auth": "^0.4.3"
 	}
 }

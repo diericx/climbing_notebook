@@ -8,6 +8,7 @@
 		TrainingEventTemplate
 	} from '$lib/trainingEventTemplate.js';
 	import type { FormEventHandler } from '$lib/helperTypes';
+	import dayjs from 'dayjs';
 
 	export let trainingEventInput: TrainingEventFormData;
 
@@ -18,19 +19,8 @@
 		pointsPerUnitHidden: boolean = false,
 		trainingEventTemplatesHidden: boolean = false;
 
-	let now = new Date(),
-		month,
-		day,
-		year;
-	let dateString = '';
+	let dateString = dayjs(new Date()).format('YYYY-MM-DD');
 	onMount(() => {
-		(month = '' + (now.getMonth() + 1)), (day = '' + now.getDate()), (year = now.getFullYear());
-
-		if (month.length < 2) month = '0' + month;
-		if (day.length < 2) day = '0' + day;
-
-		dateString = [year, month, day].join('-');
-
 		// If we are going to use preset training events, apply the values of the first one
 		// immediately after loading.
 		if (!trainingEventTemplatesHidden) {

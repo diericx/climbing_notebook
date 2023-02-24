@@ -43,13 +43,9 @@ export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }
   try {
     exerciseEvent = await prisma.exerciseEvent.create({
       data: {
-        name: input.name ? input.name : undefined,
-        difficulty: input.difficulty ? input.difficulty : undefined,
-        weight: input.weight ? input.weight : undefined,
-        notes: input.notes ? input.notes : undefined,
+        ...input,
         date: input.date ? new Date(Date.parse(input.date)) : undefined,
-        ownerId: Number(user?.userId),
-        trainingProgramDayId: Number(input.trainingProgramDayId),
+        ownerId: Number(user.userId),
         createdAt: new Date(),
       },
     }) as ExerciseEvent;

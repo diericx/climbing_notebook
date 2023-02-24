@@ -26,13 +26,13 @@ model TrainingEvent {
 }
 
 model ExerciseEvent {
-  id         Int      @id @default(autoincrement())
-  createdAt  DateTime @default(now()) @map("created_at")
-  date       DateTime @default(now())
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now()) @map("created_at")
+  date       DateTime?
   name       String
-  weight     Int      @default(0)
-  difficulty Int      @default(0)
-  notes      String   @default("")
+  weight     Int       @default(0)
+  difficulty Int?
+  notes      String    @default("")
 
   ownerId              Int                 @map("owner_id")
   owner                User                @relation(fields: [ownerId], references: [id])

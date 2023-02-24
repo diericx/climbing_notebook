@@ -23,6 +23,6 @@
 <div class="grid grid-cols-1">
 	<div>
 		<h1>New Training Program</h1>
-		<TrainingProgramForm action="/trainingPrograms?/new" {trainingProgramFormData} />
+		<TrainingProgramForm action="/trainingProgram?/new" {trainingProgramFormData} />
 	</div>
 </div>

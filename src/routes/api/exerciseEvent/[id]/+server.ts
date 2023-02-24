@@ -76,11 +76,10 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
   try {
     result = await prisma.exerciseEvent.updateMany({
       data: {
-        date: new Date(Date.parse(input.date)),
-        name: input.name,
-        weight: input.weight,
-        difficulty: input.difficulty,
-        notes: input.notes
+        ...input,
+        date: input.date ? new Date(Date.parse(input.date)) : undefined,
+        ownerId: Number(user.userId),
+        createdAt: new Date(),
       },
       where: {
         id: Number(id),
