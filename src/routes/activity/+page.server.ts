@@ -1,16 +1,10 @@
 import type { Actions } from "./$types";
 import { fail } from '@sveltejs/kit';
-import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { TrainingEvent } from "@prisma/client";
+import { protectedPage } from "$lib/auth";
 
-export const load: PageServerLoad = async ({ locals, fetch }) => {
-  // Protected page
-  const session = await locals.validate();
-  if (!session) {
-    throw redirect(302, "/login?redirectTo=activity")
-  }
-
+export const load = protectedPage((async () => {
   const response = await fetch("/api/trainingEvent", {
     method: "GET",
   })
@@ -36,7 +30,7 @@ export const load: PageServerLoad = async ({ locals, fetch }) => {
     recoveryPoints,
     trainingEvents,
   };
-}
+}) satisfies PageServerLoad)
 
 export const actions: Actions = {
   new: async ({ request, fetch }) => {

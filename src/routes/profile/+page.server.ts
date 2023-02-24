@@ -1,12 +1,10 @@
+import { protectedPage } from '$lib/auth';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import type { Profile } from '@prisma/client';
-import { error, redirect } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals, fetch }) => {
-  const session = await locals.validate();
-  if (!session) throw redirect(302, '/login');
-
+export const load = protectedPage((async ({ fetch, session }) => {
   const response = await fetch(`/api/profile/${session.userId}`, {
     method: "GET",
   })
@@ -21,4 +19,4 @@ export const load: PageServerLoad = async ({ locals, fetch }) => {
   const profile: Profile = data.profile;
 
   return { profile };
-};
+}) satisfies PageServerLoad)

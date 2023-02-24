@@ -2,18 +2,13 @@ import type { Actions } from "./$types";
 import { error, fail } from '@sveltejs/kit';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import type { ExerciseEvent, TrainingProgramDay } from "@prisma/client";
+import type { TrainingProgramDay } from "@prisma/client";
 import { SERVER_ERROR } from "$lib/helperTypes";
+import { protectedPage } from "$lib/auth";
 
-export const load: PageServerLoad = async ({ locals, fetch, params, url }) => {
+export const load = protectedPage((async ({ fetch, params, url }) => {
   const { id } = params;
   const redirectTo = url.searchParams.get("redirectTo");
-
-  // Protected page
-  const session = await locals.validate();
-  if (!session) {
-    throw redirect(302, `/login?redirectTo=trainingProgramDay/${id}/edit`)
-  }
 
   const response = await fetch(`/api/trainingProgramDay/${id}`, {
     method: "GET",
@@ -29,7 +24,7 @@ export const load: PageServerLoad = async ({ locals, fetch, params, url }) => {
     trainingProgramDay,
     redirectTo
   };
-}
+}) satisfies PageServerLoad)
 
 export const actions: Actions = {
   edit: async ({ request, fetch, params }) => {

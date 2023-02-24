@@ -1,5 +1,5 @@
 import type { RequestHandler } from "./$types";
-import { error } from "@sveltejs/kit";
+import { error, redirect } from "@sveltejs/kit";
 
 export const protectedEndpoint = (next) => {
   return async function(context) {
@@ -15,5 +15,18 @@ export const protectedEndpoint = (next) => {
 
     return await next(context)
   } satisfies RequestHandler;
+}
+
+export const protectedPage = (next) => {
+  return async function(props) {
+    let { locals, url } = props;
+    // Protected page
+    const session = await locals.validate();
+    if (!session) {
+      throw redirect(302, `/login?redirectTo=${url.pathname}`)
+    }
+
+    return await next({ ...props, session })
+  }
 }
 

@@ -3,8 +3,8 @@ import type { Profile } from "@prisma/client";
 import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from './$types';
 
-// it so that it gets served as a static asset in production
 export const load: PageServerLoad = async ({ locals, fetch }) => {
+  // Unprotected page, session may not exist
   const session = await locals.validate();
 
   if (!session || session.state != 'active') {

@@ -4,16 +4,11 @@ import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from "../$types";
 import { SERVER_ERROR } from "$lib/helperTypes";
 import type { Profile } from "@prisma/client";
+import { protectedPage } from "$lib/auth";
 
-export const load: PageServerLoad = async ({ params, locals, fetch, url }) => {
+export const load = protectedPage((async ({ fetch, url, params }) => {
   const { id } = params;
   const redirectTo = url.searchParams.get("redirectTo");
-
-  // Protected page
-  const session = await locals.validate();
-  if (!session) {
-    throw redirect(302, `/login?redirectTo=profile/${id}`)
-  }
 
   const response = await fetch(`/api/profile/${id}`, {
     method: "GET",
@@ -32,11 +27,12 @@ export const load: PageServerLoad = async ({ params, locals, fetch, url }) => {
     profile,
     redirectTo
   };
-}
+}) satisfies PageServerLoad)
 
 export const actions: Actions = {
   edit: async ({ request, fetch, locals }) => {
-    let { user, session } = await locals.validateUser();
+    // Protected page, safe to assume user exists
+    let { user } = await locals.validateUser();
 
     // Get journalEntry from form data
     const formData = await request.formData();
