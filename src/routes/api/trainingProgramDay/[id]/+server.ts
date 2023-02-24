@@ -4,7 +4,6 @@ import { SERVER_ERROR } from "$lib/helperTypes";
 import { protectedEndpoint } from "$lib/auth";
 import { prisma } from "$lib/prisma";
 import type { TrainingProgramDay } from "@prisma/client";
-import { ExerciseEventFormData } from "$lib/exerciseEvent";
 import { TrainingProgramDayFormData } from "$lib/trainingProgramDay";
 
 export const GET: RequestHandler = protectedEndpoint(async ({ locals, params }) => {
@@ -28,7 +27,7 @@ export const GET: RequestHandler = protectedEndpoint(async ({ locals, params }) 
     trainingProgramDay = trainingProgramDays[0]
   } catch (e) {
     console.error(e);
-    throw error(500, { message: SERVER_ERROR })
+    return json({ message: SERVER_ERROR }, { status: 500 })
   }
 
   return json({ trainingProgramDay }, { status: 200 });
@@ -41,7 +40,7 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
 
   // Validate params
   if (!id || isNaN(Number(id))) {
-    throw error(401, { message: "Valid id required" })
+    return json({ message: "Valid id required" }, { status: 401 })
   }
 
   // Get form data
@@ -60,11 +59,11 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
     });
   } catch (e) {
     console.error(e)
-    throw error(500, { message: SERVER_ERROR })
+    return json({ message: SERVER_ERROR }, { status: 500 })
   }
 
   if (result.count == 0) {
-    throw error(404, { message: "Training program day not found" })
+    return json({ message: "Training program day not fouind" }, { status: 404 })
   }
 
   return json({ message: "Training program day was updated succesfully" }, { status: 200 })
