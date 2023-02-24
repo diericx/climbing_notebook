@@ -7,7 +7,8 @@
 	export let data: PageData;
 	export let form: ActionData;
 	const exerciseEventFormData: ExerciseEventFormData =
-		(form?.journalEntryFormData as ExerciseEventFormData) || new ExerciseEventFormData();
+		(form?.journalEntryFormData as ExerciseEventFormData) ||
+		new ExerciseEventFormData({ difficulty: 0 });
 
 	function confirmDelete(e: MouseEvent) {
 		if (!confirm('Are you sure you want to delete this exercise?')) {
