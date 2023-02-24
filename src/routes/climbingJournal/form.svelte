@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import type { JournalEntryFormData } from '$lib/journalEntry';
 	import TabEnabledTextArea from '$lib/components/tabEnabledTextArea.svelte';
+	import dayjs from 'dayjs';
 
 	export let journalEntryFormData: JournalEntryFormData;
 	// Form action to execute, which may need to be specified if this is
@@ -9,19 +10,7 @@
 	export let action: string = '?/new';
 	export let redirectTo: string = '';
 
-	let now = new Date(),
-		month,
-		day,
-		year;
-	let dateString = '';
-	onMount(() => {
-		(month = '' + (now.getMonth() + 1)), (day = '' + now.getDate()), (year = now.getFullYear());
-
-		if (month.length < 2) month = '0' + month;
-		if (day.length < 2) day = '0' + day;
-
-		dateString = [year, month, day].join('-');
-	});
+	let dateString = dayjs(new Date()).format('YYYY-MM-DD');
 </script>
 
 <form method="POST" {action}>
