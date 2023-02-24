@@ -3,15 +3,16 @@ import { auth } from "$lib/server/lucia";
 import type { RequestHandler } from "./$types";
 import { isPasswordValid, isUsernameValid } from "$lib/user";
 import { LuciaError } from "lucia-auth";
+import { SERVER_ERROR } from "$lib/helperTypes";
 
 export const POST: RequestHandler = async ({ request }) => {
   const { username, password } = await request.json();
 
   if (!isUsernameValid(username)) {
-    throw error(401, { message: "Username cannot be empty" });
+    return json({ message: "Username cannot be empty" }, { status: 401 })
   }
   if (!isPasswordValid(password)) {
-    throw error(401, { message: "Password cannot be empty" });
+    return json({ message: "Password cannot be empty" }, { status: 401 })
   }
 
   let user
@@ -26,16 +27,12 @@ export const POST: RequestHandler = async ({ request }) => {
         e.message === 'AUTH_INVALID_PASSWORD' ||
         e.message === 'AUTH_INVALID_SESSION_ID')
     ) {
-      throw error(400, {
-        message: 'Incorrect username or password.'
-      });
+      return json({ message: "Incorrect username or password." }, { status: 400 })
     }
 
     // Print and communicate unknown errors
     console.error(e);
-    throw error(500, {
-      message: "An error occured on our end. Please try again later."
-    })
+    return json({ message: SERVER_ERROR }, { status: 500 })
   }
 
   const session = await auth.createSession(user.userId);
