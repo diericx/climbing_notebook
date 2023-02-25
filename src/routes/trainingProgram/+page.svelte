@@ -5,12 +5,6 @@
 	export let data: PageData;
 	export let form: ActionData;
 
-	function confirmDelete(e: MouseEvent) {
-		if (!confirm('Are you sure you want to delete this exercise?')) {
-			e.preventDefault();
-		}
-	}
-
 	const { profile, trainingPrograms } = data;
 </script>
 

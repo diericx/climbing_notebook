@@ -60,6 +60,10 @@ export const actions: Actions = {
       })
     }
 
+    if (input.redirectTo && input.redirectTo != "") {
+      throw redirect(303, input.redirectTo)
+    }
+
     return data;
   }
 }

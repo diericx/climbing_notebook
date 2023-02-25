@@ -3,8 +3,11 @@
 	import { page } from '$app/stores';
 	import { ExerciseEventFormData } from '$lib/exerciseEvent';
 	import ExerciseEventForm from '../../exerciseEvent/minimalInlineForm.svelte';
+	import { confirmDelete } from '$lib/utils';
 
 	export let data: PageData;
+
+	const { trainingProgram } = data;
 
 	let daysOfTheWeek = [
 		'Monday',
@@ -21,11 +24,11 @@
 
 <div class="grid grid-cols-1">
 	<h1>
-		{data.trainingProgram.name}
+		{trainingProgram.name}
 	</h1>
 
 	<div>
-		{#each data.trainingProgram.days as day, i}
+		{#each trainingProgram.days as day, i}
 			<div class="pb-4">
 				<h2>
 					<b>{daysOfTheWeek[i]}</b>
@@ -59,10 +62,11 @@
 								<th>Name</th>
 								<th>Weight</th>
 								<th>Notes</th>
+								<th />
 							</tr>
 						</thead>
 						<tbody>
-							{#each day.exercises as exercise, j}
+							{#each day.exercises as exercise}
 								<tr>
 									<td>
 										{exercise.name}
@@ -72,6 +76,17 @@
 									</td>
 									<td>
 										{exercise.notes}
+									</td>
+									<td>
+										<form method="POST" action={`/exerciseEvent?/delete`} class="inline">
+											<input type="hidden" name="id" value={exercise.id} />
+											<input
+												type="hidden"
+												name="redirectTo"
+												value={`/trainingProgram/${trainingProgram.id}`}
+											/>
+											<button on:click={confirmDelete}>Delete</button>
+										</form>
 									</td>
 								</tr>
 							{/each}
