@@ -3,17 +3,12 @@
 
 	import JournalEntryForm from './form.svelte';
 	import { JournalEntryFormData } from '$lib/journalEntry';
+	import { confirmDelete } from '$lib/utils';
 
 	export let data: PageData;
 	export let form: ActionData;
 	const journalEntryFormData: JournalEntryFormData =
 		(form?.journalEntryFormData as JournalEntryFormData) || new JournalEntryFormData();
-
-	function confirmDelete(e: MouseEvent) {
-		if (!confirm('Are you sure you want to delete this journal entry?')) {
-			e.preventDefault();
-		}
-	}
 </script>
 
 {#if form?.message}<p class="error">{form?.message}</p>{/if}

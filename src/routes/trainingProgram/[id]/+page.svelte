@@ -1,11 +1,12 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { ActionData, PageData } from './$types';
 	import { page } from '$app/stores';
 	import { ExerciseEventFormData } from '$lib/exerciseEvent';
 	import ExerciseEventForm from '../../exerciseEvent/minimalInlineForm.svelte';
 	import { confirmDelete } from '$lib/utils';
 
 	export let data: PageData;
+	export let form: ActionData;
 
 	const { trainingProgram } = data;
 
@@ -19,6 +20,8 @@
 		'Sunday'
 	];
 </script>
+
+{#if form?.message}<p class="error">{form?.message}</p>{/if}
 
 <br />
 

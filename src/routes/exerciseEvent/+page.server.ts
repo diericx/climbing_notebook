@@ -1,9 +1,10 @@
 import type { Actions } from "./$types";
-import { fail } from '@sveltejs/kit';
+import { fail, type Action } from '@sveltejs/kit';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { ExerciseEvent } from "@prisma/client";
 import { protectedPage } from "$lib/auth";
+import { enhancedFormAction } from "$lib/utils";
 
 export const load = protectedPage((async ({ fetch }) => {
   const response = await fetch("/api/exerciseEvent", {
@@ -17,15 +18,12 @@ export const load = protectedPage((async ({ fetch }) => {
   };
 }) satisfies PageServerLoad)
 
-export const actions: Actions = {
-  new: async ({ request, fetch }) => {
-    // Get exercise from form data
-    const formData = await request.formData();
-    const formDataAsObj = Object.fromEntries(formData.entries());
 
+export const actions: Actions = {
+  new: enhancedFormAction((async ({ fetch, formData }) => {
     const response = await fetch("/api/exerciseEvent", {
       method: "POST",
-      body: JSON.stringify(formDataAsObj),
+      body: JSON.stringify(formData),
     })
 
     const data = await response.json();
@@ -33,19 +31,14 @@ export const actions: Actions = {
     if (!response.ok) {
       return fail(response.status, {
         message: data.message,
-        exerciseEventFormData: formDataAsObj
+        exerciseEventFormData: formData
       })
     }
 
-    if (formDataAsObj.redirectTo && formDataAsObj.redirectTo != "") {
-      throw redirect(303, formDataAsObj.redirectTo)
-    }
-
     return data;
-  },
+  }) satisfies Action),
 
-  delete: async ({ request, fetch }) => {
-    const formData = await request.formData();
+  delete: enhancedFormAction((async ({ fetch, formData }) => {
     const input = Object.fromEntries(formData.entries());
 
     const response = await fetch(`/api/exerciseEvent/${input.id}`, {
@@ -60,10 +53,6 @@ export const actions: Actions = {
       })
     }
 
-    if (input.redirectTo && input.redirectTo != "") {
-      throw redirect(303, input.redirectTo)
-    }
-
     return data;
-  }
+  }) satisfies Action)
 }

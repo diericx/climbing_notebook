@@ -3,18 +3,13 @@
 
 	import ExerciseEventForm from './form.svelte';
 	import { ExerciseEventFormData } from '$lib/exerciseEvent';
+	import { confirmDelete } from '$lib/utils';
 
 	export let data: PageData;
 	export let form: ActionData;
 	const exerciseEventFormData: ExerciseEventFormData =
 		(form?.journalEntryFormData as ExerciseEventFormData) ||
 		new ExerciseEventFormData({ difficulty: 0 });
-
-	function confirmDelete(e: MouseEvent) {
-		if (!confirm('Are you sure you want to delete this exercise?')) {
-			e.preventDefault();
-		}
-	}
 </script>
 
 {#if form?.message}<p class="error">{form?.message}</p>{/if}
@@ -61,7 +56,7 @@
 								<input type="hidden" name="id" value={item.id} />
 								<button formaction="?/delete" on:click={confirmDelete}>Delete</button>
 							</form>
-							<a href="/exerciseEvent/{item.id}/edit?redirectTo=/trainingLog">Edit</a>
+							<a href="/exerciseEvent/{item.id}/edit?redirectTo=/exerciseEvent">Edit</a>
 						</td>
 					</tr>
 				{/each}

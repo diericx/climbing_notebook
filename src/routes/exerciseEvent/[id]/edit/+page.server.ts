@@ -1,10 +1,10 @@
 import type { Actions } from "./$types";
-import { error, fail } from '@sveltejs/kit';
-import { redirect } from '@sveltejs/kit';
+import { error, fail, type Action } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { ExerciseEvent } from "@prisma/client";
 import { SERVER_ERROR } from "$lib/helperTypes";
 import { protectedPage } from "$lib/auth";
+import { enhancedFormAction } from "$lib/utils";
 
 export const load = protectedPage((async ({ fetch, params, url }) => {
   const { id } = params;
@@ -27,17 +27,13 @@ export const load = protectedPage((async ({ fetch, params, url }) => {
 }) satisfies PageServerLoad)
 
 export const actions: Actions = {
-  edit: async ({ request, fetch, params }) => {
+  edit: enhancedFormAction((async (context) => {
+    let { fetch, params, formData } = context
     const { id } = params;
-
-    // Get exerciseEvent from form data
-    const formData = await request.formData();
-    const input = Object.fromEntries(formData.entries());
-    const { redirectTo } = input;
 
     const response = await fetch(`/api/exerciseEvent/${id}`, {
       method: "PATCH",
-      body: JSON.stringify(input),
+      body: JSON.stringify(formData),
     })
 
     const data = await response.json();
@@ -45,15 +41,10 @@ export const actions: Actions = {
     if (!response.ok) {
       return fail(response.status, {
         message: data.message,
-        exerciseEventFormData: input,
-        redirectTo
+        exerciseEventFormData: formData,
       })
     }
 
-    if (redirectTo && redirectTo != "") {
-      throw redirect(303, redirectTo)
-    }
-
     return data;
-  },
+  }) satisfies Action),
 }

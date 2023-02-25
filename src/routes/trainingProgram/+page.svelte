@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { confirmDelete } from '$lib/utils';
 	import type { PageData, ActionData } from './$types';
 	import WeeklyCalendar from './weekCalendar.svelte';
 
