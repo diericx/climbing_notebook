@@ -21,17 +21,20 @@
 
 <br />
 
+<h1>Training Log</h1>
+<br />
+
 <div class="grid grid-cols-1">
 	<div>
-		<h2>New</h2>
+		<h2>New Entry</h2>
+		<hr />
 		<ExerciseEventForm {exerciseEventFormData} />
 	</div>
 </div>
 
 <div class="pt-8">
-	<h2>Training Exercise Log</h2>
+	<h2>Log</h2>
 	<hr />
-	<br />
 
 	<div>
 		<table>

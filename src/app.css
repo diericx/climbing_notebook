@@ -65,6 +65,10 @@
     @apply text-blue-500
   }
 
+  hr {
+    @apply pb-2
+  }
+
   .server-message {
     @apply w-full rounded py-2 pl-3 mt-3
   }

@@ -17,10 +17,13 @@
 	];
 </script>
 
+<br />
+
 <div class="grid grid-cols-1">
 	<h1>
 		{data.trainingProgram.name}
 	</h1>
+
 	<div>
 		{#each data.trainingProgram.days as day, i}
 			<div class="pb-4">
@@ -30,7 +33,11 @@
 
 				<div class="pl-3">
 					<div class="pb-3">
-						<h3>Description</h3>
+						<h3 class="inline">Description</h3>
+						<a
+							href={`/trainingProgramDay/${day.id}/edit?redirectTo=/trainingProgram/${$page.params.id}`}
+							class="inline">Edit</a
+						>
 						<hr class="pb-2" />
 
 						{#if day.description}
@@ -40,10 +47,6 @@
 						{/if}
 
 						<br />
-						<a
-							href={`/trainingProgramDay/${day.id}/edit?redirectTo=/trainingProgram/${$page.params.id}`}
-							>Edit</a
-						>
 					</div>
 
 					<h3>Exercises</h3>

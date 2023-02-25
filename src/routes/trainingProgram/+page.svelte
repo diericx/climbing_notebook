@@ -17,7 +17,6 @@
 
 <div>
 	<h1>Training Programs</h1>
-	<hr />
 	<br />
 
 	<a href="/trainingProgram/new?redirectTo=/trainingProgram">New Training Program</a>

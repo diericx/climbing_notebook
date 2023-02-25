@@ -20,17 +20,21 @@
 
 <br />
 
+<h1>Journal</h1>
+
+<br />
+
 <div class="grid grid-cols-1">
 	<div>
 		<h2>New Journal Entry</h2>
+		<hr />
 		<JournalEntryForm {journalEntryFormData} />
 	</div>
 </div>
 
 <div class="pt-8">
-	<h2>Climbing Journal Entries</h2>
+	<h2>Your Entries</h2>
 	<hr />
-	<br />
 
 	<div>
 		{#each data.journalEntries as item}
