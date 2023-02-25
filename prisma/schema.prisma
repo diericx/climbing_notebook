@@ -65,6 +65,7 @@ model TrainingProgram {
   ownerId Int                  @map("owner_id")
   owner   User                 @relation(fields: [ownerId], references: [id])
   days    TrainingProgramDay[]
+  Profile Profile[]
 
   @@map("training_program")
 }
@@ -82,11 +83,13 @@ model JournalEntry {
 }
 
 model Profile {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now()) @map("created_at")
-  goals     String
-  ownerId   Int      @unique @map("owner_id")
-  owner     User     @relation(fields: [ownerId], references: [id])
+  id                      Int              @id @default(autoincrement())
+  createdAt               DateTime         @default(now()) @map("created_at")
+  goals                   String
+  ownerId                 Int              @unique @map("owner_id")
+  owner                   User             @relation(fields: [ownerId], references: [id])
+  activeTrainingProgramId Int?             @map("active_training_program_id")
+  activeTrainingProgram   TrainingProgram? @relation(fields: [activeTrainingProgramId], references: [id])
 
   @@map("profile")
 }

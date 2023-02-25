@@ -15,6 +15,21 @@ export const GET: RequestHandler = protectedEndpoint(async ({ locals, params }) 
     let profiles = await prisma.profile.findMany({
       where: {
         ownerId: Number(id),
+      },
+      include: {
+        activeTrainingProgram: {
+          include: {
+            days: {
+              include: {
+                exercises: true,
+              },
+              orderBy: {
+                // Note: ui depends on this being sorted in this way
+                dayOfTheWeek: 'asc',
+              },
+            }
+          }
+        }
       }
     }) as Profile[];
     if (profiles.length == 0) {
@@ -50,11 +65,11 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
   try {
     result = await prisma.profile.updateMany({
       data: {
-        goals: input.goals
+        ...input,
       },
       where: {
         ownerId: Number(user?.userId),
-      },
+      }
     });
   } catch (e) {
     console.error(e)

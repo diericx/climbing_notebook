@@ -69,6 +69,16 @@
     @apply pb-2
   }
 
+  .link-button { 
+    @apply shadow-none py-0 px-0 text-blue-500 bg-white;
+    background: none;
+    border: none;
+    cursor: pointer; 
+  }
+  .link-button:hover { 
+    text-decoration: underline;
+  }
+
   .server-message {
     @apply w-full rounded py-2 pl-3 mt-3
   }

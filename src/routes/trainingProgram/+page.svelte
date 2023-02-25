@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData, ActionData } from './$types';
+	import WeeklyCalendar from './weekCalendar.svelte';
 
 	export let data: PageData;
 	export let form: ActionData;
@@ -9,6 +10,8 @@
 			e.preventDefault();
 		}
 	}
+
+	const { profile, trainingPrograms } = data;
 </script>
 
 {#if form?.message}<p class="error">{form?.message}</p>{/if}
@@ -19,31 +22,53 @@
 	<h1>Training Programs</h1>
 	<br />
 
-	<a href="/trainingProgram/new?redirectTo=/trainingProgram">New Training Program</a>
+	<div class="pb-4">
+		<h2>Your Active Training Program</h2>
+		<hr />
+		{#if profile.activeTrainingProgram}
+			<WeeklyCalendar trainingProgram={profile.activeTrainingProgram} />
+		{:else}
+			<span class="text-gray-400"
+				><i>You do not have an active training program! Create and set one below.</i></span
+			>
+		{/if}
+	</div>
 
 	<div>
-		<table>
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th />
-				</tr>
-			</thead>
-			<tbody>
-				{#each data.trainingPrograms as item}
+		<h2>Your Training Programs</h2>
+		<hr />
+		<a href="/trainingProgram/new?redirectTo=/trainingProgram">New Training Program</a>
+
+		<div>
+			<table>
+				<thead>
 					<tr>
-						<td>{item.name}</td>
-						<td>
-							<form method="POST" action="?/delete" class="inline">
-								<input type="hidden" name="id" value={item.id} />
-								<button formaction="?/delete" on:click={confirmDelete}>Delete</button>
-							</form>
-							<a href="/trainingProgram/{item.id}">Show</a>
-							<a href="/trainingProgram/{item.id}/edit?redirectTo=/exerciseEvent">Edit</a>
-						</td>
+						<th>Name</th>
+						<th>Is Active</th>
+						<th />
 					</tr>
-				{/each}
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					{#each trainingPrograms as program}
+						<tr>
+							<td>{program.name}</td>
+							<td>{profile.activeTrainingProgramId == program.id}</td>
+							<td class="float-right">
+								<form method="POST" action={`profile/${profile.ownerId}/edit?/edit`} class="inline">
+									<input type="hidden" name="redirectTo" value={'/trainingProgram'} />
+									<input type="hidden" name="activeTrainingProgramId" value={program.id} />
+									<input type="submit" class="link-button" value="Set As Active" />
+								</form>
+								<a href="/trainingProgram/{program.id}" class="button">Edit</a>
+								<form method="POST" action="?/delete" class="inline">
+									<input type="hidden" name="id" value={program.id} />
+									<button formaction="?/delete" on:click={confirmDelete}>Delete</button>
+								</form>
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
 	</div>
 </div>

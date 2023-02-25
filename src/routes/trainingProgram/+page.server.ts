@@ -1,18 +1,28 @@
 import type { Actions } from "./$types";
-import { fail } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import type { TrainingProgram } from "@prisma/client";
+import type { Profile, TrainingProgram } from "@prisma/client";
 import { protectedPage } from "$lib/auth";
 
-export const load = protectedPage((async ({ fetch }) => {
-  const response = await fetch("/api/trainingProgram", {
+export const load = protectedPage((async ({ fetch, session }) => {
+  let response = await fetch("/api/trainingProgram", {
     method: "GET",
   })
-  const data = await response.json();
+  let data = await response.json();
   const trainingPrograms: TrainingProgram[] = data.trainingPrograms;
+
+  response = await fetch(`/api/profile/${session.userId}`, {
+    method: "GET",
+  })
+  data = await response.json();
+  if (!response.ok) {
+    throw error(response.status, data.message)
+  }
+  const profile: Profile = data.profile
 
   return {
     trainingPrograms,
+    profile,
   }
 }) satisfies PageServerLoad)
 
