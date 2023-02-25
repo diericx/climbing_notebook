@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { TrainingProgram } from '@prisma/client';
+	import type { TrainingProgramWithDays } from '$lib/trainingProgram';
 
-	export let trainingProgram: TrainingProgram;
+	export let trainingProgram: TrainingProgramWithDays;
 
 	let daysOfTheWeek = ['M', 'T', 'W', 'TH', 'F', 'S', 'S'];
 </script>
