@@ -23,7 +23,7 @@
 - Be able to do 3 pull ups unassisted (shoulder recovery)
 
 3 months
-- Climb 7a bouler
+- Climb 7a boulder
 - 5 pull ups @ 10kg
 - 15mm hang @ 20kg
 
