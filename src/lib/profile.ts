@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client";
+
 export class ProfileFormData {
   constructor(
     public goals: string = "",
@@ -20,3 +22,17 @@ export class ProfileFormData {
   }
 }
 
+const profileWithActiveTrainingProgram = Prisma.validator<Prisma.ProfileArgs>()({
+  include: {
+    activeTrainingProgram: {
+      include: {
+        days: {
+          include: {
+            exercises: true,
+          },
+        }
+      }
+    }
+  },
+})
+export type ProfileWithActiveTrainingProgram = Prisma.ProfileGetPayload<typeof profileWithActiveTrainingProgram>

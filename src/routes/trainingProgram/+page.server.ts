@@ -15,9 +15,6 @@ export const load = protectedPage((async ({ fetch, session }) => {
     method: "GET",
   })
   data = await response.json();
-  if (!response.ok) {
-    throw error(response.status, data.message)
-  }
   const profile: Profile = data.profile
 
   return {

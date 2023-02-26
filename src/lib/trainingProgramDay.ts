@@ -1,5 +1,5 @@
 import type { ExerciseEventFormData } from "./exerciseEvent";
-import type { PrismaClient, TrainingProgram } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
 export class TrainingProgramDayFormData {
   constructor(
@@ -19,3 +19,10 @@ export class TrainingProgramDayFormData {
     });
   }
 }
+
+const trainingProgramDayWithExercises = Prisma.validator<Prisma.TrainingProgramDayArgs>()({
+  include: {
+    exercises: true,
+  },
+})
+export type TrainingProgramDayWithExercises = Prisma.TrainingProgramDayGetPayload<typeof trainingProgramDayWithExercises>
