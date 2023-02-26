@@ -18,7 +18,7 @@
 		<a href={`/profile/${$user?.userId}/edit?redirectTo=/`}>Edit</a>
 
 		<hr />
-		<div class="whitespace-pre bg-white w-full px-1 py-3 rounded ">
+		<div class="whitespace-pre border bg-white w-full px-1 py-3">
 			{profile.goals}
 		</div>
 	</div>

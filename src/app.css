@@ -43,7 +43,7 @@
   }
 
   table {
-    @apply w-full table-auto text-left text-gray-400
+    @apply w-full table-auto text-left text-gray-400 shadow
   }
   tbody {
     @apply divide-y text-gray-600 border-b
