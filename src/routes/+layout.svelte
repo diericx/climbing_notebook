@@ -1,11 +1,27 @@
 <script lang="ts">
+	import NProgress from 'nprogress';
 	import Header from './Header.svelte';
 	import './styles.css';
 	import '../app.css';
-	import { page } from '$app/stores';
+	import { page, navigating } from '$app/stores';
 	import { handleSession } from '@lucia-auth/sveltekit/client';
+	// NProgress css
+	import 'nprogress/nprogress.css';
+
+	NProgress.configure({
+		minimum: 0.16
+	});
 
 	handleSession(page);
+
+	$: {
+		if ($navigating) {
+			NProgress.start();
+		}
+		if (!$navigating) {
+			NProgress.done();
+		}
+	}
 </script>
 
 <div class="app">
