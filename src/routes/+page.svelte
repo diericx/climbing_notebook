@@ -1,20 +1,32 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { getUser } from '@lucia-auth/sveltekit/client';
+	import TrainingProgramWeeklyCalendar from './trainingProgram/weekCalendar.svelte';
+	import type { ProfileWithActiveTrainingProgram } from '$lib/profile';
 
 	export let data: PageData;
 	const user = getUser();
+	const profile: ProfileWithActiveTrainingProgram =
+		data.profile as ProfileWithActiveTrainingProgram;
 </script>
 
 <br />
 
-{#if data.profile}
-	<h1 class="inline">Your Goals</h1>
-	<a href={`/profile/${$user?.userId}/edit?redirectTo=/`}>Edit</a>
+{#if profile}
+	<div class="pb-4">
+		<h1 class="inline">Your Goals</h1>
+		<a href={`/profile/${$user?.userId}/edit?redirectTo=/`}>Edit</a>
 
-	<hr />
-	<div class="whitespace-pre bg-white w-full px-1 py-3 rounded ">
-		{data.profile.goals}
+		<hr />
+		<div class="whitespace-pre bg-white w-full px-1 py-3 rounded ">
+			{profile.goals}
+		</div>
+	</div>
+
+	<div class="pb-4">
+		<h1>Your Training Program Schedule</h1>
+		<hr />
+		<TrainingProgramWeeklyCalendar trainingProgram={profile.activeTrainingProgram} />
 	</div>
 {/if}
 
