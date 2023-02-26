@@ -56,16 +56,11 @@
 					<div class="mx-3 flex flex-col md:flex-row">
 						<a class="px-3 text-gray-600 hover:text-blue-400 text-left" href="/"> Home </a>
 						<a class="px-3 text-gray-600 hover:text-blue-400" href="/journalEntry">Journal</a>
-						<a class="px-3 text-gray-600 hover:text-blue-400" href="/exerciseEvent">Training Log</a>
-						<a class="px-3 text-gray-600 hover:text-blue-400" href="/trainingProgram"
-							>Training Programs</a
-						>
+						<a class="px-3 text-gray-600 hover:text-blue-400" href="/exerciseEvent">Log</a>
+						<a class="px-3 text-gray-600 hover:text-blue-400" href="/trainingProgram">Programs</a>
 					</div>
 
-					<div
-						class="w-fit-content flex flex-col md:flex-none md:flex-row"
-						style="min-width: 130px"
-					>
+					<div class="ml-0 w-fit-content flex flex-col md:flex-none md:flex-row">
 						{#if $user}
 							<a
 								href="/profile"
