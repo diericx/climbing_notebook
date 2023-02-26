@@ -4,8 +4,8 @@
 	import ExerciseEventForm from './form.svelte';
 	import { ExerciseEventFormData } from '$lib/exerciseEvent';
 	import type { ExerciseEvent } from '@prisma/client';
-	import type { ProfileWithActiveTrainingProgram } from '$lib/profile';
-	import type { TrainingProgramDayWithExercises } from '$lib/trainingProgramDay';
+	import type { ProfileWithActiveTrainingProgram } from '$lib/prisma';
+	import type { TrainingProgramDayWithExercises } from '$lib/prisma';
 	import dayjs from 'dayjs';
 	import ExerciseEventsList from './list.svelte';
 

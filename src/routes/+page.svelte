@@ -2,7 +2,7 @@
 	import type { PageData } from './$types';
 	import { getUser } from '@lucia-auth/sveltekit/client';
 	import TrainingProgramWeeklyCalendar from './trainingProgram/weekCalendar.svelte';
-	import type { ProfileWithActiveTrainingProgram } from '$lib/profile';
+	import type { ProfileWithActiveTrainingProgram } from '$lib/prisma';
 
 	export let data: PageData;
 	const user = getUser();

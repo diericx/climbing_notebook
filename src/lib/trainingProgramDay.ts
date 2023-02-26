@@ -20,9 +20,3 @@ export class TrainingProgramDayFormData {
   }
 }
 
-const trainingProgramDayWithExercises = Prisma.validator<Prisma.TrainingProgramDayArgs>()({
-  include: {
-    exercises: true,
-  },
-})
-export type TrainingProgramDayWithExercises = Prisma.TrainingProgramDayGetPayload<typeof trainingProgramDayWithExercises>

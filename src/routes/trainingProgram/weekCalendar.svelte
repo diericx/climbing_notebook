@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { TrainingProgramWithDays } from '$lib/trainingProgram';
+	import type { TrainingProgramWithDays } from '$lib/prisma';
 
 	export let trainingProgram: TrainingProgramWithDays;
 
