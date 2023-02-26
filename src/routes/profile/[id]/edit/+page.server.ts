@@ -17,6 +17,7 @@ export const load = protectedPage((async ({ fetch, url, params }) => {
     if (response.status == 404) {
       throw error(404, { message: "Profile not found" })
     }
+    console.error(response.status, response.text())
     throw error(500, { message: SERVER_ERROR })
   }
 
@@ -43,16 +44,16 @@ export const actions: Actions = {
       method: "PATCH",
       body: JSON.stringify(input),
     })
-
-    const data = await response.json();
-
     if (!response.ok) {
+      console.error(response.text())
       return fail(response.status, {
-        message: data.message,
+        message: SERVER_ERROR,
         userFormData: input,
         redirectTo
       })
     }
+
+    const data = await response.json();
 
     if (redirectTo && redirectTo != "") {
       throw redirect(303, redirectTo)
