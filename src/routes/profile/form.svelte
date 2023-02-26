@@ -20,7 +20,7 @@
 		rows="15"
 		class="w-full"
 		placeholder="3 weeks
-- Be able to do 3 pull ups un-assisted (shoulder recovery)
+- Be able to do 3 pull ups unassisted (shoulder recovery)
 
 3 months
 - Climb 7a bouler
