@@ -10,9 +10,9 @@
 	<thead>
 		<tr class="align-top">
 			{#each trainingProgram.days as day, i}
-				<th>
+				<th class="p-3">
 					<p>{daysOfTheWeek[i]}</p>
-					<p class="text-gray-400">{day.description}</p>
+					<p class="text-sm text-gray-400">{day.description}</p>
 				</th>
 			{/each}
 		</tr>
