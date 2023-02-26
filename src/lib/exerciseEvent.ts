@@ -41,6 +41,13 @@ export class ExerciseEventFormData {
       }
     }
 
+    if (this.trainingProgramDayId == undefined && this.difficulty == undefined) {
+      return {
+        isValid: false,
+        message: "Difficulty is required"
+      }
+    }
+
     return {
       isValid: true,
       message: "",

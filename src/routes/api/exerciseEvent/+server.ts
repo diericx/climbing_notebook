@@ -15,6 +15,7 @@ export const GET: RequestHandler = protectedEndpoint(async ({ locals }) => {
     exercises = await prisma.exerciseEvent.findMany({
       where: {
         ownerId: Number(user?.userId),
+        trainingProgramDay: null,
       },
       orderBy: {
         date: 'desc',
