@@ -25,7 +25,7 @@
 
 <div class="grid grid-cols-1">
 	<div>
-		<h2>Edit Day</h2>
+		<h1>Edit Training Program Day</h1>
 		<TrainingProgramDayForm action="?/edit" {redirectTo} {trainingProgramDayFormData} />
 	</div>
 </div>

@@ -7,6 +7,7 @@
 	// used outside of this route
 	export let action: string = '?/new';
 	export let redirectTo: string = '';
+	export let submitLabel: string = 'Submit';
 </script>
 
 <form method="POST" {action}>
@@ -51,5 +52,7 @@
 			/>
 		</div>
 	</div>
-	<button class="bg-green-300 hover:bg-green-400 text-white font-bold px-2 rounded">Submit</button>
+	<button class="bg-green-300 hover:bg-green-400 text-white font-bold px-2 rounded"
+		>{submitLabel}</button
+	>
 </form>
