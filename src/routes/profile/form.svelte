@@ -17,9 +17,20 @@
 	<TabEnabledTextArea
 		name="goals"
 		cols="40"
-		rows="10"
+		rows="15"
 		class="w-full"
-		placeholder=""
+		placeholder="3 weeks
+- Be able to do 3 pull ups un-assisted (shoulder recovery)
+
+3 months
+- Climb 7a bouler
+- 5 pull ups @ 10kg
+- 15mm hang @ 20kg
+
+1 year
+- Climb 7b
+- 5 pull ups @ 15kg
+- 10mm hang @ 10kg"
 		bind:value={profileFormData.goals}
 	/>
 

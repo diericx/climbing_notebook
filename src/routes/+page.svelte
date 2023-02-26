@@ -18,9 +18,17 @@
 		<a href={`/profile/${$user?.userId}/edit?redirectTo=/`}>Edit</a>
 
 		<hr />
-		<div class="whitespace-pre border bg-white w-full px-1 py-3">
-			{profile.goals}
-		</div>
+		{#if !profile.goals || profile.goals == ''}
+			<p class="text-gray-400">
+				You don't have any goals yet! Edit your <a
+					href={`/profile/${$user?.userId}/edit?redirectTo=/`}>Profile</a
+				> set some.
+			</p>
+		{:else}
+			<div class="whitespace-pre border bg-white w-full px-1 py-3">
+				{profile.goals}
+			</div>
+		{/if}
 	</div>
 
 	<div class="pb-4">
