@@ -39,6 +39,24 @@ export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }
     return json({ message }, { status: 401 })
   }
 
+  // Fetch journalEntries with same day to validate this is a new date
+  let journalEntries: JournalEntry[];
+  try {
+    journalEntries = await prisma.journalEntry.findMany({
+      where: {
+        ownerId: Number(user?.userId),
+        date: new Date(Date.parse(input.date)),
+      },
+    }) as JournalEntry[];
+  } catch (e) {
+    console.error(e);
+    return json({ message: SERVER_ERROR }, { status: 500 })
+  }
+  if (journalEntries.length > 0) {
+    return json({ message: "Journal entry for that date already exists" }, { status: 401 })
+  }
+
+  // Add new journal entry
   let journalEntry: JournalEntry;
   try {
     journalEntry = await prisma.journalEntry.create({
