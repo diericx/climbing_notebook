@@ -16,11 +16,13 @@
 	<input type="hidden" name="redirectTo" value={redirectTo} />
 
 	<div class="grid grid-cols-1 sm:grid-cols-4">
-		<div>
-			<label for="date">Date</label>
-			<br />
-			<input type="date" name="date" bind:value={dateString} style="width: 150px" />
-		</div>
+		{#if !exerciseEventFormData.trainingProgramDayId}
+			<div>
+				<label for="date">Date</label>
+				<br />
+				<input type="date" name="date" bind:value={dateString} style="width: 150px" />
+			</div>
+		{/if}
 
 		<div>
 			<label for="name">Name</label>
@@ -44,16 +46,18 @@
 			/>
 		</div>
 
-		<div>
-			<label for="difficulty">Difficulty</label>
-			<br />
-			<input
-				type="number"
-				name="difficulty"
-				style="width: 150px"
-				bind:value={exerciseEventFormData.difficulty}
-			/>
-		</div>
+		{#if !exerciseEventFormData.trainingProgramDayId}
+			<div>
+				<label for="difficulty">Difficulty</label>
+				<br />
+				<input
+					type="number"
+					name="difficulty"
+					style="width: 150px"
+					bind:value={exerciseEventFormData.difficulty}
+				/>
+			</div>
+		{/if}
 
 		<div class="sm:col-span-4">
 			<label for="notes">Notes</label>
