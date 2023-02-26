@@ -19,7 +19,7 @@
 <h1>Training Log</h1>
 <br />
 
-<div class="grid grid-cols-1">
+<div>
 	<div>
 		<h2>New Entry</h2>
 		<hr />

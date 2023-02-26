@@ -15,50 +15,59 @@
 <form method="POST" {action}>
 	<input type="hidden" name="redirectTo" value={redirectTo} />
 
-	<label for="date">Date</label>
-	<br />
-	<input type="date" name="date" bind:value={dateString} style="width: 150px" />
-	<br />
+	<div class="grid grid-cols-1 sm:grid-cols-4">
+		<div>
+			<label for="date">Date</label>
+			<br />
+			<input type="date" name="date" bind:value={dateString} style="width: 150px" />
+		</div>
 
-	<label for="name">Name</label>
-	<br />
-	<input
-		name="name"
-		placeholder="Pull-Ups 3x7"
-		bind:value={exerciseEventFormData.name}
-		style="width: 150px"
-	/>
-	<br />
+		<div>
+			<label for="name">Name</label>
+			<br />
+			<input
+				name="name"
+				placeholder="Pull-Ups 3x7"
+				bind:value={exerciseEventFormData.name}
+				style="width: 150px"
+			/>
+		</div>
 
-	<label for="weight">Weight</label>
-	<br />
-	<input
-		type="number"
-		name="weight"
-		style="width: 150px"
-		bind:value={exerciseEventFormData.weight}
-	/>
-	<br />
+		<div>
+			<label for="weight">Weight</label>
+			<br />
+			<input
+				type="number"
+				name="weight"
+				style="width: 150px"
+				bind:value={exerciseEventFormData.weight}
+			/>
+		</div>
 
-	<label for="difficulty">Difficulty</label>
-	<br />
-	<input
-		type="number"
-		name="difficulty"
-		style="width: 150px"
-		bind:value={exerciseEventFormData.difficulty}
-	/>
-	<br />
+		<div>
+			<label for="difficulty">Difficulty</label>
+			<br />
+			<input
+				type="number"
+				name="difficulty"
+				style="width: 150px"
+				bind:value={exerciseEventFormData.difficulty}
+			/>
+		</div>
 
-	<label for="notes">Notes</label>
-	<br />
-	<TabEnabledTextArea
-		name="notes"
-		cols="40"
-		rows="3"
-		placeholder=""
-		bind:value={exerciseEventFormData.notes}
-	/>
+		<div class="sm:col-span-4">
+			<label for="notes">Notes</label>
+			<br />
+			<TabEnabledTextArea
+				name="notes"
+				cols="40"
+				rows="3"
+				placeholder=""
+				class="w-full"
+				bind:value={exerciseEventFormData.notes}
+			/>
+		</div>
+	</div>
 	<br />
 
 	<br />
