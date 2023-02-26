@@ -39,9 +39,7 @@ export const actions: Actions = {
   }) satisfies Action),
 
   delete: enhancedFormAction((async ({ fetch, formData }) => {
-    const input = Object.fromEntries(formData.entries());
-
-    const response = await fetch(`/api/exerciseEvent/${input.id}`, {
+    const response = await fetch(`/api/exerciseEvent/${formData.id}`, {
       method: "DELETE",
     })
 
