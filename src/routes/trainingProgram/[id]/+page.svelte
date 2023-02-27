@@ -60,7 +60,12 @@
 
 					<h3><b>Exercises:</b></h3>
 
-					<ExerciseEventsList exerciseEvents={day.exercises} showDate={false} />
+					<ExerciseEventsList
+						exerciseEvents={day.exercises}
+						redirectTo={`/trainingProgram/${$page.params.id}`}
+						showDate={false}
+						showDifficulty={false}
+					/>
 
 					<ExerciseEventForm
 						action="/exerciseEvent?/new"

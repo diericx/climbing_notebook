@@ -3,6 +3,8 @@
 	import type { ExerciseEvent } from '@prisma/client';
 
 	export let showDate = true;
+	export let showDifficulty = true;
+	export let redirectTo = '/exerciseEvent';
 	export let exerciseEvents: ExerciseEvent[];
 </script>
 
@@ -16,7 +18,9 @@
 				<th>Name</th>
 				<th>SxR</th>
 				<th>Weight</th>
-				<th>Difficulty</th>
+				{#if showDifficulty}
+					<th>Difficulty</th>
+				{/if}
 				<th>Notes</th>
 				<th />
 			</tr>
@@ -30,14 +34,16 @@
 					<td>{exerciseEvent.name}</td>
 					<td>{exerciseEvent.sets}x{exerciseEvent.reps}</td>
 					<td>{exerciseEvent.weight}</td>
-					<td>{exerciseEvent.difficulty}</td>
+					{#if showDifficulty}
+						<td>{exerciseEvent.difficulty}</td>
+					{/if}
 					<td class="px-6 py-3">{exerciseEvent.notes}</td>
 					<td>
 						<form method="POST" action="?/delete" class="inline">
 							<input type="hidden" name="id" value={exerciseEvent.id} />
 							<button formaction="?/delete" on:click={confirmDelete}>Delete</button>
 						</form>
-						<a href="/exerciseEvent/{exerciseEvent.id}/edit?redirectTo=/exerciseEvent">Edit</a>
+						<a href={`/exerciseEvent/${exerciseEvent.id}/edit?redirectTo=${redirectTo}`}>Edit</a>
 					</td>
 				</tr>
 			{/each}
