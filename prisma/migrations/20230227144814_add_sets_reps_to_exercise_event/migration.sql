@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "exercise_event" ADD COLUMN     "reps" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "sets" INTEGER NOT NULL DEFAULT 0;

@@ -30,12 +30,34 @@
 			/>
 		</div>
 		<div>
+			<label for="sets">Sets</label>
+			<br />
+			<input
+				type="number"
+				name="sets"
+				style="width: 75px"
+				bind:value={exerciseEventFormData.sets}
+			/>
+			<br />
+		</div>
+		<div>
+			<label for="reps">Reps</label>
+			<br />
+			<input
+				type="number"
+				name="reps"
+				style="width: 75px"
+				bind:value={exerciseEventFormData.reps}
+			/>
+			<br />
+		</div>
+		<div>
 			<label for="weight">Weight</label>
 			<br />
 			<input
 				type="number"
 				name="weight"
-				style="width: 150px"
+				style="width: 75px"
 				bind:value={exerciseEventFormData.weight}
 			/>
 			<br />

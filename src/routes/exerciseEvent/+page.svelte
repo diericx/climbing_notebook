@@ -33,6 +33,8 @@
 
 	function fillExerciseEventFormData(e: ExerciseEvent) {
 		exerciseEventFormData.name = e.name;
+		exerciseEventFormData.sets = e.sets;
+		exerciseEventFormData.reps = e.reps;
 		exerciseEventFormData.weight = e.weight;
 	}
 </script>
@@ -65,6 +67,7 @@
 				<thead>
 					<tr>
 						<th>Name</th>
+						<th>SxR</th>
 						<th>Weight</th>
 						<th>Notes</th>
 						<th>Done?</th>
@@ -76,12 +79,12 @@
 						{@const completed = todaysExerciseEvents.find((e) => e.name == exercise.name)}
 						<tr class={completed ? 'bg-green-100 text-gray-400' : ''}>
 							<td>{exercise.name}</td>
+							<td>{exercise.sets}x{exercise.reps}</td>
 							<td>{exercise.weight}</td>
 							<td>{exercise.notes}</td>
 							<td>{completed ? 'yes' : 'no'}</td>
 							<td>
-								<button on:click={() => fillExerciseEventFormData(exercise)}>Fill Form Below</button
-								>
+								<button on:click={() => fillExerciseEventFormData(exercise)}>Fill Below</button>
 							</td>
 						</tr>
 					{/each}

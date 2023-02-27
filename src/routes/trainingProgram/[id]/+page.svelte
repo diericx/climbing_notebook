@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 	import { ExerciseEventFormData } from '$lib/exerciseEvent';
 	import ExerciseEventForm from '../../exerciseEvent/minimalInlineForm.svelte';
+	import ExerciseEventsList from '../../exerciseEvent/list.svelte';
 	import { confirmDelete } from '$lib/utils';
 
 	export let data: PageData;
@@ -59,46 +60,7 @@
 
 					<h3><b>Exercises:</b></h3>
 
-					<table>
-						<thead>
-							<tr>
-								<th>Name</th>
-								<th>Weight</th>
-								<th>Notes</th>
-								<th />
-							</tr>
-						</thead>
-						<tbody>
-							{#each day.exercises as exercise}
-								<tr>
-									<td>
-										{exercise.name}
-									</td>
-									<td>
-										{exercise.weight}
-									</td>
-									<td>
-										{exercise.notes}
-									</td>
-									<td class="float-right">
-										<a
-											href={`/exerciseEvent/${exercise.id}/edit?redirectTo=/trainingProgram/${trainingProgram.id}`}
-											>Edit</a
-										>
-										<form method="POST" action={`/exerciseEvent?/delete`} class="inline">
-											<input type="hidden" name="id" value={exercise.id} />
-											<input
-												type="hidden"
-												name="redirectTo"
-												value={`/trainingProgram/${trainingProgram.id}`}
-											/>
-											<button on:click={confirmDelete}>Delete</button>
-										</form>
-									</td>
-								</tr>
-							{/each}
-						</tbody>
-					</table>
+					<ExerciseEventsList exerciseEvents={day.exercises} showDate={false} />
 
 					<ExerciseEventForm
 						action="/exerciseEvent?/new"

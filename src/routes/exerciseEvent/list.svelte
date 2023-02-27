@@ -2,6 +2,7 @@
 	import { confirmDelete } from '$lib/utils';
 	import type { ExerciseEvent } from '@prisma/client';
 
+	export let showDate = true;
 	export let exerciseEvents: ExerciseEvent[];
 </script>
 
@@ -9,8 +10,11 @@
 	<table>
 		<thead>
 			<tr>
-				<th>Date</th>
+				{#if showDate}
+					<th>Date</th>
+				{/if}
 				<th>Name</th>
+				<th>SxR</th>
 				<th>Weight</th>
 				<th>Difficulty</th>
 				<th>Notes</th>
@@ -20,8 +24,11 @@
 		<tbody>
 			{#each exerciseEvents as exerciseEvent}
 				<tr>
-					<td>{new Date(exerciseEvent.date).toLocaleDateString('en-US')}</td>
+					{#if showDate}
+						<td>{new Date(exerciseEvent.date).toLocaleDateString('en-US')}</td>
+					{/if}
 					<td>{exerciseEvent.name}</td>
+					<td>{exerciseEvent.sets}x{exerciseEvent.reps}</td>
 					<td>{exerciseEvent.weight}</td>
 					<td>{exerciseEvent.difficulty}</td>
 					<td class="px-6 py-3">{exerciseEvent.notes}</td>

@@ -35,3 +35,9 @@ export const enhancedFormAction = (next: Action) => {
   } satisfies Action
 }
 
+export function toNum(val: any, def: any): any {
+  if (val != undefined && val != null && !isNaN(val)) {
+    return Number(val)
+  }
+  return def
+}

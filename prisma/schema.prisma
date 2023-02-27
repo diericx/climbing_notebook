@@ -30,6 +30,8 @@ model ExerciseEvent {
   createdAt  DateTime  @default(now()) @map("created_at")
   date       DateTime?
   name       String
+  sets       Int       @default(0)
+  reps       Int       @default(0)
   weight     Int       @default(0)
   difficulty Int?
   notes      String    @default("")
