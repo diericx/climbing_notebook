@@ -17,8 +17,9 @@
 
 	// Parse incoming data with type safety
 	let profile: ProfileWithActiveTrainingProgram = data.profile;
+	var numberdayweek = [6, 0, 1, 2, 3, 4, 5];
 	let scheduledTrainingProgramDay: TrainingProgramDayWithExercises = profile.activeTrainingProgram
-		?.days[new Date().getDay()] as TrainingProgramDayWithExercises;
+		?.days[numberdayweek[new Date().getDay()]] as TrainingProgramDayWithExercises;
 	let exerciseEvents: ExerciseEvent[] = data.exerciseEvents;
 
 	// Filter out only todays exercise events
