@@ -14,9 +14,14 @@
 
 <form method="POST" {action}>
 	<input type="hidden" name="redirectTo" value={redirectTo} />
+	<input
+		type="hidden"
+		name="trainingProgramDayId"
+		value={exerciseEventFormData.trainingProgramDayId}
+	/>
 
 	<div class="grid grid-cols-1 sm:grid-cols-4">
-		{#if !exerciseEventFormData.trainingProgramDayId}
+		{#if exerciseEventFormData.trainingProgramDayId}
 			<div>
 				<label for="date">Date</label>
 				<br />

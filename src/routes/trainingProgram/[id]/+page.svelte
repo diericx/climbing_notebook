@@ -81,7 +81,10 @@
 										{exercise.notes}
 									</td>
 									<td class="float-right">
-										<a href={`/exerciseEvent/${exercise.id}/edit`}>Edit</a>
+										<a
+											href={`/exerciseEvent/${exercise.id}/edit?redirectTo=/trainingProgram/${trainingProgram.id}`}
+											>Edit</a
+										>
 										<form method="POST" action={`/exerciseEvent?/delete`} class="inline">
 											<input type="hidden" name="id" value={exercise.id} />
 											<input
