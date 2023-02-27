@@ -21,7 +21,9 @@
 	/>
 
 	<div class="grid grid-cols-1 sm:grid-cols-4">
-		{#if exerciseEventFormData.trainingProgramDayId}
+		<!-- When connected to a training program, it is simply a template so no date -->
+		<!-- This if tpid is not set, show date -->
+		{#if !exerciseEventFormData.trainingProgramDayId}
 			<div>
 				<label for="date">Date</label>
 				<br />
@@ -51,6 +53,8 @@
 			/>
 		</div>
 
+		<!-- When connected to a training program, it is simply a template -->
+		<!-- This if tpid is not set, show difficulty -->
 		{#if !exerciseEventFormData.trainingProgramDayId}
 			<div>
 				<label for="difficulty">Difficulty</label>
