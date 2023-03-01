@@ -10,21 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model TrainingEvent {
-  id            Int      @id @default(autoincrement())
-  createdAt     DateTime @default(now()) @map("created_at")
-  date          DateTime
-  label         String
-  amount        Int
-  amountUnit    String   @map("amount_unit")
-  pointsPerUnit Int      @map("points_per_unit")
-  type          String
-  ownerId       Int      @map("owner_id")
-  owner         User     @relation(fields: [ownerId], references: [id])
-
-  @@map("training_event")
-}
-
 model ExerciseEvent {
   id         Int       @id @default(autoincrement())
   createdAt  DateTime  @default(now()) @map("created_at")
@@ -106,7 +91,6 @@ model User {
   provider_id     String  @unique
   hashed_password String?
 
-  TrainingEvent   TrainingEvent[]
   Session         Session[]
   JournalEntry    JournalEntry[]
   ExerciseEvents  ExerciseEvent[]
