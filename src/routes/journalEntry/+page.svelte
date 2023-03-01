@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { PageData, ActionData } from './$types';
-
 	import JournalEntryForm from './form.svelte';
 	import { JournalEntryFormData } from '$lib/journalEntry';
 	import { confirmDelete } from '$lib/utils';
+	import { enhance } from '$app/forms';
 
 	export let data: PageData;
 	export let form: ActionData;
@@ -36,7 +36,7 @@
 			<div class="flex justify-between">
 				<div class="w-full pb-5">
 					<h3 class="underline inline">{new Date(item.date).toLocaleDateString('en-US')}</h3>
-					<form method="POST" action="?/delete" class="inline">
+					<form method="POST" action="?/delete" class="inline" use:enhance>
 						<input type="hidden" name="id" value={item.id} />
 						<button formaction="?/delete" on:click={confirmDelete}>Delete</button>
 					</form>

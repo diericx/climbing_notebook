@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import { confirmDelete } from '$lib/utils';
 	import type { ExerciseEvent } from '@prisma/client';
 
@@ -39,7 +40,7 @@
 					{/if}
 					<td class="px-6 py-3">{exerciseEvent.notes}</td>
 					<td>
-						<form method="POST" action="?/delete" class="inline">
+						<form method="POST" action="?/delete" class="inline" use:enhance>
 							<input type="hidden" name="id" value={exerciseEvent.id} />
 							<button formaction="?/delete" on:click={confirmDelete}>Delete</button>
 						</form>

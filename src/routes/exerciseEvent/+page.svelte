@@ -20,16 +20,17 @@
 	var numberdayweek = [6, 0, 1, 2, 3, 4, 5];
 	let scheduledTrainingProgramDay: TrainingProgramDayWithExercises = profile.activeTrainingProgram
 		?.days[numberdayweek[new Date().getDay()]] as TrainingProgramDayWithExercises;
-	let exerciseEvents: ExerciseEvent[] = data.exerciseEvents;
+
+	$: exerciseEvents = data.exerciseEvents as ExerciseEvent[];
 
 	// Filter out only todays exercise events
-	let todaysExerciseEvents: ExerciseEvent[] = exerciseEvents.filter((e) => {
+	$: todaysExerciseEvents = exerciseEvents.filter((e) => {
 		return dayjs(e.date).format('YYYY-MM-DD') == dayjs(new Date()).format('YYYY-MM-DD');
-	});
+	}) as ExerciseEvent[];
 	// Filter out only exercise events that aren't today
-	let pastExerciseEvents: ExerciseEvent[] = exerciseEvents.filter((e) => {
+	$: pastExerciseEvents = exerciseEvents.filter((e) => {
 		return dayjs(e.date).format('YYYY-MM-DD') != dayjs(new Date()).format('YYYY-MM-DD');
-	});
+	}) as ExerciseEvent[];
 
 	function fillExerciseEventFormData(e: ExerciseEvent) {
 		exerciseEventFormData.name = e.name;

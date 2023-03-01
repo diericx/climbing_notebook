@@ -2,6 +2,7 @@
 	import type { JournalEntryFormData } from '$lib/journalEntry';
 	import TabEnabledTextArea from '$lib/components/tabEnabledTextArea.svelte';
 	import dayjs from 'dayjs';
+	import { enhance } from '$app/forms';
 
 	export let journalEntryFormData: JournalEntryFormData;
 	// Form action to execute, which may need to be specified if this is
@@ -12,7 +13,7 @@
 	let dateString = dayjs(new Date()).format('YYYY-MM-DD');
 </script>
 
-<form method="POST" {action}>
+<form method="POST" {action} use:enhance>
 	<input type="hidden" name="type" value="climbing" />
 	<input type="hidden" name="redirectTo" value={redirectTo} />
 
