@@ -5,7 +5,7 @@
 	export let profileFormData: ProfileFormData;
 	// Form action to execute, which may need to be specified if this is
 	// used outside of this route
-	export let action: string = '?/new';
+	export let action: string = '?/editProfile';
 	export let redirectTo: string = '';
 </script>
 

@@ -5,9 +5,8 @@
 	import { enhance } from '$app/forms';
 
 	export let journalEntryFormData: JournalEntryFormData;
-	// Form action to execute, which may need to be specified if this is
-	// used outside of this route
-	export let action: string = '?/new';
+	// Form action to execute
+	export let action: string = '?/newJournalEntry';
 	export let redirectTo: string = '';
 
 	let dateString = dayjs(new Date()).format('YYYY-MM-DD');

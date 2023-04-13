@@ -1,8 +1,8 @@
 import type { Actions } from "./$types";
-import { fail } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { JournalEntry } from "@prisma/client";
 import { protectedPage } from "$lib/auth";
+import { journalEntryActions } from "$lib/journalEntry";
 
 export const load = protectedPage((async ({ fetch }) => {
   const response = await fetch("/api/journalEntry", {
@@ -17,43 +17,5 @@ export const load = protectedPage((async ({ fetch }) => {
 }) satisfies PageServerLoad)
 
 export const actions: Actions = {
-  new: async ({ request, fetch }) => {
-    // Get journalEntry from form data
-    const formData = await request.formData();
-    const formDataAsObj = Object.fromEntries(formData.entries());
-
-    const response = await fetch("/api/journalEntry", {
-      method: "POST",
-      body: JSON.stringify(formDataAsObj),
-    })
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return fail(response.status, {
-        message: data.message,
-        journalEntryFormData: formDataAsObj
-      })
-    }
-    return data;
-  },
-
-  delete: async ({ request, fetch }) => {
-    const formData = await request.formData();
-    const input = Object.fromEntries(formData.entries());
-
-    const response = await fetch(`/api/journalEntry/${input.id}`, {
-      method: "DELETE",
-    })
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return fail(response.status, {
-        message: data.message,
-      })
-    }
-
-    return data;
-  }
+  ...journalEntryActions
 }

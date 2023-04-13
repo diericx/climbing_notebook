@@ -1,4 +1,5 @@
-import { toNum } from "./utils"
+import { fail, type Action, type Actions } from "@sveltejs/kit"
+import { enhancedFormAction, toNum } from "./utils"
 
 export class ExerciseEventFormData {
   public date?: string
@@ -61,3 +62,38 @@ export class ExerciseEventFormData {
   }
 }
 
+export const exerciseEventActions: Actions = {
+  newExerciseEvent: enhancedFormAction((async ({ fetch, formData }) => {
+    const response = await fetch("/api/exerciseEvent", {
+      method: "POST",
+      body: JSON.stringify(formData),
+    })
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return fail(response.status, {
+        message: data.message,
+        exerciseEventFormData: formData
+      })
+    }
+
+    return data;
+  }) satisfies Action),
+
+  deleteExerciseEvent: enhancedFormAction((async ({ fetch, formData }) => {
+    const response = await fetch(`/api/exerciseEvent/${formData.id}`, {
+      method: "DELETE",
+    })
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return fail(response.status, {
+        message: data.message,
+      })
+    }
+
+    return data;
+  }) satisfies Action)
+}

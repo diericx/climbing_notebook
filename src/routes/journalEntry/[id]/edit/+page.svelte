@@ -26,6 +26,6 @@
 <div class="grid grid-cols-1">
 	<div>
 		<h2>Edit Journal Entry</h2>
-		<JournalEntryForm action="?/edit" {redirectTo} {journalEntryFormData} />
+		<JournalEntryForm action="?/editJournalEntry" {redirectTo} {journalEntryFormData} />
 	</div>
 </div>

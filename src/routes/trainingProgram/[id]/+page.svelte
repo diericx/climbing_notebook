@@ -68,7 +68,6 @@
 					/>
 
 					<ExerciseEventForm
-						action="/exerciseEvent?/new"
 						redirectTo={`/trainingProgram/${$page.params.id}`}
 						submitLabel="Add Exercise"
 						exerciseEventFormData={ExerciseEventFormData.fromObject({

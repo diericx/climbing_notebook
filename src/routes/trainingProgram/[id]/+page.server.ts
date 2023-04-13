@@ -1,8 +1,9 @@
-import { error } from '@sveltejs/kit';
+import { error, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { SERVER_ERROR } from "$lib/helperTypes";
 import type { TrainingProgramFormData } from "$lib/trainingProgram";
 import { protectedPage } from '$lib/auth';
+import { exerciseEventActions } from '$lib/exerciseEvent';
 
 export const load = protectedPage((async ({ fetch, params, url }) => {
   const { id } = params;
@@ -24,3 +25,6 @@ export const load = protectedPage((async ({ fetch, params, url }) => {
   };
 }) satisfies PageServerLoad)
 
+export const actions: Actions = {
+  ...exerciseEventActions
+}

@@ -26,6 +26,6 @@
 
 <div class="grid grid-cols-1">
 	<div>
-		<ProfileForm action="?/edit" {redirectTo} {profileFormData} />
+		<ProfileForm {redirectTo} {profileFormData} />
 	</div>
 </div>

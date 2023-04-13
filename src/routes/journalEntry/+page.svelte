@@ -36,9 +36,9 @@
 			<div class="flex justify-between">
 				<div class="w-full pb-5">
 					<h3 class="underline inline">{new Date(item.date).toLocaleDateString('en-US')}</h3>
-					<form method="POST" action="?/delete" class="inline" use:enhance>
+					<form method="POST" action="?/deleteJournalEntry" class="inline" use:enhance>
 						<input type="hidden" name="id" value={item.id} />
-						<button formaction="?/delete" on:click={confirmDelete}>Delete</button>
+						<button on:click={confirmDelete}>Delete</button>
 					</form>
 					<a href="/journalEntry/{item.id}/edit?redirectTo=/journalEntry">Edit</a>
 					<p class="whitespace-pre bg-white w-full px-1 py-3">{item.content}</p>

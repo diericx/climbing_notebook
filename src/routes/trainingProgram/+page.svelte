@@ -49,15 +49,14 @@
 							<td>{program.name}</td>
 							<td>{profile.activeTrainingProgramId == program.id}</td>
 							<td class="float-right">
-								<form method="POST" action={`profile/${profile.ownerId}/edit?/edit`} class="inline">
-									<input type="hidden" name="redirectTo" value={'/trainingProgram'} />
+								<form method="POST" action={`?/editProfile`} class="inline">
 									<input type="hidden" name="activeTrainingProgramId" value={program.id} />
 									<input type="submit" class="link-button" value="Set As Active" />
 								</form>
 								<a href="/trainingProgram/{program.id}" class="button">Edit</a>
-								<form method="POST" action="?/delete" class="inline">
+								<form method="POST" action="?/deleteTrainingProgram" class="inline">
 									<input type="hidden" name="id" value={program.id} />
-									<button formaction="?/delete" on:click={confirmDelete}>Delete</button>
+									<button on:click={confirmDelete}>Delete</button>
 								</form>
 							</td>
 						</tr>

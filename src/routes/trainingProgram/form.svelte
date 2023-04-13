@@ -4,7 +4,7 @@
 	export let trainingProgramFormData: TrainingProgramFormData;
 	// Form action to execute, which may need to be specified if this is
 	// used outside of this route
-	export let action: string = '?/new';
+	export let action: string = '?/newTrainingProgram';
 	export let redirectTo: string = '';
 </script>
 

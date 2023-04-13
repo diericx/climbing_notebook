@@ -3,14 +3,11 @@
 	import TabEnabledTextArea from '$lib/components/tabEnabledTextArea.svelte';
 
 	export let exerciseEventFormData: ExerciseEventFormData;
-	// Form action to execute, which may need to be specified if this is
-	// used outside of this route
-	export let action: string = '?/new';
 	export let redirectTo: string = '';
 	export let submitLabel: string = 'Submit';
 </script>
 
-<form method="POST" {action}>
+<form method="POST" action="?/newExerciseEvent">
 	<input type="hidden" name="redirectTo" value={redirectTo} />
 	<input
 		type="hidden"

@@ -1,5 +1,7 @@
 import type { ExerciseEventFormData } from "./exerciseEvent";
 import { Prisma } from "@prisma/client";
+import { fail, redirect, type Actions } from "@sveltejs/kit";
+import { enhancedFormAction } from "./utils";
 
 export class TrainingProgramDayFormData {
   constructor(
@@ -20,3 +22,24 @@ export class TrainingProgramDayFormData {
   }
 }
 
+export const trainingProgramDayActions: Actions = {
+  editTrainingProgramDay: enhancedFormAction(async ({ fetch, params, formData }) => {
+    const { id } = params;
+
+    const response = await fetch(`/api/trainingProgramDay/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(formData),
+    })
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return fail(response.status, {
+        message: data.message,
+        trainingProgramDayFormData: formData,
+      })
+    }
+
+    return data;
+  }),
+}

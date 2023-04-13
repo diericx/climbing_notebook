@@ -7,7 +7,7 @@
 	export let exerciseEventFormData: ExerciseEventFormData;
 	// Form action to execute, which may need to be specified if this is
 	// used outside of this route
-	export let action: string = '?/new';
+	export let action: string = '?/newExerciseEvent';
 	export let redirectTo: string = '';
 
 	let dateString = dayjs(new Date()).format('YYYY-MM-DD');

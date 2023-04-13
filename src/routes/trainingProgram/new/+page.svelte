@@ -15,6 +15,6 @@
 <div class="grid grid-cols-1">
 	<div>
 		<h1>New Training Program</h1>
-		<TrainingProgramForm action="/trainingProgram?/new" {trainingProgramFormData} />
+		<TrainingProgramForm action="/trainingProgram?/newTrainingProgram" {trainingProgramFormData} />
 	</div>
 </div>

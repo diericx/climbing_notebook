@@ -5,6 +5,7 @@ import type { PageServerLoad } from './$types';
 import type { ExerciseEvent, Profile } from "@prisma/client";
 import { protectedPage } from "$lib/auth";
 import { enhancedFormAction } from "$lib/utils";
+import { exerciseEventActions } from "$lib/exerciseEvent";
 
 export const load = protectedPage((async ({ fetch, session }) => {
   let response = await fetch("/api/exerciseEvent", {
@@ -27,37 +28,5 @@ export const load = protectedPage((async ({ fetch, session }) => {
 
 
 export const actions: Actions = {
-  new: enhancedFormAction((async ({ fetch, formData }) => {
-    const response = await fetch("/api/exerciseEvent", {
-      method: "POST",
-      body: JSON.stringify(formData),
-    })
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return fail(response.status, {
-        message: data.message,
-        exerciseEventFormData: formData
-      })
-    }
-
-    return data;
-  }) satisfies Action),
-
-  delete: enhancedFormAction((async ({ fetch, formData }) => {
-    const response = await fetch(`/api/exerciseEvent/${formData.id}`, {
-      method: "DELETE",
-    })
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return fail(response.status, {
-        message: data.message,
-      })
-    }
-
-    return data;
-  }) satisfies Action)
+  ...exerciseEventActions
 }

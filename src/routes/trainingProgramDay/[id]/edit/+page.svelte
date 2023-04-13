@@ -26,6 +26,10 @@
 <div class="grid grid-cols-1">
 	<div>
 		<h1>Edit Training Program Day</h1>
-		<TrainingProgramDayForm action="?/edit" {redirectTo} {trainingProgramDayFormData} />
+		<TrainingProgramDayForm
+			action="?/editTrainingProgramDay"
+			{redirectTo}
+			{trainingProgramDayFormData}
+		/>
 	</div>
 </div>
