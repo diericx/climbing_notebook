@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import type { TrainingProgramFormData } from '$lib/trainingProgram';
 
 	export let trainingProgramFormData: TrainingProgramFormData;
@@ -10,6 +11,7 @@
 
 <form method="POST" {action}>
 	<input type="hidden" name="redirectTo" value={redirectTo} />
+	<input type="hidden" name="id" value={trainingProgramFormData._id} />
 
 	<label for="name">Name</label>
 	<br />

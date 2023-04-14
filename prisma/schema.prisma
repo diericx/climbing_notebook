@@ -10,6 +10,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model ExerciseGroup {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  // TODO: remove owner, implicit on training program
+  ownerId   Int      @map("owner_id")
+  owner     User     @relation(fields: [ownerId], references: [id])
+
+  name                String
+  exercises           ExerciseEvent[]
+  trainingProgram     TrainingProgram?     @relation(fields: [trainingProgramId], references: [id])
+  trainingProgramId   Int?                 @map("training_program_id")
+  trainingProgramDays TrainingProgramDay[]
+
+  @@map("exercise_group")
+}
+
 model ExerciseEvent {
   id         Int       @id @default(autoincrement())
   createdAt  DateTime  @default(now()) @map("created_at")
@@ -21,8 +37,11 @@ model ExerciseEvent {
   difficulty Int?
   notes      String    @default("")
 
-  ownerId              Int                 @map("owner_id")
-  owner                User                @relation(fields: [ownerId], references: [id])
+  ownerId Int  @map("owner_id")
+  owner   User @relation(fields: [ownerId], references: [id])
+
+  exerciseGroup        ExerciseGroup?      @relation(fields: [exerciseGroupId], references: [id], onDelete: Cascade)
+  exerciseGroupId      Int?
   trainingProgramDay   TrainingProgramDay? @relation(fields: [trainingProgramDayId], references: [id], onDelete: Cascade)
   trainingProgramDayId Int?
 
@@ -39,6 +58,7 @@ model TrainingProgramDay {
 
   trainingProgramId Int             @map("training_program_id")
   trainingProgram   TrainingProgram @relation(fields: [trainingProgramId], references: [id], onDelete: Cascade)
+  exerciseGroups    ExerciseGroup[]
   exercises         ExerciseEvent[]
 
   @@map("training_program_day")
@@ -49,10 +69,11 @@ model TrainingProgram {
   createdAt DateTime @default(now()) @map("created_at")
   name      String
 
-  ownerId Int                  @map("owner_id")
-  owner   User                 @relation(fields: [ownerId], references: [id])
-  days    TrainingProgramDay[]
-  Profile Profile[]
+  ownerId        Int                  @map("owner_id")
+  owner          User                 @relation(fields: [ownerId], references: [id])
+  days           TrainingProgramDay[]
+  exerciseGroups ExerciseGroup[]
+  profile        Profile[]
 
   @@map("training_program")
 }
@@ -96,6 +117,7 @@ model User {
   ExerciseEvents  ExerciseEvent[]
   Profile         Profile?
   TrainingProgram TrainingProgram[]
+  ExerciseGroup   ExerciseGroup[]
 
   @@map("user")
 }

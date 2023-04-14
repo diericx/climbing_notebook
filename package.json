@@ -46,6 +46,7 @@
 		"@lucia-auth/sveltekit": "^0.5.2",
 		"@prisma/client": "^4.9.0",
 		"@sveltejs/adapter-vercel": "^2.1.1",
+		"crypto": "^1.0.1",
 		"dayjs": "^1.11.7",
 		"lucia-auth": "^0.4.3"
 	}

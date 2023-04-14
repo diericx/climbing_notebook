@@ -52,13 +52,13 @@
     @apply bg-slate-50
   }
   th {
-    @apply bg-gray-800 text-gray-200 px-6 py-3
+    @apply bg-gray-800 text-gray-200 px-6 py-1
   }
   tr {
     @apply bg-white border-r border-l
   }
   td {
-    @apply px-6 py-3
+    @apply px-6 py-1
   }
 
   a {
