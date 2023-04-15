@@ -161,7 +161,7 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
   let createGroupsAndTheirExercises = data.exerciseGroups.map(g => {
     const trainingProgramDayIds = []
     data.days.map(d => {
-      if (d.exerciseGroups.find(_g => _g.name == g.name)) {
+      if (d.exerciseGroups.find(_g => _g.id == g.id)) {
         trainingProgramDayIds.push(d.id)
       }
     })

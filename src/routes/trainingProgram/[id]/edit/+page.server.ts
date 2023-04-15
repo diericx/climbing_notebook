@@ -19,9 +19,11 @@ export const load = protectedPage((async ({ fetch, params, url }) => {
 
   const data = await response.json();
   const trainingProgram: TrainingProgramFormData = data.trainingProgram;
+  let trainingProgramOriginal = JSON.parse(JSON.stringify(trainingProgram));
 
   return {
     trainingProgram,
+    trainingProgramOriginal,
     redirectTo
   };
 }) satisfies PageServerLoad)

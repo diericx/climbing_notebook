@@ -7,16 +7,22 @@ Notes:
 	import type { ActionData, PageData } from './$types';
 	import ExerciseListEditor from './exerciseListEditor.svelte';
 	import { beforeNavigate } from '$app/navigation';
+	import { enhance } from '$app/forms';
 
 	export let data: PageData;
 	export let form: ActionData;
+	let scrollY;
 
 	$: trainingProgram = data.trainingProgram;
-	let trainingProgramOriginal = Object.assign({}, data.trainingProgram);
+	$: trainingProgramOriginal = data.trainingProgramOriginal;
+
+	$: thereAreUnsavedChanges = () => {
+		return JSON.stringify(trainingProgram) !== JSON.stringify(trainingProgramOriginal);
+	};
 
 	// Add a confirmation before leaving if the user has changed anything without saving
 	beforeNavigate((nav) => {
-		if (JSON.stringify(trainingProgram) !== JSON.stringify(trainingProgramOriginal)) {
+		if (thereAreUnsavedChanges()) {
 			if (!confirm('You have unsaved changes, are you sure you want to leave this page?')) {
 				nav.cancel();
 			}
@@ -76,48 +82,55 @@ Notes:
 
 	function addGroupToDayOnSubmit(e, dayIndex) {
 		let formData = new FormData(e.target);
-		let groupName = formData.get('groupName');
+		let groupId = formData.get('groupId');
 
-		// groupName can be null one some edge cases of browsers defaulting to disabled values
-		if (groupName == null) {
+		// groupId can be null one some edge cases of browsers defaulting to disabled values
+		if (groupId == null) {
 			return;
 		}
 
 		trainingProgram.days[dayIndex].exerciseGroups = [
 			...trainingProgram.days[dayIndex].exerciseGroups,
-			{ name: groupName }
+			{ id: groupId }
 		];
 	}
 
 	function removeGroupFromDay(dayIndex, group) {
 		trainingProgram.days[dayIndex].exerciseGroups = trainingProgram.days[
 			dayIndex
-		].exerciseGroups.filter((_g) => _g.name != group.name);
+		].exerciseGroups.filter((_g) => _g.id != group.id);
 	}
 </script>
 
-<div class="bg-red-200 rounded">
-	<p class="text-center px-4 py-4 mt-3 font-bold text-rose-600">
-		WARNING: This page does not save automatically. You must hit the save buttons at the top or
-		bottom.
-	</p>
+<svelte:window bind:scrollY />
+
+<div style="top: 0px; position: sticky; " class="{scrollY > 70 ? 'bg-white shadow' : ''} p-2">
+	<div>
+		<div class="inline-block">
+			<form method="POST" action="?/patchTrainingProgram" use:enhance>
+				<input type="hidden" name="id" value={trainingProgram.id} />
+				<input type="hidden" name="trainingProgram" value={JSON.stringify(trainingProgram)} />
+				<button
+					disabled={!thereAreUnsavedChanges()}
+					type="submit"
+					class="{thereAreUnsavedChanges()
+						? 'bg-green-400'
+						: 'bg-green-200'} {thereAreUnsavedChanges()
+						? 'hover:bg-green-500'
+						: 'hover:bg-green-200'} text-white font-bold px-8 py-2 rounded text-xl"
+				>
+					Save</button
+				>
+			</form>
+		</div>
+		{#if thereAreUnsavedChanges()}
+			<div class="font-bold inline-block text-red-300">You have unsaved changes!</div>
+		{/if}
+	</div>
 </div>
 
-<br />
-
 <div class="grid grid-cols-1">
-	<div class="mb-5">
-		<form method="POST" action="?/patchTrainingProgram">
-			<input type="hidden" name="id" value={trainingProgram.id} />
-			<input type="hidden" name="trainingProgram" value={JSON.stringify(trainingProgram)} />
-			<button
-				type="submit"
-				class="bg-green-400 hover:bg-green-500 text-white font-bold px-8 py-2 rounded text-xl"
-			>
-				Save</button
-			>
-		</form>
-	</div>
+	<div class="mb-5" />
 
 	<div class="mb-5">
 		<label for="programName">Program Name</label>
@@ -200,10 +213,14 @@ Notes:
 					<tbody>
 						{#each day.exerciseGroups as group}
 							<tr>
-								<td>{group.name}</td>
+								<td
+									>{trainingProgram.exerciseGroups.find((_g) => {
+										return _g.id == group.id;
+									}).name}</td
+								>
 								<td>
 									{#each trainingProgram.exerciseGroups.find((_g) => {
-										return _g.name == group.name;
+										return _g.id == group.id;
 									}).exercises as exercise}
 										<p>
 											- {exercise.name}
@@ -224,11 +241,11 @@ Notes:
 
 				<div class="mb-5">
 					<form on:submit|preventDefault={(e) => addGroupToDayOnSubmit(e, i)}>
-						<select name="groupName">
+						<select name="groupId">
 							{#each trainingProgram.exerciseGroups as group}
 								<option
-									value={group.name}
-									disabled={day.exerciseGroups.find((_g) => _g.name == group.name)}
+									value={group.id}
+									disabled={day.exerciseGroups.find((_g) => _g.id == group.id)}
 								>
 									{group.name}
 								</option>
@@ -253,17 +270,5 @@ Notes:
 				/>
 			</div>
 		{/each}
-	</div>
-	<div class="mb-5">
-		<form method="POST" action="?/patchTrainingProgram">
-			<input type="hidden" name="id" value={trainingProgram.id} />
-			<input type="hidden" name="trainingProgram" value={JSON.stringify(trainingProgram)} />
-			<button
-				type="submit"
-				class="bg-green-400 hover:bg-green-500 text-white font-bold px-8 py-2 rounded text-xl"
-			>
-				Save</button
-			>
-		</form>
 	</div>
 </div>
