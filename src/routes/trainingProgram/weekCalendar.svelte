@@ -4,6 +4,7 @@
 	export let trainingProgram: TrainingProgramWithDays;
 
 	let daysOfTheWeek = ['M', 'T', 'W', 'TH', 'F', 'S', 'S'];
+	console.log(trainingProgram);
 </script>
 
 <table>
@@ -23,6 +24,12 @@
 				<td class="border p-1">
 					{#each day.exercises as exercise}
 						<p>- {exercise.name}</p>
+					{/each}
+					{#each day.exerciseGroups as group}
+						<p class="font-bold">{group.name}</p>
+						{#each day.exercises as exercise}
+							<p class="pl-2">- {exercise.name}</p>
+						{/each}
 					{/each}
 				</td>
 			{/each}

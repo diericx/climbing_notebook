@@ -26,6 +26,11 @@ const trainingProgramWithDays = _Prisma.validator<_Prisma.TrainingProgramArgs>()
     days: {
       include: {
         exercises: true,
+        exerciseGroups: {
+          include: {
+            exercises: true,
+          },
+        }
       },
     }
   }
