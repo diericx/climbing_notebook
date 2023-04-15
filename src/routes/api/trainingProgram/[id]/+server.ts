@@ -181,7 +181,8 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
               sets: Number(e.sets),
               reps: Number(e.reps),
               weight: Number(e.weight),
-              ownerId: Number(user?.userId)
+              ownerId: Number(user?.userId),
+              notes: e.notes,
             }))
           },
           trainingProgramDays: {
@@ -207,7 +208,8 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
         reps: Number(e.reps),
         weight: Number(e.weight),
         ownerId: Number(user?.userId),
-        trainingProgramDayId: Number(d.id)
+        trainingProgramDayId: Number(d.id),
+        notes: e.notes,
       }))).flat(1)
     })
   } catch (e) {
