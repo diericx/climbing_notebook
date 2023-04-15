@@ -170,6 +170,13 @@ Notes:
 				<b>{daysOfTheWeek[i]}</b>
 			</h2>
 			<div class="bg-white rounded px-4 py-4 mb-4 shadow">
+				<input
+					class="mb-4"
+					name="dayDescription"
+					placeholder="Day Description"
+					bind:value={day.description}
+					style="max-width: 300px"
+				/>
 				<h2>
 					<b>Exercise Groups</b>
 				</h2>

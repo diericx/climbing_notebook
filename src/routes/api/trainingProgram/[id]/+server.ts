@@ -160,6 +160,23 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
     return json({ message: SERVER_ERROR }, { status: 500 });
   }
 
+  // Update days
+  try {
+    data.days.forEach(async d => {
+      await prisma.trainingProgramDay.update({
+        where: {
+          id: d.id,
+        },
+        data: {
+          description: d.description,
+        }
+      })
+    })
+  } catch (e) {
+    console.error(e);
+    return json({ message: SERVER_ERROR }, { status: 500 });
+  }
+
   // Create groups with their exercises
   try {
     data.exerciseGroups.forEach(async g => {

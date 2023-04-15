@@ -17,7 +17,6 @@ export const load = protectedPage((async ({ fetch, params, url }) => {
     throw error(500, { message: SERVER_ERROR })
   }
 
-
   const data = await response.json();
   const trainingProgram: TrainingProgramFormData = data.trainingProgram;
 
