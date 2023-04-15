@@ -4,7 +4,6 @@
 	export let trainingProgram: TrainingProgramWithDays;
 
 	let daysOfTheWeek = ['M', 'T', 'W', 'TH', 'F', 'S', 'S'];
-	console.log(trainingProgram);
 </script>
 
 <table>
