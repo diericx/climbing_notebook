@@ -117,118 +117,102 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
   }
 
   // Delete all the exercises on each day
-  trainingProgram.days.forEach(async (day) => {
-    try {
-      await prisma.exerciseEvent.deleteMany({
-        where: {
-          trainingProgramDayId: Number(day.id),
-          ownerId: Number(user?.userId),
-        },
-      });
-    } catch (e) {
-      console.error(e);
-      return json({ message: SERVER_ERROR }, { status: 500 });
-    }
-  })
-
-  // Delete all the exercise groups and their exercises
-  try {
-    await prisma.exerciseGroup.deleteMany({
+  let deleteAllExercisesOnEachDay = trainingProgram.days.map(day =>
+    prisma.exerciseEvent.deleteMany({
       where: {
-        trainingProgramId: Number(id),
+        trainingProgramDayId: Number(day.id),
         ownerId: Number(user?.userId),
       },
-    });
-  } catch (e) {
-    console.error(e);
-    return json({ message: SERVER_ERROR }, { status: 500 });
-  }
+    })
+  )
+
+  // Delete all the exercise groups and their exercises (via cascade)
+  let deleteAllExerciseGroupsAndTheirExercises = prisma.exerciseGroup.deleteMany({
+    where: {
+      trainingProgramId: Number(id),
+      ownerId: Number(user?.userId),
+    },
+  });
 
   // Update training program
-  try {
-    await prisma.trainingProgram.updateMany({
-      where: {
-        id: Number(id),
-        ownerId: Number(user?.userId),
-      },
-      data: {
-        name: data.name,
-      },
-    });
-  } catch (e) {
-    console.error(e)
-    return json({ message: SERVER_ERROR }, { status: 500 });
-  }
+  let updateTrainingProgram = prisma.trainingProgram.updateMany({
+    where: {
+      id: Number(id),
+      ownerId: Number(user?.userId),
+    },
+    data: {
+      name: data.name,
+    },
+  });
 
   // Update days
-  try {
-    data.days.forEach(async d => {
-      await prisma.trainingProgramDay.update({
-        where: {
-          id: d.id,
-        },
-        data: {
-          description: d.description,
-        }
-      })
+  let updateDays = data.days.map(d =>
+    prisma.trainingProgramDay.update({
+      where: {
+        id: d.id,
+      },
+      data: {
+        description: d.description,
+      }
     })
-  } catch (e) {
-    console.error(e);
-    return json({ message: SERVER_ERROR }, { status: 500 });
-  }
+  )
 
   // Create groups with their exercises
-  try {
-    data.exerciseGroups.forEach(async g => {
-      const trainingProgramDayIds = []
-      data.days.map(d => {
-        if (d.exerciseGroups.find(_g => _g.name == g.name)) {
-          trainingProgramDayIds.push(d.id)
-        }
-      })
-
-      await prisma.exerciseGroup.create({
-        data: {
-          trainingProgramId: Number(g.trainingProgramId),
-          ownerId: Number(user?.userId),
-          name: g.name,
-          exercises: {
-            create: g.exercises.map(e => ({
-              name: e.name,
-              sets: Number(e.sets),
-              reps: Number(e.reps),
-              weight: Number(e.weight),
-              ownerId: Number(user?.userId),
-              notes: e.notes,
-            }))
-          },
-          trainingProgramDays: {
-            connect: trainingProgramDayIds.map(id => ({
-              id,
-            }))
-          }
-        }
-      })
-
+  let createGroupsAndTheirExercises = data.exerciseGroups.map(g => {
+    const trainingProgramDayIds = []
+    data.days.map(d => {
+      if (d.exerciseGroups.find(_g => _g.name == g.name)) {
+        trainingProgramDayIds.push(d.id)
+      }
     })
-  } catch (e) {
-    console.error(e);
-    return json({ message: SERVER_ERROR }, { status: 500 });
-  }
+
+    return prisma.exerciseGroup.create({
+      data: {
+        trainingProgramId: Number(g.trainingProgramId),
+        ownerId: Number(user?.userId),
+        name: g.name,
+        exercises: {
+          create: g.exercises.map(e => ({
+            name: e.name,
+            sets: Number(e.sets),
+            reps: Number(e.reps),
+            weight: Number(e.weight),
+            ownerId: Number(user?.userId),
+            notes: e.notes,
+          }))
+        },
+        trainingProgramDays: {
+          connect: trainingProgramDayIds.map(id => ({
+            id,
+          }))
+        }
+      }
+    })
+
+  })
 
   // Create exercises for each day
+  let createExercisesForEachDay = prisma.exerciseEvent.createMany({
+    data: data.days.map(d => d.exercises.map(e => ({
+      name: e.name,
+      sets: Number(e.sets),
+      reps: Number(e.reps),
+      weight: Number(e.weight),
+      ownerId: Number(user?.userId),
+      trainingProgramDayId: Number(d.id),
+      notes: e.notes,
+    }))).flat(1)
+  })
+
   try {
-    await prisma.exerciseEvent.createMany({
-      data: data.days.map(d => d.exercises.map(e => ({
-        name: e.name,
-        sets: Number(e.sets),
-        reps: Number(e.reps),
-        weight: Number(e.weight),
-        ownerId: Number(user?.userId),
-        trainingProgramDayId: Number(d.id),
-        notes: e.notes,
-      }))).flat(1)
-    })
+    await prisma.$transaction([
+      ...deleteAllExercisesOnEachDay,
+      deleteAllExerciseGroupsAndTheirExercises,
+      updateTrainingProgram,
+      ...updateDays,
+      ...createGroupsAndTheirExercises,
+      createExercisesForEachDay,
+    ])
   } catch (e) {
     console.error(e);
     return json({ message: SERVER_ERROR }, { status: 500 });
