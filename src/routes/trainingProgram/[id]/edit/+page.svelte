@@ -4,14 +4,24 @@ Notes:
 - Assumes group name uniqueness, if duplicates exist unexpected behavior will occur
 -->
 <script lang="ts">
-	import { stringify } from 'postcss';
 	import type { ActionData, PageData } from './$types';
 	import ExerciseListEditor from './exerciseListEditor.svelte';
+	import { beforeNavigate } from '$app/navigation';
 
 	export let data: PageData;
 	export let form: ActionData;
 
 	$: trainingProgram = data.trainingProgram;
+	let trainingProgramOriginal = Object.assign({}, data.trainingProgram);
+
+	// Add a confirmation before leaving if the user has changed anything without saving
+	beforeNavigate((nav) => {
+		if (JSON.stringify(trainingProgram) !== JSON.stringify(trainingProgramOriginal)) {
+			if (!confirm('You have unsaved changes, are you sure you want to leave this page?')) {
+				nav.cancel();
+			}
+		}
+	});
 
 	let daysOfTheWeek = [
 		'Monday',
