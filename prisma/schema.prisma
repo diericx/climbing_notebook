@@ -10,10 +10,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Chart {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  ownerId   Int      @map("owner_id")
+  owner     User     @relation(fields: [ownerId], references: [id])
+
+  name           String
+  patternToMatch String @map("pattern_to_match")
+  equation       String
+
+  @@map("chart")
+}
+
 model ExerciseGroup {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
-  // TODO: remove owner, implicit on training program
   ownerId   Int      @map("owner_id")
   owner     User     @relation(fields: [ownerId], references: [id])
 
@@ -118,6 +130,7 @@ model User {
   Profile         Profile?
   TrainingProgram TrainingProgram[]
   ExerciseGroup   ExerciseGroup[]
+  Chart           Chart[]
 
   @@map("user")
 }

@@ -4,7 +4,6 @@
 	import { ExerciseEventFormData } from '$lib/exerciseEvent';
 	import ExerciseEventForm from '../../exerciseEvent/minimalInlineForm.svelte';
 	import ExerciseEventsList from '../../exerciseEvent/list.svelte';
-	import { confirmDelete } from '$lib/utils';
 
 	export let data: PageData;
 	export let form: ActionData;

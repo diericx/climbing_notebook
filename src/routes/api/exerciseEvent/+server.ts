@@ -6,8 +6,11 @@ import { SERVER_ERROR } from "$lib/helperTypes";
 import { protectedEndpoint } from "$lib/auth";
 import { prisma } from "$lib/prisma";
 
-export const GET: RequestHandler = protectedEndpoint(async ({ locals }) => {
+export const GET: RequestHandler = protectedEndpoint(async ({ locals, url }) => {
   const { user } = locals;
+
+  const dateMin = url.searchParams.get('dateMin') ?? undefined
+  const dateMax = url.searchParams.get('dateMax') ?? undefined
 
   // Fetch exercise events
   let exercises: ExerciseEvent[];
@@ -17,6 +20,10 @@ export const GET: RequestHandler = protectedEndpoint(async ({ locals }) => {
         ownerId: Number(user?.userId),
         trainingProgramDay: null,
         exerciseGroup: null,
+        date: {
+          lte: dateMax ? new Date(dateMax) : undefined,
+          gte: dateMin ? new Date(dateMin) : undefined,
+        },
       },
       orderBy: {
         date: 'desc',

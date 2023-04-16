@@ -3,32 +3,33 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { SERVER_ERROR } from "$lib/helperTypes";
 import { protectedEndpoint } from "$lib/auth";
 import { prisma } from "$lib/prisma";
-import type { ExerciseEvent } from "@prisma/client";
+import type { Chart, ExerciseEvent } from "@prisma/client";
 import { ExerciseEventFormData } from "$lib/exerciseEvent";
+import { ChartFormData } from "$lib/chart";
 
 export const GET: RequestHandler = protectedEndpoint(async ({ locals, params }) => {
   const { user } = locals;
   const { id } = params;
 
-  // Fetch exercise events
-  let exerciseEvent: ExerciseEvent;
+  // Fetch one
+  let chart: Chart;
   try {
-    let exerciseEvents = await prisma.exerciseEvent.findMany({
+    let charts = await prisma.chart.findMany({
       where: {
         ownerId: Number(user?.userId),
         id: Number(id),
       }
-    }) as ExerciseEvent[];
-    if (exerciseEvents.length == 0) {
-      return json({ message: "Exercise event not found." }, { status: 404 })
+    }) as Chart[];
+    if (charts.length == 0) {
+      return json({ message: "Chart not found." }, { status: 404 })
     }
-    exerciseEvent = exerciseEvents[0]
+    chart = charts[0]
   } catch (e) {
     console.error(e);
     return json({ message: SERVER_ERROR }, { status: 500 })
   }
 
-  return json({ exerciseEvent }, { status: 200 });
+  return json({ chart }, { status: 200 });
 });
 
 export const DELETE: RequestHandler = protectedEndpoint(async ({ locals, params }) => {
@@ -41,7 +42,7 @@ export const DELETE: RequestHandler = protectedEndpoint(async ({ locals, params 
   }
 
   try {
-    await prisma.exerciseEvent.deleteMany({
+    await prisma.chart.deleteMany({
       where: {
         id: Number(id),
         ownerId: Number(user?.userId),
@@ -66,7 +67,7 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
   }
 
   // Get form data
-  let input = ExerciseEventFormData.fromObject(data)
+  let input = ChartFormData.fromObject(data)
   let { isValid, message } = input.validate()
   if (!isValid) {
     return json({ message }, { status: 401 })
@@ -74,10 +75,11 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
 
   let result
   try {
-    result = await prisma.exerciseEvent.updateMany({
+    result = await prisma.chart.updateMany({
       data: {
-        ...input,
-        date: input.date ? new Date(Date.parse(input.date)) : undefined,
+        name: input.name,
+        patternToMatch: input.patternToMatch,
+        equation: input.equation,
       },
       where: {
         id: Number(id),
@@ -90,9 +92,8 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
   }
 
   if (result.count == 0) {
-    return json({ message: "Exercise event not found." }, { status: 404 })
+    return json({ message: "Chart not found." }, { status: 404 })
   }
 
-  return json({ message: "Training event was updated succesfully" }, { status: 200 })
+  return json({ message: "Chart was updated succesfully" }, { status: 200 })
 });
-

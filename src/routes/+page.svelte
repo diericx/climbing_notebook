@@ -3,6 +3,7 @@
 	import { getUser } from '@lucia-auth/sveltekit/client';
 	import TrainingProgramWeeklyCalendar from './trainingProgram/weekCalendar.svelte';
 	import type { ProfileWithActiveTrainingProgram } from '$lib/prisma';
+	import Chart from './chart/chart.svelte';
 
 	export let data: PageData;
 	const user = getUser();
@@ -43,6 +44,17 @@
 				> page to create and set one.
 			</p>
 		{/if}
+	</div>
+
+	<div>
+		<h1 class="inline">Charts</h1>
+		<a href="/chart/new?redirectTo=/">New Chart</a>
+		<hr />
+		<div>
+			{#each data.charts as chart}
+				<Chart {chart} exerciseEvents={data.exerciseEvents} />
+			{/each}
+		</div>
 	</div>
 {:else}
 	<h1>Welcome to the Climbing Notebook</h1>
