@@ -26,6 +26,6 @@
 <div class="grid grid-cols-1">
 	<div>
 		<h2>Edit Exercise Event</h2>
-		<ExerciseEventForm action="?/edit" {redirectTo} {exerciseEventFormData} />
+		<ExerciseEventForm action="?/editExerciseEvent" {redirectTo} {exerciseEventFormData} />
 	</div>
 </div>

@@ -95,5 +95,23 @@ export const exerciseEventActions: Actions = {
     }
 
     return data;
+  }) satisfies Action),
+
+  editExerciseEvent: enhancedFormAction((async ({ fetch, formData, params }) => {
+    const { id } = params;
+    const response = await fetch(`/api/exerciseEvent/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(formData)
+    })
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return fail(response.status, {
+        message: data.message,
+      })
+    }
+
+    return data;
   }) satisfies Action)
 }
