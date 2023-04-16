@@ -26,7 +26,7 @@
 					{/each}
 					{#each day.exerciseGroups as group}
 						<p class="font-bold">{group.name}</p>
-						{#each day.exercises as exercise}
+						{#each group.exercises as exercise}
 							<p class="pl-2">- {exercise.name}</p>
 						{/each}
 					{/each}

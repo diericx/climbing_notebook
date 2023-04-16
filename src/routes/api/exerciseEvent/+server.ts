@@ -16,6 +16,7 @@ export const GET: RequestHandler = protectedEndpoint(async ({ locals }) => {
       where: {
         ownerId: Number(user?.userId),
         trainingProgramDay: null,
+        exerciseGroup: null,
       },
       orderBy: {
         date: 'desc',

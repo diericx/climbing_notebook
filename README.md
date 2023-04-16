@@ -15,6 +15,11 @@ Generate a new migration
 npx prisma migrate dev --name <name>
 ```
 
+Connect to local psql server
+```
+psql cndb_development
+```
+
 ### Production
 
 Apply migration to prod
