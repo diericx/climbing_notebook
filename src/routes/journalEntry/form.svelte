@@ -27,9 +27,10 @@
 		>Metrics will be detected and captured in your journal entries as long as they strictly follow
 		the format below.
 		<br />
-		A name (letters only), followed by a semicolon, followed by a number. An example will be shown below:
+		A name (letters or numbers), followed by a semicolon, followed by a number. An example will be shown
+		below:
 		<br />
-		leftRingFingerPain: 4
+		leftRingFingerA4PulleyPain: 4
 	</span>
 	<br />
 	<TabEnabledTextArea
