@@ -12,7 +12,7 @@
 	<input type="hidden" name="redirectTo" value={redirectTo} />
 	<input type="hidden" name="id" value={chartFormData._id} />
 
-	<label for="name">Name</label>
+	<label class="font-bold" for="name">Name</label>
 	<br />
 	<input
 		name="name"
@@ -22,7 +22,16 @@
 	/>
 	<br />
 
-	<label for="patternToMatch">Pattern to Match</label>
+	<label class="font-bold" for="patternToMatch">Pattern to Match</label>
+	<br />
+	<span class="text-gray-400"
+		>This is a case insensitive <a
+			href="https://github.com/ziishaned/learn-regex/blob/master/README.md">Regex</a
+		>
+		pattern that will check against exercise event names and other metric names.
+		<br />
+		For simple matching just enter the desired name such as "pull-ups".
+	</span>
 	<br />
 	<input
 		name="patternToMatch"
@@ -32,7 +41,16 @@
 	/>
 	<br />
 
-	<label for="equation">Equation</label>
+	<label class="font-bold" for="equation">Equation</label>
+	<br />
+	<span class="text-gray-400">
+		This is a simple match equation where each attribute of an exercise event is given as a
+		variable.
+		<br />
+		They are: sets, reps, weight, minutes, seconds.
+		<br />
+		For example, a valid equation might be: sets*reps*weight
+	</span>
 	<br />
 	<input
 		name="equation"

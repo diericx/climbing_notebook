@@ -24,7 +24,13 @@
 
 	matchedEvents.forEach((e) => {
 		// Calculate the score by applying the equation
-		let score = evaluate(chart.equation, { sets: e.sets, reps: e.reps, weight: e.weight });
+		let score = evaluate(chart.equation, {
+			sets: e.sets,
+			reps: e.reps,
+			weight: e.weight,
+			minutes: e.minutes,
+			seconds: e.seconds
+		});
 
 		// NOTE: this functionality expects the events to be sorted by date
 		let dataIndex = chartData.labels.findIndex((l) => l == dateToEUString(new Date(e.date)));
