@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import type { TrainingProgramFormData } from '$lib/trainingProgram';
 
 	export let trainingProgramFormData: TrainingProgramFormData;

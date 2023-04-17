@@ -8,6 +8,8 @@
 	import type { TrainingProgramDayWithExercises } from '$lib/prisma';
 	import dayjs from 'dayjs';
 	import ExerciseEventsList from './list.svelte';
+	import WeeklyCalendar from '../trainingProgram/weekCalendar.svelte';
+	import { getMonday } from '$lib/utils';
 
 	export let data: PageData;
 	export let form: ActionData;
@@ -27,6 +29,17 @@
 	$: todaysExerciseEvents = exerciseEvents.filter((e) => {
 		return dayjs(e.date).format('YYYY-MM-DD') == dayjs(new Date()).format('YYYY-MM-DD');
 	}) as ExerciseEvent[];
+
+	// Filter out only this weeks exercise events
+	const today = new Date();
+	const monday = getMonday(today);
+	$: thisWeeksExerciseEvents = exerciseEvents.filter((e) => {
+		const [exerciseDateStr] = new Date(e.date).toISOString().split('T');
+		const [mondayStr] = monday.toISOString().split('T');
+		const [todayStr] = today.toISOString().split('T');
+		return exerciseDateStr >= mondayStr && exerciseDateStr <= todayStr;
+	}) as ExerciseEvent[];
+
 	// Filter out only exercise events that aren't today
 	$: pastExerciseEvents = exerciseEvents.filter((e) => {
 		return dayjs(e.date).format('YYYY-MM-DD') != dayjs(new Date()).format('YYYY-MM-DD');
@@ -38,6 +51,14 @@
 		exerciseEventFormData.reps = e.reps;
 		exerciseEventFormData.weight = e.weight;
 	}
+
+	$: isExerciseCompleted = (e: ExerciseEvent) => {
+		return (
+			thisWeeksExerciseEvents.find((_e) => {
+				return e.name == _e.name;
+			}) != undefined
+		);
+	};
 </script>
 
 {#if form?.message}<p class="error">{form?.message}</p>{/if}
@@ -63,34 +84,18 @@
 			</p>
 			<p>
 				<b>Exercises: </b>
+				<br />
+				<span class="text-gray-400 italic"
+					>Exercises are considered completed if they have been done within the week.</span
+				>
 			</p>
-			<table>
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>SxR</th>
-						<th>Weight</th>
-						<th>Notes</th>
-						<th>Done?</th>
-						<th />
-					</tr>
-				</thead>
-				<tbody>
-					{#each scheduledTrainingProgramDay.exercises as exercise}
-						{@const completed = todaysExerciseEvents.find((e) => e.name == exercise.name)}
-						<tr class={completed ? 'bg-green-100 text-gray-400' : ''}>
-							<td>{exercise.name}</td>
-							<td>{exercise.sets}x{exercise.reps}</td>
-							<td>{exercise.weight}</td>
-							<td>{exercise.notes}</td>
-							<td>{completed ? 'yes' : 'no'}</td>
-							<td>
-								<button on:click={() => fillExerciseEventFormData(exercise)}>Fill Below</button>
-							</td>
-						</tr>
-					{/each}
-				</tbody>
-			</table>
+
+			<WeeklyCalendar
+				trainingProgram={profile.activeTrainingProgram}
+				fillBelowFunc={fillExerciseEventFormData}
+				{isExerciseCompleted}
+				showFillButton
+			/>
 		{/if}
 	</div>
 </div>
