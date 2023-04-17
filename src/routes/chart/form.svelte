@@ -68,9 +68,11 @@
 		This is a simple match equation where each attribute of an exercise event is given as a
 		variable.
 		<br />
-		They are: sets, reps, weight, minutes, seconds.
+		For <i>Exercise Events</i> they are: sets, reps, weight, minutes, seconds
 		<br />
-		For example, a valid equation might be: sets*reps*weight
+		For <i>Metrics</i> they are: value
+		<br />
+		For example, a valid equation when matching against exercise events might be: sets*reps*weight
 	</span>
 	<br />
 	<input

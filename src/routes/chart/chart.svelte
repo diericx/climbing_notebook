@@ -58,7 +58,7 @@
 	});
 </script>
 
-<div class="rounded bg-white shadow p-4 overflow-scroll">
+<div class="rounded bg-white shadow p-4">
 	<h2 class="inline">{chart.name}</h2>
 	<div class="inline float-right">
 		<a href={`/chart/${chart.id}/edit?redirectTo=/`}>Edit</a>
@@ -67,5 +67,7 @@
 			<button type="submit" on:click={confirmDelete}>Delete</button>
 		</form>
 	</div>
-	<Chart data={chartData} type={chart.type} discreteDomains={0} height={170} />
+	<div class="overflow-scroll">
+		<Chart data={chartData} type={chart.type} discreteDomains={0} height={170} />
+	</div>
 </div>
