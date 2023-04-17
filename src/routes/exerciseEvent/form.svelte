@@ -1,6 +1,6 @@
 <script lang="ts">
 	import dayjs from 'dayjs';
-	import type { ExerciseEventFormData } from '$lib/exerciseEvent';
+	import { ExerciseEventFormData } from '$lib/exerciseEvent';
 	import TabEnabledTextArea from '$lib/components/tabEnabledTextArea.svelte';
 	import { enhance } from '$app/forms';
 
@@ -10,10 +10,18 @@
 	export let action: string = '?/newExerciseEvent';
 	export let redirectTo: string = '';
 
-	let dateString = dayjs(new Date()).format('YYYY-MM-DD');
+	let dateString = dayjs(exerciseEventFormData.date || new Date()).format('YYYY-MM-DD');
 </script>
 
-<form method="POST" {action} use:enhance>
+<form
+	method="POST"
+	{action}
+	use:enhance={() => {
+		return async ({ update }) => {
+			await update({ reset: false });
+		};
+	}}
+>
 	<input type="hidden" name="redirectTo" value={redirectTo} />
 	<input
 		type="hidden"
@@ -70,6 +78,7 @@
 			<br />
 			<input
 				type="number"
+				step="0.1"
 				name="weight"
 				style="width: 75px"
 				bind:value={exerciseEventFormData.weight}

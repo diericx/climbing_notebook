@@ -14,7 +14,7 @@
 	export let data: PageData;
 	export let form: ActionData;
 	let exerciseEventFormData: ExerciseEventFormData =
-		(form?.journalEntryFormData as ExerciseEventFormData) ||
+		(form?.exerciseEventFormData as ExerciseEventFormData) ||
 		new ExerciseEventFormData({ difficulty: 0 });
 
 	// Parse incoming data with type safety

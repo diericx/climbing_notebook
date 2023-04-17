@@ -11,6 +11,7 @@
 	// Either grab form data from the Sveltekit form obj,
 	// or generate a new one from incoming page data
 	const exerciseEventFormData: ExerciseEventFormData =
+		(data.exerciseEvent as ExerciseEventFormData) ||
 		(form?.exerciseEventFormData as ExerciseEventFormData) ||
 		ExerciseEventFormData.fromObject(data?.exerciseEvent);
 
