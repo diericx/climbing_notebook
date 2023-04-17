@@ -76,6 +76,28 @@
 			/>
 		</div>
 
+		<div>
+			<label for="minutes">Minutes</label>
+			<br />
+			<input
+				type="number"
+				name="minutes"
+				style="width: 75px"
+				bind:value={exerciseEventFormData.minutes}
+			/>
+		</div>
+
+		<div>
+			<label for="seconds">Seconds</label>
+			<br />
+			<input
+				type="number"
+				name="seconds"
+				style="width: 75px"
+				bind:value={exerciseEventFormData.seconds}
+			/>
+		</div>
+
 		<!-- When connected to a training program, it is simply a template -->
 		<!-- This if tpid is not set, show difficulty -->
 		{#if !exerciseEventFormData.trainingProgramDayId}

@@ -46,6 +46,8 @@ model ExerciseEvent {
   sets       Int       @default(0)
   reps       Int       @default(0)
   weight     Int       @default(0)
+  seconds    Int       @default(0)
+  minutes    Int       @default(0)
   difficulty Int?
   notes      String    @default("")
 

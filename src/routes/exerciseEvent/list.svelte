@@ -18,6 +18,7 @@
 				{/if}
 				<th>Name</th>
 				<th>SxR</th>
+				<th>Time</th>
 				<th>Weight</th>
 				{#if showDifficulty}
 					<th>Difficulty</th>
@@ -34,6 +35,7 @@
 					{/if}
 					<td>{exerciseEvent.name}</td>
 					<td>{exerciseEvent.sets}x{exerciseEvent.reps}</td>
+					<td>{exerciseEvent.minutes}m{exerciseEvent.seconds}s</td>
 					<td>{exerciseEvent.weight}</td>
 					{#if showDifficulty}
 						<td>{exerciseEvent.difficulty}</td>
