@@ -43,7 +43,7 @@ export function toNum(val: any, def: any): any {
 }
 
 export function matchMetricsInString(s: string) {
-  return s.match(/^[a-zA-Z]*: [0-9]*$/gm)
+  return s.match(/^[a-zA-Z0-9]*: [0-9]*$/gm)
 }
 
 export function parseMetricStrings(s: string[]) {
