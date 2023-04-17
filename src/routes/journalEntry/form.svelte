@@ -16,12 +16,21 @@
 	<input type="hidden" name="type" value="climbing" />
 	<input type="hidden" name="redirectTo" value={redirectTo} />
 
-	<label for="date">Date</label>
+	<label class="font-bold" for="date">Date</label>
 	<br />
 	<input type="date" name="date" bind:value={dateString} style="width: 150px" />
 	<br />
 
-	<label for="content">Content</label>
+	<label class="font-bold" for="content">Content</label>
+	<br />
+	<span class="text-gray-400"
+		>Metrics will be detected and captured in your journal entries as long as they strictly follow
+		the format below.
+		<br />
+		A name (letters only), followed by a semicolon, followed by a number. An example will be shown below:
+		<br />
+		leftRingFingerPain: 4
+	</span>
 	<br />
 	<TabEnabledTextArea
 		name="content"
@@ -32,9 +41,12 @@
 - max bouldering session
 - white C+ in back
 	- get high left foot before bumping left hand
-Injuries
-- Left ring finger pain (3) in A2 pulley
-- Right shoulder pain mid session, went away by end"
+Injury tracking:
+- slight pain in left finger entire session
+- pain in right shoulder in beginning but gone by end of session
+
+leftRingFingerPainA2Pulley: 3
+rightShoulderPain: 2"
 		bind:value={journalEntryFormData.content}
 	/>
 

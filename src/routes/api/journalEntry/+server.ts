@@ -5,6 +5,7 @@ import type { JournalEntry } from "@prisma/client";
 import { SERVER_ERROR } from "$lib/helperTypes";
 import { protectedEndpoint } from "$lib/auth";
 import { prisma } from "$lib/prisma";
+import { matchMetricsInString, parseMetricStrings, toNum } from "$lib/utils";
 
 export const GET: RequestHandler = protectedEndpoint(async ({ locals }) => {
   const { user } = locals;
@@ -70,6 +71,26 @@ export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }
   } catch (e) {
     console.error(e)
     return json({ message: SERVER_ERROR }, { status: 500 })
+  }
+
+  let metrics = parseMetricStrings(matchMetricsInString(input.content))
+  let createMetricsForThisEntry = metrics.map(m => prisma.metric.create({
+    data: {
+      name: m.name,
+      // Number parse is implied succesful with regex match?
+      value: toNum(m.value, 0),
+      date: new Date(Date.parse(input.date)),
+      journalEntryId: Number(journalEntry.id),
+      ownerId: Number(user?.userId)
+    }
+  }))
+  try {
+    await prisma.$transaction([
+      ...createMetricsForThisEntry,
+    ])
+  } catch (e) {
+    console.error(e);
+    return json({ message: SERVER_ERROR }, { status: 500 });
   }
 
   return json({ journalEntry }, { status: 201 });

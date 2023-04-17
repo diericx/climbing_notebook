@@ -1,6 +1,6 @@
 import { chartActions } from "$lib/chart";
 import { SERVER_ERROR } from "$lib/helperTypes";
-import type { Chart, ExerciseEvent, Profile } from "@prisma/client";
+import type { Chart, ExerciseEvent, Metric, Profile } from "@prisma/client";
 import { error, type Actions } from "@sveltejs/kit";
 import type { PageServerLoad } from './$types';
 
@@ -52,7 +52,20 @@ export const load: PageServerLoad = async ({ locals, fetch }) => {
   data = await response.json();
   const exerciseEvents: ExerciseEvent[] = data.exercises;
 
-  return { profile, charts, exerciseEvents }
+  // Get metris in the past month for the charts
+  response = await fetch(`/api/metric?` + new URLSearchParams({
+    dateMin: dateMin.toISOString(),
+    dateMax: (new Date()).toISOString()
+  }), {
+    method: "GET",
+  })
+  if (!response.ok) {
+    throw error(500, { message: SERVER_ERROR })
+  }
+  data = await response.json();
+  const metrics: Metric[] = data.metrics;
+
+  return { profile, charts, exerciseEvents, metrics }
 }
 
 export const actions: Actions = {

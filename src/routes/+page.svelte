@@ -52,7 +52,10 @@
 		<hr />
 		<div>
 			{#each data.charts as chart}
-				<Chart {chart} exerciseEvents={data.exerciseEvents} />
+				<Chart
+					{chart}
+					targetObjects={chart.matchAgainst == 'metrics' ? data.metrics : data.exerciseEvents}
+				/>
 			{/each}
 		</div>
 	</div>

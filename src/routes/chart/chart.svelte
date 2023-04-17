@@ -5,7 +5,8 @@
 	import { confirmDelete } from '$lib/utils';
 
 	export let chart: Chart;
-	export let exerciseEvents: ExerciseEventFormData[];
+	// The objects (either exerciseEvent or metric) that we will be matching against.
+	export let targetObjects = [];
 
 	function dateToEUString(d: Date) {
 		return `${d.getDate()}-${d.getMonth()}-${d.getFullYear()}`;
@@ -18,18 +19,19 @@
 	};
 
 	// Get all the events that match the pattern
-	let matchedEvents = exerciseEvents.filter((e) =>
+	let matchedObjects = targetObjects.filter((e) =>
 		e.name.match(new RegExp(chart.patternToMatch, 'i'))
 	);
 
-	matchedEvents.forEach((e) => {
+	matchedObjects.forEach((e) => {
 		// Calculate the score by applying the equation
 		let score = evaluate(chart.equation, {
 			sets: e.sets,
 			reps: e.reps,
 			weight: e.weight,
 			minutes: e.minutes,
-			seconds: e.seconds
+			seconds: e.seconds,
+			value: e.value
 		});
 
 		// NOTE: this functionality expects the events to be sorted by date

@@ -45,6 +45,7 @@ export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }
       data: {
         name: input.name,
         patternToMatch: input.patternToMatch,
+        matchAgainst: input.matchAgainst,
         equation: input.equation,
         ownerId: Number(user?.userId),
       }

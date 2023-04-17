@@ -18,6 +18,7 @@ model Chart {
 
   name           String
   patternToMatch String @map("pattern_to_match")
+  matchAgainst   String @map("match_against")
   equation       String
 
   @@map("chart")
@@ -92,6 +93,21 @@ model TrainingProgram {
   @@map("training_program")
 }
 
+model Metric {
+  id             Int          @id @default(autoincrement())
+  createdAt      DateTime     @default(now()) @map("created_at")
+  date           DateTime
+  name           String
+  value          Int
+  journalEntry   JournalEntry @relation(fields: [journalEntryId], references: [id])
+  journalEntryId Int
+
+  ownerId Int  @map("owner_id")
+  owner   User @relation(fields: [ownerId], references: [id])
+
+  @@map("metric")
+}
+
 model JournalEntry {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
@@ -100,6 +116,7 @@ model JournalEntry {
   content   String
   ownerId   Int      @map("owner_id")
   owner     User     @relation(fields: [ownerId], references: [id])
+  metrics   Metric[]
 
   @@map("journal_entry")
 }
@@ -133,6 +150,7 @@ model User {
   TrainingProgram TrainingProgram[]
   ExerciseGroup   ExerciseGroup[]
   Chart           Chart[]
+  metric          Metric[]
 
   @@map("user")
 }

@@ -5,6 +5,7 @@ import { protectedEndpoint } from "$lib/auth";
 import { JournalEntryFormData } from "$lib/journalEntry";
 import type { JournalEntry } from "@prisma/client";
 import { prisma } from "$lib/prisma";
+import { matchMetricsInString, parseMetricStrings, toNum } from "$lib/utils";
 
 export const GET: RequestHandler = protectedEndpoint(async ({ locals, params }) => {
   const { user } = locals;
@@ -89,9 +90,36 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
     console.error(e)
     return json({ message: SERVER_ERROR }, { status: 500 })
   }
-
   if (result.count == 0) {
     return json({ message: "Journal entry not found." }, { status: 404 })
+  }
+
+  let metrics = parseMetricStrings(matchMetricsInString(input.content))
+  let deleteMetricsForThisEntry = prisma.metric.deleteMany({
+    where: {
+      ownerId: Number(user?.userId),
+      date: new Date(Date.parse(input.date)),
+      journalEntryId: Number(id),
+    }
+  })
+  let createMetricsForThisEntry = metrics.map(m => prisma.metric.create({
+    data: {
+      name: m.name,
+      // Number parse is implied succesful with regex match?
+      value: toNum(m.value, 0),
+      date: new Date(Date.parse(input.date)),
+      journalEntryId: Number(id),
+      ownerId: Number(user?.userId)
+    }
+  }))
+  try {
+    await prisma.$transaction([
+      deleteMetricsForThisEntry,
+      ...createMetricsForThisEntry,
+    ])
+  } catch (e) {
+    console.error(e);
+    return json({ message: SERVER_ERROR }, { status: 500 });
   }
 
   return json({ message: "Journal entry was updated succesfully" }, { status: 200 })

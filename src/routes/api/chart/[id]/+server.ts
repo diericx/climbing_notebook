@@ -3,8 +3,7 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { SERVER_ERROR } from "$lib/helperTypes";
 import { protectedEndpoint } from "$lib/auth";
 import { prisma } from "$lib/prisma";
-import type { Chart, ExerciseEvent } from "@prisma/client";
-import { ExerciseEventFormData } from "$lib/exerciseEvent";
+import type { Chart } from "@prisma/client";
 import { ChartFormData } from "$lib/chart";
 
 export const GET: RequestHandler = protectedEndpoint(async ({ locals, params }) => {
@@ -79,6 +78,7 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
       data: {
         name: input.name,
         patternToMatch: input.patternToMatch,
+        matchAgainst: input.matchAgainst,
         equation: input.equation,
       },
       where: {

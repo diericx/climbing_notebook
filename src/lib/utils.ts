@@ -41,3 +41,18 @@ export function toNum(val: any, def: any): any {
   }
   return def
 }
+
+export function matchMetricsInString(s: string) {
+  return s.match(/^[a-zA-Z]*: [0-9]*$/gm)
+}
+
+export function parseMetricStrings(s: string[]) {
+  return s.map(_s => {
+    const splitString = _s.split(': ')
+    return {
+      name: splitString[0],
+      value: splitString[1]
+    }
+  }
+  )
+}

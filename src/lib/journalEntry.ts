@@ -79,17 +79,12 @@ export const journalEntryActions: Actions = {
     return data;
   }),
 
-  editJournalEntry: enhancedFormAction(async ({ request, fetch, params }) => {
+  editJournalEntry: enhancedFormAction(async ({ request, fetch, params, formData }) => {
     const { id } = params;
-
-    // Get journalEntry from form data
-    const formData = await request.formData();
-    const input = Object.fromEntries(formData.entries());
-    const { redirectTo } = input;
 
     const response = await fetch(`/api/journalEntry/${id}`, {
       method: "PATCH",
-      body: JSON.stringify(input),
+      body: JSON.stringify(formData),
     })
 
     const data = await response.json();
@@ -97,13 +92,8 @@ export const journalEntryActions: Actions = {
     if (!response.ok) {
       return fail(response.status, {
         message: data.message,
-        journalEntryFormData: input,
-        redirectTo
+        journalEntryFormData: formData,
       })
-    }
-
-    if (redirectTo && redirectTo != "") {
-      throw redirect(303, redirectTo)
     }
 
     return data;

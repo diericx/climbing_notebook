@@ -22,6 +22,18 @@
 	/>
 	<br />
 
+	<label class="font-bold" for="matchAgainst">Match Against</label>
+	<br />
+	<span class="text-gray-400"
+		>Chart data from exercise events or metrics collected in journal entries.</span
+	>
+	<br />
+	<select name="matchAgainst">
+		<option value="metrics"> Metrics </option>
+		<option value="exerciseEvents"> Exercise Events </option>
+	</select>
+	<br />
+
 	<label class="font-bold" for="patternToMatch">Pattern to Match</label>
 	<br />
 	<span class="text-gray-400"
