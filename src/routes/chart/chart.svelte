@@ -13,9 +13,16 @@
 	}
 
 	// Init frappe charts data
+	const today = new Date();
+	const ayearAgo = new Date();
+	ayearAgo.setDate(today.getDate() - 365);
 	let chartData = {
 		labels: [],
-		datasets: [{ values: [] }]
+		datasets: [{ values: [] }],
+		dataPoints: {},
+		start: ayearAgo,
+		end: today,
+		discreteDomains: 0
 	};
 
 	// Get all the events that match the pattern
@@ -34,6 +41,9 @@
 			value: e.value
 		});
 
+		// Add data in heatmap format
+		chartData.dataPoints[Math.floor(new Date(e.date).getTime() / 1000)] = score;
+
 		// NOTE: this functionality expects the events to be sorted by date
 		let dataIndex = chartData.labels.findIndex((l) => l == dateToEUString(new Date(e.date)));
 		if (dataIndex == -1) {
@@ -48,7 +58,7 @@
 	});
 </script>
 
-<div class="rounded bg-white shadow p-4">
+<div class="rounded bg-white shadow p-4 overflow-scroll">
 	<h2 class="inline">{chart.name}</h2>
 	<div class="inline float-right">
 		<a href={`/chart/${chart.id}/edit?redirectTo=/`}>Edit</a>
@@ -57,5 +67,5 @@
 			<button type="submit" on:click={confirmDelete}>Delete</button>
 		</form>
 	</div>
-	<Chart data={chartData} type="line" />
+	<Chart data={chartData} type={chart.type} discreteDomains={0} height={170} />
 </div>

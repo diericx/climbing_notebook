@@ -50,6 +50,6 @@
 		"dayjs": "^1.11.7",
 		"lucia-auth": "^0.4.3",
 		"mathjs": "^11.8.0",
-		"svelte-frappe-charts": "^1.10.0"
+		"svelte-frappe-charts": "github:diericx/svelte-frappe-charts"
 	}
 }

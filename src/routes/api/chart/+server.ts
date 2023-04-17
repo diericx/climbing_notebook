@@ -44,6 +44,7 @@ export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }
     chart = await prisma.chart.create({
       data: {
         name: input.name,
+        type: input.type,
         patternToMatch: input.patternToMatch,
         matchAgainst: input.matchAgainst,
         equation: input.equation,

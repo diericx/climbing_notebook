@@ -3,14 +3,16 @@ import { enhancedFormAction, toNum } from "./utils"
 
 export class ChartFormData {
   public name: string = ""
+  public type: string = ""
   public patternToMatch: string = ""
   public matchAgainst: string = ""
   public equation: string = ""
 
   // Create an Exercise from an object 
-  static fromObject({ name, patternToMatch, matchAgainst, equation }): ChartFormData {
+  static fromObject({ name, type, patternToMatch, matchAgainst, equation }): ChartFormData {
     return Object.assign(new ChartFormData(), {
       name,
+      type,
       patternToMatch,
       matchAgainst,
       equation,

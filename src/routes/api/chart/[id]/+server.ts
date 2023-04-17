@@ -77,6 +77,7 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
     result = await prisma.chart.updateMany({
       data: {
         name: input.name,
+        type: input.type,
         patternToMatch: input.patternToMatch,
         matchAgainst: input.matchAgainst,
         equation: input.equation,

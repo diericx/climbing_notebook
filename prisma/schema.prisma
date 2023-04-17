@@ -17,6 +17,7 @@ model Chart {
   owner     User     @relation(fields: [ownerId], references: [id])
 
   name           String
+  type           String @default("line")
   patternToMatch String @map("pattern_to_match")
   matchAgainst   String @map("match_against")
   equation       String

@@ -22,13 +22,22 @@
 	/>
 	<br />
 
+	<label class="font-bold" for="type">Chart Type</label>
+	<br />
+	<select bind:value={chartFormData.type} name="type">
+		<option value="line"> Line Graph </option>
+		<option value="bar"> Bar Graph </option>
+		<option value="heatmap"> Heatmap </option>
+	</select>
+	<br />
+
 	<label class="font-bold" for="matchAgainst">Match Against</label>
 	<br />
 	<span class="text-gray-400"
 		>Chart data from exercise events or metrics collected in journal entries.</span
 	>
 	<br />
-	<select name="matchAgainst">
+	<select bind:value={chartFormData.matchAgainst} name="matchAgainst">
 		<option value="metrics"> Metrics </option>
 		<option value="exerciseEvents"> Exercise Events </option>
 	</select>
