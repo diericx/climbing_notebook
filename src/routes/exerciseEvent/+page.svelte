@@ -86,8 +86,10 @@
 				<b>Exercises: </b>
 				<br />
 				<span class="text-gray-400 italic"
-					>Exercises are considered completed if they have been done within the week.</span
-				>
+					>Exercises are considered completed if they have been done within the week.
+					<br />
+					Click an exercise to fill the form below.
+				</span>
 			</p>
 
 			<WeeklyCalendar

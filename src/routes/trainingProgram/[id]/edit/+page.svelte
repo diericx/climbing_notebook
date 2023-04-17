@@ -66,6 +66,8 @@ Notes:
 				name: '',
 				sets: 0,
 				reps: 0,
+				minutes: 0,
+				seconds: 0,
 				weight: 0,
 				notes: ''
 			}

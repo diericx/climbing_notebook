@@ -10,6 +10,8 @@
 			<th>Name</th>
 			<th>Sets</th>
 			<th>Reps</th>
+			<th>Minutes</th>
+			<th>Seconds</th>
 			<th>Weight</th>
 			<th>Notes</th>
 			<th />
@@ -35,6 +37,8 @@
 						placeholder="# of reps"
 					/></td
 				>
+				<td><input style="width:75px" type="number" bind:value={exercise.minutes} /></td>
+				<td><input style="width:75px" type="number" bind:value={exercise.seconds} /></td>
 				<td
 					><input
 						style="width:75px"
