@@ -1,17 +1,25 @@
 <script lang="ts">
-	import type { ProfileFormData } from '$lib/profile';
+	import { ProfileFormData } from '$lib/profile';
 	import TabEnabledTextArea from '$lib/components/tabEnabledTextArea.svelte';
+	import type { Profile } from '@prisma/client';
+	import { page } from '$app/stores';
 
-	export let profileFormData: ProfileFormData;
-	// Form action to execute, which may need to be specified if this is
-	// used outside of this route
+	// Form action to execute
 	export let action: string = '?/editProfile';
-	export let redirectTo: string = '';
+
+	// Add redirect data
+	if ($page.url.searchParams.has('redirectTo')) {
+		action += '&redirectTo=' + $page.url.searchParams.get('redirectTo');
+	}
+
+	export let profile: Profile | undefined = undefined;
+	export let profileFormData: ProfileFormData = new ProfileFormData();
+	if (profile != undefined) {
+		profileFormData = new ProfileFormData(profile);
+	}
 </script>
 
 <form method="POST" {action}>
-	<input type="hidden" name="redirectTo" value={redirectTo} />
-
 	<label for="goals">Goals</label>
 	<br />
 	<TabEnabledTextArea

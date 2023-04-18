@@ -1,43 +1,33 @@
 <script lang="ts">
-	import dayjs from 'dayjs';
 	import { ExerciseEventFormData } from '$lib/exerciseEvent';
 	import TabEnabledTextArea from '$lib/components/tabEnabledTextArea.svelte';
-	import { enhance } from '$app/forms';
+	import { page } from '$app/stores';
+	import type { ExerciseEvent } from '@prisma/client';
+	import DateInput from '$lib/components/dateInput.svelte';
 
-	export let exerciseEventFormData: ExerciseEventFormData;
 	// Form action to execute, which may need to be specified if this is
 	// used outside of this route
 	export let action: string = '?/newExerciseEvent';
-	export let redirectTo: string = '';
 
-	let dateString = dayjs(exerciseEventFormData.date || new Date()).format('YYYY-MM-DD');
+	// Add redirect data
+	if ($page.url.searchParams.has('redirectTo')) {
+		action += '&redirectTo=' + $page.url.searchParams.get('redirectTo');
+	}
+
+	export let exerciseEvent: ExerciseEvent | undefined = undefined;
+	export let exerciseEventFormData: ExerciseEventFormData = new ExerciseEventFormData();
+	if (exerciseEvent != undefined) {
+		exerciseEventFormData = new ExerciseEventFormData(exerciseEvent);
+	}
 </script>
 
-<form
-	method="POST"
-	{action}
-	use:enhance={() => {
-		return async ({ update }) => {
-			await update({ reset: false });
-		};
-	}}
->
-	<input type="hidden" name="redirectTo" value={redirectTo} />
-	<input
-		type="hidden"
-		name="trainingProgramDayId"
-		value={exerciseEventFormData.trainingProgramDayId}
-	/>
+<form method="POST" {action}>
 	<div class="flex">
-		<!-- When connected to a training program, it is simply a template so no date -->
-		<!-- This if tpid is not set, show date -->
-		{#if !exerciseEventFormData.trainingProgramDayId}
-			<div>
-				<label for="date">Date</label>
-				<br />
-				<input type="date" name="date" bind:value={dateString} style="width: 150px" />
-			</div>
-		{/if}
+		<div>
+			<label for="date">Date</label>
+			<br />
+			<DateInput name="date" bind:date={exerciseEventFormData.date} style="width: 150px" />
+		</div>
 	</div>
 	<div>
 		<label for="name">Name</label>
@@ -106,21 +96,6 @@
 				bind:value={exerciseEventFormData.seconds}
 			/>
 		</div>
-
-		<!-- When connected to a training program, it is simply a template -->
-		<!-- This if tpid is not set, show difficulty -->
-		{#if !exerciseEventFormData.trainingProgramDayId}
-			<div>
-				<label for="difficulty">Difficulty</label>
-				<br />
-				<input
-					type="number"
-					name="difficulty"
-					style="width: 75px"
-					bind:value={exerciseEventFormData.difficulty}
-				/>
-			</div>
-		{/if}
 	</div>
 
 	<div class="sm:col-span-4">

@@ -1,13 +1,12 @@
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from '@sveltejs/kit';
 import { SERVER_ERROR } from "$lib/helperTypes";
-import { protectedEndpoint } from "$lib/auth";
 import { JournalEntryFormData } from "$lib/journalEntry";
 import type { JournalEntry } from "@prisma/client";
 import { prisma } from "$lib/prisma";
 import { matchMetricsInString, parseMetricStrings, toNum } from "$lib/utils";
 
-export const GET: RequestHandler = protectedEndpoint(async ({ locals, params }) => {
+export const GET: RequestHandler = async ({ locals, params }) => {
   const { user } = locals;
   const { id } = params;
 
@@ -30,9 +29,9 @@ export const GET: RequestHandler = protectedEndpoint(async ({ locals, params }) 
   }
 
   return json({ journalEntry }, { status: 200 });
-});
+};
 
-export const DELETE: RequestHandler = protectedEndpoint(async ({ locals, params }) => {
+export const DELETE: RequestHandler = async ({ locals, params }) => {
   const { id } = params
   const { user } = locals
 
@@ -54,9 +53,9 @@ export const DELETE: RequestHandler = protectedEndpoint(async ({ locals, params 
   }
 
   return json({}, { status: 200 });
-});
+};
 
-export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request, url, params }) => {
+export const PATCH: RequestHandler = async ({ locals, request, url, params }) => {
   let data = await request.json();
   const { user } = locals;
   const { id } = params;
@@ -67,7 +66,15 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
   }
 
   // Get form data
-  let input = JournalEntryFormData.fromObject(data)
+  let input: JournalEntryFormData
+  try {
+    input = new JournalEntryFormData(data)
+  } catch (e) {
+    let message = SERVER_ERROR;
+    if (e instanceof Error) message = e.message
+    return json({ message }, { status: 401 })
+  }
+
   let { isValid, message } = input.validate()
   if (!isValid) {
     return json({ message }, { status: 401 })
@@ -123,5 +130,5 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
   }
 
   return json({ message: "Journal entry was updated succesfully" }, { status: 200 })
-});
+};
 

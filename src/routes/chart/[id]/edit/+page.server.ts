@@ -1,13 +1,11 @@
 import type { Actions, PageServerLoad } from "./$types";
 import { chartActions } from "$lib/chart";
-import { protectedPage } from "$lib/auth";
 import { SERVER_ERROR } from "$lib/helperTypes";
 import { error } from "console";
 import type { Chart } from ".prisma/client";
 
-export const load = protectedPage((async ({ fetch, params, url }) => {
+export const load: PageServerLoad = async ({ fetch, params }) => {
   const { id } = params;
-  const redirectTo = url.searchParams.get("redirectTo");
 
   const response = await fetch(`/api/chart/${id}`, {
     method: "GET",
@@ -21,9 +19,8 @@ export const load = protectedPage((async ({ fetch, params, url }) => {
 
   return {
     chart,
-    redirectTo
   };
-}) satisfies PageServerLoad)
+};
 
 export const actions: Actions = {
   ...chartActions

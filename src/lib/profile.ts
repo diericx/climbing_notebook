@@ -1,19 +1,17 @@
 import { fail, redirect, type Actions } from "@sveltejs/kit";
 import { SERVER_ERROR } from "./helperTypes";
-import { enhancedFormAction } from "./utils";
 
 export class ProfileFormData {
-  constructor(
-    public goals: string = "",
-    public activeTrainingProgramId?: number
-  ) { }
+  goals: string = "";
+  activeTrainingProgramId: number | undefined;
 
-  // Create a TrainingEvent from an object 
-  static fromObject({ goals, activeTrainingProgramId }): UserFormData {
-    return Object.assign(new ProfileFormData(), {
-      goals,
-      activeTrainingProgramId: Number(activeTrainingProgramId) || undefined
-    });
+  constructor(obj: any | undefined = undefined) {
+    if (obj == undefined) {
+      return
+    }
+    const { goals, activeTrainingProgramId } = obj;
+    this.goals = goals == undefined ? this.goals : goals;
+    this.activeTrainingProgramId = activeTrainingProgramId == undefined ? this.activeTrainingProgramId : Number(activeTrainingProgramId);
   }
 
   validate() {
@@ -25,7 +23,9 @@ export class ProfileFormData {
 }
 
 export const profileActions: Actions = {
-  editProfile: enhancedFormAction(async ({ fetch, locals, formData }) => {
+  editProfile: async ({ fetch, locals, request, url }) => {
+    const formData = Object.fromEntries((await request.formData()).entries());
+
     // Protected page, safe to assume user exists
     let { user } = await locals.validateUser();
 
@@ -33,6 +33,8 @@ export const profileActions: Actions = {
       method: "PATCH",
       body: JSON.stringify(formData),
     })
+    const data = await response.json();
+
     if (!response.ok) {
       console.error(response.text())
       return fail(response.status, {
@@ -41,8 +43,11 @@ export const profileActions: Actions = {
       })
     }
 
-    const data = await response.json();
+
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
 
     return data;
-  }),
+  }
 }

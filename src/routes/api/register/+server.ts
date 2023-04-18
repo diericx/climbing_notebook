@@ -33,11 +33,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Catch KNOWN duplicate username/provider id errors from both Lucia and the 
     // propogated Prisma erros.
     if ((e instanceof Prisma.PrismaClientKnownRequestError &&
-      e.code === 'P2002' &&
-      e.message?.includes('username')) ||
+      e.code === 'P2002'
+    ) ||
       (e instanceof LuciaError && e.message === 'AUTH_DUPLICATE_PROVIDER_ID')
     ) {
-      return json({ message: "Username already taken" }, { status: 400 })
+      return json({ message: "Username or email already taken" }, { status: 400 })
     }
 
     // Catch UNKNOWN errors and return 500

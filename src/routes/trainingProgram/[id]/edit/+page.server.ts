@@ -1,12 +1,11 @@
 import { error, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { SERVER_ERROR } from "$lib/helperTypes";
-import { trainingProgramActions, type TrainingProgramFormData } from "$lib/trainingProgram";
-import { protectedPage } from '$lib/auth';
+import { trainingProgramActions } from "$lib/trainingProgram";
 import { exerciseEventActions } from '$lib/exerciseEvent';
-import { exerciseGroupActions } from '$lib/exerciseGroup';
+import type { TrainingProgramWithDays } from '$lib/prisma';
 
-export const load = protectedPage((async ({ fetch, params, url }) => {
+export const load: PageServerLoad = async ({ fetch, params, url }) => {
   const { id } = params;
   const redirectTo = url.searchParams.get("redirectTo");
 
@@ -18,7 +17,7 @@ export const load = protectedPage((async ({ fetch, params, url }) => {
   }
 
   const data = await response.json();
-  const trainingProgram: TrainingProgramFormData = data.trainingProgram;
+  const trainingProgram: TrainingProgramWithDays = data.trainingProgram;
   let trainingProgramOriginal = JSON.parse(JSON.stringify(trainingProgram));
 
   return {
@@ -26,10 +25,9 @@ export const load = protectedPage((async ({ fetch, params, url }) => {
     trainingProgramOriginal,
     redirectTo
   };
-}) satisfies PageServerLoad)
+};
 
 export const actions: Actions = {
   ...exerciseEventActions,
-  ...exerciseGroupActions,
   ...trainingProgramActions
 }

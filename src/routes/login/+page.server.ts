@@ -1,17 +1,9 @@
 import type { Actions } from "./$types";
 import { fail, redirect } from '@sveltejs/kit';
-import type { PageServerLoad } from "../$types";
-
-export const load: PageServerLoad = ({ url }) => {
-  return {
-    redirectTo: url.searchParams.get("redirectTo")
-  }
-}
 
 export const actions: Actions = {
-  login: async ({ request, fetch, locals }) => {
+  login: async ({ request, fetch, locals, url }) => {
     const data = await request.formData();
-    const redirectTo = data.get("redirectTo");
     const username = data.get("username");
     const password = data.get("password");
     const response = await fetch("/api/login", {
@@ -22,24 +14,23 @@ export const actions: Actions = {
       })
     })
 
-    if (response.ok) {
-      let data = await response.json();
-      locals.setSession(data.session);
-      throw redirect(303, redirectTo?.toString() || "/profile");
+    const result = await response.json();
+
+    if (!response.ok) {
+      console.error(response);
+      return fail(500, {
+        message: result.message,
+        username,
+      })
     }
 
-    const result = await response.json();
-    console.error(result);
-    return fail(500, {
-      message: result.message,
-      username,
-      redirectTo
-    })
+    locals.setSession(result.session);
+
+    throw redirect(303, url.searchParams.get('redirectTo') || '/');
   },
 
-  register: async ({ request, fetch }) => {
+  register: async ({ request, fetch, url }) => {
     const data = await request.formData();
-    const redirectTo = data.get("redirectTo");
     const username = data.get("username");
     const email = data.get("email");
     const password = data.get("password");
@@ -52,17 +43,17 @@ export const actions: Actions = {
       })
     })
 
-    if (response.ok) {
-      throw redirect(303, redirectTo?.toString() || "/profile");
+    const result = await response.json();
+
+    if (!response.ok) {
+      console.error(result);
+      return fail(500, {
+        message: result.message,
+        username,
+        email,
+      })
     }
 
-    const result = await response.json();
-    console.error(result);
-    return fail(500, {
-      message: result.message,
-      username,
-      email,
-      redirectTo
-    })
+    throw redirect(303, url.searchParams.get('redirectTo') || '/');
   }
 };

@@ -7,13 +7,6 @@
 
 	export let data: PageData;
 	export let form: ActionData;
-
-	// Either grab form data from the Sveltekit form obj,
-	// or generate a new one from incoming page data
-	const profileFormData: ProfileFormData =
-		(form?.profileFormData as ProfileFormData) || ProfileFormData.fromObject(data?.profile);
-
-	let redirectTo = form?.redirectTo || data.redirectTo || '';
 </script>
 
 {#if form?.message}<p class="server-message {$page.status == 200 ? 'success' : 'error'}">
@@ -26,6 +19,6 @@
 
 <div class="grid grid-cols-1">
 	<div>
-		<ProfileForm {redirectTo} {profileFormData} />
+		<ProfileForm profile={data.profile} profileFormData={new ProfileFormData(form?.profile)} />
 	</div>
 </div>

@@ -1,11 +1,10 @@
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from '@sveltejs/kit';
 import { SERVER_ERROR } from "$lib/helperTypes";
-import { protectedEndpoint } from "$lib/auth";
 import { prisma, type TrainingProgramWithDays } from "$lib/prisma";
 import type { TrainingProgram } from "@prisma/client";
 
-export const GET: RequestHandler = protectedEndpoint(async ({ locals, params }) => {
+export const GET: RequestHandler = async ({ locals, params }) => {
   const { user } = locals;
   const { id } = params;
 
@@ -59,9 +58,9 @@ export const GET: RequestHandler = protectedEndpoint(async ({ locals, params }) 
   }
 
   return json({ trainingProgram }, { status: 200 });
-});
+};
 
-export const DELETE: RequestHandler = protectedEndpoint(async ({ locals, params }) => {
+export const DELETE: RequestHandler = async ({ locals, params }) => {
   const { id } = params
   const { user } = locals
 
@@ -83,9 +82,9 @@ export const DELETE: RequestHandler = protectedEndpoint(async ({ locals, params 
   }
 
   return json({ message: "Successfuly deleted" }, { status: 200 });
-});
+};
 
-export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request, url, params }) => {
+export const PATCH: RequestHandler = async ({ locals, request, url, params }) => {
   let data = await request.json();
   const { user } = locals;
   const { id } = params;
@@ -223,5 +222,5 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
   }
 
   return json({ message: "Training program was updated succesfully" }, { status: 200 })
-});
+};
 

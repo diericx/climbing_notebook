@@ -3,11 +3,10 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { JournalEntryFormData } from "$lib/journalEntry";
 import type { JournalEntry } from "@prisma/client";
 import { SERVER_ERROR } from "$lib/helperTypes";
-import { protectedEndpoint } from "$lib/auth";
 import { prisma } from "$lib/prisma";
 import { matchMetricsInString, parseMetricStrings, toNum } from "$lib/utils";
 
-export const GET: RequestHandler = protectedEndpoint(async ({ locals }) => {
+export const GET: RequestHandler = async ({ locals }) => {
   const { user } = locals;
 
   // Fetch journalEntries
@@ -27,14 +26,23 @@ export const GET: RequestHandler = protectedEndpoint(async ({ locals }) => {
   }
 
   return json({ journalEntries }, { status: 200 });
-});
+};
 
-export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
   let data = await request.json();
   const { user } = locals;
 
+  // Get form data
+  let input: JournalEntryFormData
+  try {
+    input = new JournalEntryFormData(data)
+  } catch (e) {
+    let message = SERVER_ERROR;
+    if (e instanceof Error) message = e.message
+    return json({ message }, { status: 401 })
+  }
+
   // Validate input fields
-  let input = JournalEntryFormData.fromObject(data)
   let { message, isValid } = input.validate()
   if (!isValid) {
     return json({ message }, { status: 401 })
@@ -94,5 +102,5 @@ export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }
   }
 
   return json({ journalEntry }, { status: 201 });
-});
+};
 

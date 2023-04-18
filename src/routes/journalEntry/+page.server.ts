@@ -1,10 +1,9 @@
 import type { Actions } from "./$types";
 import type { PageServerLoad } from './$types';
 import type { JournalEntry } from "@prisma/client";
-import { protectedPage } from "$lib/auth";
 import { journalEntryActions } from "$lib/journalEntry";
 
-export const load = protectedPage((async ({ fetch }) => {
+export const load: PageServerLoad = async ({ fetch }) => {
   const response = await fetch("/api/journalEntry", {
     method: "GET",
   })
@@ -14,7 +13,7 @@ export const load = protectedPage((async ({ fetch }) => {
   return {
     journalEntries,
   };
-}) satisfies PageServerLoad)
+};
 
 export const actions: Actions = {
   ...journalEntryActions

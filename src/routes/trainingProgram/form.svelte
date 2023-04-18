@@ -1,16 +1,28 @@
 <script lang="ts">
-	import type { TrainingProgramFormData } from '$lib/trainingProgram';
+	import { TrainingProgramFormData } from '$lib/trainingProgram';
+	import type { TrainingProgram } from '@prisma/client';
+	import { page } from '$app/stores';
 
-	export let trainingProgramFormData: TrainingProgramFormData;
 	// Form action to execute, which may need to be specified if this is
 	// used outside of this route
 	export let action: string = '?/newTrainingProgram';
-	export let redirectTo: string = '';
+
+	// Add redirect data
+	if ($page.url.searchParams.has('redirectTo')) {
+		action += '&redirectTo=' + $page.url.searchParams.get('redirectTo');
+	}
+
+	export let trainingProgram: TrainingProgram | undefined = undefined;
+	export let trainingProgramFormData: TrainingProgramFormData = new TrainingProgramFormData();
+	if (trainingProgram != undefined) {
+		trainingProgramFormData = new TrainingProgramFormData(trainingProgram);
+	}
 </script>
 
 <form method="POST" {action}>
-	<input type="hidden" name="redirectTo" value={redirectTo} />
-	<input type="hidden" name="id" value={trainingProgramFormData._id} />
+	{#if trainingProgram != undefined}
+		<input type="hidden" name="id" value={trainingProgram.id} />
+	{/if}
 
 	<label for="name">Name</label>
 	<br />

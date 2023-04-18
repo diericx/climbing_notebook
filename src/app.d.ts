@@ -1,12 +1,7 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
-// and what to do when importing types
-declare namespace App {
-  // interface Error {}
-  // interface Locals {}
-  // interface PageData {}
-  // interface Platform {}
-}
+
+import type { Session, User } from "lucia-auth";
 
 /// <reference types="lucia-auth" />
 declare namespace Lucia {
@@ -15,10 +10,17 @@ declare namespace Lucia {
 }
 
 /// <reference types="@sveltejs/kit" />
-declare namespace App {
-  interface Locals {
-    validate: import("@lucia-auth/sveltekit").Validate;
-    validateUser: import("@lucia-auth/sveltekit").ValidateUser;
-    setSession: import("@lucia-auth/sveltekit").SetSession;
+declare global {
+  declare namespace App {
+    interface Locals {
+      validate: import("@lucia-auth/sveltekit").Validate;
+      validateUser: import("@lucia-auth/sveltekit").ValidateUser;
+      setSession: import("@lucia-auth/sveltekit").SetSession;
+      user: User | null;
+      session: Session | null;
+    }
   }
+
 }
+
+export { };

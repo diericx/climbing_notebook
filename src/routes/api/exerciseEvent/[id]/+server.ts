@@ -1,12 +1,11 @@
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from '@sveltejs/kit';
 import { SERVER_ERROR } from "$lib/helperTypes";
-import { protectedEndpoint } from "$lib/auth";
 import { prisma } from "$lib/prisma";
 import type { ExerciseEvent } from "@prisma/client";
 import { ExerciseEventFormData } from "$lib/exerciseEvent";
 
-export const GET: RequestHandler = protectedEndpoint(async ({ locals, params }) => {
+export const GET: RequestHandler = async ({ locals, params }) => {
   const { user } = locals;
   const { id } = params;
 
@@ -29,9 +28,9 @@ export const GET: RequestHandler = protectedEndpoint(async ({ locals, params }) 
   }
 
   return json({ exerciseEvent }, { status: 200 });
-});
+};
 
-export const DELETE: RequestHandler = protectedEndpoint(async ({ locals, params }) => {
+export const DELETE: RequestHandler = async ({ locals, params }) => {
   const { id } = params
   const { user } = locals
 
@@ -53,9 +52,9 @@ export const DELETE: RequestHandler = protectedEndpoint(async ({ locals, params 
   }
 
   return json({}, { status: 200 });
-});
+};
 
-export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request, url, params }) => {
+export const PATCH: RequestHandler = async ({ locals, request, url, params }) => {
   let data = await request.json();
   const { user } = locals;
   const { id } = params;
@@ -66,7 +65,7 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
   }
 
   // Get form data
-  let input = ExerciseEventFormData.fromObject(data)
+  let input = new ExerciseEventFormData(data)
   let { isValid, message } = input.validate()
   if (!isValid) {
     return json({ message }, { status: 401 })
@@ -103,5 +102,5 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
   }
 
   return json({ message: "Training event was updated succesfully" }, { status: 200 })
-});
+};
 

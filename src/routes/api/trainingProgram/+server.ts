@@ -3,10 +3,9 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { TrainingProgramFormData } from "$lib/trainingProgram";
 import type { ExerciseEvent, TrainingProgram } from "@prisma/client";
 import { SERVER_ERROR } from "$lib/helperTypes";
-import { protectedEndpoint } from "$lib/auth";
 import { prisma } from "$lib/prisma";
 
-export const GET: RequestHandler = protectedEndpoint(async ({ locals }) => {
+export const GET: RequestHandler = async ({ locals }) => {
   const { user } = locals;
 
   // Fetch 
@@ -26,17 +25,17 @@ export const GET: RequestHandler = protectedEndpoint(async ({ locals }) => {
   }
 
   return json({ trainingPrograms }, { status: 200 });
-});
+};
 
-export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
   let data = await request.json();
   const { user } = locals;
 
   // Validate input fields
-  let input = TrainingProgramFormData.fromObject(data)
+  let input = new TrainingProgramFormData(data)
   let { isValid, message } = input.validate()
   if (!isValid) {
-    return json({ message }, { status: 403 });
+    return json({ message }, { status: 400 });
   }
 
   let trainingProgram: TrainingProgram;
@@ -62,5 +61,5 @@ export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }
   }
 
   return json({ trainingProgram }, { status: 201 });
-});
+};
 

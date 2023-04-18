@@ -1,16 +1,26 @@
 <script lang="ts">
-	import type { ChartFormData } from '$lib/chart';
+	import { ChartFormData } from '$lib/chart';
+	import type { Chart } from '@prisma/client';
+	import { page } from '$app/stores';
 
-	export let chartFormData: ChartFormData;
 	// Form action to execute, which may need to be specified if this is
 	// used outside of this route
-	export let action: string = '?/newChart';
-	export let redirectTo: string = '';
+	export let action: string = '?/newExerciseEvent';
+
+	// Add redirect data
+	if ($page.url.searchParams.has('redirectTo')) {
+		action += '&redirectTo=' + $page.url.searchParams.get('redirectTo');
+	}
+
+	export let chart: Chart | undefined = undefined;
+	export let chartFormData: ChartFormData = new ChartFormData();
+	if (chart != undefined) {
+		chartFormData = new ChartFormData(chart);
+	}
 </script>
 
 <form method="POST" {action}>
-	<input type="hidden" name="redirectTo" value={redirectTo} />
-	<input type="hidden" name="id" value={chartFormData._id} />
+	<input type="hidden" name="id" value={chart?.id} />
 
 	<label class="font-bold" for="name">Name</label>
 	<br />

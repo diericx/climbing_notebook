@@ -1,24 +1,32 @@
 <script lang="ts">
-	import type { JournalEntryFormData } from '$lib/journalEntry';
+	import { JournalEntryFormData } from '$lib/journalEntry';
 	import TabEnabledTextArea from '$lib/components/tabEnabledTextArea.svelte';
-	import dayjs from 'dayjs';
 	import { enhance } from '$app/forms';
+	import DateInput from '$lib/components/dateInput.svelte';
+	import type { JournalEntry } from '@prisma/client';
+	import { page } from '$app/stores';
 
-	export let journalEntryFormData: JournalEntryFormData;
 	// Form action to execute
 	export let action: string = '?/newJournalEntry';
-	export let redirectTo: string = '';
 
-	let dateString = dayjs(new Date()).format('YYYY-MM-DD');
+	// Add redirect data
+	if ($page.url.searchParams.has('redirectTo')) {
+		action += '&redirectTo=' + $page.url.searchParams.get('redirectTo');
+	}
+
+	export let journalEntry: JournalEntry | undefined = undefined;
+	export let journalEntryFormData: JournalEntryFormData = new JournalEntryFormData();
+	if (journalEntry != undefined) {
+		journalEntryFormData = new JournalEntryFormData(journalEntry);
+	}
 </script>
 
 <form method="POST" {action} use:enhance>
 	<input type="hidden" name="type" value="climbing" />
-	<input type="hidden" name="redirectTo" value={redirectTo} />
 
 	<label class="font-bold" for="date">Date</label>
 	<br />
-	<input type="date" name="date" bind:value={dateString} style="width: 150px" />
+	<DateInput name="date" bind:date={journalEntryFormData.date} style="width: 150px" />
 	<br />
 
 	<label class="font-bold" for="content">Content</label>

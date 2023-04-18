@@ -1,11 +1,11 @@
-import { protectedPage } from '$lib/auth';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import type { Profile } from '@prisma/client';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load = protectedPage((async ({ fetch, session }) => {
-  const response = await fetch(`/api/profile/${session.userId}`, {
+export const load: PageServerLoad = async ({ fetch, locals }) => {
+  const { session } = locals;
+  const response = await fetch(`/api/profile/${session!.userId}`, {
     method: "GET",
   })
   if (!response.ok) {
@@ -19,4 +19,4 @@ export const load = protectedPage((async ({ fetch, session }) => {
   const profile: Profile = data.profile;
 
   return { profile };
-}) satisfies PageServerLoad)
+};

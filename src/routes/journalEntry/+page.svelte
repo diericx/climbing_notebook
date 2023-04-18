@@ -1,14 +1,12 @@
 <script lang="ts">
 	import type { PageData, ActionData } from './$types';
 	import JournalEntryForm from './form.svelte';
-	import { JournalEntryFormData } from '$lib/journalEntry';
 	import { confirmDelete } from '$lib/utils';
 	import { enhance } from '$app/forms';
+	import { JournalEntryFormData } from '$lib/journalEntry';
 
 	export let data: PageData;
 	export let form: ActionData;
-	const journalEntryFormData: JournalEntryFormData =
-		(form?.journalEntryFormData as JournalEntryFormData) || new JournalEntryFormData();
 </script>
 
 {#if form?.message}<p class="error">{form?.message}</p>{/if}
@@ -23,7 +21,7 @@
 	<div>
 		<h2>New Journal Entry</h2>
 		<hr />
-		<JournalEntryForm {journalEntryFormData} />
+		<JournalEntryForm journalEntryFormData={new JournalEntryFormData(form?.journalEntryFormData)} />
 	</div>
 </div>
 

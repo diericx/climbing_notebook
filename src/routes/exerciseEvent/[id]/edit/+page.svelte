@@ -7,15 +7,6 @@
 
 	export let data: PageData;
 	export let form: ActionData;
-
-	// Either grab form data from the Sveltekit form obj,
-	// or generate a new one from incoming page data
-	const exerciseEventFormData: ExerciseEventFormData =
-		(data.exerciseEvent as ExerciseEventFormData) ||
-		(form?.exerciseEventFormData as ExerciseEventFormData) ||
-		ExerciseEventFormData.fromObject(data?.exerciseEvent);
-
-	let redirectTo = form?.redirectTo || data.redirectTo || '';
 </script>
 
 {#if form?.message}<p class="server-message {$page.status == 200 ? 'success' : 'error'}">
@@ -27,6 +18,10 @@
 <div class="grid grid-cols-1">
 	<div>
 		<h2>Edit Exercise Event</h2>
-		<ExerciseEventForm action="?/editExerciseEvent" {redirectTo} {exerciseEventFormData} />
+		<ExerciseEventForm
+			action="?/editExerciseEvent"
+			exerciseEventFormData={new ExerciseEventFormData(form?.exerciseEventFormData)}
+			exerciseEvent={data.exerciseEvent}
+		/>
 	</div>
 </div>

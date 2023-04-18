@@ -2,11 +2,10 @@ import { json } from "@sveltejs/kit";
 import type { RequestHandler } from '@sveltejs/kit';
 import type { Chart } from "@prisma/client";
 import { SERVER_ERROR } from "$lib/helperTypes";
-import { protectedEndpoint } from "$lib/auth";
 import { prisma } from "$lib/prisma";
 import { ChartFormData } from "$lib/chart";
 
-export const GET: RequestHandler = protectedEndpoint(async ({ locals }) => {
+export const GET: RequestHandler = async ({ locals }) => {
   const { user } = locals;
 
   // Fetch all
@@ -26,14 +25,14 @@ export const GET: RequestHandler = protectedEndpoint(async ({ locals }) => {
   }
 
   return json({ charts }, { status: 200 });
-});
+};
 
-export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
   let data = await request.json();
   const { user } = locals;
 
   // Validate input fields
-  let input = ChartFormData.fromObject(data)
+  let input = new ChartFormData(data)
   let { isValid, message } = input.validate()
   if (!isValid) {
     return json({ message }, { status: 403 });
@@ -57,5 +56,5 @@ export const POST: RequestHandler = protectedEndpoint(async ({ request, locals }
   }
 
   return json({ chart }, { status: 201 });
-});
+};
 

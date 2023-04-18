@@ -1,12 +1,11 @@
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from '@sveltejs/kit';
 import { SERVER_ERROR } from "$lib/helperTypes";
-import { protectedEndpoint } from "$lib/auth";
 import type { Profile } from "@prisma/client";
 import { prisma } from "$lib/prisma";
 import { ProfileFormData } from "$lib/profile";
 
-export const GET: RequestHandler = protectedEndpoint(async ({ locals, params }) => {
+export const GET: RequestHandler = async ({ locals, params }) => {
   const { id } = params;
 
   // Fetch
@@ -47,9 +46,9 @@ export const GET: RequestHandler = protectedEndpoint(async ({ locals, params }) 
   }
 
   return json({ profile }, { status: 200 });
-});
+};
 
-export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request, url, params }) => {
+export const PATCH: RequestHandler = async ({ locals, request, url, params }) => {
   let data = await request.json();
   const { user } = locals;
   const { id } = params;
@@ -60,7 +59,7 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
   }
 
   // Get form data
-  let input = ProfileFormData.fromObject(data)
+  let input = new ProfileFormData(data)
   let { isValid, message } = input.validate()
   if (!isValid) {
     return json({ message }, { status: 401 })
@@ -86,5 +85,5 @@ export const PATCH: RequestHandler = protectedEndpoint(async ({ locals, request,
   }
 
   return json({ message: "Profile was updated succesfully" }, { status: 200 })
-});
+};
 

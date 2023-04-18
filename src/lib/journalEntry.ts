@@ -1,40 +1,39 @@
-import { fail, type Action, type Actions } from "@sveltejs/kit";
-import { enhancedFormAction } from "./utils";
+import type { JournalEntry as _JournalEntry } from "@prisma/client";
+import { fail, redirect, type Actions } from "@sveltejs/kit";
+import { isNaN } from "mathjs";
 
 export class JournalEntryFormData {
-  constructor(
-    public date: string = "",
-    public content: string = "",
-    public type: string = "",
-  ) { }
+  date: Date = new Date();
+  content: string = "";
+  type: string = "";
 
-  // Create a TrainingEvent from an object 
-  static fromObject({ date, content, type }): JournalEntryFormData {
-    return Object.assign(new JournalEntryFormData(), {
-      date,
-      content,
-      type,
-    });
+  constructor(obj: any | undefined = undefined) {
+    if (obj == undefined) {
+      return
+    }
+    const { date, content, type } = obj;
+    this.date = date == undefined ? this.date : new Date(date);
+    this.content = content == undefined ? this.content : content;
+    this.type = type == undefined ? this.type : type;
   }
 
   validate() {
-    if (!this.content || this.content == "") {
+    if (isNaN(this.date.valueOf())) {
+      return {
+        isValid: false,
+        message: "Invalid date."
+      }
+    }
+    if (this.content == "") {
       return {
         isValid: false,
         message: "Content is required."
       }
     }
-    if (!this.type || this.type == "") {
+    if (this.type == "") {
       return {
         isValid: false,
         message: "Type is required."
-      }
-    }
-    // Validate date string
-    if (isNaN(Date.parse(this.date))) {
-      return {
-        isValid: false,
-        message: "Invalid date"
       }
     }
 
@@ -46,7 +45,9 @@ export class JournalEntryFormData {
 }
 
 export const journalEntryActions: Actions = {
-  newJournalEntry: enhancedFormAction(async ({ fetch, formData }) => {
+  newJournalEntry: async ({ fetch, request, url }) => {
+    const formData = Object.fromEntries((await request.formData()).entries());
+
     const response = await fetch("/api/journalEntry", {
       method: "POST",
       body: JSON.stringify(formData),
@@ -60,26 +61,16 @@ export const journalEntryActions: Actions = {
         journalEntryFormData: formData
       })
     }
-    return data;
-  }),
 
-  deleteJournalEntry: enhancedFormAction(async ({ fetch, formData }) => {
-    const response = await fetch(`/api/journalEntry/${formData.id}`, {
-      method: "DELETE",
-    })
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return fail(response.status, {
-        message: data.message,
-      })
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
     }
 
-    return data;
-  }),
+    return { success: true };
+  },
 
-  editJournalEntry: enhancedFormAction(async ({ request, fetch, params, formData }) => {
+  editJournalEntry: async ({ request, fetch, params, url }) => {
+    const formData = Object.fromEntries((await request.formData()).entries());
     const { id } = params;
 
     const response = await fetch(`/api/journalEntry/${id}`, {
@@ -96,6 +87,32 @@ export const journalEntryActions: Actions = {
       })
     }
 
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
+
+    return { success: true };
+  },
+
+  deleteJournalEntry: async ({ fetch, request, url }) => {
+    const formData = Object.fromEntries((await request.formData()).entries());
+
+    const response = await fetch(`/api/journalEntry/${formData.id}`, {
+      method: "DELETE",
+    })
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return fail(response.status, {
+        message: data.message,
+      })
+    }
+
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
+
     return data;
-  }),
+  },
 }

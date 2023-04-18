@@ -2,11 +2,10 @@ import { json } from "@sveltejs/kit";
 import type { RequestHandler } from '@sveltejs/kit';
 import type { Chart, Metric } from "@prisma/client";
 import { SERVER_ERROR } from "$lib/helperTypes";
-import { protectedEndpoint } from "$lib/auth";
 import { prisma } from "$lib/prisma";
 import { ChartFormData } from "$lib/chart";
 
-export const GET: RequestHandler = protectedEndpoint(async ({ locals, url }) => {
+export const GET: RequestHandler = async ({ locals, url }) => {
   const { user } = locals;
 
   const dateMin = url.searchParams.get('dateMin') ?? undefined
@@ -33,4 +32,4 @@ export const GET: RequestHandler = protectedEndpoint(async ({ locals, url }) => 
   }
 
   return json({ metrics }, { status: 200 });
-});
+};

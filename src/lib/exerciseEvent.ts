@@ -1,61 +1,45 @@
-import { fail, type Action, type Actions } from "@sveltejs/kit"
-import { enhancedFormAction, toNum } from "./utils"
+import { fail, redirect, type Actions } from "@sveltejs/kit"
+import { toNum } from "./utils"
 
 export class ExerciseEventFormData {
-  public date?: string
-  public name: string = ""
-  public sets: number = 0
-  public reps: number = 0
-  public weight: number = 0
-  public seconds: number = 0
-  public minutes: number = 0
-  public difficulty?: number
-  public notes: string = ""
-  public trainingProgramDayId?: number
+  date: Date = new Date();
+  name: string = "";
+  sets: number = 0;
+  reps: number = 0;
+  weight: number = 0;
+  seconds: number = 0;
+  minutes: number = 0;
+  difficulty: number = 0;
+  notes: string = "";
 
-  constructor(params) {
-    if (params == undefined) {
+  constructor(obj: any | undefined = undefined) {
+    if (obj == undefined) {
       return
     }
-    const { difficulty } = params;
-    this.difficulty = difficulty;
-  }
-
-  // Create an Exercise from an object 
-  static fromObject({ date, name, sets, reps, weight, seconds, minutes, difficulty, notes, trainingProgramDayId }): ExerciseEventFormData {
-    return Object.assign(new ExerciseEventFormData(), {
-      date,
-      name,
-      sets: toNum(sets, 0),
-      reps: toNum(reps, 0),
-      weight: toNum(weight, 0),
-      seconds: toNum(seconds, 0),
-      minutes: toNum(minutes, 0),
-      difficulty: toNum(difficulty, undefined),
-      notes,
-      trainingProgramDayId: toNum(trainingProgramDayId, undefined)
-    });
+    const { date, name, sets, reps, weight, seconds, minutes, difficulty, notes } = obj;
+    this.date = date == undefined ? this.date : new Date(date);
+    this.name = name == undefined ? this.name : name;
+    this.sets = sets == undefined ? this.sets : toNum(sets, 0);
+    this.reps = reps == undefined ? this.reps : toNum(reps, 0);
+    this.weight = weight == undefined ? this.weight : toNum(weight, 0);
+    this.seconds = seconds == undefined ? this.seconds : toNum(seconds, 0);
+    this.minutes = minutes == undefined ? this.minutes : toNum(minutes, 0);
+    this.difficulty = difficulty == undefined ? this.difficulty : toNum(difficulty, 0);
+    this.notes = notes == undefined ? this.notes : notes;
   }
 
   validate() {
+    if (isNaN(this.date.valueOf())) {
+      return {
+        isValid: false,
+        message: "Invalid date."
+      }
+    }
+
     if (!this.name || this.name == "") {
       return {
         isValid: false,
         message: "Name is required."
-      }
-    }
-    // Validate date string
-    if (this.date && isNaN(Date.parse(this.date))) {
-      return {
-        isValid: false,
-        message: "Invalid date"
-      }
-    }
-
-    if (this.trainingProgramDayId == undefined && this.difficulty == undefined) {
-      return {
-        isValid: false,
-        message: "Difficulty is required"
       }
     }
 
@@ -67,7 +51,9 @@ export class ExerciseEventFormData {
 }
 
 export const exerciseEventActions: Actions = {
-  newExerciseEvent: enhancedFormAction((async ({ fetch, formData }) => {
+  newExerciseEvent: async ({ fetch, request, url }) => {
+    const formData = Object.fromEntries((await request.formData()).entries());
+
     const response = await fetch("/api/exerciseEvent", {
       method: "POST",
       body: JSON.stringify(formData),
@@ -82,10 +68,16 @@ export const exerciseEventActions: Actions = {
       })
     }
 
-    return data;
-  }) satisfies Action),
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
 
-  deleteExerciseEvent: enhancedFormAction((async ({ fetch, formData }) => {
+    return { success: true };
+  },
+
+  deleteExerciseEvent: async ({ fetch, request, url }) => {
+    const formData = Object.fromEntries((await request.formData()).entries());
+
     const response = await fetch(`/api/exerciseEvent/${formData.id}`, {
       method: "DELETE",
     })
@@ -98,11 +90,17 @@ export const exerciseEventActions: Actions = {
       })
     }
 
-    return data;
-  }) satisfies Action),
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
 
-  editExerciseEvent: enhancedFormAction((async ({ fetch, formData, params }) => {
+    return data;
+  },
+
+  editExerciseEvent: async ({ fetch, params, request, url }) => {
+    const formData = Object.fromEntries((await request.formData()).entries());
     const { id } = params;
+
     const response = await fetch(`/api/exerciseEvent/${id}`, {
       method: "PATCH",
       body: JSON.stringify(formData)
@@ -113,9 +111,14 @@ export const exerciseEventActions: Actions = {
     if (!response.ok) {
       return fail(response.status, {
         message: data.message,
+        exerciseEventFormData: formData
       })
     }
 
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
+
     return data;
-  }) satisfies Action)
+  }
 }

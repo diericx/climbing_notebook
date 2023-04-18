@@ -1,22 +1,25 @@
-import { fail, type Action, type Actions } from "@sveltejs/kit"
+import { fail, redirect, type Action, type Actions } from "@sveltejs/kit"
 import { enhancedFormAction, toNum } from "./utils"
 
 export class ChartFormData {
-  public name: string = ""
-  public type: string = ""
-  public patternToMatch: string = ""
-  public matchAgainst: string = ""
-  public equation: string = ""
+  date: Date = new Date();
+  name: string = "";
+  type: string = "";
+  patternToMatch: string = "";
+  matchAgainst: string = "";
+  equation: string = "";
 
-  // Create an Exercise from an object 
-  static fromObject({ name, type, patternToMatch, matchAgainst, equation }): ChartFormData {
-    return Object.assign(new ChartFormData(), {
-      name,
-      type,
-      patternToMatch,
-      matchAgainst,
-      equation,
-    });
+  constructor(obj: any | undefined = undefined) {
+    if (obj == undefined) {
+      return
+    }
+    const { date, name, type, patternToMatch, matchAgainst, equation } = obj;
+    this.date = date == undefined ? this.date : new Date(date);
+    this.name = name == undefined ? this.name : name;
+    this.type = type == undefined ? this.type : type;
+    this.patternToMatch = patternToMatch == undefined ? this.patternToMatch : patternToMatch;
+    this.matchAgainst = matchAgainst == undefined ? this.matchAgainst : matchAgainst;
+    this.equation = equation == undefined ? this.equation : equation;
   }
 
   validate() {
@@ -24,6 +27,24 @@ export class ChartFormData {
       return {
         isValid: false,
         message: "Name is required."
+      }
+    }
+    if (!this.type || this.type == "") {
+      return {
+        isValid: false,
+        message: "Type is required."
+      }
+    }
+    if (!this.matchAgainst || this.matchAgainst == "") {
+      return {
+        isValid: false,
+        message: "Match against is required."
+      }
+    }
+    if (!this.equation || this.equation == "") {
+      return {
+        isValid: false,
+        message: "Equation is required."
       }
     }
     return {
@@ -34,7 +55,9 @@ export class ChartFormData {
 }
 
 export const chartActions: Actions = {
-  newChart: enhancedFormAction((async ({ fetch, formData }) => {
+  newChart: async ({ fetch, request, url }) => {
+    const formData = Object.fromEntries((await request.formData()).entries());
+
     const response = await fetch("/api/chart", {
       method: "POST",
       body: JSON.stringify(formData),
@@ -49,10 +72,16 @@ export const chartActions: Actions = {
       })
     }
 
-    return data;
-  }) satisfies Action),
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
 
-  editChart: enhancedFormAction((async ({ fetch, formData, params }) => {
+    return { success: true };
+  },
+
+  editChart: async ({ fetch, params, request, url }) => {
+    const formData = Object.fromEntries((await request.formData()).entries());
+
     const { id } = params;
     const response = await fetch(`/api/chart/${id}`, {
       method: "PATCH",
@@ -67,10 +96,16 @@ export const chartActions: Actions = {
       })
     }
 
-    return data;
-  }) satisfies Action),
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
 
-  deleteChart: enhancedFormAction((async ({ fetch, formData, params }) => {
+    return data;
+  },
+
+  deleteChart: async ({ fetch, request, url }) => {
+    const formData = Object.fromEntries((await request.formData()).entries());
+
     const response = await fetch(`/api/chart/${formData.id}`, {
       method: "DELETE",
     })
@@ -83,6 +118,10 @@ export const chartActions: Actions = {
       })
     }
 
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
+
     return data;
-  }) satisfies Action)
+  }
 }

@@ -1,32 +1,23 @@
-import { Prisma } from "@prisma/client";
-import { fail, type Actions } from "@sveltejs/kit";
-import { TrainingProgramDayFormData } from "./trainingProgramDay";
-import { enhancedFormAction } from "./utils";
+import { fail, redirect, type Actions } from "@sveltejs/kit";
 
 export class TrainingProgramFormData {
-  constructor(
-    public name: string = "",
-    public days: TrainingProgramDayFormData[] = [],
-    // Underscore allows reading in but prevents sending to database as an id
-    public _id?: number
-  ) {
-    if (this.days.length == 0) {
-      for (let i = 0; i < 7; i++) {
-        days.push(new TrainingProgramDayFormData())
-      }
-    }
-  }
+  name: string = "";
 
-  // Create from an object 
-  static fromObject({ name, days, id }): TrainingProgramFormData {
-    return Object.assign(new TrainingProgramFormData(), {
-      name,
-      days,
-      _id: id,
-    });
+  constructor(obj: any | undefined = undefined) {
+    if (obj == undefined) {
+      return
+    }
+    const { name } = obj;
+    this.name = name == undefined ? this.name : name;
   }
 
   validate() {
+    if (this.name == "") {
+      return {
+        isValid: false,
+        message: "Name is required."
+      }
+    }
     return {
       isValid: true,
       message: "",
@@ -35,7 +26,9 @@ export class TrainingProgramFormData {
 }
 
 export const trainingProgramActions: Actions = {
-  newTrainingProgram: enhancedFormAction(async ({ fetch, formData }) => {
+  newTrainingProgram: async ({ fetch, request, url }) => {
+    const formData = Object.fromEntries((await request.formData()).entries());
+
     const response = await fetch("/api/trainingProgram", {
       method: "POST",
       body: JSON.stringify(formData),
@@ -49,10 +42,17 @@ export const trainingProgramActions: Actions = {
         trainingProgramFormData: formData
       })
     }
-    return data;
-  }),
 
-  deleteTrainingProgram: enhancedFormAction(async ({ fetch, formData }) => {
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
+
+    return data;
+  },
+
+  deleteTrainingProgram: async ({ fetch, request, url }) => {
+    const formData = Object.fromEntries((await request.formData()).entries());
+
     const response = await fetch(`/api/trainingProgram/${formData.id}`, {
       method: "DELETE",
     })
@@ -65,10 +65,16 @@ export const trainingProgramActions: Actions = {
       })
     }
 
-    return data;
-  }),
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
 
-  patchTrainingProgram: enhancedFormAction(async ({ fetch, formData }) => {
+    return data;
+  },
+
+  patchTrainingProgram: async ({ fetch, request, url }) => {
+    const formData = Object.fromEntries((await request.formData()).entries());
+
     const response = await fetch(`/api/trainingProgram/${formData.id}`, {
       method: "PATCH",
       body: formData.trainingProgram,
@@ -82,6 +88,10 @@ export const trainingProgramActions: Actions = {
       })
     }
 
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
+
     return data;
-  })
+  }
 }

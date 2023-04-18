@@ -6,7 +6,8 @@ import { LuciaError } from "lucia-auth";
 import { SERVER_ERROR } from "$lib/helperTypes";
 
 export const POST: RequestHandler = async ({ request }) => {
-  const { username, password } = await request.json();
+  let data = await request.json();
+  const { username, password } = data;
 
   if (!isUsernameValid(username)) {
     return json({ message: "Username cannot be empty" }, { status: 401 })
@@ -27,7 +28,7 @@ export const POST: RequestHandler = async ({ request }) => {
         e.message === 'AUTH_INVALID_PASSWORD' ||
         e.message === 'AUTH_INVALID_SESSION_ID')
     ) {
-      return json({ message: "Incorrect username or password." }, { status: 400 })
+      return json({ message: "Incorrect username or password." }, { status: 401 })
     }
 
     // Print and communicate unknown errors
