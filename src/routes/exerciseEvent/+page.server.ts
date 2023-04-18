@@ -1,11 +1,10 @@
 import type { Actions } from "./$types";
 import type { PageServerLoad } from './$types';
-import type { ExerciseEvent, Profile } from "@prisma/client";
+import type { ExerciseEvent } from "@prisma/client";
 import { exerciseEventActions } from "$lib/exerciseEvent";
 import type { ProfileWithActiveTrainingProgram } from "$lib/prisma";
 
-export const load: PageServerLoad = async ({ fetch, locals }) => {
-  const { session } = locals;
+export const load: PageServerLoad = async ({ fetch }) => {
   // Get all exercise events for this user
   let response = await fetch("/api/exerciseEvent", {
     method: "GET",
@@ -14,7 +13,7 @@ export const load: PageServerLoad = async ({ fetch, locals }) => {
   const exerciseEvents: ExerciseEvent[] = data.exercises;
 
   // Get the user's profile
-  response = await fetch(`/api/profile/${session!.userId}`, {
+  response = await fetch(`/api/profile`, {
     method: "GET",
   })
   data = await response.json();

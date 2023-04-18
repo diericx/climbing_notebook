@@ -5,15 +5,15 @@ import type { Profile } from "@prisma/client";
 import { prisma } from "$lib/prisma";
 import { ProfileFormData } from "$lib/profile";
 
-export const GET: RequestHandler = async ({ locals, params }) => {
-  const { id } = params;
+export const GET: RequestHandler = async ({ locals }) => {
+  const { user } = locals;
 
   // Fetch
   let profile: Profile;
   try {
     let profiles = await prisma.profile.findMany({
       where: {
-        ownerId: Number(id),
+        ownerId: Number(user?.userId),
       },
       include: {
         activeTrainingProgram: {
@@ -48,15 +48,9 @@ export const GET: RequestHandler = async ({ locals, params }) => {
   return json({ profile }, { status: 200 });
 };
 
-export const PATCH: RequestHandler = async ({ locals, request, url, params }) => {
+export const PATCH: RequestHandler = async ({ locals, request }) => {
   let data = await request.json();
   const { user } = locals;
-  const { id } = params;
-
-  // Validate params
-  if (!id || isNaN(Number(id))) {
-    return json({ message: "Valid id required" }, { status: 401 })
-  }
 
   // Get form data
   let input = new ProfileFormData(data)

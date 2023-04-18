@@ -1,23 +1,21 @@
 import type { Actions } from "./$types";
 import type { PageServerLoad } from './$types';
-import type { Profile, TrainingProgram } from "@prisma/client";
+import type { TrainingProgram } from "@prisma/client";
 import { trainingProgramActions } from "$lib/trainingProgram";
-import { profileActions } from "$lib/profile";
+import type { ProfileWithActiveTrainingProgram } from "$lib/prisma";
 
-export const load: PageServerLoad = async ({ fetch, locals }) => {
-  const { session } = locals;
-
+export const load: PageServerLoad = async ({ fetch }) => {
   let response = await fetch("/api/trainingProgram", {
     method: "GET",
   })
   let data = await response.json();
   const trainingPrograms: TrainingProgram[] = data.trainingPrograms;
 
-  response = await fetch(`/api/profile/${session!.userId}`, {
+  response = await fetch(`/api/profile`, {
     method: "GET",
   })
   data = await response.json();
-  const profile: Profile = data.profile
+  const profile: ProfileWithActiveTrainingProgram = data.profile
 
   return {
     trainingPrograms,
@@ -27,5 +25,4 @@ export const load: PageServerLoad = async ({ fetch, locals }) => {
 
 export const actions: Actions = {
   ...trainingProgramActions,
-  ...profileActions
 }

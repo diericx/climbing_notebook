@@ -16,14 +16,13 @@
 {#if profile}
 	<div class="pb-4">
 		<h1 class="inline">Your Goals</h1>
-		<a href={`/profile/${$user?.userId}/edit?redirectTo=/`}>Edit</a>
+		<a href={`/profile/edit?redirectTo=/`}>Edit</a>
 
 		<hr />
 		{#if !profile.goals || profile.goals == ''}
 			<p class="text-gray-400">
-				You don't have any goals yet! Edit your <a
-					href={`/profile/${$user?.userId}/edit?redirectTo=/`}>Profile</a
-				> set some.
+				You don't have any goals yet! Edit your <a href={`/profile/edit?redirectTo=/`}>Profile</a> set
+				some.
 			</p>
 		{:else}
 			<div class="whitespace-pre border bg-white w-full px-1 py-3">

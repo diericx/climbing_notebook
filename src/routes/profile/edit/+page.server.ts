@@ -1,15 +1,14 @@
 import type { Actions } from "./$types";
-import { error, fail } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from "../$types";
 import { SERVER_ERROR } from "$lib/helperTypes";
 import type { Profile } from "@prisma/client";
-import { profileActions } from "$lib/profile";
 
 export const load: PageServerLoad = async ({ fetch, url, params }) => {
   const { id } = params;
   const redirectTo = url.searchParams.get("redirectTo");
 
-  const response = await fetch(`/api/profile/${id}`, {
+  const response = await fetch(`/api/profile`, {
     method: "GET",
   })
   if (!response.ok) {
@@ -30,5 +29,28 @@ export const load: PageServerLoad = async ({ fetch, url, params }) => {
 };
 
 export const actions: Actions = {
-  ...profileActions
+  editProfile: async ({ fetch, request, url }) => {
+    const formData = Object.fromEntries((await request.formData()).entries());
+
+    const response = await fetch(`/api/profile`, {
+      method: "PATCH",
+      body: JSON.stringify(formData),
+    })
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error(response.text())
+      return fail(response.status, {
+        message: SERVER_ERROR,
+        userFormData: formData,
+      })
+    }
+
+
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
+
+    return data;
+  }
 }

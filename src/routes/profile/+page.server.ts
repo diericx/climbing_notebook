@@ -4,8 +4,7 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ fetch, locals }) => {
-  const { session } = locals;
-  const response = await fetch(`/api/profile/${session!.userId}`, {
+  const response = await fetch(`/api/profile`, {
     method: "GET",
   })
   if (!response.ok) {

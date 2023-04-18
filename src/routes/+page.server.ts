@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ locals, fetch }) => {
     return {}
   }
 
-  let response = await fetch(`/api/profile/${session?.userId}`, {
+  let response = await fetch(`/api/profile`, {
     method: "GET",
   })
   if (!response.ok) {

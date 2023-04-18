@@ -2,7 +2,7 @@
 	import type { PageData, ActionData } from './$types';
 	import { page } from '$app/stores';
 
-	import ProfileForm from '../../form.svelte';
+	import ProfileForm from '../form.svelte';
 	import { ProfileFormData } from '$lib/profile';
 
 	export let data: PageData;

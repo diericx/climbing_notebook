@@ -18,7 +18,7 @@
 <br />
 
 <h1 class="inline">Profile</h1>
-<a href={`/profile/${$user?.userId}/edit?redirectTo=/profile`}>Edit</a>
+<a href={`/profile/edit?redirectTo=/profile`}>Edit</a>
 <hr />
 
 <h2>Goals</h2>

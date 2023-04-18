@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import { confirmDelete } from '$lib/utils';
 	import type { PageData, ActionData } from './$types';
 	import WeeklyCalendar from './weekCalendar.svelte';
@@ -6,7 +7,8 @@
 	export let data: PageData;
 	export let form: ActionData;
 
-	const { profile, trainingPrograms } = data;
+	$: profile = data.profile;
+	$: trainingPrograms = data.trainingPrograms;
 </script>
 
 {#if form?.message}<p class="error">{form?.message}</p>{/if}
@@ -49,7 +51,12 @@
 							<td>{program.name}</td>
 							<td>{profile.activeTrainingProgramId == program.id}</td>
 							<td class="float-right">
-								<form method="POST" action={`?/editProfile`} class="inline">
+								<form
+									method="POST"
+									action={`/profile/edit?/editProfile`}
+									class="inline"
+									use:enhance
+								>
 									<input type="hidden" name="activeTrainingProgramId" value={program.id} />
 									<input type="submit" class="link-button" value="Set As Active" />
 								</form>
