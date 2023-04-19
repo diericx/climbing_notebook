@@ -15,7 +15,7 @@ const logger: Handle = async ({ event, resolve }) => {
     event.url.pathname.startsWith("/profile") ||
     event.url.pathname.startsWith("/trainingProgram")
   ) {
-    if (!user || !session || session.state !== 'active') {
+    if (!session) {
       throw redirect(303, '/login?redirectTo=' + event.url.pathname)
     }
   }
