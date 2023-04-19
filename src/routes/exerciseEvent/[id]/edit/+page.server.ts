@@ -30,7 +30,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 
 export const actions: Actions = {
   deleteExerciseEvent: async ({ locals, request, url }) => {
-    const { user } = locals
+    const { user } = await locals.auth.validateUser();
     const rawFormData = Object.fromEntries((await request.formData()).entries());
     const id = Number(rawFormData.id)
 
