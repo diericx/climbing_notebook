@@ -3,9 +3,12 @@
 	import Header from './Header.svelte';
 	import './styles.css';
 	import '../app.css';
-	import { page, navigating } from '$app/stores';
+	import { navigating } from '$app/stores';
+	import type { PageData } from './$types';
 	// NProgress css
 	import 'nprogress/nprogress.css';
+
+	export let data: PageData;
 
 	NProgress.configure({
 		minimum: 0.16
@@ -22,7 +25,7 @@
 </script>
 
 <div class="app">
-	<Header />
+	<Header user={data.user} />
 
 	<div class="container mx-auto">
 		<main>

@@ -8,6 +8,7 @@ import { ProfileRepo } from "$lib/profile";
 import type { Chart, Metric, Profile } from "@prisma/client";
 import { error, fail, type Actions } from "@sveltejs/kit";
 import type { PageServerLoad } from './$types';
+import { auth } from '$lib/server/lucia';
 
 export const load: PageServerLoad = async ({ locals }) => {
   // Unprotected page, session may not exist
@@ -80,4 +81,4 @@ export const actions: Actions = {
     await auth.invalidateSession(session.sessionId);
     locals.auth.setSession(null);
   }
-};
+}

@@ -13,7 +13,7 @@
 <header>
 	<div>
 		<div class="bg-white">
-			<nav class="px-6 py-3 mx-auto md:flex  md:items-center">
+			<nav class="px-6 py-3 mx-auto md:flex md:items-center">
 				<div class="flex items-center justify-between">
 					<a href="/" class="flex items-center">
 						<img src={logo} class="h-6 mr-3 sm:h-9" alt="Logo" />
@@ -69,7 +69,7 @@
 							</a>
 
 							<div class="hidden md:inline">|</div>
-							<form use:enhance method="POST" action="?/signout">
+							<form use:enhance method="POST" action="/?/signout">
 								<button class="border-0 shadow-none" style="margin-top: 0px">Logout</button>
 							</form>
 						{:else}
