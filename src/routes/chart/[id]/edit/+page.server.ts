@@ -34,13 +34,6 @@ export const actions: Actions = {
     const { user } = await locals.auth.validateUser();
     let id = Number(params.id);
 
-    // Validate input fields
-    const input = new ChartFormData(rawFormData);
-    let { message, isValid } = input.validate()
-    if (!isValid) {
-      return fail(401, { message, chartFormData: rawFormData })
-    }
-
     const repo = new ChartRepo(prisma);
     try {
       await repo.update(input, id, Number(user?.userId));
