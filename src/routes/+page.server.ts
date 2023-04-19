@@ -6,15 +6,14 @@ import { MetricRepo } from "$lib/metric";
 import { prisma } from "$lib/prisma";
 import { ProfileRepo } from "$lib/profile";
 import type { Chart, Metric, Profile } from "@prisma/client";
-import { error, fail } from "@sveltejs/kit";
+import { error, fail, type Actions } from "@sveltejs/kit";
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
   // Unprotected page, session may not exist
-  const session = await locals.validate();
-  const { user } = locals;
+  const { user } = await locals.auth.validateUser();
 
-  if (!session || session.state != 'active') {
+  if (!user) {
     return {}
   }
 
@@ -73,3 +72,12 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   return { profile, charts, exerciseEvents, metrics }
 }
+
+export const actions: Actions = {
+  signout: async ({ locals }) => {
+    const session = await locals.auth.validate();
+    if (!session) return fail(401);
+    await auth.invalidateSession(session.sessionId);
+    locals.auth.setSession(null);
+  }
+};

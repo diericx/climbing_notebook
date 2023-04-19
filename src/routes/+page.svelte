@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { getUser } from '@lucia-auth/sveltekit/client';
 	import TrainingProgramWeeklyCalendar from './trainingProgram/weekCalendar.svelte';
 	import type { ProfileWithActiveTrainingProgram } from '$lib/prisma';
 	import Chart from './chart/chart.svelte';

@@ -1,59 +1,104 @@
 import type { Actions } from "./$types";
 import { fail, redirect } from '@sveltejs/kit';
+import type { PageServerLoad } from "./$types";
+import { isPasswordValid, isUsernameValid } from "$lib/user";
+import { auth } from "$lib/server/lucia";
+import { LuciaError } from "lucia-auth";
+import { SERVER_ERROR } from "$lib/helperTypes";
+
+export const load: PageServerLoad = async ({ locals }) => {
+  const session = await locals.auth.validate();
+  if (session) throw redirect(302, '/');
+  return {};
+};
 
 export const actions: Actions = {
-  login: async ({ request, fetch, locals, url }) => {
-    const data = await request.formData();
-    const username = data.get("username");
-    const password = data.get("password");
-    const response = await fetch("/api/login", {
-      method: "POST",
-      body: JSON.stringify({
-        username,
-        password,
-      })
-    })
+  login: async ({ request, locals, url }) => {
+    const form = await request.formData();
+    const username = form.get('username');
+    const password = form.get('password');
 
-    const result = await response.json();
-
-    if (!response.ok) {
-      console.error(response);
-      return fail(500, {
-        message: result.message,
-        username,
-      })
+    if (!isUsernameValid(username)) {
+      return fail(401, { message: "Username cannot be empty" })
+    }
+    if (!isPasswordValid(password)) {
+      return fail(401, { message: "Password cannot be empty" })
     }
 
-    locals.setSession(result.session);
+    try {
+      const key = await auth.useKey("username", username, password);
+      const session = await auth.createSession(key.userId);
+      locals.auth.setSession(session);
+    } catch (e) {
+      // Catch KNOWN duplicate username/provider id errors from both Lucia and the 
+      // propogated Prisma erros.
+      if (
+        e instanceof LuciaError &&
+        (e.message === 'AUTH_INVALID_KEY_ID' ||
+          e.message === 'AUTH_INVALID_PASSWORD' ||
+          e.message === 'AUTH_INVALID_SESSION_ID')
+      ) {
+        console.error(e.name, e.message);
+        return fail(401, { message: "Incorrect username or password" })
+      }
 
-    throw redirect(303, url.searchParams.get('redirectTo') || '/');
+      // Print and communicate unknown errors
+      console.error(e.name, e.message);
+      return fail(401, { message: SERVER_ERROR })
+    }
+
+    return {
+      success: true
+    };
   },
 
   register: async ({ request, fetch, url }) => {
-    const data = await request.formData();
-    const username = data.get("username");
-    const email = data.get("email");
-    const password = data.get("password");
-    const response = await fetch("/api/register", {
-      method: "POST",
-      body: JSON.stringify({
-        username,
-        email,
-        password,
-      })
-    })
+    const form = await request.formData();
+    const username = form.get('username');
+    const password = form.get('password');
+    const email = form.get('email');
 
-    const result = await response.json();
-
-    if (!response.ok) {
-      console.error(result);
-      return fail(500, {
-        message: result.message,
-        username,
-        email,
-      })
+    if (!isUsernameValid(username)) {
+      return fail(401, { message: "Username cannot be empty" })
+    }
+    if (!isPasswordValid(password)) {
+      return fail(401, { message: "Password cannot be empty" })
     }
 
-    throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    try {
+      const user = await auth.createUser({
+        primaryKey: {
+          providerId: 'username',
+          providerUserId: username,
+          password
+        },
+        attributes: {
+          username,
+          email
+        }
+      });
+      const session = await auth.createSession(user.userId);
+      locals.auth.setSession(session);
+    } catch (e) {
+      // Catch KNOWN duplicate username/provider id errors from both Lucia and the 
+      // propogated Prisma erros.
+      if (
+        e instanceof LuciaError &&
+        (e.message === 'AUTH_INVALID_KEY_ID' ||
+          e.message === 'AUTH_INVALID_PASSWORD' ||
+          e.message === 'AUTH_INVALID_SESSION_ID')
+      ) {
+        console.error(e.name, e.message);
+        return fail(401, { message: "Incorrect username or password" })
+      }
+
+      // Print and communicate unknown errors
+      console.error(e.name, e.message);
+      return fail(401, { message: SERVER_ERROR })
+    }
+
+    return {
+      success: true
+    };
   }
 };

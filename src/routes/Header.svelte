@@ -1,14 +1,13 @@
 <script lang="ts">
-	import { signOut, getUser } from '@lucia-auth/sveltekit/client';
-	import { invalidateAll } from '$app/navigation';
-	const user = getUser();
-
+	import { enhance } from '$app/forms';
 	import logo from '$lib/images/logo.svg';
 	let showMenu = false;
 
 	function toggleNavbar() {
 		showMenu = !showMenu;
 	}
+
+	export let user: any | undefined;
 </script>
 
 <header>
@@ -61,24 +60,18 @@
 					</div>
 
 					<div class="ml-0 w-fit-content flex flex-col md:flex-none md:flex-row">
-						{#if $user}
+						{#if user}
 							<a
 								href="/profile"
 								class="px-4 text-center border text-gray-800 bg-white hover:text-indigo-600 rounded-md lg:inline border-0"
 							>
-								{$user.username}
+								{user.username}
 							</a>
 
 							<div class="hidden md:inline">|</div>
-
-							<button
-								class="border-0 shadow-none"
-								style="margin-top: 0px"
-								on:click={async () => {
-									await signOut();
-									invalidateAll();
-								}}>Logout</button
-							>
+							<form use:enhance method="POST" action="?/signout">
+								<button class="border-0 shadow-none" style="margin-top: 0px">Logout</button>
+							</form>
 						{:else}
 							<a
 								href="/login"

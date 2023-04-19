@@ -4,7 +4,6 @@
 	import { page } from '$app/stores';
 
 	export let form: ActionData;
-	export let data: PageData;
 
 	// Add redirect data
 	let redirectTo = '';

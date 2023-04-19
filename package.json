@@ -43,13 +43,12 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@lucia-auth/adapter-prisma": "^0.2.2",
-		"@lucia-auth/sveltekit": "^0.5.2",
+		"@lucia-auth/adapter-prisma": "^1.0.0",
 		"@prisma/client": "^4.9.0",
 		"@sveltejs/adapter-vercel": "^2.1.1",
 		"crypto": "^1.0.1",
 		"dayjs": "^1.11.7",
-		"lucia-auth": "^0.4.3",
+		"lucia-auth": "1.0.0",
 		"luxon": "^3.3.0",
 		"mathjs": "^11.8.0",
 		"svelte-frappe-charts": "github:diericx/svelte-frappe-charts"

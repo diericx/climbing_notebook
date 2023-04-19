@@ -8,7 +8,7 @@ import { SERVER_ERROR } from "$lib/helperTypes";
 import { TrainingProgramFormData, TrainingProgramRepo } from "$lib/trainingProgram";
 
 export const load: PageServerLoad = async ({ locals }) => {
-  const { user } = locals;
+  const { user } = await locals.auth.validateUser();
 
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
   let trainingPrograms;

@@ -14,7 +14,7 @@ model Chart {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
   ownerId   Int      @map("owner_id")
-  owner     User     @relation(fields: [ownerId], references: [id])
+  owner     AuthUser @relation(fields: [ownerId], references: [id])
 
   name           String
   type           String @default("line")
@@ -29,7 +29,7 @@ model ExerciseGroup {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
   ownerId   Int      @map("owner_id")
-  owner     User     @relation(fields: [ownerId], references: [id])
+  owner     AuthUser @relation(fields: [ownerId], references: [id])
 
   name                String
   exercises           ExerciseEvent[]
@@ -53,8 +53,8 @@ model ExerciseEvent {
   difficulty Int?
   notes      String    @default("")
 
-  ownerId Int  @map("owner_id")
-  owner   User @relation(fields: [ownerId], references: [id])
+  ownerId Int      @map("owner_id")
+  owner   AuthUser @relation(fields: [ownerId], references: [id])
 
   exerciseGroup        ExerciseGroup?      @relation(fields: [exerciseGroupId], references: [id], onDelete: Cascade)
   exerciseGroupId      Int?
@@ -86,7 +86,7 @@ model TrainingProgram {
   name      String
 
   ownerId        Int                  @map("owner_id")
-  owner          User                 @relation(fields: [ownerId], references: [id])
+  owner          AuthUser             @relation(fields: [ownerId], references: [id])
   days           TrainingProgramDay[]
   exerciseGroups ExerciseGroup[]
   profile        Profile[]
@@ -103,8 +103,8 @@ model Metric {
   journalEntry   JournalEntry @relation(fields: [journalEntryId], references: [id])
   journalEntryId Int
 
-  ownerId Int  @map("owner_id")
-  owner   User @relation(fields: [ownerId], references: [id])
+  ownerId Int      @map("owner_id")
+  owner   AuthUser @relation(fields: [ownerId], references: [id])
 
   @@map("metric")
 }
@@ -116,7 +116,7 @@ model JournalEntry {
   type      String
   content   String
   ownerId   Int      @map("owner_id")
-  owner     User     @relation(fields: [ownerId], references: [id])
+  owner     AuthUser @relation(fields: [ownerId], references: [id])
   metrics   Metric[]
 
   @@map("journal_entry")
@@ -127,24 +127,21 @@ model Profile {
   createdAt               DateTime         @default(now()) @map("created_at")
   goals                   String
   ownerId                 Int              @unique @map("owner_id")
-  owner                   User             @relation(fields: [ownerId], references: [id])
+  owner                   AuthUser         @relation(fields: [ownerId], references: [id])
   activeTrainingProgramId Int?             @map("active_training_program_id")
   activeTrainingProgram   TrainingProgram? @relation(fields: [activeTrainingProgramId], references: [id])
 
   @@map("profile")
 }
 
-model User {
+model AuthUser {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
   username  String   @unique
   email     String   @unique
 
-  // Prisma Required
-  provider_id     String  @unique
-  hashed_password String?
-
-  Session         Session[]
+  auth_session    AuthSession[]
+  auth_key        AuthKey[]
   JournalEntry    JournalEntry[]
   ExerciseEvents  ExerciseEvent[]
   Profile         Profile?
@@ -157,13 +154,25 @@ model User {
 }
 
 // Maybe not required?
-model Session {
-  id           String @id @unique
-  user_id      Int
-  expires      BigInt
-  idle_expires BigInt
-  user         User   @relation(references: [id], fields: [user_id], onDelete: Cascade)
+model AuthSession {
+  id             String   @id @unique
+  user_id        Int
+  active_expires BigInt
+  idle_expires   BigInt
+  auth_user      AuthUser @relation(references: [id], fields: [user_id], onDelete: Cascade)
 
   @@index([user_id])
   @@map("session")
+}
+
+model AuthKey {
+  id              String   @id @unique
+  hashed_password String?
+  user_id         Int
+  primary_key     Boolean
+  expires         BigInt?
+  auth_user       AuthUser @relation(references: [id], fields: [user_id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("auth_key")
 }

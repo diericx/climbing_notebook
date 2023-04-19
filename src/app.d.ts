@@ -5,22 +5,19 @@ import type { Session, User } from "lucia-auth";
 
 /// <reference types="lucia-auth" />
 declare namespace Lucia {
-  type Auth = import("$lib/server/lucia").Auth;
-  type UserAttributes = {};
+  type Auth = import('$lib/server/lucia.js').Auth;
+  type UserAttributes = {
+    username: string;
+  };
 }
 
-/// <reference types="@sveltejs/kit" />
+// src/app.d.ts
 declare global {
-  declare namespace App {
+  namespace App {
     interface Locals {
-      validate: import("@lucia-auth/sveltekit").Validate;
-      validateUser: import("@lucia-auth/sveltekit").ValidateUser;
-      setSession: import("@lucia-auth/sveltekit").SetSession;
-      user: User | null;
-      session: Session | null;
+      auth: import("lucia-auth").AuthRequest;
     }
   }
-
 }
 
 export { };

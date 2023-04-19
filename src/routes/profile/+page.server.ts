@@ -7,7 +7,7 @@ import { error, fail } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
-  const { user } = locals;
+  const { user } = await locals.auth.validateUser();
 
   const repo = new ProfileRepo(prisma);
   let profile: Profile;
@@ -23,5 +23,6 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   return {
     profile,
+    user,
   };
 };

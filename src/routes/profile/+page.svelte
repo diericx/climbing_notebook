@@ -1,19 +1,16 @@
 <script lang="ts">
-	import { signOut, getUser } from '@lucia-auth/sveltekit/client';
-	import { invalidateAll } from '$app/navigation';
 	import type { PageData } from './$types';
 
-	const user = getUser();
-
 	export let data: PageData;
+	const { profile, user } = data;
 </script>
 
 <br />
 
 <h1>Account Info</h1>
 <hr />
-<p>Username: {$user?.username}</p>
-<p>Email: {$user?.email}</p>
+<p>Username: {user?.username}</p>
+<p>Email: {user?.email}</p>
 
 <br />
 
@@ -30,10 +27,3 @@
 <br />
 
 <br />
-
-<button
-	on:click={async () => {
-		await signOut();
-		invalidateAll();
-	}}>Logout</button
->

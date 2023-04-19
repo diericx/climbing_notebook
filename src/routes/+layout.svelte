@@ -4,15 +4,12 @@
 	import './styles.css';
 	import '../app.css';
 	import { page, navigating } from '$app/stores';
-	import { handleSession } from '@lucia-auth/sveltekit/client';
 	// NProgress css
 	import 'nprogress/nprogress.css';
 
 	NProgress.configure({
 		minimum: 0.16
 	});
-
-	handleSession(page);
 
 	$: {
 		if ($navigating) {

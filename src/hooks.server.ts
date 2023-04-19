@@ -1,28 +1,21 @@
-import { sequence } from "@sveltejs/kit/hooks";
-import { redirect, type Handle } from "@sveltejs/kit";
-import { auth } from "$lib/server/lucia";
-import { handleHooks } from "@lucia-auth/sveltekit";
+import { auth } from '$lib/server/lucia';
+import { redirect, type Handle } from '@sveltejs/kit';
 
-const logger: Handle = async ({ event, resolve }) => {
-  let { user, session } = await event.locals.validateUser();
-  event.locals.user = user;
-  event.locals.session = session;
+export const handle: Handle = async ({ event, resolve }) => {
+  event.locals.auth = auth.handleRequest(event);
 
-  // if (
-  //   event.url.pathname.startsWith("/chart") ||
-  //   event.url.pathname.startsWith("/exerciseEvent") ||
-  //   event.url.pathname.startsWith("/journalEntry") ||
-  //   event.url.pathname.startsWith("/profile") ||
-  //   event.url.pathname.startsWith("/trainingProgram")
-  // ) {
-  //   if (!session) {
-  //     throw redirect(303, '/login?redirectTo=' + event.url.pathname)
-  //   }
-  // }
+  const { user } = await event.locals.auth.validateUser();
+  if (
+    event.url.pathname.startsWith("/chart") ||
+    event.url.pathname.startsWith("/exerciseEvent") ||
+    event.url.pathname.startsWith("/journalEntry") ||
+    event.url.pathname.startsWith("/profile") ||
+    event.url.pathname.startsWith("/trainingProgram")
+  ) {
+    if (!user) {
+      throw redirect(303, '/login?redirectTo=' + event.url.pathname)
+    }
+  }
 
-  const response = await resolve(event);
-
-  return response;
-}
-export const handle = sequence(handleHooks(auth), logger);
-
+  return await resolve(event);
+};
