@@ -43,7 +43,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
   newTrainingProgram: async ({ locals, request, url }) => {
     const rawFormData = Object.fromEntries((await request.formData()).entries());
-    const { user } = locals;
+    const { user } = await locals.auth.validateUser();
 
     // Validate input fields
     const input = new TrainingProgramFormData(rawFormData);

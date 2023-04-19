@@ -7,7 +7,7 @@ import { APIError } from '$lib/errors';
 import type { TrainingProgram } from '@prisma/client';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-  const { user } = locals;
+  const { user } = await locals.auth.validateUser();
   const id = Number(params.id);
 
   const repo = new TrainingProgramRepo(prisma);
@@ -33,7 +33,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 export const actions: Actions = {
   deleteTrainingProgram: async ({ locals, request, url }) => {
     const rawFormData = Object.fromEntries((await request.formData()).entries());
-    const { user } = locals;
+    const { user } = await locals.auth.validateUser();
     let id = Number(rawFormData.id);
 
     // Validate input fields
@@ -64,7 +64,7 @@ export const actions: Actions = {
 
   patchTrainingProgram: async ({ locals, request, url, params }) => {
     const rawFormData = Object.fromEntries((await request.formData()).entries());
-    const { user } = locals;
+    const { user } = await locals.auth.validateUser();
     let id = Number(params.id);
 
     // Validate input fields

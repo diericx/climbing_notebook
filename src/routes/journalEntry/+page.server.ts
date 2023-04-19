@@ -7,7 +7,7 @@ import { SERVER_ERROR } from "$lib/helperTypes";
 import { APIError } from "$lib/errors";
 
 export const load: PageServerLoad = async ({ locals }) => {
-  const { user } = locals;
+  const { user } = await locals.auth.validateUser();
   const repo = new JournalEntryRepo(prisma);
   let journalEntries;
   try {
@@ -28,7 +28,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
   newJournalEntry: async ({ request, url, locals }) => {
     const rawFormData = Object.fromEntries((await request.formData()).entries());
-    const { user } = locals;
+    const { user } = await locals.auth.validateUser();
 
     // Validate input fields
     const input = new JournalEntryFormData(rawFormData);

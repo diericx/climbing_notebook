@@ -8,7 +8,7 @@ import { APIError } from "$lib/errors";
 import type { Chart } from "@prisma/client";
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-  const { user } = locals;
+  const { user } = await locals.auth.validateUser();
   const id = Number(params.id);
 
   const repo = new ChartRepo(prisma);
@@ -31,7 +31,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 export const actions: Actions = {
   editChart: async ({ locals, params, request, url }) => {
     const rawFormData = Object.fromEntries((await request.formData()).entries());
-    const { user } = locals;
+    const { user } = await locals.auth.validateUser();
     let id = Number(params.id);
 
     // Validate input fields

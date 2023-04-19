@@ -8,7 +8,7 @@ import { APIError } from "$lib/errors";
 import { prisma } from "$lib/prisma";
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-  const { user } = locals;
+  const { user } = await locals.auth.validateUser();
   const id = Number(params.id);
 
   const repo = new ExerciseEventRepo(prisma);
@@ -54,7 +54,7 @@ export const actions: Actions = {
 
   editExerciseEvent: async ({ locals, params, request, url }) => {
     const rawFormData = Object.fromEntries((await request.formData()).entries());
-    const { user } = locals;
+    const { user } = await locals.auth.validateUser();
     let id = Number(params.id);
 
     // Validate input fields

@@ -8,7 +8,7 @@ import { ProfileFormData, ProfileRepo } from "$lib/profile";
 import { APIError } from "$lib/errors";
 
 export const load: PageServerLoad = async ({ locals }) => {
-  const { user } = locals;
+  const { user } = await locals.auth.validateUser();
 
   const repo = new ProfileRepo(prisma);
   let profile: Profile;
@@ -30,7 +30,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
   editProfile: async ({ locals, request, url }) => {
     const rawFormData = Object.fromEntries((await request.formData()).entries());
-    const { user } = locals;
+    const { user } = await locals.auth.validateUser();
 
     // Validate input fields
     const input = new ProfileFormData(rawFormData);

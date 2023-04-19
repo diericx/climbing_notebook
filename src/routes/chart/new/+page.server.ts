@@ -16,7 +16,7 @@ export const load: PageServerLoad = async ({ url }) => {
 export const actions: Actions = {
   newChart: async ({ request, url, locals }) => {
     const rawFormData = Object.fromEntries((await request.formData()).entries());
-    const { user } = locals;
+    const { user } = await locals.auth.validateUser();
 
     // Validate input fields
     const input = new ChartFormData(rawFormData);

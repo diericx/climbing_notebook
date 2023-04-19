@@ -9,7 +9,7 @@ import { ExerciseEventFormData, ExerciseEventRepo } from "$lib/exerciseEvent";
 import { ProfileRepo } from "$lib/profile";
 
 export const load: PageServerLoad = async ({ locals }) => {
-  const { user } = locals;
+  const { user } = await locals.auth.validateUser();
   const exerciseEventsRepo = new ExerciseEventRepo(prisma);
   let exerciseEvents;
   try {
@@ -45,7 +45,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
   newExerciseEvent: async ({ locals, request, url }) => {
     const rawFormData = Object.fromEntries((await request.formData()).entries());
-    const { user } = locals;
+    const { user } = await locals.auth.validateUser();
 
     // Validate input fields
     const input = new ExerciseEventFormData(rawFormData);
