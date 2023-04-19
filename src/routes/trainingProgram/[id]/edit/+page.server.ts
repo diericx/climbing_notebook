@@ -36,13 +36,6 @@ export const actions: Actions = {
     const { user } = await locals.auth.validateUser();
     let id = Number(rawFormData.id);
 
-    // Validate input fields
-    const input = new TrainingProgramFormData(rawFormData);
-    let { message, isValid } = input.validate()
-    if (!isValid) {
-      return fail(401, { message, trainingProgramFormData: rawFormData })
-    }
-
     const repo = new TrainingProgramRepo(prisma);
     let trainingProgram: TrainingProgram;
     try {
