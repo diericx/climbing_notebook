@@ -1,6 +1,7 @@
-import type { JournalEntry as _JournalEntry } from "@prisma/client";
-import { fail, redirect, type Actions } from "@sveltejs/kit";
+import type { JournalEntry, PrismaClient, User } from "@prisma/client";
 import { isNaN } from "mathjs";
+import { APIError } from "./errors";
+import { matchMetricsInString, parseMetricStrings, toNum } from "./utils";
 
 export class JournalEntryFormData {
   date: Date = new Date();
@@ -44,75 +45,117 @@ export class JournalEntryFormData {
   }
 }
 
-export const journalEntryActions: Actions = {
-  newJournalEntry: async ({ fetch, request, url }) => {
-    const formData = Object.fromEntries((await request.formData()).entries());
+export class JournalEntryRepo {
+  constructor(private readonly prisma: PrismaClient) { }
+  async new(data: JournalEntryFormData, ownerId: number): Promise<JournalEntry> {
+    // Fetch journalEntries with same day to validate this is a new date
+    let journalEntries: JournalEntry[] = await this.prisma.journalEntry.findMany({
+      where: {
+        ownerId,
+        date: new Date(data.date),
+      },
+    }) as JournalEntry[];
+    if (journalEntries.length > 0) {
+      throw new APIError("UNIQUENESS_COLLISION", "A journal entry for that date already exists")
+    }
 
-    const response = await fetch("/api/journalEntry", {
-      method: "POST",
-      body: JSON.stringify(formData),
+    // Add new journal entry
+    let journalEntry: JournalEntry = await this.prisma.journalEntry.create({
+      data: {
+        ...data,
+        date: new Date(data.date),
+        ownerId: ownerId,
+        createdAt: new Date(),
+      },
+    }) as JournalEntry;
+
+    let metrics = parseMetricStrings(matchMetricsInString(data.content))
+    await this.prisma.metric.createMany({
+      data: metrics.map(m => ({
+        name: m.name,
+        // Number parse is implied succesful with regex match?
+        value: toNum(m.value, 0),
+        date: new Date(data.date),
+        journalEntryId: Number(journalEntry.id),
+        ownerId: ownerId
+      })
+      )
     })
 
-    const data = await response.json();
+    return journalEntry;
+  }
 
-    if (!response.ok) {
-      return fail(response.status, {
-        message: data.message,
-        journalEntryFormData: formData
-      })
+  async get(ownerId: number): Promise<JournalEntry[]> {
+    return await this.prisma.journalEntry.findMany({
+      where: {
+        ownerId: Number(ownerId),
+      },
+      orderBy: {
+        date: 'desc',
+      },
+    }) as JournalEntry[];
+  }
+
+  async getOne(id: number, ownerId: number): Promise<JournalEntry> {
+    const journalEntry = await this.prisma.journalEntry.findUnique({
+      where: {
+        id
+      }
+    });
+    if (journalEntry == null) {
+      throw new APIError("NOT_FOUND", "Resource not found");
+    }
+    if (journalEntry?.ownerId != ownerId) {
+      throw new APIError("INVALID_PERMISSIONS", "You do not have permission to edit this object.")
     }
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    return journalEntry;
+  }
+
+  async update(data: JournalEntryFormData, id: number, ownerId: number): Promise<JournalEntry> {
+    const journalEntry = await this.prisma.journalEntry.findUnique({
+      where: {
+        id
+      }
+    });
+    if (journalEntry == null) {
+      throw new APIError("NOT_FOUND", "Resource not found");
+    }
+    if (journalEntry?.ownerId != ownerId) {
+      throw new APIError("INVALID_PERMISSIONS", "You do not have permission to edit this object.")
     }
 
-    return { success: true };
-  },
+    return await this.prisma.journalEntry.update({
+      data: {
+        date: new Date(data.date),
+        content: data.content,
+        type: data.type,
+      },
+      where: {
+        id: Number(id),
+      },
+    });
+  }
 
-  editJournalEntry: async ({ request, fetch, params, url }) => {
-    const formData = Object.fromEntries((await request.formData()).entries());
-    const { id } = params;
-
-    const response = await fetch(`/api/journalEntry/${id}`, {
-      method: "PATCH",
-      body: JSON.stringify(formData),
-    })
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return fail(response.status, {
-        message: data.message,
-        journalEntryFormData: formData,
-      })
+  async delete(id: number, ownerId: number): Promise<JournalEntry> {
+    const journalEntry = await this.prisma.journalEntry.findUnique({
+      where: {
+        id
+      }
+    });
+    if (journalEntry == null) {
+      throw new APIError("NOT_FOUND", "Resource not found");
+    }
+    if (journalEntry?.ownerId != ownerId) {
+      throw new APIError("INVALID_PERMISSIONS", "You do not have permission to edit this object.")
     }
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
+    return await this.prisma.journalEntry.delete({
+      where: {
+        id
+      }
+    });
+  }
 
-    return { success: true };
-  },
-
-  deleteJournalEntry: async ({ fetch, request, url }) => {
-    const formData = Object.fromEntries((await request.formData()).entries());
-
-    const response = await fetch(`/api/journalEntry/${formData.id}`, {
-      method: "DELETE",
-    })
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return fail(response.status, {
-        message: data.message,
-      })
-    }
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
-    return data;
-  },
 }
+

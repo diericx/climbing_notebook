@@ -61,7 +61,12 @@
 									<input type="submit" class="link-button" value="Set As Active" />
 								</form>
 								<a href="/trainingProgram/{program.id}/edit" class="button">Edit</a>
-								<form method="POST" action="?/deleteTrainingProgram" class="inline">
+								<form
+									method="POST"
+									action={`/trainingProgram/${program.id}/edit?/deleteTrainingProgram`}
+									class="inline"
+									use:enhance
+								>
 									<input type="hidden" name="id" value={program.id} />
 									<button on:click={confirmDelete}>Delete</button>
 								</form>

@@ -1,73 +1,75 @@
-import { chartActions } from "$lib/chart";
+import { ChartRepo } from "$lib/chart";
+import { APIError } from "$lib/errors";
+import { ExerciseEventRepo } from "$lib/exerciseEvent";
 import { SERVER_ERROR } from "$lib/helperTypes";
-import type { Chart, ExerciseEvent, Metric, Profile } from "@prisma/client";
-import { error, type Actions } from "@sveltejs/kit";
+import { MetricRepo } from "$lib/metric";
+import { prisma } from "$lib/prisma";
+import { ProfileRepo } from "$lib/profile";
+import type { Chart, Metric, Profile } from "@prisma/client";
+import { error, fail } from "@sveltejs/kit";
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals, fetch }) => {
+export const load: PageServerLoad = async ({ locals }) => {
   // Unprotected page, session may not exist
   const session = await locals.validate();
+  const { user } = locals;
 
   if (!session || session.state != 'active') {
     return {}
   }
 
-  let response = await fetch(`/api/profile`, {
-    method: "GET",
-  })
-  if (!response.ok) {
-    if (response.status == 404) {
-      throw error(404, { message: "Profile not found" })
+  const repo = new ProfileRepo(prisma);
+  let profile: Profile;
+  try {
+    profile = await repo.getOne(Number(user?.userId));
+  } catch (e) {
+    if (e instanceof APIError) {
+      return fail(401, { message: e.detail })
     }
+    console.error(e)
     throw error(500, { message: SERVER_ERROR })
   }
-  let data = await response.json();
-  const profile: Profile = data.profile;
 
   // Get charts for user
-  response = await fetch(`/api/chart`, {
-    method: "GET",
-  })
-  if (!response.ok) {
-    if (response.status == 404) {
-      throw error(404, { message: "Charts not found" })
+  const chartRepo = new ChartRepo(prisma);
+  let charts: Chart[];
+  try {
+    charts = await chartRepo.get(Number(user?.userId));
+  } catch (e) {
+    if (e instanceof APIError) {
+      return fail(401, { message: e.detail })
     }
+    console.error(e)
     throw error(500, { message: SERVER_ERROR })
   }
-  data = await response.json();
-  const charts: Chart[] = data.charts;
 
   // Get exercise events in the past month for the charts
   const dateMin = new Date()
   dateMin.setDate(dateMin.getDate() - 31)
-  response = await fetch(`/api/exerciseEvent?` + new URLSearchParams({
-    dateMin: dateMin.toISOString(),
-    dateMax: (new Date()).toISOString()
-  }), {
-    method: "GET",
-  })
-  if (!response.ok) {
+  const exerciseEventRepo = new ExerciseEventRepo(prisma);
+  let exerciseEvents;
+  try {
+    exerciseEvents = await exerciseEventRepo.get(Number(user?.userId), dateMin, new Date());
+  } catch (e) {
+    if (e instanceof APIError) {
+      return fail(401, { message: e.detail })
+    }
+    console.error(e)
     throw error(500, { message: SERVER_ERROR })
   }
-  data = await response.json();
-  const exerciseEvents: ExerciseEvent[] = data.exercises;
 
   // Get metris in the past month for the charts
-  response = await fetch(`/api/metric?` + new URLSearchParams({
-    dateMin: dateMin.toISOString(),
-    dateMax: (new Date()).toISOString()
-  }), {
-    method: "GET",
-  })
-  if (!response.ok) {
+  const metricRepo = new MetricRepo(prisma);
+  let metrics: Metric[];
+  try {
+    metrics = await metricRepo.get(Number(user?.userId), dateMin, new Date());
+  } catch (e) {
+    if (e instanceof APIError) {
+      return fail(401, { message: e.detail })
+    }
+    console.error(e)
     throw error(500, { message: SERVER_ERROR })
   }
-  data = await response.json();
-  const metrics: Metric[] = data.metrics;
 
   return { profile, charts, exerciseEvents, metrics }
-}
-
-export const actions: Actions = {
-  ...chartActions
 }

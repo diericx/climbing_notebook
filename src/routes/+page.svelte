@@ -6,7 +6,6 @@
 	import Chart from './chart/chart.svelte';
 
 	export let data: PageData;
-	const user = getUser();
 	const profile: ProfileWithActiveTrainingProgram =
 		data.profile as ProfileWithActiveTrainingProgram;
 </script>

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { ExerciseEventFormData } from '$lib/exerciseEvent';
 	import Chart from 'svelte-frappe-charts';
 	import { evaluate } from 'mathjs';
 	import { confirmDelete } from '$lib/utils';
+	import { enhance } from '$app/forms';
 
 	export let chart: Chart;
 	// The objects (either exerciseEvent or metric) that we will be matching against.
@@ -62,7 +62,7 @@
 	<h2 class="inline">{chart.name}</h2>
 	<div class="inline float-right">
 		<a href={`/chart/${chart.id}/edit?redirectTo=/`}>Edit</a>
-		<form method="POST" action="?/deleteChart" class="inline">
+		<form method="POST" action={`/chart/${chart.id}/edit?/deleteChart`} class="inline" use:enhance>
 			<input type="hidden" name="id" value={chart.id} />
 			<button type="submit" on:click={confirmDelete}>Delete</button>
 		</form>

@@ -1,33 +1,95 @@
-import { error, type Actions } from '@sveltejs/kit';
+import { error, fail, redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { SERVER_ERROR } from "$lib/helperTypes";
-import { trainingProgramActions } from "$lib/trainingProgram";
-import { exerciseEventActions } from '$lib/exerciseEvent';
-import type { TrainingProgramWithDays } from '$lib/prisma';
+import { prisma, type TrainingProgramComplete, type TrainingProgramWithDays } from '$lib/prisma';
+import { TrainingProgramFormData, TrainingProgramRepo } from '$lib/trainingProgram';
+import { APIError } from '$lib/errors';
+import type { TrainingProgram } from '@prisma/client';
 
-export const load: PageServerLoad = async ({ fetch, params, url }) => {
-  const { id } = params;
-  const redirectTo = url.searchParams.get("redirectTo");
+export const load: PageServerLoad = async ({ locals, params }) => {
+  const { user } = locals;
+  const id = Number(params.id);
 
-  const response = await fetch(`/api/trainingProgram/${id}`, {
-    method: "GET",
-  })
-  if (!response.ok) {
+  const repo = new TrainingProgramRepo(prisma);
+  let trainingProgram: TrainingProgramComplete;
+  try {
+    trainingProgram = await repo.getOne(Number(id), Number(user?.userId));
+  } catch (e) {
+    if (e instanceof APIError) {
+      return fail(401, { message: e.detail })
+    }
+    console.error(e)
     throw error(500, { message: SERVER_ERROR })
   }
 
-  const data = await response.json();
-  const trainingProgram: TrainingProgramWithDays = data.trainingProgram;
   let trainingProgramOriginal = JSON.parse(JSON.stringify(trainingProgram));
 
   return {
     trainingProgram,
     trainingProgramOriginal,
-    redirectTo
   };
 };
 
 export const actions: Actions = {
-  ...exerciseEventActions,
-  ...trainingProgramActions
+  deleteTrainingProgram: async ({ locals, request, url }) => {
+    const rawFormData = Object.fromEntries((await request.formData()).entries());
+    const { user } = locals;
+    let id = Number(rawFormData.id);
+
+    // Validate input fields
+    const input = new TrainingProgramFormData(rawFormData);
+    let { message, isValid } = input.validate()
+    if (!isValid) {
+      return fail(401, { message, trainingProgramFormData: rawFormData })
+    }
+
+    const repo = new TrainingProgramRepo(prisma);
+    let trainingProgram: TrainingProgram;
+    try {
+      trainingProgram = await repo.delete(id, Number(user?.userId));
+    } catch (e) {
+      if (e instanceof APIError) {
+        return fail(401, { message: e.detail })
+      }
+      console.error(e)
+      throw error(500, { message: SERVER_ERROR })
+    }
+
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
+
+    return { success: true, trainingProgram };
+  },
+
+  patchTrainingProgram: async ({ locals, request, url, params }) => {
+    const rawFormData = Object.fromEntries((await request.formData()).entries());
+    const { user } = locals;
+    let id = Number(params.id);
+
+    // Validate input fields
+    // NOTE: we are sending form data as json object back to be parsed 
+    const input = new TrainingProgramFormData(JSON.parse(rawFormData.trainingProgram.toString()));
+    let { message, isValid } = input.validate()
+    if (!isValid) {
+      return fail(401, { message, trainingProgramFormData: rawFormData })
+    }
+
+    const repo = new TrainingProgramRepo(prisma);
+    try {
+      await repo.update(input, id, Number(user?.userId));
+    } catch (e) {
+      if (e instanceof APIError) {
+        return fail(401, { message: e.detail, trainingProgramFormData: rawFormData })
+      }
+      console.error(e)
+      throw error(500, { message: SERVER_ERROR })
+    }
+
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
+
+    return { success: true };
+  }
 }

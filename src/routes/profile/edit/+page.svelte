@@ -19,6 +19,9 @@
 
 <div class="grid grid-cols-1">
 	<div>
-		<ProfileForm profile={data.profile} profileFormData={new ProfileFormData(form?.profile)} />
+		<ProfileForm
+			profile={data?.profile}
+			profileFormData={new ProfileFormData(form?.profileFormData)}
+		/>
 	</div>
 </div>

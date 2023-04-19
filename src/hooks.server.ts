@@ -9,12 +9,6 @@ const logger: Handle = async ({ event, resolve }) => {
   event.locals.session = session;
 
   if (
-    event.url.pathname.startsWith("/api/chart") ||
-    event.url.pathname.startsWith("/api/exerciseEvent") ||
-    event.url.pathname.startsWith("/api/journalEntry") ||
-    event.url.pathname.startsWith("/api/metric") ||
-    event.url.pathname.startsWith("/api/profile") ||
-    event.url.pathname.startsWith("/api/trainingProgram") ||
     event.url.pathname.startsWith("/chart") ||
     event.url.pathname.startsWith("/exerciseEvent") ||
     event.url.pathname.startsWith("/journalEntry") ||

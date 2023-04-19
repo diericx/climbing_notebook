@@ -1,21 +1,27 @@
 import type { Actions, PageServerLoad } from "./$types";
-import { chartActions } from "$lib/chart";
 import { SERVER_ERROR } from "$lib/helperTypes";
 import { error } from "console";
-import type { Chart } from ".prisma/client";
+import { fail, redirect } from "@sveltejs/kit";
+import { ChartFormData, ChartRepo } from "$lib/chart";
+import { prisma } from "$lib/prisma";
+import { APIError } from "$lib/errors";
+import type { Chart } from "@prisma/client";
 
-export const load: PageServerLoad = async ({ fetch, params }) => {
-  const { id } = params;
+export const load: PageServerLoad = async ({ locals, params }) => {
+  const { user } = locals;
+  const id = Number(params.id);
 
-  const response = await fetch(`/api/chart/${id}`, {
-    method: "GET",
-  })
-  if (!response.ok) {
+  const repo = new ChartRepo(prisma);
+  let chart: Chart;
+  try {
+    chart = await repo.getOne(id, Number(user?.userId));
+  } catch (e) {
+    if (e instanceof APIError) {
+      return fail(401, { message: e.detail })
+    }
+    console.error(e)
     throw error(500, { message: SERVER_ERROR })
   }
-
-  const data = await response.json();
-  const chart: Chart = data.chart;
 
   return {
     chart,
@@ -23,5 +29,56 @@ export const load: PageServerLoad = async ({ fetch, params }) => {
 };
 
 export const actions: Actions = {
-  ...chartActions
+  editChart: async ({ locals, params, request, url }) => {
+    const rawFormData = Object.fromEntries((await request.formData()).entries());
+    const { user } = locals;
+    let id = Number(params.id);
+
+    // Validate input fields
+    const input = new ChartFormData(rawFormData);
+    let { message, isValid } = input.validate()
+    if (!isValid) {
+      return fail(401, { message, chartFormData: rawFormData })
+    }
+
+    const repo = new ChartRepo(prisma);
+    try {
+      await repo.update(input, id, Number(user?.userId));
+    } catch (e) {
+      if (e instanceof APIError) {
+        return fail(401, { message: e.detail, chartFormData: rawFormData })
+      }
+      console.error(e)
+      throw error(500, { message: SERVER_ERROR })
+    }
+
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
+
+    return { success: true };
+  },
+
+  deleteChart: async ({ locals, request, url }) => {
+    const { user } = locals
+    const rawFormData = Object.fromEntries((await request.formData()).entries());
+    const id = Number(rawFormData.id)
+
+    const repo = new ChartRepo(prisma);
+    try {
+      await repo.delete(id, Number(user?.userId));
+    } catch (e) {
+      if (e instanceof APIError) {
+        return fail(401, { message: e.detail })
+      }
+      console.error(e)
+      throw error(500, { message: SERVER_ERROR })
+    }
+
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
+
+    return { success: true };
+  },
 }

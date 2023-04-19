@@ -1,5 +1,5 @@
-import { fail, redirect, type Action, type Actions } from "@sveltejs/kit"
-import { enhancedFormAction, toNum } from "./utils"
+import type { Chart, PrismaClient } from "@prisma/client";
+import { APIError } from "./errors";
 
 export class ChartFormData {
   date: Date = new Date();
@@ -54,74 +54,80 @@ export class ChartFormData {
   }
 }
 
-export const chartActions: Actions = {
-  newChart: async ({ fetch, request, url }) => {
-    const formData = Object.fromEntries((await request.formData()).entries());
 
-    const response = await fetch("/api/chart", {
-      method: "POST",
-      body: JSON.stringify(formData),
-    })
+export class ChartRepo {
+  constructor(private readonly prisma: PrismaClient) { }
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      return fail(response.status, {
-        message: data.message,
-        chartFormData: formData
-      })
+  async getOneAndValidateOwner(id: number, ownerId: number): Promise<Chart> {
+    let chart = await this.prisma.chart.findUnique({
+      where: {
+        id: Number(id),
+      }
+    }) as Chart;
+    if (chart == null) {
+      throw new APIError("NOT_FOUND", "Resource not found");
     }
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    if (chart?.ownerId != ownerId) {
+      throw new APIError("INVALID_PERMISSIONS", "You do not have permission to edit this object.")
     }
-
-    return { success: true };
-  },
-
-  editChart: async ({ fetch, params, request, url }) => {
-    const formData = Object.fromEntries((await request.formData()).entries());
-
-    const { id } = params;
-    const response = await fetch(`/api/chart/${id}`, {
-      method: "PATCH",
-      body: JSON.stringify(formData)
-    })
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return fail(response.status, {
-        message: data.message,
-      })
-    }
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
-    return data;
-  },
-
-  deleteChart: async ({ fetch, request, url }) => {
-    const formData = Object.fromEntries((await request.formData()).entries());
-
-    const response = await fetch(`/api/chart/${formData.id}`, {
-      method: "DELETE",
-    })
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return fail(response.status, {
-        message: data.message,
-      })
-    }
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
-    return data;
+    return chart
   }
+
+  async new(data: ChartFormData, ownerId: number): Promise<Chart> {
+    return await this.prisma.chart.create({
+      data: {
+        name: data.name,
+        type: data.type,
+        patternToMatch: data.patternToMatch,
+        matchAgainst: data.matchAgainst,
+        equation: data.equation,
+        ownerId: ownerId,
+      }
+    }) as Chart;
+  }
+
+  async get(ownerId: number): Promise<Chart[]> {
+    // Fetch all
+    return await this.prisma.chart.findMany({
+      where: {
+        ownerId: ownerId,
+      },
+      orderBy: {
+        name: 'desc',
+      },
+    }) as Chart[];
+  }
+
+  async getOne(id: number, ownerId: number): Promise<Chart> {
+    return this.getOneAndValidateOwner(id, ownerId)
+  }
+
+  async update(data: ChartFormData, id: number, ownerId: number): Promise<Chart> {
+    await this.getOneAndValidateOwner(id, ownerId);
+
+    return await this.prisma.chart.update({
+      data: {
+        name: data.name,
+        type: data.type,
+        patternToMatch: data.patternToMatch,
+        matchAgainst: data.matchAgainst,
+        equation: data.equation,
+      },
+      where: {
+        id: Number(id),
+      },
+    });
+  }
+
+  async delete(id: number, ownerId: number): Promise<Chart> {
+    await this.getOneAndValidateOwner(id, ownerId);
+
+    return await this.prisma.chart.delete({
+      where: {
+        id: Number(id)
+      }
+    })
+  }
+
 }
+

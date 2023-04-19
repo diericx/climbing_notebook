@@ -42,7 +42,12 @@
 					{/if}
 					<td class="px-6 py-3">{exerciseEvent.notes}</td>
 					<td>
-						<form method="POST" action="?/deleteExerciseEvent" class="inline" use:enhance>
+						<form
+							method="POST"
+							action={`/exerciseEvent/${exerciseEvent.id}/edit?/deleteExerciseEvent`}
+							class="inline"
+							use:enhance
+						>
 							<input type="hidden" name="id" value={exerciseEvent.id} />
 							<button on:click={confirmDelete}>Delete</button>
 						</form>

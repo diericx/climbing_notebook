@@ -37,9 +37,39 @@ const trainingProgramWithDays = _Prisma.validator<_Prisma.TrainingProgramArgs>()
 })
 export type TrainingProgramWithDays = _Prisma.TrainingProgramGetPayload<typeof trainingProgramWithDays>
 
-const trainingProgramDayWithExercises = _Prisma.validator<_Prisma.TrainingProgramDayArgs>()({
+const trainingProgramComplete = _Prisma.validator<_Prisma.TrainingProgramArgs>()({
+  include: {
+    exerciseGroups: {
+      include: {
+        exercises: true,
+      },
+    },
+    days: {
+      include: {
+        exercises: true,
+        exerciseGroups: {
+          include: {
+            exercises: true,
+          },
+        }
+      },
+    }
+  }
+})
+export type TrainingProgramComplete = _Prisma.TrainingProgramGetPayload<typeof trainingProgramComplete>
+
+const trainingProgramDayComplete = _Prisma.validator<_Prisma.TrainingProgramDayArgs>()({
   include: {
     exercises: true,
+    exerciseGroups: true,
   },
 })
-export type TrainingProgramDayWithExercises = _Prisma.TrainingProgramDayGetPayload<typeof trainingProgramDayWithExercises>
+export type TrainingProgramDayComplete = _Prisma.TrainingProgramDayGetPayload<typeof trainingProgramDayComplete>
+
+const exerciseGroupComplete = _Prisma.validator<_Prisma.TrainingProgramDayArgs>()({
+  include: {
+    exercises: true,
+    exerciseGroups: true,
+  },
+})
+export type ExerciseGroupComplete = _Prisma.ExerciseGroupGetPayload<typeof exerciseGroupComplete>

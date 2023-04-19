@@ -3,54 +3,57 @@ import { error, fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from "../$types";
 import { SERVER_ERROR } from "$lib/helperTypes";
 import type { Profile } from "@prisma/client";
+import { prisma } from "$lib/prisma";
+import { ProfileFormData, ProfileRepo } from "$lib/profile";
+import { APIError } from "$lib/errors";
 
-export const load: PageServerLoad = async ({ fetch, url, params }) => {
-  const { id } = params;
-  const redirectTo = url.searchParams.get("redirectTo");
+export const load: PageServerLoad = async ({ locals }) => {
+  const { user } = locals;
 
-  const response = await fetch(`/api/profile`, {
-    method: "GET",
-  })
-  if (!response.ok) {
-    if (response.status == 404) {
-      throw error(404, { message: "Profile not found" })
+  const repo = new ProfileRepo(prisma);
+  let profile: Profile;
+  try {
+    profile = await repo.getOne(Number(user?.userId));
+  } catch (e) {
+    if (e instanceof APIError) {
+      return fail(401, { message: e.detail })
     }
-    console.error(response.status, response.text())
+    console.error(e)
     throw error(500, { message: SERVER_ERROR })
   }
 
-  const data = await response.json();
-  const profile: Profile = data.profile;
-
   return {
     profile,
-    redirectTo
   };
 };
 
 export const actions: Actions = {
-  editProfile: async ({ fetch, request, url }) => {
-    const formData = Object.fromEntries((await request.formData()).entries());
+  editProfile: async ({ locals, request, url }) => {
+    const rawFormData = Object.fromEntries((await request.formData()).entries());
+    const { user } = locals;
 
-    const response = await fetch(`/api/profile`, {
-      method: "PATCH",
-      body: JSON.stringify(formData),
-    })
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error(response.text())
-      return fail(response.status, {
-        message: SERVER_ERROR,
-        userFormData: formData,
-      })
+    // Validate input fields
+    const input = new ProfileFormData(rawFormData);
+    let { message, isValid } = input.validate()
+    if (!isValid) {
+      return fail(401, { message, profileFormData: rawFormData })
     }
 
+    const repo = new ProfileRepo(prisma);
+    try {
+      await repo.update(input, Number(user?.userId));
+    } catch (e) {
+      if (e instanceof APIError) {
+        return fail(401, { message: e.detail, profileFormData: rawFormData })
+      }
+      console.error(e)
+      throw error(500, { message: SERVER_ERROR })
+    }
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
     }
 
-    return data;
+    return { success: true };
   }
 }

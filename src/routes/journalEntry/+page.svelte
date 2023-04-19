@@ -34,7 +34,12 @@
 			<div class="flex justify-between">
 				<div class="w-full pb-5">
 					<h3 class="underline inline">{new Date(item.date).toLocaleDateString('en-US')}</h3>
-					<form method="POST" action="?/deleteJournalEntry" class="inline" use:enhance>
+					<form
+						method="POST"
+						action={`/journalEntry/${item.id}/edit?/deleteJournalEntry`}
+						class="inline"
+						use:enhance
+					>
 						<input type="hidden" name="id" value={item.id} />
 						<button on:click={confirmDelete}>Delete</button>
 					</form>

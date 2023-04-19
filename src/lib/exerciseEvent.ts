@@ -1,4 +1,5 @@
-import { fail, redirect, type Actions } from "@sveltejs/kit"
+import type { ExerciseEvent, PrismaClient } from "@prisma/client";
+import { APIError } from "./errors";
 import { toNum } from "./utils"
 
 export class ExerciseEventFormData {
@@ -50,75 +51,90 @@ export class ExerciseEventFormData {
   }
 }
 
-export const exerciseEventActions: Actions = {
-  newExerciseEvent: async ({ fetch, request, url }) => {
-    const formData = Object.fromEntries((await request.formData()).entries());
+export class ExerciseEventRepo {
+  constructor(private readonly prisma: PrismaClient) { }
 
-    const response = await fetch("/api/exerciseEvent", {
-      method: "POST",
-      body: JSON.stringify(formData),
-    })
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return fail(response.status, {
-        message: data.message,
-        exerciseEventFormData: formData
-      })
+  async getOneAndValidateOwner(id: number, ownerId: number): Promise<ExerciseEvent> {
+    let exerciseEvent = await this.prisma.exerciseEvent.findUnique({
+      where: {
+        id: Number(id),
+      }
+    }) as ExerciseEvent;
+    if (exerciseEvent == null) {
+      throw new APIError("NOT_FOUND", "Resource not found");
     }
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    if (exerciseEvent?.ownerId != ownerId) {
+      throw new APIError("INVALID_PERMISSIONS", "You do not have permission to edit this object.")
     }
-
-    return { success: true };
-  },
-
-  deleteExerciseEvent: async ({ fetch, request, url }) => {
-    const formData = Object.fromEntries((await request.formData()).entries());
-
-    const response = await fetch(`/api/exerciseEvent/${formData.id}`, {
-      method: "DELETE",
-    })
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return fail(response.status, {
-        message: data.message,
-      })
-    }
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
-    return data;
-  },
-
-  editExerciseEvent: async ({ fetch, params, request, url }) => {
-    const formData = Object.fromEntries((await request.formData()).entries());
-    const { id } = params;
-
-    const response = await fetch(`/api/exerciseEvent/${id}`, {
-      method: "PATCH",
-      body: JSON.stringify(formData)
-    })
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return fail(response.status, {
-        message: data.message,
-        exerciseEventFormData: formData
-      })
-    }
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
-    return data;
+    return exerciseEvent
   }
+
+  async new(data: ExerciseEventFormData, ownerId: number): Promise<ExerciseEvent> {
+    return await this.prisma.exerciseEvent.create({
+      data: {
+        // TODO: Don't deconstruct?
+        ...data,
+        date: new Date(data.date),
+        ownerId,
+        createdAt: new Date(),
+      }
+    }) as ExerciseEvent;
+  }
+
+  async get(ownerId: number, dateMin?: Date | undefined, dateMax?: Date | undefined): Promise<ExerciseEvent[]> {
+    // Fetch all
+    return await this.prisma.exerciseEvent.findMany({
+      where: {
+        ownerId: ownerId,
+        trainingProgramDay: null,
+        exerciseGroup: null,
+        date: {
+          lte: dateMax ? new Date(dateMax) : undefined,
+          gte: dateMin ? new Date(dateMin) : undefined,
+        },
+      },
+      orderBy: {
+        date: 'desc',
+      },
+    }) as ExerciseEvent[];
+  }
+
+  async getOne(id: number, ownerId: number): Promise<ExerciseEvent> {
+    return this.getOneAndValidateOwner(id, ownerId)
+  }
+
+  async update(data: ExerciseEventFormData, id: number, ownerId: number): Promise<ExerciseEvent> {
+    await this.getOneAndValidateOwner(id, ownerId);
+
+    return await this.prisma.exerciseEvent.update({
+      data: {
+        sets: data.sets || undefined,
+        reps: data.reps || undefined,
+        weight: data.weight || undefined,
+        minutes: data.minutes || undefined,
+        seconds: data.seconds || undefined,
+        difficulty: data.difficulty || undefined,
+        notes: data.notes || undefined,
+        // trainingProgramDayId: data.trainingProgramDayId || undefined,
+        // exerciseGroupId: data.exerciseGroupId || undefined,
+        name: data.name || undefined,
+        date: data.date ? new Date(data.date) : undefined,
+      },
+      where: {
+        id: Number(id),
+      },
+    });
+  }
+
+  async delete(id: number, ownerId: number): Promise<ExerciseEvent> {
+    await this.getOneAndValidateOwner(id, ownerId);
+
+    return await this.prisma.exerciseEvent.delete({
+      where: {
+        id: Number(id)
+      }
+    })
+  }
+
 }
+
