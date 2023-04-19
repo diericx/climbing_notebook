@@ -8,17 +8,17 @@ const logger: Handle = async ({ event, resolve }) => {
   event.locals.user = user;
   event.locals.session = session;
 
-  if (
-    event.url.pathname.startsWith("/chart") ||
-    event.url.pathname.startsWith("/exerciseEvent") ||
-    event.url.pathname.startsWith("/journalEntry") ||
-    event.url.pathname.startsWith("/profile") ||
-    event.url.pathname.startsWith("/trainingProgram")
-  ) {
-    if (!session) {
-      throw redirect(303, '/login?redirectTo=' + event.url.pathname)
-    }
-  }
+  // if (
+  //   event.url.pathname.startsWith("/chart") ||
+  //   event.url.pathname.startsWith("/exerciseEvent") ||
+  //   event.url.pathname.startsWith("/journalEntry") ||
+  //   event.url.pathname.startsWith("/profile") ||
+  //   event.url.pathname.startsWith("/trainingProgram")
+  // ) {
+  //   if (!session) {
+  //     throw redirect(303, '/login?redirectTo=' + event.url.pathname)
+  //   }
+  // }
 
   const response = await resolve(event);
 
