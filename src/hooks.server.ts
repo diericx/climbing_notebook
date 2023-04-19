@@ -4,6 +4,8 @@ import { redirect, type Handle } from '@sveltejs/kit';
 export const handle: Handle = async ({ event, resolve }) => {
   event.locals.auth = auth.handleRequest(event);
 
+  let response = await resolve(event)
+
   const { user } = await event.locals.auth.validateUser();
   if (
     event.url.pathname.startsWith("/chart") ||
@@ -13,9 +15,14 @@ export const handle: Handle = async ({ event, resolve }) => {
     event.url.pathname.startsWith("/trainingProgram")
   ) {
     if (!user) {
-      throw redirect(303, '/login?redirectTo=' + event.url.pathname)
+      return new Response(null, {
+        status: 302,
+        headers: {
+          location: '/login?redirectTo=' + event.url
+        }
+      })
     }
   }
 
-  return await resolve(event);
+  return response;
 };
