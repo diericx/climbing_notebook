@@ -23,7 +23,6 @@ export const load: PageServerLoad = async ({ locals }) => {
   try {
     profile = await repo.getOne(user?.userId);
   } catch (e) {
-    console.log('got here', user, e)
     if (e instanceof APIError) {
       return fail(401, { message: e.detail })
     }
