@@ -20,8 +20,8 @@
 
 <h2>Goals</h2>
 
-<div class="whitespace-pre bg-white w-full px-1 py-3 rounded ">
-	{data.profile.goals}
+<div class="whitespace-pre bg-white w-full px-1 py-3 rounded">
+	{profile?.goals}
 </div>
 
 <br />

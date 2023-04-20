@@ -1,12 +1,13 @@
-import type { PrismaClient, TrainingProgram } from "@prisma/client";
-import { APIError } from "./errors";
-import type { ExerciseGroupComplete, TrainingProgramComplete, TrainingProgramDayComplete, TrainingProgramWithDays } from "./prisma";
+import type { PrismaClient, TrainingProgram } from '@prisma/client';
+import { APIError } from './errors';
+import type { ExerciseGroupComplete, TrainingProgramComplete, TrainingProgramDayComplete } from './prisma';
 
 export class TrainingProgramFormData {
-  name: string = "";
+  name = '';
   days: TrainingProgramDayComplete[] = [];
   exerciseGroups: ExerciseGroupComplete[] = [];
 
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
   constructor(obj: any | undefined = undefined) {
     if (obj == undefined) {
       return
@@ -18,15 +19,15 @@ export class TrainingProgramFormData {
   }
 
   validate() {
-    if (this.name == "") {
+    if (this.name == '') {
       return {
         isValid: false,
-        message: "Name is required."
+        message: 'Name is required.'
       }
     }
     return {
       isValid: true,
-      message: "",
+      message: '',
     }
   }
 }
@@ -35,7 +36,7 @@ export class TrainingProgramRepo {
   constructor(private readonly prisma: PrismaClient) { }
 
   async getOneAndValidateOwner(id: number, ownerId: number): Promise<TrainingProgramComplete> {
-    let trainingProgram = await this.prisma.trainingProgram.findUnique({
+    const trainingProgram = await this.prisma.trainingProgram.findUnique({
       where: {
         id,
       },
@@ -78,12 +79,12 @@ export class TrainingProgramRepo {
           },
         }
       }
-    }) as TrainingProgramComplete;
+    });
     if (trainingProgram == null) {
-      throw new APIError("NOT_FOUND", "Resource not found");
+      throw new APIError('NOT_FOUND', 'Resource not found');
     }
-    if (trainingProgram?.ownerId != ownerId) {
-      throw new APIError("INVALID_PERMISSIONS", "You do not have permission to edit this object.")
+    if (trainingProgram.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.')
     }
     return trainingProgram
   }
@@ -94,11 +95,11 @@ export class TrainingProgramRepo {
         name: data.name,
         ownerId,
         days: {
-          create: Array.apply(null, Array(7)).map((_, i) => {
+          create: Array.from(Array(7)).map((_, i) => {
             return {
               assignedBy: ownerId,
               dayOfTheWeek: i,
-              description: "",
+              description: '',
             }
           })
         }
@@ -124,19 +125,19 @@ export class TrainingProgramRepo {
 
   async update(data: TrainingProgramFormData, id: number, ownerId: number): Promise<TrainingProgram> {
     // Get current training program
-    let trainingProgram = await this.prisma.trainingProgram.findUnique({
+    const trainingProgram = await this.prisma.trainingProgram.findUnique({
       where: {
         id,
       },
       include: {
         days: true,
       }
-    }) as TrainingProgramWithDays;
+    });
     if (trainingProgram == null) {
-      throw new APIError("NOT_FOUND", "Resource not found");
+      throw new APIError('NOT_FOUND', 'Resource not found');
     }
-    if (trainingProgram?.ownerId != ownerId) {
-      throw new APIError("INVALID_PERMISSIONS", "You do not have permission to edit this object.")
+    if (trainingProgram.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.')
     }
 
 
@@ -144,7 +145,7 @@ export class TrainingProgramRepo {
     // if something fails we want to maintain previous state.
 
     // Delete all the exercises on each day
-    let deleteAllExercisesOnEachDay = trainingProgram.days.map(day =>
+    const deleteAllExercisesOnEachDay = trainingProgram.days.map(day =>
       this.prisma.exerciseEvent.deleteMany({
         where: {
           trainingProgramDayId: Number(day.id),
@@ -154,7 +155,7 @@ export class TrainingProgramRepo {
     )
 
     // Delete all the exercise groups and their exercises (via cascade)
-    let deleteAllExerciseGroupsAndTheirExercises = this.prisma.exerciseGroup.deleteMany({
+    const deleteAllExerciseGroupsAndTheirExercises = this.prisma.exerciseGroup.deleteMany({
       where: {
         trainingProgramId: Number(id),
         ownerId,
@@ -162,7 +163,7 @@ export class TrainingProgramRepo {
     });
 
     // Update training program
-    let updateTrainingProgram = this.prisma.trainingProgram.updateMany({
+    const updateTrainingProgram = this.prisma.trainingProgram.updateMany({
       where: {
         id,
         ownerId,
@@ -173,7 +174,7 @@ export class TrainingProgramRepo {
     });
 
     // Update days
-    let updateDays = data.days.map(d =>
+    const updateDays = data.days.map(d =>
       this.prisma.trainingProgramDay.update({
         where: {
           id: d.id,
@@ -185,7 +186,7 @@ export class TrainingProgramRepo {
     )
 
     // Create groups with their exercises
-    let createGroupsAndTheirExercises = data.exerciseGroups.map(g => {
+    const createGroupsAndTheirExercises = data.exerciseGroups.map(g => {
       const trainingProgramDayIds: number[] = []
       data.days.map(d => {
         if (d.exerciseGroups.find(_g => _g.id == g.id)) {
@@ -211,8 +212,8 @@ export class TrainingProgramRepo {
             }))
           },
           trainingProgramDays: {
-            connect: trainingProgramDayIds.map(id => ({
-              id,
+            connect: trainingProgramDayIds.map(_id => ({
+              id: _id,
             }))
           }
         }
@@ -221,7 +222,7 @@ export class TrainingProgramRepo {
     })
 
     // Create exercises for each day
-    let createExercisesForEachDay = this.prisma.exerciseEvent.createMany({
+    const createExercisesForEachDay = this.prisma.exerciseEvent.createMany({
       data: data.days.map(d => d.exercises.map(e => ({
         name: e.name,
         sets: Number(e.sets),
@@ -257,4 +258,3 @@ export class TrainingProgramRepo {
     })
   }
 }
-

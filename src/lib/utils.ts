@@ -4,6 +4,7 @@ export function confirmDelete(e: MouseEvent) {
   }
 }
 
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 export function toNum(val: any, def: any): any {
   if (val != undefined && val != null && !isNaN(val)) {
     return Number(val)
@@ -28,7 +29,7 @@ export function parseMetricStrings(s: string[]) {
 
 export function getMonday(d: Date) {
   d = new Date(d);
-  var day = d.getDay(),
+  const day = d.getDay(),
     diff = d.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
   return new Date(d.setDate(diff));
 }

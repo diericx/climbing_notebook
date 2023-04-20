@@ -7,7 +7,7 @@
 	import { page } from '$app/stores';
 
 	// Form action to execute
-	export let action: string = '?/newJournalEntry';
+	export let action = '?/newJournalEntry';
 
 	// Add redirect data
 	if ($page.url.searchParams.has('redirectTo')) {

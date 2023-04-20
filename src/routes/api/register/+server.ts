@@ -1,28 +1,28 @@
-import { json } from "@sveltejs/kit";
+import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
-import { auth } from "$lib/server/lucia";
-import { isUsernameValid, isPasswordValid, isEmailValid } from "$lib/user";
-import { Prisma, type Profile } from "@prisma/client";
-import { LuciaError } from "lucia-auth";
-import { prisma } from "$lib/prisma";
-import { SERVER_ERROR } from "$lib/helperTypes";
+import { auth } from '$lib/server/lucia';
+import { isUsernameValid, isPasswordValid, isEmailValid } from '$lib/user';
+import { Prisma, type Profile } from '@prisma/client';
+import { LuciaError } from 'lucia-auth';
+import { prisma } from '$lib/prisma';
+import { SERVER_ERROR } from '$lib/helperTypes';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
   const { username, password, email } = await request.json();
 
   if (!isUsernameValid(username)) {
-    return json({ message: "Username cannot be empty" }, { status: 401 })
+    return json({ message: 'Username cannot be empty' }, { status: 401 })
   }
   if (!isPasswordValid(password)) {
-    return json({ message: "Password cannot be empty" }, { status: 401 })
+    return json({ message: 'Password cannot be empty' }, { status: 401 })
   }
   if (!isEmailValid(email)) {
-    return json({ message: "Email must be valid" }, { status: 401 })
+    return json({ message: 'Email must be valid' }, { status: 401 })
   }
 
   let user
   try {
-    user = await auth.createUser("username", username, {
+    user = await auth.createUser('username', username, {
       password,
       attributes: {
         email: email,
@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     ) ||
       (e instanceof LuciaError && e.message === 'AUTH_DUPLICATE_PROVIDER_ID')
     ) {
-      return json({ message: "Username or email already taken" }, { status: 400 })
+      return json({ message: 'Username or email already taken' }, { status: 400 })
     }
 
     // Catch UNKNOWN errors and return 500
@@ -48,7 +48,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     await prisma.profile.create({
       data: {
-        goals: "",
+        goals: '',
         ownerId: Number(user?.userId),
         createdAt: new Date(),
       },

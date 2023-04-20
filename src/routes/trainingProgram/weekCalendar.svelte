@@ -7,18 +7,16 @@
 
 	export let trainingProgram: TrainingProgramWithDays;
 	export let shouldShowActionButtons = true;
-	export let fillBelowFunc = () => {};
-	export let isExerciseCompletedFunc = (e: ExerciseEvent, day: number) => {
-		return false;
-	};
+	export let fillBelowFunc: (e: ExerciseEvent) => void;
+	export let isExerciseCompletedFunc: (e: ExerciseEvent, day: number) => boolean;
 
 	onMount(() => {
-		scrollIntoView({});
+		scrollIntoView();
 	});
 
 	const todayDayOfTheWeek = getDayWeekStartsMonday(new Date());
 	let daysOfTheWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-	function scrollIntoView({ target }) {
+	function scrollIntoView() {
 		const el = document.querySelector('#' + daysOfTheWeek[todayDayOfTheWeek]);
 		if (!el) return;
 		el.scrollIntoView({

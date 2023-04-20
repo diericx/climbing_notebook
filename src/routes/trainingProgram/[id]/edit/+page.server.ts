@@ -1,7 +1,7 @@
 import { error, fail, redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { SERVER_ERROR } from "$lib/helperTypes";
-import { prisma, type TrainingProgramComplete, type TrainingProgramWithDays } from '$lib/prisma';
+import { SERVER_ERROR } from '$lib/helperTypes';
+import { prisma, type TrainingProgramComplete } from '$lib/prisma';
 import { TrainingProgramFormData, TrainingProgramRepo } from '$lib/trainingProgram';
 import { APIError } from '$lib/errors';
 import type { TrainingProgram } from '@prisma/client';
@@ -22,7 +22,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
     throw error(500, { message: SERVER_ERROR })
   }
 
-  let trainingProgramOriginal = JSON.parse(JSON.stringify(trainingProgram));
+  const trainingProgramOriginal = JSON.parse(JSON.stringify(trainingProgram));
 
   return {
     trainingProgram,
@@ -34,7 +34,7 @@ export const actions: Actions = {
   deleteTrainingProgram: async ({ locals, request, url }) => {
     const rawFormData = Object.fromEntries((await request.formData()).entries());
     const { user } = await locals.auth.validateUser();
-    let id = Number(rawFormData.id);
+    const id = Number(rawFormData.id);
 
     const repo = new TrainingProgramRepo(prisma);
     let trainingProgram: TrainingProgram;
@@ -58,12 +58,12 @@ export const actions: Actions = {
   patchTrainingProgram: async ({ locals, request, url, params }) => {
     const rawFormData = Object.fromEntries((await request.formData()).entries());
     const { user } = await locals.auth.validateUser();
-    let id = Number(params.id);
+    const id = Number(params.id);
 
     // Validate input fields
     // NOTE: we are sending form data as json object back to be parsed 
     const input = new TrainingProgramFormData(JSON.parse(rawFormData.trainingProgram.toString()));
-    let { message, isValid } = input.validate()
+    const { message, isValid } = input.validate()
     if (!isValid) {
       return fail(401, { message, trainingProgramFormData: rawFormData })
     }

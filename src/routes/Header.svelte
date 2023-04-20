@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
 	import logo from '$lib/images/logo.svg';
+	import type { GlobalUserAttributes } from 'lucia-auth';
 	let showMenu = false;
 
 	function toggleNavbar() {
@@ -11,7 +11,7 @@
 		showMenu = false;
 	}
 
-	export let user: any | undefined;
+	export let user: GlobalUserAttributes | undefined;
 </script>
 
 <header>
@@ -27,10 +27,11 @@
 					</a>
 
 					<!-- Mobile menu button -->
-					<div on:click={toggleNavbar} class="flex md:hidden">
+					<div class="flex md:hidden">
 						<button
 							type="button"
 							class="py-1 text-gray-300 hover:text-gray-400 focus:outline-none focus:text-gray-400"
+							on:click={toggleNavbar}
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"

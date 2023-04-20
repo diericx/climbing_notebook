@@ -5,7 +5,7 @@
 	import { page } from '$app/stores';
 
 	// Form action to execute
-	export let action: string = '?/editProfile';
+	export let action = '?/editProfile';
 
 	// Add redirect data
 	if ($page.url.searchParams.has('redirectTo')) {

@@ -1,5 +1,4 @@
-<script>
-	import { onMount } from 'svelte';
+<script lang="ts">
 	import dayjs from 'dayjs';
 
 	export let format = 'YYYY-MM-DD';
@@ -7,10 +6,10 @@
 	export let name = '';
 	export let style = '';
 
-	let internal;
+	let internal: string;
 
-	const input = (x) => (internal = dayjs(x).format(format));
-	const output = (x) => (date = dayjs(x, format).toDate());
+	const input = (x: Date) => (internal = dayjs(x).format(format));
+	const output = (x: string) => (date = dayjs(x, format).toDate());
 
 	$: input(date);
 	$: output(internal);

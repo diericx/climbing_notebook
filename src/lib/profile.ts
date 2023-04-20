@@ -1,11 +1,12 @@
-import type { PrismaClient, Profile } from "@prisma/client";
-import { APIError } from "./errors";
-import type { ProfileWithActiveTrainingProgram } from "./prisma";
+import type { PrismaClient } from '@prisma/client';
+import { APIError } from './errors';
+import type { ProfileWithActiveTrainingProgram } from './prisma';
 
 export class ProfileFormData {
   goals: string | undefined = undefined;
   activeTrainingProgramId: number | undefined;
 
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
   constructor(obj: any | undefined = undefined) {
     if (obj == undefined) {
       return
@@ -18,7 +19,7 @@ export class ProfileFormData {
   validate() {
     return {
       isValid: true,
-      message: "",
+      message: '',
     }
   }
 }
@@ -28,7 +29,7 @@ export class ProfileRepo {
 
   async getOneAndValidateOwner(ownerId: number): Promise<ProfileWithActiveTrainingProgram> {
     // Fetch
-    let profile = await this.prisma.profile.findUnique({
+    const profile = await this.prisma.profile.findUnique({
       where: {
         ownerId: ownerId,
       },
@@ -52,12 +53,12 @@ export class ProfileRepo {
           }
         }
       }
-    }) as ProfileWithActiveTrainingProgram;
+    });
     if (profile == null) {
-      throw new APIError("NOT_FOUND", "Resource not found");
+      throw new APIError('NOT_FOUND', 'Resource not found');
     }
-    if (profile?.ownerId != ownerId) {
-      throw new APIError("INVALID_PERMISSIONS", "You do not have permission to edit this object.")
+    if (profile.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.')
     }
     return profile
   }
@@ -80,4 +81,3 @@ export class ProfileRepo {
     }) as ProfileWithActiveTrainingProgram;
   }
 }
-

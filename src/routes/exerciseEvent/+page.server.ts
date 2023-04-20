@@ -1,12 +1,12 @@
-import type { Actions } from "./$types";
+import type { Actions } from './$types';
 import type { PageServerLoad } from './$types';
-import type { Profile } from "@prisma/client";
-import { prisma } from "$lib/prisma";
-import { error, fail, redirect } from "@sveltejs/kit";
-import { APIError } from "$lib/errors";
-import { SERVER_ERROR } from "$lib/helperTypes";
-import { ExerciseEventFormData, ExerciseEventRepo } from "$lib/exerciseEvent";
-import { ProfileRepo } from "$lib/profile";
+import type { Profile } from '@prisma/client';
+import { prisma } from '$lib/prisma';
+import { error, fail, redirect } from '@sveltejs/kit';
+import { APIError } from '$lib/errors';
+import { SERVER_ERROR } from '$lib/helperTypes';
+import { ExerciseEventFormData, ExerciseEventRepo } from '$lib/exerciseEvent';
+import { ProfileRepo } from '$lib/profile';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { user } = await locals.auth.validateUser();
@@ -49,7 +49,7 @@ export const actions: Actions = {
 
     // Validate input fields
     const input = new ExerciseEventFormData(rawFormData);
-    let { message, isValid } = input.validate()
+    const { message, isValid } = input.validate()
     if (!isValid) {
       return fail(401, { message, exerciseEventFormData: rawFormData })
     }

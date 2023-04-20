@@ -1,12 +1,12 @@
-import { ChartRepo } from "$lib/chart";
-import { APIError } from "$lib/errors";
-import { ExerciseEventRepo } from "$lib/exerciseEvent";
-import { SERVER_ERROR } from "$lib/helperTypes";
-import { MetricRepo } from "$lib/metric";
-import { prisma } from "$lib/prisma";
-import { ProfileRepo } from "$lib/profile";
-import type { Chart, Metric, Profile } from "@prisma/client";
-import { error, fail, type Actions } from "@sveltejs/kit";
+import { ChartRepo } from '$lib/chart';
+import { APIError } from '$lib/errors';
+import { ExerciseEventRepo } from '$lib/exerciseEvent';
+import { SERVER_ERROR } from '$lib/helperTypes';
+import { MetricRepo } from '$lib/metric';
+import { prisma } from '$lib/prisma';
+import { ProfileRepo } from '$lib/profile';
+import type { Chart, Metric, Profile } from '@prisma/client';
+import { error, fail, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { auth } from '$lib/server/lucia';
 

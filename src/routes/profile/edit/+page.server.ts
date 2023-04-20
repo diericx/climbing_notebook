@@ -1,11 +1,11 @@
-import type { Actions } from "./$types";
+import type { Actions } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
-import type { PageServerLoad } from "../$types";
-import { SERVER_ERROR } from "$lib/helperTypes";
-import type { Profile } from "@prisma/client";
-import { prisma } from "$lib/prisma";
-import { ProfileFormData, ProfileRepo } from "$lib/profile";
-import { APIError } from "$lib/errors";
+import type { PageServerLoad } from '../$types';
+import { SERVER_ERROR } from '$lib/helperTypes';
+import type { Profile } from '@prisma/client';
+import { prisma } from '$lib/prisma';
+import { ProfileFormData, ProfileRepo } from '$lib/profile';
+import { APIError } from '$lib/errors';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { user } = await locals.auth.validateUser();
@@ -34,7 +34,7 @@ export const actions: Actions = {
 
     // Validate input fields
     const input = new ProfileFormData(rawFormData);
-    let { message, isValid } = input.validate()
+    const { message, isValid } = input.validate()
     if (!isValid) {
       return fail(401, { message, profileFormData: rawFormData })
     }

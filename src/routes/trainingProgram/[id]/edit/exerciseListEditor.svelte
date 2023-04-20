@@ -1,7 +1,9 @@
 <script lang="ts">
-	export let exercises = [];
-	export let removeExercise = (exercise) => {};
-	export let addExercise = () => {};
+	import type { ExerciseEvent } from '@prisma/client';
+
+	export let exercises: ExerciseEvent[];
+	export let removeExercise: (exercise: ExerciseEvent) => void;
+	export let addExercise: () => void;
 </script>
 
 <table class="mb-4">

@@ -1,8 +1,6 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
 
-import type { Session, User } from "lucia-auth";
-
 /// <reference types="lucia-auth" />
 declare namespace Lucia {
   type Auth = import('$lib/server/lucia.js').Auth;
@@ -15,7 +13,7 @@ declare namespace Lucia {
 declare global {
   namespace App {
     interface Locals {
-      auth: import("lucia-auth").AuthRequest;
+      auth: import('lucia-auth').AuthRequest;
     }
   }
 }

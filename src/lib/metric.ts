@@ -1,4 +1,4 @@
-import type { Metric, PrismaClient } from "@prisma/client";
+import type { Metric, PrismaClient } from '@prisma/client';
 
 export class MetricRepo {
   constructor(private readonly prisma: PrismaClient) { }

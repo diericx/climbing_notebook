@@ -1,11 +1,11 @@
 export class APIError extends Error {
-  detail: string = "";
-  message: ErrorMessage = "UNKNOWN";
+  detail = '';
+  message: ErrorMessage = 'UNKNOWN';
   constructor(errorMsg: ErrorMessage, detail?: string) {
     super(errorMsg);
-    this.detail = detail || "";
-    this.message = errorMsg || "UNKNOWN";
+    this.detail = detail || '';
+    this.message = errorMsg;
   };
 }
-export type ErrorMessage = "UNKNOWN" | "UNIQUENESS_COLLISION" | "NOT_FOUND" | "INVALID_PERMISSIONS";
+export type ErrorMessage = 'UNKNOWN' | 'UNIQUENESS_COLLISION' | 'NOT_FOUND' | 'INVALID_PERMISSIONS';
 export { };

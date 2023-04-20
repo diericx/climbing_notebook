@@ -4,14 +4,13 @@ Notes:
 - Assumes group name uniqueness, if duplicates exist unexpected behavior will occur
 -->
 <script lang="ts">
-	import type { ActionData, PageData } from './$types';
+	import type { PageData } from './$types';
 	import ExerciseListEditor from './exerciseListEditor.svelte';
 	import { beforeNavigate } from '$app/navigation';
 	import { enhance } from '$app/forms';
 
 	export let data: PageData;
-	export let form: ActionData;
-	let scrollY;
+	let scrollY: number;
 
 	$: trainingProgram = data.trainingProgram;
 	$: trainingProgramOriginal = data.trainingProgramOriginal;

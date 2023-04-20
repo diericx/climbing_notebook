@@ -1,11 +1,11 @@
-import type { Actions, PageServerLoad } from "./$types";
-import { SERVER_ERROR } from "$lib/helperTypes";
-import { error } from "console";
-import { fail, redirect } from "@sveltejs/kit";
-import { ChartFormData, ChartRepo } from "$lib/chart";
-import { prisma } from "$lib/prisma";
-import { APIError } from "$lib/errors";
-import type { Chart } from "@prisma/client";
+import type { Actions, PageServerLoad } from './$types';
+import { SERVER_ERROR } from '$lib/helperTypes';
+import { error } from 'console';
+import { fail, redirect } from '@sveltejs/kit';
+import { ChartFormData, ChartRepo } from '$lib/chart';
+import { prisma } from '$lib/prisma';
+import { APIError } from '$lib/errors';
+import type { Chart } from '@prisma/client';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
   const { user } = await locals.auth.validateUser();
@@ -32,11 +32,11 @@ export const actions: Actions = {
   editChart: async ({ locals, params, request, url }) => {
     const rawFormData = Object.fromEntries((await request.formData()).entries());
     const { user } = await locals.auth.validateUser();
-    let id = Number(params.id);
+    const id = Number(params.id);
 
     // Validate input fields
     const input = new ChartFormData(rawFormData);
-    let { message, isValid } = input.validate()
+    const { message, isValid } = input.validate()
     if (!isValid) {
       return fail(401, { message, chartFormData: rawFormData })
     }

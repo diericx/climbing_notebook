@@ -1,12 +1,12 @@
-import type { Actions, PageServerLoad } from "./$types";
-import { error, fail, redirect } from "@sveltejs/kit";
-import { ChartFormData, ChartRepo } from "$lib/chart";
-import { prisma } from "$lib/prisma";
-import { APIError } from "$lib/errors";
-import { SERVER_ERROR } from "$lib/helperTypes";
+import type { Actions, PageServerLoad } from './$types';
+import { error, fail, redirect } from '@sveltejs/kit';
+import { ChartFormData, ChartRepo } from '$lib/chart';
+import { prisma } from '$lib/prisma';
+import { APIError } from '$lib/errors';
+import { SERVER_ERROR } from '$lib/helperTypes';
 
 export const load: PageServerLoad = async ({ url }) => {
-  const redirectTo = url.searchParams.get("redirectTo");
+  const redirectTo = url.searchParams.get('redirectTo');
 
   return {
     redirectTo
@@ -20,7 +20,7 @@ export const actions: Actions = {
 
     // Validate input fields
     const input = new ChartFormData(rawFormData);
-    let { message, isValid } = input.validate()
+    const { message, isValid } = input.validate()
     if (!isValid) {
       return fail(401, { message, chartFormData: rawFormData })
     }

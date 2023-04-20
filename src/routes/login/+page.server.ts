@@ -1,10 +1,10 @@
-import type { Actions } from "./$types";
+import type { Actions } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
-import type { PageServerLoad } from "./$types";
-import { isPasswordValid, isUsernameValid } from "$lib/user";
-import { auth } from "$lib/server/lucia";
-import { LuciaError } from "lucia-auth";
-import { SERVER_ERROR } from "$lib/helperTypes";
+import type { PageServerLoad } from './$types';
+import { isPasswordValid, isUsernameValid } from '$lib/user';
+import { auth } from '$lib/server/lucia';
+import { LuciaError } from 'lucia-auth';
+import { SERVER_ERROR } from '$lib/helperTypes';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const session = await locals.auth.validate();
@@ -13,20 +13,20 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-  login: async ({ request, locals, url }) => {
+  login: async ({ request, locals }) => {
     const form = await request.formData();
-    const username = form.get('username');
-    const password = form.get('password');
+    const username = form.get('username')?.toString();
+    const password = form.get('password')?.toString();
 
-    if (!isUsernameValid(username)) {
-      return fail(401, { message: "Username cannot be empty" })
+    if (!username || !isUsernameValid(username)) {
+      return fail(401, { message: 'Username cannot be empty' })
     }
-    if (!isPasswordValid(password)) {
-      return fail(401, { message: "Password cannot be empty" })
+    if (!password || !isPasswordValid(password)) {
+      return fail(401, { message: 'Password cannot be empty' })
     }
 
     try {
-      const key = await auth.useKey("username", username, password);
+      const key = await auth.useKey('username', username, password);
       const session = await auth.createSession(key.userId);
       locals.auth.setSession(session);
     } catch (e) {
@@ -39,7 +39,7 @@ export const actions: Actions = {
           e.message === 'AUTH_INVALID_SESSION_ID')
       ) {
         console.error(e.name, e.message);
-        return fail(401, { message: "Incorrect username or password" })
+        return fail(401, { message: 'Incorrect username or password', username })
       }
 
       // Print and communicate unknown errors
@@ -52,17 +52,17 @@ export const actions: Actions = {
     };
   },
 
-  register: async ({ request, fetch, url }) => {
+  register: async ({ request }) => {
     const form = await request.formData();
-    const username = form.get('username');
-    const password = form.get('password');
+    const username = form.get('username')?.toString();
+    const password = form.get('password')?.toString();
     const email = form.get('email');
 
-    if (!isUsernameValid(username)) {
-      return fail(401, { message: "Username cannot be empty" })
+    if (!username || !isUsernameValid(username)) {
+      return fail(401, { message: 'Username cannot be empty' })
     }
-    if (!isPasswordValid(password)) {
-      return fail(401, { message: "Password cannot be empty" })
+    if (!password || !isPasswordValid(password)) {
+      return fail(401, { message: 'Password cannot be empty' })
     }
 
     try {
@@ -89,7 +89,7 @@ export const actions: Actions = {
           e.message === 'AUTH_INVALID_SESSION_ID')
       ) {
         console.error(e.name, e.message);
-        return fail(401, { message: "Incorrect username or password" })
+        return fail(401, { message: 'Incorrect username or password' })
       }
 
       // Print and communicate unknown errors

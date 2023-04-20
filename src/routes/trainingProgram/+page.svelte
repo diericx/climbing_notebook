@@ -3,7 +3,6 @@
 	import type { TrainingProgramWithDays } from '$lib/prisma';
 	import { confirmDelete } from '$lib/utils';
 	import type { PageData, ActionData } from './$types';
-	import WeeklyCalendar from './weekCalendar.svelte';
 
 	export let data: PageData;
 	export let form: ActionData;

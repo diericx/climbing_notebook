@@ -1,18 +1,19 @@
-import type { ExerciseEvent, PrismaClient } from "@prisma/client";
-import { APIError } from "./errors";
-import { toNum } from "./utils"
+import type { ExerciseEvent, PrismaClient } from '@prisma/client';
+import { APIError } from './errors';
+import { toNum } from './utils'
 
 export class ExerciseEventFormData {
   date: Date = new Date();
-  name: string = "";
-  sets: number = 0;
-  reps: number = 0;
-  weight: number = 0;
-  seconds: number = 0;
-  minutes: number = 0;
-  difficulty: number = 0;
-  notes: string = "";
+  name = '';
+  sets = 0;
+  reps = 0;
+  weight = 0;
+  seconds = 0;
+  minutes = 0;
+  difficulty = 0;
+  notes = '';
 
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
   constructor(obj: any | undefined = undefined) {
     if (obj == undefined) {
       return
@@ -33,20 +34,20 @@ export class ExerciseEventFormData {
     if (isNaN(this.date.valueOf())) {
       return {
         isValid: false,
-        message: "Invalid date."
+        message: 'Invalid date.'
       }
     }
 
-    if (!this.name || this.name == "") {
+    if (!this.name || this.name == '') {
       return {
         isValid: false,
-        message: "Name is required."
+        message: 'Name is required.'
       }
     }
 
     return {
       isValid: true,
-      message: "",
+      message: '',
     }
   }
 }
@@ -55,16 +56,16 @@ export class ExerciseEventRepo {
   constructor(private readonly prisma: PrismaClient) { }
 
   async getOneAndValidateOwner(id: number, ownerId: number): Promise<ExerciseEvent> {
-    let exerciseEvent = await this.prisma.exerciseEvent.findUnique({
+    const exerciseEvent = await this.prisma.exerciseEvent.findUnique({
       where: {
         id: Number(id),
       }
-    }) as ExerciseEvent;
+    });
     if (exerciseEvent == null) {
-      throw new APIError("NOT_FOUND", "Resource not found");
+      throw new APIError('NOT_FOUND', 'Resource not found');
     }
-    if (exerciseEvent?.ownerId != ownerId) {
-      throw new APIError("INVALID_PERMISSIONS", "You do not have permission to edit this object.")
+    if (exerciseEvent.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.')
     }
     return exerciseEvent
   }
@@ -115,10 +116,8 @@ export class ExerciseEventRepo {
         seconds: data.seconds || undefined,
         difficulty: data.difficulty || undefined,
         notes: data.notes || undefined,
-        // trainingProgramDayId: data.trainingProgramDayId || undefined,
-        // exerciseGroupId: data.exerciseGroupId || undefined,
         name: data.name || undefined,
-        date: data.date ? new Date(data.date) : undefined,
+        date: data.date,
       },
       where: {
         id: Number(id),
@@ -137,4 +136,3 @@ export class ExerciseEventRepo {
   }
 
 }
-

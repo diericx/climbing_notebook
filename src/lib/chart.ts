@@ -1,14 +1,15 @@
-import type { Chart, PrismaClient } from "@prisma/client";
-import { APIError } from "./errors";
+import type { Chart, PrismaClient } from '@prisma/client';
+import { APIError } from './errors';
 
 export class ChartFormData {
   date: Date = new Date();
-  name: string = "";
-  type: string = "";
-  patternToMatch: string = "";
-  matchAgainst: string = "";
-  equation: string = "";
+  name = '';
+  type = '';
+  patternToMatch = '';
+  matchAgainst = '';
+  equation = '';
 
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
   constructor(obj: any | undefined = undefined) {
     if (obj == undefined) {
       return
@@ -23,33 +24,33 @@ export class ChartFormData {
   }
 
   validate() {
-    if (!this.name || this.name == "") {
+    if (!this.name || this.name == '') {
       return {
         isValid: false,
-        message: "Name is required."
+        message: 'Name is required.'
       }
     }
-    if (!this.type || this.type == "") {
+    if (!this.type || this.type == '') {
       return {
         isValid: false,
-        message: "Type is required."
+        message: 'Type is required.'
       }
     }
-    if (!this.matchAgainst || this.matchAgainst == "") {
+    if (!this.matchAgainst || this.matchAgainst == '') {
       return {
         isValid: false,
-        message: "Match against is required."
+        message: 'Match against is required.'
       }
     }
-    if (!this.equation || this.equation == "") {
+    if (!this.equation || this.equation == '') {
       return {
         isValid: false,
-        message: "Equation is required."
+        message: 'Equation is required.'
       }
     }
     return {
       isValid: true,
-      message: "",
+      message: '',
     }
   }
 }
@@ -59,16 +60,16 @@ export class ChartRepo {
   constructor(private readonly prisma: PrismaClient) { }
 
   async getOneAndValidateOwner(id: number, ownerId: number): Promise<Chart> {
-    let chart = await this.prisma.chart.findUnique({
+    const chart = await this.prisma.chart.findUnique({
       where: {
         id: Number(id),
       }
-    }) as Chart;
+    });
     if (chart == null) {
-      throw new APIError("NOT_FOUND", "Resource not found");
+      throw new APIError('NOT_FOUND', 'Resource not found');
     }
-    if (chart?.ownerId != ownerId) {
-      throw new APIError("INVALID_PERMISSIONS", "You do not have permission to edit this object.")
+    if (chart.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.')
     }
     return chart
   }
@@ -130,4 +131,3 @@ export class ChartRepo {
   }
 
 }
-

@@ -1,11 +1,11 @@
-import type { Actions } from "./$types";
+import type { Actions } from './$types';
 import type { PageServerLoad } from './$types';
-import { prisma, type ProfileWithActiveTrainingProgram } from "$lib/prisma";
-import { error, fail, redirect } from "@sveltejs/kit";
-import { ProfileRepo } from "$lib/profile";
-import { APIError } from "$lib/errors";
-import { SERVER_ERROR } from "$lib/helperTypes";
-import { TrainingProgramFormData, TrainingProgramRepo } from "$lib/trainingProgram";
+import { prisma, type ProfileWithActiveTrainingProgram } from '$lib/prisma';
+import { error, fail, redirect } from '@sveltejs/kit';
+import { ProfileRepo } from '$lib/profile';
+import { APIError } from '$lib/errors';
+import { SERVER_ERROR } from '$lib/helperTypes';
+import { TrainingProgramFormData, TrainingProgramRepo } from '$lib/trainingProgram';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { user } = await locals.auth.validateUser();
@@ -47,7 +47,7 @@ export const actions: Actions = {
 
     // Validate input fields
     const input = new TrainingProgramFormData(rawFormData);
-    let { message, isValid } = input.validate()
+    const { message, isValid } = input.validate()
     if (!isValid) {
       return fail(401, { message, trainingProgramFormData: rawFormData })
     }
