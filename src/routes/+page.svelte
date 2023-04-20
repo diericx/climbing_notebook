@@ -22,7 +22,7 @@
 				some.
 			</p>
 		{:else}
-			<div class="whitespace-pre border bg-white w-full px-1 py-3">
+			<div class="whitespace-pre-wrap border bg-white w-full px-1 py-3">
 				{profile.goals}
 			</div>
 		{/if}
