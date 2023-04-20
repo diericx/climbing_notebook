@@ -27,7 +27,7 @@
 <div class="app">
 	<Header user={data.user} />
 
-	<div class="container mx-auto">
+	<div class="container mx-auto px-3">
 		<main>
 			<slot />
 		</main>

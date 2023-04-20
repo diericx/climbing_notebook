@@ -29,20 +29,6 @@
 		{/if}
 	</div>
 
-	<div class="pb-4">
-		<h1>Your Training Program Schedule</h1>
-		<hr />
-		{#if profile.activeTrainingProgram}
-			<TrainingProgramWeeklyCalendar trainingProgram={profile.activeTrainingProgram} />
-		{:else}
-			<p class="text-gray-400">
-				You don't have an active training program! Go to the <a href="/trainingProgram"
-					>Training Programs</a
-				> page to create and set one.
-			</p>
-		{/if}
-	</div>
-
 	<div>
 		<h1 class="inline">Charts</h1>
 		<a href="/chart/new?redirectTo=/">New Chart</a>
@@ -82,22 +68,6 @@
 
 	<ul class="roman">
 		<li>
-			<h2><b>Recovery Tracker</b></h2>
-			Implementation of the recovery tracking too suggested by Bechtel and Manganiello in<i
-				>Unstoppale Force: Strength Training for Climbing (pg. 92).</i
-			>
-			<ul class="list-disc px-6">
-				<li>Each activity falls under <b>work</b> or <b>rest</b></li>
-				<li>
-					Short term work/recovery is calculated by subtracting rest from work and displayed there
-				</li>
-				<li>
-					Short term work is displayed on the front page dashboard to get a quick glance at what
-					might affect your performance today.
-				</li>
-			</ul>
-		</li>
-		<li>
 			<h2><b>Climbing Journal</b></h2>
 			A place to keep nots on progress and more importantly<b>injuries</b> as suggested by MacLeod
 			in
@@ -105,6 +75,16 @@
 			<ul class="list-disc px-6">
 				<li>Simple and open ended journaling tool; jot notes any day it seems useful</li>
 			</ul>
+		</li>
+		<li>
+			<h2><b>Program Editor</b></h2>
+			Create complex training programs that will generate a weekly view.
+			<br />
+			Track completion of these tasks with the exercise log.
+		</li>
+		<li>
+			<h2><b>Exercise Log</b></h2>
+			Keep a detailed log of your exercises include repsxsets, times, and other notes.
 		</li>
 	</ul>
 {/if}

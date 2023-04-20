@@ -40,7 +40,7 @@
 		/>
 	</div>
 
-	<div class="flex gap-2">
+	<div class="flex flex-wrap gap-2">
 		<div>
 			<label for="sets">Sets</label>
 			<br />
@@ -52,7 +52,7 @@
 			/>
 		</div>
 
-		<div class="inline">
+		<div>
 			<label for="reps">Reps</label>
 			<br />
 			<input
@@ -74,6 +74,8 @@
 				bind:value={exerciseEventFormData.weight}
 			/>
 		</div>
+
+		<div class="w-full md:hidden" />
 
 		<div>
 			<label for="minutes">Minutes</label>

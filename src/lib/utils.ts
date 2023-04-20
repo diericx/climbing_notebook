@@ -32,3 +32,11 @@ export function getMonday(d: Date) {
     diff = d.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
   return new Date(d.setDate(diff));
 }
+
+export function getDayWeekStartsMonday(d: Date) {
+  let day = d.getDay() - 1;
+  if (day == 7) {
+    day = 0;
+  }
+  return day;
+}

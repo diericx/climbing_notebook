@@ -7,6 +7,10 @@
 		showMenu = !showMenu;
 	}
 
+	function closeNavbar() {
+		showMenu = false;
+	}
+
 	export let user: any | undefined;
 </script>
 
@@ -48,22 +52,42 @@
 
 				<!-- Mobile Menu open: "block", Menu closed: "hidden" -->
 				<div
-					class="flex flex-1 flex-col justify-between mt-8 space-y-4 md:flex-row md:flex md:space-y-0 md:items-center md:space-x-10 md:mt-0 {showMenu
+					class="flex-1 md:flex flex-col md:flex-row justify-between md:items-center mt-5 md:mt-0 md:space-x-10 {showMenu
 						? 'flex'
 						: 'hidden'}"
 				>
-					<div class="mx-3 flex flex-col md:flex-row">
-						<a class="px-3 text-gray-600 hover:text-blue-400 text-left" href="/"> Home </a>
-						<a class="px-3 text-gray-600 hover:text-blue-400" href="/journalEntry">Journal</a>
-						<a class="px-3 text-gray-600 hover:text-blue-400" href="/exerciseEvent">Log</a>
-						<a class="px-3 text-gray-600 hover:text-blue-400" href="/trainingProgram">Programs</a>
+					<div class="mx-3 flex flex-col md:flex-row space-y-1 md:space-y-0">
+						<a
+							class="px-3 text-gray-600 hover:text-blue-400 text-left"
+							href="/"
+							on:click={closeNavbar}
+						>
+							Home
+						</a>
+						<a
+							class="px-3 text-gray-600 hover:text-blue-400"
+							href="/journalEntry"
+							on:click={closeNavbar}>Journal</a
+						>
+						<a
+							class="px-3 text-gray-600 hover:text-blue-400"
+							href="/exerciseEvent"
+							on:click={closeNavbar}>Log</a
+						>
+						<a
+							class="px-3 text-gray-600 hover:text-blue-400"
+							href="/trainingProgram"
+							on:click={closeNavbar}>Programs</a
+						>
 					</div>
 
-					<div class="ml-0 w-fit-content flex flex-col md:flex-none md:flex-row">
+					<div
+						class="flex flex-col md:flex-none md:flex-row mx-3 mt-4 md:mt-0 md:mx-0 w-fit-content"
+					>
 						{#if user}
 							<a
 								href="/profile"
-								class="px-4 text-center border text-gray-800 bg-white hover:text-indigo-600 rounded-md lg:inline border-0"
+								class="px-3 text-left md:text-center border text-gray-800 bg-white hover:text-indigo-600 rounded-md lg:inline border-0"
 							>
 								{user.username}
 							</a>
@@ -75,7 +99,7 @@
 						{:else}
 							<a
 								href="/login"
-								class="py-3 px-4 text-center border text-gray-800 bg-white hover:text-indigo-600 rounded-md block lg:inline border-0"
+								class="py-3 px-3 text-center border text-gray-800 bg-white hover:text-indigo-600 rounded-md block lg:inline border-0"
 							>
 								Login
 							</a>

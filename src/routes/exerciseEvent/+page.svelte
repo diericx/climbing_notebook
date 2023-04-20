@@ -50,6 +50,13 @@
 		exerciseEventFormData.sets = e.sets;
 		exerciseEventFormData.reps = e.reps;
 		exerciseEventFormData.weight = e.weight;
+
+		// Focus the form element
+		const el = document.querySelector('#exerciseEventForm');
+		if (!el) return;
+		el.scrollIntoView({
+			behavior: 'smooth'
+		});
 	}
 
 	$: isExerciseCompleted = (e: ExerciseEvent) => {
@@ -66,12 +73,9 @@
 <br />
 
 <h1>Training Log</h1>
-<br />
 
 <div class="pb-6">
 	<div>
-		<h2>Today's Schedule</h2>
-		<hr />
 		{#if !scheduledTrainingProgramDay}
 			<p class="text-gray-400">
 				You don't have an active training program! Go to the <a href="/trainingProgram"
@@ -80,17 +84,14 @@
 			</p>
 		{:else}
 			<p>
-				<b>Description: </b>{scheduledTrainingProgramDay.description}
-			</p>
-			<p>
-				<b>Exercises: </b>
-				<br />
 				<span class="text-gray-400 italic"
 					>Exercises are considered completed if they have been done within the week.
 					<br />
-					Click an exercise to fill the form below.
+					Fill the form below to change any data about your session or simply mark the exercise completed.
 				</span>
 			</p>
+
+			<br />
 
 			<WeeklyCalendar
 				trainingProgram={profile.activeTrainingProgram}
@@ -102,7 +103,7 @@
 	</div>
 </div>
 
-<div>
+<div id="exerciseEventForm">
 	<div>
 		<h2>New Entry</h2>
 		<hr />

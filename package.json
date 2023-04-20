@@ -43,6 +43,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@fontsource/pt-sans": "^4.5.11",
 		"@lucia-auth/adapter-prisma": "^1.0.0",
 		"@prisma/client": "^4.9.0",
 		"@sveltejs/adapter-vercel": "^2.1.1",
