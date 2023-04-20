@@ -35,7 +35,7 @@ export class TrainingProgramFormData {
 export class TrainingProgramRepo {
   constructor(private readonly prisma: PrismaClient) { }
 
-  async getOneAndValidateOwner(id: number, ownerId: number): Promise<TrainingProgramComplete> {
+  async getOneAndValidateOwner(id: number, ownerId: string): Promise<TrainingProgramComplete> {
     const trainingProgram = await this.prisma.trainingProgram.findUnique({
       where: {
         id,
@@ -89,7 +89,7 @@ export class TrainingProgramRepo {
     return trainingProgram
   }
 
-  async new(data: TrainingProgramFormData, ownerId: number): Promise<TrainingProgram> {
+  async new(data: TrainingProgramFormData, ownerId: string): Promise<TrainingProgram> {
     return await this.prisma.trainingProgram.create({
       data: {
         name: data.name,
@@ -107,7 +107,7 @@ export class TrainingProgramRepo {
     }) as TrainingProgram;
   }
 
-  async get(ownerId: number): Promise<TrainingProgram[]> {
+  async get(ownerId: string): Promise<TrainingProgram[]> {
     // Fetch all
     return await this.prisma.trainingProgram.findMany({
       where: {
@@ -119,11 +119,11 @@ export class TrainingProgramRepo {
     }) as TrainingProgram[];
   }
 
-  async getOne(id: number, ownerId: number): Promise<TrainingProgramComplete> {
+  async getOne(id: number, ownerId: string): Promise<TrainingProgramComplete> {
     return this.getOneAndValidateOwner(id, ownerId)
   }
 
-  async update(data: TrainingProgramFormData, id: number, ownerId: number): Promise<TrainingProgram> {
+  async update(data: TrainingProgramFormData, id: number, ownerId: string): Promise<TrainingProgram> {
     // Get current training program
     const trainingProgram = await this.prisma.trainingProgram.findUnique({
       where: {
@@ -248,7 +248,7 @@ export class TrainingProgramRepo {
     return this.getOne(id, ownerId);
   }
 
-  async delete(id: number, ownerId: number): Promise<TrainingProgram> {
+  async delete(id: number, ownerId: string): Promise<TrainingProgram> {
     await this.getOneAndValidateOwner(id, ownerId);
 
     return await this.prisma.trainingProgram.delete({

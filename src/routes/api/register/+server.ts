@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     await prisma.profile.create({
       data: {
         goals: '',
-        ownerId: Number(user?.userId),
+        ownerId: user?.userId,
         createdAt: new Date(),
       },
     }) as Profile;

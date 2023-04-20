@@ -59,7 +59,7 @@ export class ChartFormData {
 export class ChartRepo {
   constructor(private readonly prisma: PrismaClient) { }
 
-  async getOneAndValidateOwner(id: number, ownerId: number): Promise<Chart> {
+  async getOneAndValidateOwner(id: number, ownerId: string): Promise<Chart> {
     const chart = await this.prisma.chart.findUnique({
       where: {
         id: Number(id),
@@ -74,7 +74,7 @@ export class ChartRepo {
     return chart
   }
 
-  async new(data: ChartFormData, ownerId: number): Promise<Chart> {
+  async new(data: ChartFormData, ownerId: string): Promise<Chart> {
     return await this.prisma.chart.create({
       data: {
         name: data.name,
@@ -87,7 +87,7 @@ export class ChartRepo {
     }) as Chart;
   }
 
-  async get(ownerId: number): Promise<Chart[]> {
+  async get(ownerId: string): Promise<Chart[]> {
     // Fetch all
     return await this.prisma.chart.findMany({
       where: {
@@ -99,11 +99,11 @@ export class ChartRepo {
     }) as Chart[];
   }
 
-  async getOne(id: number, ownerId: number): Promise<Chart> {
+  async getOne(id: number, ownerId: string): Promise<Chart> {
     return this.getOneAndValidateOwner(id, ownerId)
   }
 
-  async update(data: ChartFormData, id: number, ownerId: number): Promise<Chart> {
+  async update(data: ChartFormData, id: number, ownerId: string): Promise<Chart> {
     await this.getOneAndValidateOwner(id, ownerId);
 
     return await this.prisma.chart.update({
@@ -120,7 +120,7 @@ export class ChartRepo {
     });
   }
 
-  async delete(id: number, ownerId: number): Promise<Chart> {
+  async delete(id: number, ownerId: string): Promise<Chart> {
     await this.getOneAndValidateOwner(id, ownerId);
 
     return await this.prisma.chart.delete({

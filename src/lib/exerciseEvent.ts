@@ -55,7 +55,7 @@ export class ExerciseEventFormData {
 export class ExerciseEventRepo {
   constructor(private readonly prisma: PrismaClient) { }
 
-  async getOneAndValidateOwner(id: number, ownerId: number): Promise<ExerciseEvent> {
+  async getOneAndValidateOwner(id: number, ownerId: string): Promise<ExerciseEvent> {
     const exerciseEvent = await this.prisma.exerciseEvent.findUnique({
       where: {
         id: Number(id),
@@ -70,7 +70,7 @@ export class ExerciseEventRepo {
     return exerciseEvent
   }
 
-  async new(data: ExerciseEventFormData, ownerId: number): Promise<ExerciseEvent> {
+  async new(data: ExerciseEventFormData, ownerId: string): Promise<ExerciseEvent> {
     return await this.prisma.exerciseEvent.create({
       data: {
         // TODO: Don't deconstruct?
@@ -82,7 +82,7 @@ export class ExerciseEventRepo {
     }) as ExerciseEvent;
   }
 
-  async get(ownerId: number, dateMin?: Date | undefined, dateMax?: Date | undefined): Promise<ExerciseEvent[]> {
+  async get(ownerId: string, dateMin?: Date | undefined, dateMax?: Date | undefined): Promise<ExerciseEvent[]> {
     // Fetch all
     return await this.prisma.exerciseEvent.findMany({
       where: {
@@ -100,11 +100,11 @@ export class ExerciseEventRepo {
     }) as ExerciseEvent[];
   }
 
-  async getOne(id: number, ownerId: number): Promise<ExerciseEvent> {
+  async getOne(id: number, ownerId: string): Promise<ExerciseEvent> {
     return this.getOneAndValidateOwner(id, ownerId)
   }
 
-  async update(data: ExerciseEventFormData, id: number, ownerId: number): Promise<ExerciseEvent> {
+  async update(data: ExerciseEventFormData, id: number, ownerId: string): Promise<ExerciseEvent> {
     await this.getOneAndValidateOwner(id, ownerId);
 
     return await this.prisma.exerciseEvent.update({
@@ -125,7 +125,7 @@ export class ExerciseEventRepo {
     });
   }
 
-  async delete(id: number, ownerId: number): Promise<ExerciseEvent> {
+  async delete(id: number, ownerId: string): Promise<ExerciseEvent> {
     await this.getOneAndValidateOwner(id, ownerId);
 
     return await this.prisma.exerciseEvent.delete({

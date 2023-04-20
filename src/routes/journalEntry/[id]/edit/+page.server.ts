@@ -14,7 +14,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
   const repo = new JournalEntryRepo(prisma);
   let journalEntry: JournalEntry;
   try {
-    journalEntry = await repo.getOne(id, Number(user?.userId));
+    journalEntry = await repo.getOne(id, user?.userId);
   } catch (e) {
     if (e instanceof APIError) {
       return fail(401, { message: e.detail })
@@ -43,7 +43,7 @@ export const actions: Actions = {
 
     const repo = new JournalEntryRepo(prisma);
     try {
-      await repo.update(input, id, Number(user?.userId));
+      await repo.update(input, id, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
         return fail(401, { message: e.detail, journalEntryFormData: rawFormData })
@@ -66,7 +66,7 @@ export const actions: Actions = {
 
     const repo = new JournalEntryRepo(prisma);
     try {
-      await repo.delete(id, Number(user?.userId));
+      await repo.delete(id, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
         return fail(401, { message: e.detail })

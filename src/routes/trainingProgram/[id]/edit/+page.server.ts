@@ -13,7 +13,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
   const repo = new TrainingProgramRepo(prisma);
   let trainingProgram: TrainingProgramComplete;
   try {
-    trainingProgram = await repo.getOne(Number(id), Number(user?.userId));
+    trainingProgram = await repo.getOne(Number(id), user?.userId);
   } catch (e) {
     if (e instanceof APIError) {
       return fail(401, { message: e.detail })
@@ -39,7 +39,7 @@ export const actions: Actions = {
     const repo = new TrainingProgramRepo(prisma);
     let trainingProgram: TrainingProgram;
     try {
-      trainingProgram = await repo.delete(id, Number(user?.userId));
+      trainingProgram = await repo.delete(id, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
         return fail(401, { message: e.detail })
@@ -70,7 +70,7 @@ export const actions: Actions = {
 
     const repo = new TrainingProgramRepo(prisma);
     try {
-      await repo.update(input, id, Number(user?.userId));
+      await repo.update(input, id, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
         return fail(401, { message: e.detail, trainingProgramFormData: rawFormData })

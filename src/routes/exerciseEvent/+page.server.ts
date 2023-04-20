@@ -13,7 +13,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   const exerciseEventsRepo = new ExerciseEventRepo(prisma);
   let exerciseEvents;
   try {
-    exerciseEvents = await exerciseEventsRepo.get(Number(user?.userId));
+    exerciseEvents = await exerciseEventsRepo.get(user?.userId);
   } catch (e) {
     if (e instanceof APIError) {
       return fail(401, { message: e.detail })
@@ -26,7 +26,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   const profileRepo = new ProfileRepo(prisma);
   let profile: Profile;
   try {
-    profile = await profileRepo.getOne(Number(user?.userId));
+    profile = await profileRepo.getOne(user?.userId);
   } catch (e) {
     if (e instanceof APIError) {
       return fail(401, { message: e.detail })
@@ -56,7 +56,7 @@ export const actions: Actions = {
 
     const repo = new ExerciseEventRepo(prisma);
     try {
-      await repo.new(input, Number(user?.userId))
+      await repo.new(input, user?.userId)
     } catch (e) {
       if (e instanceof APIError) {
         return fail(401, { message: e.detail, exerciseEventFormData: rawFormData })

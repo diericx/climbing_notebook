@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   const repo = new JournalEntryRepo(prisma);
   let journalEntries;
   try {
-    journalEntries = await repo.get(Number(user?.userId));
+    journalEntries = await repo.get(user?.userId);
   } catch (e) {
     if (e instanceof APIError) {
       return fail(401, { message: e.detail })
@@ -39,7 +39,7 @@ export const actions: Actions = {
 
     const repo = new JournalEntryRepo(prisma);
     try {
-      await repo.new(input, Number(user?.userId))
+      await repo.new(input, user?.userId)
     } catch (e) {
       if (e instanceof APIError) {
         return fail(401, { message: e.detail, journalEntryFormData: rawFormData })

@@ -5,6 +5,8 @@ import { isPasswordValid, isUsernameValid } from '$lib/user';
 import { auth } from '$lib/server/lucia';
 import { LuciaError } from 'lucia-auth';
 import { SERVER_ERROR } from '$lib/helperTypes';
+import { ProfileRepo } from '$lib/profile';
+import { prisma } from '$lib/prisma';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const session = await locals.auth.validate();
@@ -52,7 +54,7 @@ export const actions: Actions = {
     };
   },
 
-  register: async ({ request }) => {
+  register: async ({ request, locals }) => {
     const form = await request.formData();
     const username = form.get('username')?.toString();
     const password = form.get('password')?.toString();
@@ -77,6 +79,14 @@ export const actions: Actions = {
           email
         }
       });
+      await prisma.profile.create({
+        data: {
+          goals: '',
+          ownerId: user?.userId,
+          createdAt: new Date(),
+        },
+      });
+
       const session = await auth.createSession(user.userId);
       locals.auth.setSession(session);
     } catch (e) {

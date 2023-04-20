@@ -21,20 +21,21 @@ export const load: PageServerLoad = async ({ locals }) => {
   const repo = new ProfileRepo(prisma);
   let profile: Profile;
   try {
-    profile = await repo.getOne(Number(user?.userId));
+    profile = await repo.getOne(user?.userId);
   } catch (e) {
+    console.log('got here', user, e)
     if (e instanceof APIError) {
       return fail(401, { message: e.detail })
     }
     console.error(e)
-    throw error(500, { message: SERVER_ERROR })
+    return fail(500, { message: SERVER_ERROR })
   }
 
   // Get charts for user
   const chartRepo = new ChartRepo(prisma);
   let charts: Chart[];
   try {
-    charts = await chartRepo.get(Number(user?.userId));
+    charts = await chartRepo.get(user?.userId);
   } catch (e) {
     if (e instanceof APIError) {
       return fail(401, { message: e.detail })
@@ -49,7 +50,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   const exerciseEventRepo = new ExerciseEventRepo(prisma);
   let exerciseEvents;
   try {
-    exerciseEvents = await exerciseEventRepo.get(Number(user?.userId), dateMin, new Date());
+    exerciseEvents = await exerciseEventRepo.get(user?.userId, dateMin, new Date());
   } catch (e) {
     if (e instanceof APIError) {
       return fail(401, { message: e.detail })
@@ -62,7 +63,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   const metricRepo = new MetricRepo(prisma);
   let metrics: Metric[];
   try {
-    metrics = await metricRepo.get(Number(user?.userId), dateMin, new Date());
+    metrics = await metricRepo.get(user?.userId, dateMin, new Date());
   } catch (e) {
     if (e instanceof APIError) {
       return fail(401, { message: e.detail })

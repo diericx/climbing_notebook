@@ -48,7 +48,7 @@ export class JournalEntryFormData {
 
 export class JournalEntryRepo {
   constructor(private readonly prisma: PrismaClient) { }
-  async new(data: JournalEntryFormData, ownerId: number): Promise<JournalEntry> {
+  async new(data: JournalEntryFormData, ownerId: string): Promise<JournalEntry> {
     // Fetch journalEntries with same day to validate this is a new date
     const journalEntries: JournalEntry[] = await this.prisma.journalEntry.findMany({
       where: {
@@ -86,10 +86,10 @@ export class JournalEntryRepo {
     return journalEntry;
   }
 
-  async get(ownerId: number): Promise<JournalEntry[]> {
+  async get(ownerId: string): Promise<JournalEntry[]> {
     return await this.prisma.journalEntry.findMany({
       where: {
-        ownerId: Number(ownerId),
+        ownerId: ownerId,
       },
       orderBy: {
         date: 'desc',
@@ -97,7 +97,7 @@ export class JournalEntryRepo {
     }) as JournalEntry[];
   }
 
-  async getOne(id: number, ownerId: number): Promise<JournalEntry> {
+  async getOne(id: number, ownerId: string): Promise<JournalEntry> {
     const journalEntry = await this.prisma.journalEntry.findUnique({
       where: {
         id
@@ -113,7 +113,7 @@ export class JournalEntryRepo {
     return journalEntry;
   }
 
-  async update(data: JournalEntryFormData, id: number, ownerId: number): Promise<JournalEntry> {
+  async update(data: JournalEntryFormData, id: number, ownerId: string): Promise<JournalEntry> {
     const journalEntry = await this.prisma.journalEntry.findUnique({
       where: {
         id
@@ -138,7 +138,7 @@ export class JournalEntryRepo {
     });
   }
 
-  async delete(id: number, ownerId: number): Promise<JournalEntry> {
+  async delete(id: number, ownerId: string): Promise<JournalEntry> {
     const journalEntry = await this.prisma.journalEntry.findUnique({
       where: {
         id

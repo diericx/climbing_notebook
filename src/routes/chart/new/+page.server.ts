@@ -27,7 +27,7 @@ export const actions: Actions = {
 
     const repo = new ChartRepo(prisma);
     try {
-      await repo.new(input, Number(user?.userId))
+      await repo.new(input, user?.userId)
     } catch (e) {
       if (e instanceof APIError) {
         return fail(401, { message: e.detail, chartFormData: rawFormData })

@@ -27,7 +27,7 @@ export class ProfileFormData {
 export class ProfileRepo {
   constructor(private readonly prisma: PrismaClient) { }
 
-  async getOneAndValidateOwner(ownerId: number): Promise<ProfileWithActiveTrainingProgram> {
+  async getOneAndValidateOwner(ownerId: string): Promise<ProfileWithActiveTrainingProgram> {
     // Fetch
     const profile = await this.prisma.profile.findUnique({
       where: {
@@ -63,7 +63,7 @@ export class ProfileRepo {
     return profile
   }
 
-  async getOne(ownerId: number): Promise<ProfileWithActiveTrainingProgram> {
+  async getOne(ownerId: string): Promise<ProfileWithActiveTrainingProgram> {
     return this.getOneAndValidateOwner(ownerId)
   }
 

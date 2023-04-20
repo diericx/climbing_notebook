@@ -14,7 +14,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
   const repo = new ExerciseEventRepo(prisma);
   let exerciseEvent: ExerciseEvent;
   try {
-    exerciseEvent = await repo.getOne(id, Number(user?.userId));
+    exerciseEvent = await repo.getOne(id, user?.userId);
   } catch (e) {
     if (e instanceof APIError) {
       return fail(401, { message: e.detail })
@@ -36,7 +36,7 @@ export const actions: Actions = {
 
     const repo = new ExerciseEventRepo(prisma);
     try {
-      await repo.delete(id, Number(user?.userId));
+      await repo.delete(id, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
         return fail(401, { message: e.detail })
@@ -66,7 +66,7 @@ export const actions: Actions = {
 
     const repo = new ExerciseEventRepo(prisma);
     try {
-      await repo.update(input, id, Number(user?.userId));
+      await repo.update(input, id, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
         return fail(401, { message: e.detail, exerciseEventFormData: rawFormData })
