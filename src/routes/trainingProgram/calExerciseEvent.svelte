@@ -3,13 +3,13 @@
 	import type { ExerciseEvent } from '@prisma/client';
 
 	export let exercise: ExerciseEvent;
-	export let isExerciseCompleted;
+	export let isExerciseCompleted = false;
 	export let fillExerciseEventForm;
 	export let shouldShowActionButtons = true;
 </script>
 
 <div
-	class="col rounded-md border p-2 mb-2 leading-5 {isExerciseCompleted(exercise)
+	class="col rounded-md border p-2 mb-2 leading-5 {isExerciseCompleted
 		? 'opacity-50 bg-green-200'
 		: 'opacity-100 shadow bg-white'}"
 >
@@ -41,9 +41,7 @@
 					<input type="hidden" name="seconds" value={exercise.seconds} />
 					<input type="hidden" name="weight" value={exercise.weight} />
 
-					<button disabled={isExerciseCompleted(exercise)} class="bg-green-400 text-white"
-						>Complete</button
-					>
+					<button disabled={isExerciseCompleted} class="bg-green-400 text-white">Complete</button>
 				</form>
 			</div>
 		{/if}

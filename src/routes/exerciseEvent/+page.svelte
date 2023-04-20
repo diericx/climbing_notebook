@@ -9,7 +9,7 @@
 	import dayjs from 'dayjs';
 	import ExerciseEventsList from './list.svelte';
 	import WeeklyCalendar from '../trainingProgram/weekCalendar.svelte';
-	import { getMonday } from '$lib/utils';
+	import { getDayWeekStartsMonday, getMonday } from '$lib/utils';
 
 	export let data: PageData;
 	export let form: ActionData;
@@ -59,10 +59,11 @@
 		});
 	}
 
-	$: isExerciseCompleted = (e: ExerciseEvent) => {
+	$: isExerciseCompletedFunc = (e: ExerciseEvent, day: number) => {
 		return (
 			thisWeeksExerciseEvents.find((_e) => {
-				return e.name == _e.name;
+				let _day = getDayWeekStartsMonday(_e.date);
+				return e.name == _e.name && day <= _day;
 			}) != undefined
 		);
 	};
@@ -96,7 +97,7 @@
 			<WeeklyCalendar
 				trainingProgram={profile.activeTrainingProgram}
 				fillBelowFunc={fillExerciseEventFormData}
-				{isExerciseCompleted}
+				{isExerciseCompletedFunc}
 				showFillButton
 			/>
 		{/if}

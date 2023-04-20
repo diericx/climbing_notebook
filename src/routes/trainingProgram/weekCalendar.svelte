@@ -8,7 +8,7 @@
 	export let trainingProgram: TrainingProgramWithDays;
 	export let shouldShowActionButtons = true;
 	export let fillBelowFunc = () => {};
-	export let isExerciseCompleted = (e: ExerciseEvent) => {
+	export let isExerciseCompletedFunc = (e: ExerciseEvent, day: number) => {
 		return false;
 	};
 
@@ -59,7 +59,7 @@
 								<CalExerciseEvent
 									{shouldShowActionButtons}
 									{exercise}
-									{isExerciseCompleted}
+									isExerciseCompleted={isExerciseCompletedFunc(exercise, i)}
 									fillExerciseEventForm={fillBelowFunc}
 								/>
 							{/each}
@@ -70,7 +70,7 @@
 									<CalExerciseEvent
 										{shouldShowActionButtons}
 										{exercise}
-										{isExerciseCompleted}
+										isExerciseCompleted={isExerciseCompletedFunc(exercise, i)}
 										fillExerciseEventForm={fillBelowFunc}
 									/>
 								{/each}
