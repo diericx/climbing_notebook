@@ -50,7 +50,7 @@
 						</div>
 
 						<div style="height: 425px;" class="overflow-scroll">
-							{#if day.exercises.length == 0}
+							{#if day.exercises.length == 0 && day.exerciseGroups.length == 0}
 								<p class="text-gray-400 italic">No exercises for this day</p>
 							{/if}
 							{#each day.exercises as exercise}
