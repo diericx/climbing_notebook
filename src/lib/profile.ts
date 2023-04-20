@@ -3,7 +3,7 @@ import { APIError } from "./errors";
 import type { ProfileWithActiveTrainingProgram } from "./prisma";
 
 export class ProfileFormData {
-  goals: string = "";
+  goals: string | undefined = undefined;
   activeTrainingProgramId: number | undefined;
 
   constructor(obj: any | undefined = undefined) {
