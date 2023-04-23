@@ -71,6 +71,7 @@ export class JournalEntryRepo {
     }) as JournalEntry;
 
     const metrics = parseMetricStrings(matchMetricsInString(data.content))
+    console.log(metrics)
     await this.prisma.metric.createMany({
       data: metrics.map(m => ({
         name: m.name,
@@ -126,7 +127,7 @@ export class JournalEntryRepo {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.')
     }
 
-    return await this.prisma.journalEntry.update({
+    const journalUpdateResult = await this.prisma.journalEntry.update({
       data: {
         date: new Date(data.date),
         content: data.content,
@@ -136,6 +137,31 @@ export class JournalEntryRepo {
         id: Number(id),
       },
     });
+
+    const metrics = parseMetricStrings(matchMetricsInString(data.content))
+    const deleteMetrics = this.prisma.metric.deleteMany({
+      where: {
+        ownerId,
+        journalEntryId: Number(journalEntry.id),
+      }
+    })
+    const createMetrics = this.prisma.metric.createMany({
+      data: metrics.map(m => ({
+        name: m.name,
+        // Number parse is implied succesful with regex match?
+        value: toNum(m.value, 0),
+        date: new Date(data.date),
+        journalEntryId: Number(journalEntry.id),
+        ownerId: ownerId
+      })
+      )
+    })
+    await this.prisma.$transaction([
+      deleteMetrics,
+      createMetrics,
+    ]);
+
+    return journalUpdateResult;
   }
 
   async delete(id: number, ownerId: string): Promise<JournalEntry> {
