@@ -60,3 +60,9 @@ export function getDayWeekStartsMonday(d: Date) {
   const numberdayweek = [6, 0, 1, 2, 3, 4, 5];
   return numberdayweek[d.getDay()]
 }
+
+export function daysFromToday(i: number) {
+  const d = new Date();
+  d.setDate(d.getDate() + i);
+  return d;
+}

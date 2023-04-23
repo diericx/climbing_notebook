@@ -3,7 +3,7 @@
 	import type { TrainingProgramWithDays } from '$lib/prisma';
 	import type { ExerciseEvent } from '@prisma/client';
 	import CalExerciseEvent from './calExerciseEvent.svelte';
-	import { getDayWeekStartsMonday } from '$lib/utils';
+	import { daysFromToday, getDayWeekStartsMonday } from '$lib/utils';
 
 	export let trainingProgram: TrainingProgramWithDays;
 	export let fillExerciseEventFormFunc: (e: ExerciseEvent) => void;
@@ -57,6 +57,7 @@
 							{/if}
 							{#each day.exercises as exercise}
 								<CalExerciseEvent
+									date={daysFromToday(i - getDayWeekStartsMonday(new Date()))}
 									{exercise}
 									isInferredAsCompleted={findMatchingExerciseOnSameDayFunc(exercise, i) !=
 										undefined}
@@ -68,6 +69,7 @@
 								<p class="font-bold">{group.name}</p>
 								{#each group.exercises as exercise}
 									<CalExerciseEvent
+										date={daysFromToday(i - getDayWeekStartsMonday(new Date()))}
 										{exercise}
 										isInferredAsCompleted={findMatchingExerciseOnSameDayFunc(exercise, i) !=
 											undefined}

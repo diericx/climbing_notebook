@@ -7,9 +7,14 @@
 	// An exercise is inferred as completed if a matching exercise event is found
 	export let isInferredAsCompleted = false;
 	export let fillExerciseEventFormFunc: (e: ExerciseEvent) => void;
+	export let date: Date;
 
 	$: isMarkedCompleted =
-		exercise.isMarkedCompleted && isDateInTheSameWeekAsToday(new Date(exercise.markedCompletedOn));
+		exercise.markedCompletions.find((c) => {
+			let d1 = c.toISOString().split('T')[0];
+			let d2 = date.toISOString().split('T')[0];
+			return d1 == d2;
+		}) != undefined;
 
 	let formForIsMarkedCompleted;
 </script>
@@ -24,16 +29,17 @@
 		<form
 			method="POST"
 			bind:this={formForIsMarkedCompleted}
-			action={`/exerciseEvent/${exercise.id}/edit?/editExerciseEvent`}
+			action={`/exerciseEvent/${exercise.id}/edit?/setCompleted`}
 			use:enhance={() => {
 				return async ({ update }) => {
 					update({ reset: false });
 				};
 			}}
 		>
+			<input type="hidden" name="date" value={date} />
 			<input
 				type="checkbox"
-				name="isMarkedCompleted"
+				name="isCompleted"
 				checked={isInferredAsCompleted || isMarkedCompleted}
 				disabled={isInferredAsCompleted}
 				on:change={() => {

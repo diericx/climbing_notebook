@@ -56,14 +56,20 @@ model ExerciseEvent {
   owner      AuthUser  @relation(fields: [ownerId], references: [id])
 
   // These values exist for the case that an EE is simply an exercise in a program
-  isMarkedCompleted    Boolean             @default(false) @map("is_marked_completed")
-  markedCompletedOn    DateTime            @default(now()) @map("marked_completed_on")
+  markedCompletions    DateTime[]
   exerciseGroup        ExerciseGroup?      @relation(fields: [exerciseGroupId], references: [id], onDelete: Cascade)
   exerciseGroupId      Int?
   trainingProgramDay   TrainingProgramDay? @relation(fields: [trainingProgramDayId], references: [id], onDelete: Cascade)
   trainingProgramDayId Int?
 
   @@map("exercise_event")
+}
+
+model ExerciseEventCompletion {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("exercise_event_completion")
 }
 
 model TrainingProgramDay {

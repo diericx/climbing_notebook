@@ -76,6 +76,32 @@ export const actions: Actions = {
     }
 
     return { success: true };
-  }
+  },
 
+  setCompleted: async ({ locals, params, request }) => {
+    const formData = await request.formData()
+    const { user } = await locals.auth.validateUser();
+    const id = Number(params.id);
+    const dateInput = formData.get('date')?.toString()
+
+    if (!dateInput) {
+      return fail(401, { message: 'date is required' })
+    }
+
+    const isCompleted = formData.has('isCompleted');
+    const date = new Date(dateInput);
+
+    const repo = new ExerciseEventRepo(prisma);
+    try {
+      await repo.setCompleted(id, user?.userId, date, isCompleted);
+    } catch (e) {
+      if (e instanceof APIError) {
+        return fail(401, { message: e.detail })
+      }
+      console.error(e)
+      throw error(500, { message: SERVER_ERROR })
+    }
+
+    return { success: true }
+  }
 }

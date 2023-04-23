@@ -1,6 +1,7 @@
 import type { ExerciseEvent, PrismaClient } from '@prisma/client';
 import { APIError } from './errors';
 import { toNum } from './utils'
+import dayjs from 'dayjs';
 
 export class ExerciseEventFormData {
   date: Date | undefined = undefined;
@@ -12,14 +13,13 @@ export class ExerciseEventFormData {
   minutes: number | undefined = undefined;
   difficulty: number | undefined = undefined;
   notes: string | undefined = undefined;
-  isMarkedCompleted: boolean | undefined = undefined;
 
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   constructor(obj: any | undefined = undefined) {
     if (obj == undefined) {
       return
     }
-    const { date, name, sets, reps, weight, seconds, minutes, difficulty, notes, isMarkedCompleted } = obj;
+    const { date, name, sets, reps, weight, seconds, minutes, difficulty, notes } = obj;
     this.date = date == undefined ? undefined : new Date(date);
     this.name = name;
     this.sets = sets == undefined ? undefined : toNum(sets, 0);
@@ -29,7 +29,6 @@ export class ExerciseEventFormData {
     this.minutes = minutes == undefined ? undefined : toNum(minutes, 0);
     this.difficulty = difficulty == undefined ? undefined : toNum(difficulty, 0);
     this.notes = notes;
-    this.isMarkedCompleted = isMarkedCompleted;
   }
 
   validate() {
@@ -120,8 +119,6 @@ export class ExerciseEventRepo {
         notes: data.notes,
         name: data.name,
         date: data.date,
-        isMarkedCompleted: data.isMarkedCompleted,
-        markedCompletedOn: data.isMarkedCompleted == undefined ? undefined : new Date(),
       },
       where: {
         id: Number(id),
@@ -139,4 +136,41 @@ export class ExerciseEventRepo {
     })
   }
 
+  async setCompleted(id: number, ownerId: string, newDate: Date, isCompleted: boolean) {
+    const e = await this.getOneAndValidateOwner(id, ownerId);
+    const newDateStr = newDate.toISOString().split('T')[0];
+    const strippedDate = new Date(newDateStr);
+
+    // Perform a lazy trim
+    e.markedCompletions.filter(c => {
+      const d1 = dayjs(c);
+      const d2 = dayjs(newDate);
+      return d2.diff(d1, 'd') <= 7
+    })
+
+    // Either add or remove the given date
+    if (isCompleted) {
+      const alreadyExists = e.markedCompletions.find(c => c.toISOString().split('T')[0] == newDateStr);
+      if (alreadyExists) {
+        return e;
+      }
+
+      e.markedCompletions = [...e.markedCompletions, strippedDate]
+    } else {
+      e.markedCompletions = e.markedCompletions.filter(c => {
+        const dstr1 = newDateStr;
+        const dstr2 = c.toISOString().split('T')[0];
+        return dstr1 != dstr2;
+      })
+    }
+
+    return await this.prisma.exerciseEvent.update({
+      data: {
+        markedCompletions: e.markedCompletions
+      },
+      where: {
+        id: Number(id),
+      },
+    })
+  }
 }
