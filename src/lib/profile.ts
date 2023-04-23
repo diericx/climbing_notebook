@@ -38,10 +38,18 @@ export class ProfileRepo {
           include: {
             days: {
               include: {
-                exercises: true,
+                exercises: {
+                  orderBy: {
+                    name: 'desc'
+                  }
+                },
                 exerciseGroups: {
                   include: {
-                    exercises: true,
+                    exercises: {
+                      orderBy: {
+                        name: 'desc'
+                      }
+                    },
                   },
                 }
               },

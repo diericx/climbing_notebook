@@ -27,6 +27,7 @@
 	<label for="name">Name</label>
 	<br />
 	<input
+		type="text"
 		name="name"
 		placeholder="Upper body + hang board"
 		bind:value={trainingProgramFormData.name}

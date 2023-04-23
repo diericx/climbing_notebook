@@ -4,12 +4,12 @@
 	import ExerciseEventForm from './form.svelte';
 	import { ExerciseEventFormData } from '$lib/exerciseEvent';
 	import type { ExerciseEvent } from '@prisma/client';
-	import type { ProfileWithActiveTrainingProgram } from '$lib/prisma';
-	import type { TrainingProgramDayWithExercises } from '$lib/prisma';
+	import type { ProfileWithActiveTrainingProgram, TrainingProgramComplete } from '$lib/prisma';
 	import dayjs from 'dayjs';
 	import ExerciseEventsList from './list.svelte';
-	import WeeklyCalendar from '../trainingProgram/weekCalendar.svelte';
-	import { getDayWeekStartsMonday, getMonday } from '$lib/utils';
+	import WeeklyCalendar from './weekCalendar.svelte';
+	import { getDayWeekStartsMonday } from '$lib/utils';
+	import { isDateInTheSameWeekAsToday } from '$lib/utils';
 
 	export let data: PageData;
 	export let form: ActionData;
@@ -17,35 +17,38 @@
 		form?.exerciseEventFormData
 	);
 
-	// Parse incoming data with type safety
-	let profile: ProfileWithActiveTrainingProgram = data.profile;
-	var numberdayweek = [6, 0, 1, 2, 3, 4, 5];
-	let scheduledTrainingProgramDay: TrainingProgramDayWithExercises = profile.activeTrainingProgram
-		?.days[numberdayweek[new Date().getDay()]] as TrainingProgramDayWithExercises;
-
+	$: activeTrainingProgram = data.profile?.activeTrainingProgram as TrainingProgramComplete;
 	$: exerciseEvents = data.exerciseEvents as ExerciseEvent[];
 
 	// Filter out only todays exercise events
 	$: todaysExerciseEvents = exerciseEvents.filter((e) => {
-		return dayjs(e.date).format('YYYY-MM-DD') == dayjs(new Date()).format('YYYY-MM-DD');
+		if (!e.date) {
+			return false;
+		}
+		return isDateInTheSameWeekAsToday(e.date);
 	}) as ExerciseEvent[];
 
 	// Filter out only this weeks exercise events
-	const today = new Date();
-	const monday = getMonday(today);
 	$: thisWeeksExerciseEvents = exerciseEvents.filter((e) => {
-		const [exerciseDateStr] = new Date(e.date).toISOString().split('T');
-		const [mondayStr] = monday.toISOString().split('T');
-		const [todayStr] = today.toISOString().split('T');
-		return exerciseDateStr >= mondayStr && exerciseDateStr <= todayStr;
+		if (!e.date) {
+			return false;
+		}
+		return isDateInTheSameWeekAsToday(e.date);
 	}) as ExerciseEvent[];
 
 	// Filter out only exercise events that aren't today
 	$: pastExerciseEvents = exerciseEvents.filter((e) => {
-		return dayjs(e.date).format('YYYY-MM-DD') != dayjs(new Date()).format('YYYY-MM-DD');
+		if (!e.date) {
+			return false;
+		}
+		const [todayStr] = new Date().toISOString().split('T');
+		const [eDateStr] = e.date.toISOString().split('T');
+		return eDateStr < todayStr;
 	}) as ExerciseEvent[];
 
-	function fillExerciseEventFormData(e: ExerciseEvent) {
+	// Takes in an exercise event and fills the form on this page with the
+	// respective data
+	function fillExerciseEventForm(e: ExerciseEvent) {
 		exerciseEventFormData.name = e.name;
 		exerciseEventFormData.sets = e.sets;
 		exerciseEventFormData.reps = e.reps;
@@ -59,13 +62,16 @@
 		});
 	}
 
-	$: isExerciseCompletedFunc = (e: ExerciseEvent, day: number) => {
-		return (
-			thisWeeksExerciseEvents.find((_e) => {
-				let _day = getDayWeekStartsMonday(_e.date);
-				return e.name == _e.name && day <= _day;
-			}) != undefined
-		);
+	// Given an exercise event and a day, this function will return an exercise event
+	// that matches the provided event and is on the same day (of the week), or undefined.
+	const findMatchingExerciseOnSameDay = (e: ExerciseEvent, day: number) => {
+		return thisWeeksExerciseEvents.find((_e) => {
+			if (!_e.date) {
+				return false;
+			}
+			let _day = getDayWeekStartsMonday(_e.date);
+			return e.name == _e.name && day == _day;
+		});
 	};
 </script>
 
@@ -73,11 +79,11 @@
 
 <br />
 
-<h1>Training Log</h1>
+<h1>Weekly Program Calendar</h1>
 
 <div class="pb-6">
 	<div>
-		{#if !scheduledTrainingProgramDay}
+		{#if !activeTrainingProgram}
 			<p class="text-gray-400">
 				You don't have an active training program! Go to the <a href="/trainingProgram"
 					>Training Programs</a
@@ -85,20 +91,20 @@
 			</p>
 		{:else}
 			<p>
-				<span class="text-gray-400 italic"
-					>Exercises are considered completed if they have been done within the week.
+				<span class="text-gray-400 italic">
+					Exercises are completed automatically if an exercise is logged below on the same day with
+					the matching name.
 					<br />
-					Fill the form below to change any data about your session or simply mark the exercise completed.
+					Use the check box to manually mark something completed <b>without recording any data.</b>
 				</span>
 			</p>
 
 			<br />
 
 			<WeeklyCalendar
-				trainingProgram={profile.activeTrainingProgram}
-				fillBelowFunc={fillExerciseEventFormData}
-				{isExerciseCompletedFunc}
-				showFillButton
+				trainingProgram={activeTrainingProgram}
+				fillExerciseEventFormFunc={fillExerciseEventForm}
+				findMatchingExerciseOnSameDayFunc={findMatchingExerciseOnSameDay}
 			/>
 		{/if}
 	</div>

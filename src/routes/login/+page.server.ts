@@ -5,7 +5,6 @@ import { isPasswordValid, isUsernameValid } from '$lib/user';
 import { auth } from '$lib/server/lucia';
 import { LuciaError } from 'lucia-auth';
 import { SERVER_ERROR } from '$lib/helperTypes';
-import { ProfileRepo } from '$lib/profile';
 import { prisma } from '$lib/prisma';
 
 export const load: PageServerLoad = async ({ locals }) => {

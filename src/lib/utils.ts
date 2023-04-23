@@ -27,17 +27,36 @@ export function parseMetricStrings(s: string[]) {
   )
 }
 
-export function getMonday(d: Date) {
+export function getFirstDayOfTheWeek(d: Date) {
   d = new Date(d);
-  const day = d.getDay(),
-    diff = d.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
-  return new Date(d.setDate(diff));
+  const day = getDayWeekStartsMonday(d);
+  d.setDate(d.getDate() - day)
+  return d;
+}
+
+export function getLastDayOfTheWeek(d: Date) {
+  d = new Date(d);
+  const day = getDayWeekStartsMonday(d);
+  d.setDate(d.getDate() + (6 - day))
+  return d;
+}
+
+export function isDateInTheSameWeekAsToday(d: Date) {
+  // Convert all to iso string to just compare the days
+  const [t] = d.toISOString().split('T');
+  const [f] = getFirstDayOfTheWeek(new Date()).toISOString().split('T');
+  const [l] = getLastDayOfTheWeek(new Date()).toISOString().split('T');
+  return t >= f && t <= l;
+
+}
+
+export function isDateInTheSameDayAsTodau(d: Date) {
+  const [todayStr] = new Date().toISOString().split('T');
+  const [dateStr] = d.toISOString().split('T');
+  return todayStr == dateStr;
 }
 
 export function getDayWeekStartsMonday(d: Date) {
-  let day = d.getDay() - 1;
-  if (day == 7) {
-    day = 0;
-  }
-  return day;
+  const numberdayweek = [6, 0, 1, 2, 3, 4, 5];
+  return numberdayweek[d.getDay()]
 }

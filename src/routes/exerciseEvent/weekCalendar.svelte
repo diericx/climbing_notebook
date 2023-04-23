@@ -6,9 +6,11 @@
 	import { getDayWeekStartsMonday } from '$lib/utils';
 
 	export let trainingProgram: TrainingProgramWithDays;
-	export let shouldShowActionButtons = true;
-	export let fillBelowFunc: (e: ExerciseEvent) => void;
-	export let isExerciseCompletedFunc: (e: ExerciseEvent, day: number) => boolean;
+	export let fillExerciseEventFormFunc: (e: ExerciseEvent) => void;
+	export let findMatchingExerciseOnSameDayFunc: (
+		e: ExerciseEvent,
+		day: number
+	) => ExerciseEvent | undefined;
 
 	onMount(() => {
 		scrollIntoView();
@@ -55,10 +57,10 @@
 							{/if}
 							{#each day.exercises as exercise}
 								<CalExerciseEvent
-									{shouldShowActionButtons}
 									{exercise}
-									isExerciseCompleted={isExerciseCompletedFunc(exercise, i)}
-									fillExerciseEventForm={fillBelowFunc}
+									isInferredAsCompleted={findMatchingExerciseOnSameDayFunc(exercise, i) !=
+										undefined}
+									{fillExerciseEventFormFunc}
 								/>
 							{/each}
 
@@ -66,10 +68,10 @@
 								<p class="font-bold">{group.name}</p>
 								{#each group.exercises as exercise}
 									<CalExerciseEvent
-										{shouldShowActionButtons}
 										{exercise}
-										isExerciseCompleted={isExerciseCompletedFunc(exercise, i)}
-										fillExerciseEventForm={fillBelowFunc}
+										isInferredAsCompleted={findMatchingExerciseOnSameDayFunc(exercise, i) !=
+											undefined}
+										{fillExerciseEventFormFunc}
 									/>
 								{/each}
 							{/each}

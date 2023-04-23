@@ -58,11 +58,7 @@ export const actions: Actions = {
     const id = Number(params.id);
 
     // Validate input fields
-    const input = new ExerciseEventFormData(rawFormData);
-    const { message, isValid } = input.validate()
-    if (!isValid) {
-      return fail(401, { message, exerciseEventFormData: rawFormData })
-    }
+    const input = new ExerciseEventFormData({ isMarkedCompleted: rawFormData.isMarkedCompleted == 'on' });
 
     const repo = new ExerciseEventRepo(prisma);
     try {

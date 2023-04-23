@@ -137,6 +137,7 @@ Notes:
 		<label for="programName">Program Name</label>
 		<br />
 		<input
+			type="text"
 			id="programName"
 			placeholder="Program Name"
 			bind:value={trainingProgram.name}
@@ -158,6 +159,7 @@ Notes:
 		{#each trainingProgram.exerciseGroups as group, i}
 			<div class="rounded px-4 py-4 mb-4 bg-white shadow">
 				<input
+					type="text"
 					class="mb-4"
 					placeholder="Group Name"
 					bind:value={group.name}
@@ -195,6 +197,7 @@ Notes:
 			</h2>
 			<div class="bg-white rounded px-4 py-4 mb-4 shadow">
 				<input
+					type="text"
 					class="mb-4"
 					name="dayDescription"
 					placeholder="Day Description"

@@ -1,7 +1,7 @@
 import type { Actions } from './$types';
 import type { PageServerLoad } from './$types';
 import type { Profile } from '@prisma/client';
-import { prisma } from '$lib/prisma';
+import { prisma, type ProfileWithActiveTrainingProgram } from '$lib/prisma';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { APIError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
@@ -24,7 +24,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   // Get the user's profile
   const profileRepo = new ProfileRepo(prisma);
-  let profile: Profile;
+  let profile: ProfileWithActiveTrainingProgram;
   try {
     profile = await profileRepo.getOne(user?.userId);
   } catch (e) {

@@ -25,6 +25,7 @@
 	<label class="font-bold" for="name">Name</label>
 	<br />
 	<input
+		type="text"
 		name="name"
 		placeholder="Upper body + hang board"
 		bind:value={chartFormData.name}
@@ -65,6 +66,7 @@
 	</span>
 	<br />
 	<input
+		type="text"
 		name="patternToMatch"
 		placeholder="pull-ups"
 		bind:value={chartFormData.patternToMatch}
@@ -86,6 +88,7 @@
 	</span>
 	<br />
 	<input
+		type="text"
 		name="equation"
 		placeholder="reps*sets*weight"
 		bind:value={chartFormData.equation}

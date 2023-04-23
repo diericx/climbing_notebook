@@ -52,10 +52,12 @@ model ExerciseEvent {
   minutes    Int       @default(0)
   difficulty Int?
   notes      String    @default("")
+  ownerId    String    @map("owner_id")
+  owner      AuthUser  @relation(fields: [ownerId], references: [id])
 
-  ownerId String   @map("owner_id")
-  owner   AuthUser @relation(fields: [ownerId], references: [id])
-
+  // These values exist for the case that an EE is simply an exercise in a program
+  isMarkedCompleted    Boolean             @default(false) @map("is_marked_completed")
+  markedCompletedOn    DateTime            @default(now()) @map("marked_completed_on")
   exerciseGroup        ExerciseGroup?      @relation(fields: [exerciseGroupId], references: [id], onDelete: Cascade)
   exerciseGroupId      Int?
   trainingProgramDay   TrainingProgramDay? @relation(fields: [trainingProgramDayId], references: [id], onDelete: Cascade)

@@ -22,7 +22,7 @@
 	<tbody>
 		{#each exercises as exercise}
 			<tr>
-				<td><input bind:value={exercise.name} placeholder="Exercise name" /></td>
+				<td><input type="text" bind:value={exercise.name} placeholder="Exercise name" /></td>
 				<td
 					><input
 						style="width:75px"
@@ -49,7 +49,7 @@
 						placeholder="weight"
 					/></td
 				>
-				<td><input bind:value={exercise.notes} placeholder="Notes" /></td>
+				<td><input type="text" bind:value={exercise.notes} placeholder="Notes" /></td>
 				<td>
 					<button
 						class="bg-red-400 hover:bg-red-500 text-white font-bold px-2 rounded"

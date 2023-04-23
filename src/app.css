@@ -12,15 +12,24 @@
 }
 
 @layer components {
-  input {
-    @apply my-2 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight;
+  .basic-input {
+    @apply my-2 shadow appearance-none border border-gray-300 rounded py-2 px-3 text-gray-700 leading-tight;
   }
-  .input:focus {
+  input[type=text] {
+    @apply basic-input
+  }
+  .input[type=text]:focus {
    @apply shadow;
   }
-  
+  input[type=date] {
+    @apply basic-input
+  }
+  input[type=number] {
+    @apply basic-input
+  }
+
   textarea {
-    @apply my-2 shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight;
+    @apply my-2 shadow appearance-none border border-gray-300 rounded py-2 px-3 text-gray-700 leading-tight;
   }
   .textarea:focus {
    @apply shadow;

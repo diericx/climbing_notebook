@@ -26,16 +26,17 @@
 		<div>
 			<label for="date">Date</label>
 			<br />
-			<DateInput name="date" bind:date={exerciseEventFormData.date} style="width: 150px" />
+			<DateInput name="date" date={exerciseEventFormData.date || new Date()} style="width: 150px" />
 		</div>
 	</div>
 	<div>
 		<label for="name">Name</label>
 		<br />
 		<input
+			type="text"
 			name="name"
 			placeholder="Pull-Ups 3x7"
-			bind:value={exerciseEventFormData.name}
+			value={exerciseEventFormData.name || ''}
 			style="width: 150px"
 		/>
 	</div>
@@ -48,7 +49,7 @@
 				type="number"
 				style="width: 75px"
 				name="sets"
-				bind:value={exerciseEventFormData.sets}
+				value={exerciseEventFormData.sets || 0}
 			/>
 		</div>
 
@@ -59,19 +60,7 @@
 				type="number"
 				style="width: 75px"
 				name="reps"
-				bind:value={exerciseEventFormData.reps}
-			/>
-		</div>
-
-		<div>
-			<label for="weight">Weight</label>
-			<br />
-			<input
-				type="number"
-				step="0.1"
-				name="weight"
-				style="width: 75px"
-				bind:value={exerciseEventFormData.weight}
+				value={exerciseEventFormData.reps || 0}
 			/>
 		</div>
 
@@ -84,7 +73,7 @@
 				type="number"
 				name="minutes"
 				style="width: 75px"
-				bind:value={exerciseEventFormData.minutes}
+				value={exerciseEventFormData.minutes || 0}
 			/>
 		</div>
 
@@ -95,7 +84,32 @@
 				type="number"
 				name="seconds"
 				style="width: 75px"
-				bind:value={exerciseEventFormData.seconds}
+				value={exerciseEventFormData.seconds || 0}
+			/>
+		</div>
+
+		<div class="w-full md:hidden" />
+
+		<div>
+			<label for="weight">Weight</label>
+			<br />
+			<input
+				type="number"
+				step="0.1"
+				name="weight"
+				style="width: 75px"
+				value={exerciseEventFormData.weight || 0}
+			/>
+		</div>
+
+		<div>
+			<label for="difficulty">Difficulty</label>
+			<br />
+			<input
+				type="number"
+				name="difficulty"
+				style="width: 75px"
+				value={exerciseEventFormData.difficulty || 0}
 			/>
 		</div>
 	</div>
@@ -109,7 +123,7 @@
 			rows="3"
 			placeholder=""
 			class="w-full"
-			bind:value={exerciseEventFormData.notes}
+			value={exerciseEventFormData.notes || ''}
 		/>
 	</div>
 
