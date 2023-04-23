@@ -20,9 +20,11 @@
 			<nav class="px-6 py-3 mx-auto md:flex md:items-center">
 				<div class="flex items-center justify-between">
 					<a href="/" class="flex items-center">
-						<img src={logo} class="h-6 mr-3 sm:h-9" alt="Logo" />
-						<span class="self-center text-xl font-semibold whitespace-nowrap text-gray-800"
-							>Climbing Notebook</span
+						<img src={logo} class="h-6 mr-2 sm:h-9" alt="Logo" />
+						<span
+							style="line-height: 20px"
+							class="self-center text-xl font-semibold whitespace-nowrap text-gray-800"
+							>Climbing <br />Notebook</span
 						>
 					</a>
 
@@ -73,12 +75,12 @@
 						<a
 							class="px-3 text-gray-600 hover:text-blue-400"
 							href="/exerciseEvent"
-							on:click={closeNavbar}>Log</a
+							on:click={closeNavbar}>Exercise Log</a
 						>
 						<a
 							class="px-3 text-gray-600 hover:text-blue-400"
 							href="/trainingProgram"
-							on:click={closeNavbar}>Programs</a
+							on:click={closeNavbar}>Training Programs</a
 						>
 					</div>
 
