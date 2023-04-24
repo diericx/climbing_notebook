@@ -65,7 +65,7 @@
 			</h2>
 			<p class="whitespace-pre-wrap">{journalEntryForModal?.content || ''}</p>
 			<div slot="buttons">
-				<a href={`/journalEntry/${journalEntryForModal?.id || undefined}/edit`}>
+				<a href={`/journalEntry/${journalEntryForModal?.id || undefined}/edit?redirectTo=/`}>
 					<button class="inline-flex">Edit</button>
 				</a>
 			</div>
