@@ -142,6 +142,21 @@ model Profile {
   @@map("profile")
 }
 
+model CalendarEvent {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  ownerId   String   @map("owner_id")
+  owner     AuthUser @relation(fields: [ownerId], references: [id])
+
+  dateStart DateTime @map("date_start")
+  dateEnd   DateTime @map("date_end")
+  title     String
+  content   String
+  color     String
+
+  @@map("calendar_event")
+}
+
 model AuthUser {
   id        String   @id @unique
   createdAt DateTime @default(now()) @map("created_at")
@@ -157,6 +172,7 @@ model AuthUser {
   ExerciseGroup   ExerciseGroup[]
   Chart           Chart[]
   metric          Metric[]
+  CalendarEvent   CalendarEvent[]
 
   @@map("user")
 }

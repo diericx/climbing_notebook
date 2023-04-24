@@ -71,7 +71,6 @@ export class JournalEntryRepo {
     }) as JournalEntry;
 
     const metrics = parseMetricStrings(matchMetricsInString(data.content))
-    console.log(metrics)
     await this.prisma.metric.createMany({
       data: metrics.map(m => ({
         name: m.name,

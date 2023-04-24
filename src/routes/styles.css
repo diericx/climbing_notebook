@@ -83,3 +83,10 @@ button:focus:not(:focus-visible) {
 	width: 1px;
 	white-space: nowrap;
 }
+
+.ec-header {
+	background-color: white;
+}
+.ec-body {
+  background-color: white;
+}

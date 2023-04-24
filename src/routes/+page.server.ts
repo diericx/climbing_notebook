@@ -5,10 +5,12 @@ import { SERVER_ERROR } from '$lib/helperTypes';
 import { MetricRepo } from '$lib/metric';
 import { prisma } from '$lib/prisma';
 import { ProfileRepo } from '$lib/profile';
-import type { Chart, Metric, Profile } from '@prisma/client';
+import type { CalendarEvent, Chart, Metric, Profile } from '@prisma/client';
 import { error, fail, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { auth } from '$lib/server/lucia';
+import { JournalEntryRepo } from '$lib/journalEntry';
+import { CalendarEventRepo } from '$lib/calendarEvent';
 
 export const load: PageServerLoad = async ({ locals }) => {
   // Unprotected page, session may not exist
@@ -18,10 +20,36 @@ export const load: PageServerLoad = async ({ locals }) => {
     return {}
   }
 
-  const repo = new ProfileRepo(prisma);
+  const profileRepo = new ProfileRepo(prisma);
+  const chartRepo = new ChartRepo(prisma);
+  const exerciseEventRepo = new ExerciseEventRepo(prisma);
+  const metricRepo = new MetricRepo(prisma);
+  const journalEntryRepo = new JournalEntryRepo(prisma);
+  const calendarEventRepo = new CalendarEventRepo(prisma);
+
   let profile: Profile;
+  let charts: Chart[];
+  let exerciseEvents;
+  let metrics: Metric[];
+  let journalEntries;
+  let calendarEvents: CalendarEvent[];
+
   try {
-    profile = await repo.getOne(user?.userId);
+    profile = await profileRepo.getOne(user?.userId);
+
+    charts = await chartRepo.get(user?.userId);
+
+    // Get exercise events in the past month for the charts
+    const dateMin = new Date()
+    dateMin.setDate(dateMin.getDate() - 31)
+    exerciseEvents = await exerciseEventRepo.get(user?.userId, dateMin, new Date());
+
+    // Get metris in the past month for the charts
+    metrics = await metricRepo.get(user?.userId, dateMin, new Date());
+
+    journalEntries = await journalEntryRepo.get(user?.userId);
+
+    calendarEvents = await calendarEventRepo.get(user?.userId);
   } catch (e) {
     if (e instanceof APIError) {
       return fail(401, { message: e.detail })
@@ -30,48 +58,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     return fail(500, { message: SERVER_ERROR })
   }
 
-  // Get charts for user
-  const chartRepo = new ChartRepo(prisma);
-  let charts: Chart[];
-  try {
-    charts = await chartRepo.get(user?.userId);
-  } catch (e) {
-    if (e instanceof APIError) {
-      return fail(401, { message: e.detail })
-    }
-    console.error(e)
-    throw error(500, { message: SERVER_ERROR })
-  }
-
-  // Get exercise events in the past month for the charts
-  const dateMin = new Date()
-  dateMin.setDate(dateMin.getDate() - 31)
-  const exerciseEventRepo = new ExerciseEventRepo(prisma);
-  let exerciseEvents;
-  try {
-    exerciseEvents = await exerciseEventRepo.get(user?.userId, dateMin, new Date());
-  } catch (e) {
-    if (e instanceof APIError) {
-      return fail(401, { message: e.detail })
-    }
-    console.error(e)
-    throw error(500, { message: SERVER_ERROR })
-  }
-
-  // Get metris in the past month for the charts
-  const metricRepo = new MetricRepo(prisma);
-  let metrics: Metric[];
-  try {
-    metrics = await metricRepo.get(user?.userId, dateMin, new Date());
-  } catch (e) {
-    if (e instanceof APIError) {
-      return fail(401, { message: e.detail })
-    }
-    console.error(e)
-    throw error(500, { message: SERVER_ERROR })
-  }
-
-  return { profile, charts, exerciseEvents, metrics }
+  return { profile, charts, exerciseEvents, metrics, journalEntries, calendarEvents }
 }
 
 export const actions: Actions = {

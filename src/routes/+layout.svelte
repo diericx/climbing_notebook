@@ -3,6 +3,7 @@
 	import Header from './Header.svelte';
 	import './styles.css';
 	import '../app.css';
+	import '@event-calendar/core/index.css';
 	import { navigating } from '$app/stores';
 	import type { PageData } from './$types';
 	// NProgress css

@@ -2,7 +2,7 @@
 	"name": "climbing-notebook",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "vite dev --host",
 		"build": "vite build",
 		"preview": "vite preview",
 		"test": "playwright test",
@@ -14,6 +14,10 @@
 		"postinstall": "prisma generate"
 	},
 	"devDependencies": {
+		"@event-calendar/core": "^0.18.1",
+		"@event-calendar/day-grid": "^0.18.1",
+		"@event-calendar/interaction": "^0.18.1",
+		"@event-calendar/time-grid": "^0.18.1",
 		"@fontsource/fira-mono": "^4.5.10",
 		"@neoconfetti/svelte": "^1.0.0",
 		"@playwright/test": "^1.28.1",
