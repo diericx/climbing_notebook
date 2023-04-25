@@ -44,7 +44,7 @@
 						<button on:click={confirmDelete}>Delete</button>
 					</form>
 					<a href="/journalEntry/{item.id}/edit?redirectTo=/journalEntry">Edit</a>
-					<p class="whitespace-pre bg-white w-full px-1 py-3">{item.content}</p>
+					<p class="whitespace-pre-wrap bg-white w-full px-1 py-3">{item.content}</p>
 				</div>
 			</div>
 		{/each}
