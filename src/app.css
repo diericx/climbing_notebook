@@ -18,6 +18,15 @@
   input[type=text] {
     @apply basic-input
   }
+  input[type=username] {
+    @apply basic-input
+  }
+  input[type=email] {
+    @apply basic-input
+  }
+  input[type=password] {
+    @apply basic-input
+  }
   .input[type=text]:focus {
    @apply shadow;
   }
