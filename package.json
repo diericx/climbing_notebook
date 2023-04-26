@@ -11,7 +11,7 @@
 		"test:unit": "vitest",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
-		"postinstall": "prisma generate"
+		"prisma-generate": "prisma generate"
 	},
 	"devDependencies": {
 		"@event-calendar/core": "^0.18.1",
