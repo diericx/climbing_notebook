@@ -71,4 +71,5 @@ jobs:
         deploy_path: /root/
         stack_file_name: docker-compose.yml
         keep_files: 5
-        args: cn
+        args: --with-registry-auth cn
+
