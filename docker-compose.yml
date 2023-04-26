@@ -2,7 +2,7 @@ version: "3.9"
 services:
 
   svelte-prod:
-    image: 279721711046.dkr.ecr.us-west-2.amazonaws.com/climbingnotebook:latest
+    image: 279721711046.dkr.ecr.us-west-2.amazonaws.com/climbingnotebook:sha-e1355ef
     networks:
       - app-entry
     labels:
@@ -13,15 +13,15 @@ services:
       - "traefik.http.services.svelte.loadbalancer.server.port=3000"
 
   svelte-dev:
-    image: 279721711046.dkr.ecr.us-west-2.amazonaws.com/climbingnotebook:latest
+    image: 279721711046.dkr.ecr.us-west-2.amazonaws.com/climbingnotebook:master
     networks:
       - app-entry
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.svelte.rule=Host(`dev.zdeep.net`)"
-      - "traefik.http.routers.svelte.entrypoints=websecure"
-      - "traefik.http.routers.svelte.tls.certresolver=myresolver"
-      - "traefik.http.services.svelte.loadbalancer.server.port=3000"
+      - "traefik.http.routers.svelte-dev.rule=Host(`dev.zdeep.net`)"
+      - "traefik.http.routers.svelte-dev.entrypoints=websecure"
+      - "traefik.http.routers.svelte-dev.tls.certresolver=myresolver"
+      - "traefik.http.services.svelte-dev.loadbalancer.server.port=3000"
 
 networks:
   app-entry:
