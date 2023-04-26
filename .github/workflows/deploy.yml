@@ -14,6 +14,9 @@ jobs:
    
     steps:
 
+    - name: Add SHORT_SHA env property with commit short sha
+      run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+
     - name: Check out code
       uses: actions/checkout@v2
     
@@ -35,6 +38,17 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: climbingnotebook
-        IMAGE_TAG: latest
       run: |
-        docker buildx build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --platform=linux/arm64,linux/amd64 --push .
+        docker buildx build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest -t $ECR_REGISTRY/$ECR_REPOSITORY:$SHORT_SHA --platform=linux/arm64,linux/amd64 --push .
+    - name: Deploy to Docker swarm
+      uses: wshihadeh/docker-deployment-action@v1
+      with:
+        remote_docker_host: root@49.13.1.120
+        ssh_private_key: ${{ secrets.DOCKER_SSH_PRIVATE_KEY }}
+        ssh_public_key: ${{ secrets.DOCKER_SSH_PUBLIC_KEY }}
+        deployment_mode: docker-swarm
+        copy_stack_file: true
+        deploy_path: /root/cn
+        stack_file_name: docker-compose.yml
+        keep_files: 5
+        args: cn
