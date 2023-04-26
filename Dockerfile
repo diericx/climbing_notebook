@@ -5,9 +5,9 @@ WORKDIR /app
 RUN apk update && apk add git python3 make g++ && rm -rf /var/cache/apk/*
 
 COPY package.json .
-COPY prisma ./prisma
 RUN npm install
 COPY . .
+RUN npm run prisma-generate
 RUN npm run build
 
 FROM node:18-alpine AS run
