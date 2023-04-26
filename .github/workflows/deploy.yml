@@ -69,7 +69,7 @@ jobs:
         deployment_mode: docker-swarm
         copy_stack_file: true
         deploy_path: /root/cn
-        stack_file_name: /root/cn/docker-compose.yml
+        stack_file_name: docker-compose.yml
         keep_files: 5
-        args: --with-registry-auth cn
+        args: --with-registry-auth -c /root/cn/docker-compose.yml cn
 
