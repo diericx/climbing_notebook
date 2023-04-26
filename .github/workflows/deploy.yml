@@ -68,7 +68,7 @@ jobs:
         ssh_public_key: ${{ secrets.DOCKER_SSH_PUBLIC_KEY }}
         deployment_mode: docker-swarm
         copy_stack_file: true
-        deploy_path: /root/cn
+        deploy_path: /root/
         stack_file_name: docker-compose.yml
         keep_files: 5
         args: cn
