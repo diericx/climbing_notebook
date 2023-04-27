@@ -49,10 +49,9 @@ export function isDateInTheSameWeekAsToday(d: Date) {
   const [f] = getFirstDayOfTheWeek(new Date()).toISOString().split('T');
   const [l] = getLastDayOfTheWeek(new Date()).toISOString().split('T');
   return t >= f && t <= l;
-
 }
 
-export function isDateInTheSameDayAsTodau(d: Date) {
+export function isDateInTheSameDayAsToday(d: Date) {
   const [todayStr] = new Date().toISOString().split('T');
   const [dateStr] = d.toISOString().split('T');
   return todayStr == dateStr;
