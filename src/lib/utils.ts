@@ -1,3 +1,5 @@
+import 'fs';
+
 export function confirmDelete(e: MouseEvent) {
   if (!confirm('Are you sure you want to delete this?')) {
     e.preventDefault();
@@ -65,4 +67,14 @@ export function daysFromToday(i: number) {
   const d = new Date();
   d.setDate(d.getDate() + i);
   return d;
+}
+
+export function getSecretFromFile(path: string): string | undefined {
+  fs.readFile(path, 'utf8', (err, data) => {
+    if (err) {
+      console.error(err);
+      return undefined;
+    }
+    return data;
+  });
 }
