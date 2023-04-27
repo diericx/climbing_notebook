@@ -10,4 +10,3 @@ docker-compose.yml
 public
 .svelte-kit
 build
-package-lock.json
