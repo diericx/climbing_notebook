@@ -8,7 +8,7 @@
 	import dayjs from 'dayjs';
 	import ExerciseEventsList from './list.svelte';
 	import WeeklyCalendar from './weekCalendar.svelte';
-	import { getDayWeekStartsMonday } from '$lib/utils';
+	import { getDayWeekStartsMonday, isDateInTheSameDayAsToday } from '$lib/utils';
 	import { isDateInTheSameWeekAsToday } from '$lib/utils';
 
 	export let data: PageData;
@@ -22,10 +22,10 @@
 
 	// Filter out only todays exercise events
 	$: todaysExerciseEvents = exerciseEvents.filter((e) => {
-		if (!e.date) {
+		if (e.date == undefined) {
 			return false;
 		}
-		return isDateInTheSameWeekAsToday(e.date);
+		return isDateInTheSameDayAsToday(e.date);
 	}) as ExerciseEvent[];
 
 	// Filter out only this weeks exercise events
