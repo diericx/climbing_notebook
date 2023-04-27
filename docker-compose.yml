@@ -4,25 +4,49 @@ services:
   svelte-prod:
     image: 279721711046.dkr.ecr.us-west-2.amazonaws.com/climbingnotebook:sha-e1355ef
     networks:
-      - app-entry
+      - traefik
+      - postgres
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.svelte.rule=Host(`climbingnotebook.zdeep.net`)"
+      - "traefik.http.routers.svelte.rule=Host(`climbingnotebook.com`)"
       - "traefik.http.routers.svelte.entrypoints=websecure"
       - "traefik.http.routers.svelte.tls.certresolver=myresolver"
       - "traefik.http.services.svelte.loadbalancer.server.port=3000"
+    secrets:
+      - source: cn_prod_db_url
+        target: db_url
+        uid: '103'
+        gid: '103'
+        mode: 0440
+    entrypoint: [ '/bin/sh', '-c', 'export DATABASE_URL=$$(cat /run/secrets/db_url) ; node build' ]
 
-  svelte-dev:
+  svelte-staging:
     image: 279721711046.dkr.ecr.us-west-2.amazonaws.com/climbingnotebook:master
     networks:
-      - app-entry
+      - traefik
+      - postgres
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.svelte-dev.rule=Host(`dev.zdeep.net`)"
-      - "traefik.http.routers.svelte-dev.entrypoints=websecure"
-      - "traefik.http.routers.svelte-dev.tls.certresolver=myresolver"
-      - "traefik.http.services.svelte-dev.loadbalancer.server.port=3000"
+      - "traefik.http.routers.svelte-staging.rule=Host(`staging.climbingnotebook.com`)"
+      - "traefik.http.routers.svelte-staging.entrypoints=websecure"
+      - "traefik.http.routers.svelte-staging.tls.certresolver=myresolver"
+      - "traefik.http.services.svelte-staging.loadbalancer.server.port=3000"
+    secrets:
+      - source: cn_staging_db_url
+        target: db_url
+        uid: '103'
+        gid: '103'
+        mode: 0440
+    entrypoint: [ '/bin/sh', '-c', 'export DATABASE_URL=$$(cat /run/secrets/db_url) ; node build' ]
+
+secrets:
+ cn_staging_db_url:
+   external: true
+ cn_prod_db_url:
+   external: true
 
 networks:
-  app-entry:
+  traefik:
+    external: true
+  postgres:
     external: true
