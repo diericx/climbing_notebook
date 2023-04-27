@@ -4,8 +4,9 @@ WORKDIR /app
 
 RUN apk update && apk add git python3 make g++ && rm -rf /var/cache/apk/*
 
-COPY package.json .
-RUN npm install
+COPY package.json package-lock.json .
+RUN npm install --production
+
 COPY . .
 RUN npm run prisma-generate
 RUN npm run build
