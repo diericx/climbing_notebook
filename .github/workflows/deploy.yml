@@ -76,7 +76,7 @@ jobs:
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.KEY }}
+        key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.PORT }}
         script: |
           docker stack deploy --with-registry-auth -c cn/docker-compose.yml cn
