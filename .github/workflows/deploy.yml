@@ -68,7 +68,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.PORT }}
         source: "docker-compose.yml"
-        target: cn/
+        target: stacks/cn/
         overwrite: true
 
     - name: run commands to deploy
@@ -79,4 +79,4 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.PORT }}
         script: |
-          docker stack deploy --with-registry-auth -c cn/docker-compose.yml cn
+          docker stack deploy --with-registry-auth -c stacks/cn/docker-compose.yml cn
