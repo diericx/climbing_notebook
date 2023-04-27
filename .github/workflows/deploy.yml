@@ -60,7 +60,7 @@ jobs:
         #       cache-from: type=gha
         #       cache-to: type=gha,mode=max
 
-    - name: copy file via ssh key
+    - name: copy dockeer-file.yml via ssh key
       uses: appleboy/scp-action@v0.1.4
       with:
         host: ${{ secrets.HOST }}
@@ -69,3 +69,14 @@ jobs:
         port: ${{ secrets.PORT }}
         source: "docker-compose.yml"
         target: cn/
+        overwrite: true
+
+    - name: run commands to deploy
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          docker stack deploy --with-registry-auth -c cn/docker-compose.yml cn
