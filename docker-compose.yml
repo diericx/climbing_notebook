@@ -2,13 +2,13 @@ version: "3.9"
 services:
 
   svelte-prod:
-    image: 279721711046.dkr.ecr.us-west-2.amazonaws.com/climbingnotebook:sha-e1355ef
+    image: 279721711046.dkr.ecr.us-west-2.amazonaws.com/climbingnotebook:sha-0280e03
     networks:
       - traefik
       - postgres
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.svelte.rule=Host(`climbingnotebook.com`)"
+      - "traefik.http.routers.svelte.rule=Host(`www.climbingnotebook.com`,`climbingnotebook.com`)"
       - "traefik.http.routers.svelte.entrypoints=websecure"
       - "traefik.http.routers.svelte.tls.certresolver=myresolver"
       - "traefik.http.services.svelte.loadbalancer.server.port=3000"
