@@ -7,7 +7,7 @@
 
 	// Form action to execute, which may need to be specified if this is
 	// used outside of this route
-	export let action = '?/newExerciseEvent';
+	export let action = '';
 
 	// Add redirect data
 	if ($page.url.searchParams.has('redirectTo')) {
@@ -19,16 +19,21 @@
 	if (exerciseEvent != undefined) {
 		exerciseEventFormData = new ExerciseEventFormData(exerciseEvent);
 	}
+
+	export let showDifficulty = true;
+	export let showDate = true;
 </script>
 
 <form method="POST" {action}>
-	<div class="flex">
-		<div>
-			<label for="date">Date</label>
-			<br />
-			<DateInput name="date" date={exerciseEventFormData.date || new Date()} style="width: 150px" />
+	{#if showDate}
+		<div class="flex">
+			<div>
+				<label for="date">Date</label>
+				<br />
+				<DateInput name="date" bind:date={exerciseEventFormData.date} style="width: 150px" />
+			</div>
 		</div>
-	</div>
+	{/if}
 	<div>
 		<label for="name">Name</label>
 		<br />
@@ -36,7 +41,7 @@
 			type="text"
 			name="name"
 			placeholder="Pull-Ups 3x7"
-			value={exerciseEventFormData.name || ''}
+			bind:value={exerciseEventFormData.name}
 			style="width: 150px"
 		/>
 	</div>
@@ -49,7 +54,7 @@
 				type="number"
 				style="width: 75px"
 				name="sets"
-				value={exerciseEventFormData.sets || 0}
+				bind:value={exerciseEventFormData.sets}
 			/>
 		</div>
 
@@ -60,7 +65,7 @@
 				type="number"
 				style="width: 75px"
 				name="reps"
-				value={exerciseEventFormData.reps || 0}
+				bind:value={exerciseEventFormData.reps}
 			/>
 		</div>
 
@@ -73,7 +78,7 @@
 				type="number"
 				name="minutes"
 				style="width: 75px"
-				value={exerciseEventFormData.minutes || 0}
+				bind:value={exerciseEventFormData.minutes}
 			/>
 		</div>
 
@@ -84,7 +89,7 @@
 				type="number"
 				name="seconds"
 				style="width: 75px"
-				value={exerciseEventFormData.seconds || 0}
+				bind:value={exerciseEventFormData.seconds}
 			/>
 		</div>
 
@@ -98,20 +103,22 @@
 				step="0.1"
 				name="weight"
 				style="width: 75px"
-				value={exerciseEventFormData.weight || 0}
+				bind:value={exerciseEventFormData.weight}
 			/>
 		</div>
 
-		<div>
-			<label for="difficulty">Difficulty</label>
-			<br />
-			<input
-				type="number"
-				name="difficulty"
-				style="width: 75px"
-				value={exerciseEventFormData.difficulty || 0}
-			/>
-		</div>
+		{#if showDifficulty}
+			<div>
+				<label for="difficulty">Difficulty</label>
+				<br />
+				<input
+					type="number"
+					name="difficulty"
+					style="width: 75px"
+					bind:value={exerciseEventFormData.difficulty}
+				/>
+			</div>
+		{/if}
 	</div>
 
 	<div class="sm:col-span-4">
@@ -123,9 +130,12 @@
 			rows="3"
 			placeholder=""
 			class="w-full"
-			value={exerciseEventFormData.notes || ''}
+			bind:value={exerciseEventFormData.notes}
 		/>
 	</div>
 
-	<button class="bg-green-300 hover:bg-green-400 text-white font-bold px-2 rounded">Submit</button>
+	{#if action}
+		<button class="bg-green-300 hover:bg-green-400 text-white font-bold px-2 rounded">Submit</button
+		>
+	{/if}
 </form>

@@ -69,7 +69,6 @@ export type TrainingProgramDayComplete = _Prisma.TrainingProgramDayGetPayload<ty
 const exerciseGroupComplete = _Prisma.validator<_Prisma.TrainingProgramDayArgs>()({
   include: {
     exercises: true,
-    exerciseGroups: true,
   },
 })
 export type ExerciseGroupComplete = _Prisma.ExerciseGroupGetPayload<typeof exerciseGroupComplete>
