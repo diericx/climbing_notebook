@@ -1,16 +1,14 @@
 FROM node:18-alpine AS build
-ENV NODE_ENV=production
 
 WORKDIR /app
 
-RUN apk update && apk add git python3 make g++ && rm -rf /var/cache/apk/*
-
-COPY package.json package-lock.json .
-RUN npm ci --omit=dev
+COPY package*.json .
+RUN npm ci
 
 COPY . .
 RUN npm run prisma-generate
 RUN npm run build
+RUN npm prune --production
 
 FROM node:18-alpine AS run
 ENV NODE_ENV=production
