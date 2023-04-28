@@ -15,12 +15,9 @@
 				<div class="flex items-center md:space-x-8">
 					<div class="flex-1 min-w-0">
 						<p>{group.name}</p>
-						{#each group.exercises as exercise}
-							<p class="text-sm text-gray-400">
-								- {exercise.name}
-								{exercise.sets || 0}x{exercise.reps || 0}@{exercise.weight || 0}kg
-							</p>
-						{/each}
+						<p class="text-sm text-gray-400">
+							{group.exercises.length} exercises
+						</p>
 					</div>
 				</div>
 				<div class="flex-1" />

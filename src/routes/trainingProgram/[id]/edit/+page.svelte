@@ -266,23 +266,34 @@ Notes:
 
 		{#each trainingProgram.exerciseGroups as group}
 			<div class="rounded px-4 py-4 mb-4 bg-white shadow">
-				<input
-					type="text"
-					class="mb-4"
-					placeholder="Group Name"
-					bind:value={group.name}
-					style="max-width: 300px"
-				/>
-				<button
-					class="float-right align-middle bg-red-400 hover:bg-red-500 text-white font-bold px-2 rounded"
-					on:click={() => removeGroup(group)}>Delete Group</button
-				>
+				<div class="flex items-center">
+					<input
+						type="text"
+						class="mb-4"
+						placeholder="Group Name"
+						bind:value={group.name}
+						style="max-width: 300px"
+					/>
+					<div class="flex-1" />
+					<div>
+						<button
+							class="float-right align-middle bg-red-400 hover:bg-red-500 text-white font-bold px-2 rounded"
+							on:click={() => removeGroup(group)}>Delete Group</button
+						>
+					</div>
+				</div>
 
 				<div>
 					<ExerciseEventsList exerciseEvents={group.exercises} shouldShowDate={false}>
 						<div slot="buttons" let:exerciseEvent>
-							<button on:click={() => setupEditExerciseModal(exerciseEvent, group)}>Edit</button>
-							<button on:click={() => removeExercise(exerciseEvent, group)}>Delete</button>
+							<button
+								class="align-middle bg-green-400 hover:bg-green-500 text-white font-bold px-2 mr-2 rounded"
+								on:click={() => setupEditExerciseModal(exerciseEvent, group)}>Edit</button
+							>
+							<button
+								class="align-middle bg-red-400 hover:bg-red-500 text-white font-bold px-2 rounded"
+								on:click={() => removeExercise(exerciseEvent, group)}>Delete</button
+							>
 						</div>
 					</ExerciseEventsList>
 				</div>
@@ -323,7 +334,7 @@ Notes:
 					<div slot="buttons" let:group>
 						<button
 							class="bg-red-400 hover:bg-red-500 text-white font-bold px-2 rounded"
-							on:click={() => removeGroupFromDay(i, group)}>Remove Group</button
+							on:click={() => removeGroupFromDay(i, group)}>Remove</button
 						>
 					</div>
 				</ExerciseGroupList>
@@ -354,8 +365,14 @@ Notes:
 				<hr />
 				<ExerciseEventsList exerciseEvents={day.exercises} shouldShowDate={false}>
 					<div slot="buttons" let:exerciseEvent>
-						<button on:click={() => setupEditExerciseModal(exerciseEvent, day)}>Edit</button>
-						<button on:click={() => removeExercise(exerciseEvent, day)}>Delete</button>
+						<button
+							class="align-middle bg-green-400 hover:bg-green-500 text-white font-bold px-2 mr-2 rounded"
+							on:click={() => setupEditExerciseModal(exerciseEvent, day)}>Edit</button
+						>
+						<button
+							class="align-middle bg-red-400 hover:bg-red-500 text-white font-bold px-2 rounded"
+							on:click={() => removeExercise(exerciseEvent, day)}>Delete</button
+						>
 					</div>
 				</ExerciseEventsList>
 				<button
