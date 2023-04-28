@@ -14,7 +14,6 @@
 		"prisma-generate": "prisma generate"
 	},
 	"devDependencies": {
-		"@iconify/svelte": "^3.1.3",
 		"@playwright/test": "^1.28.1",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
@@ -28,6 +27,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@iconify/svelte": "^3.1.3",
 		"@event-calendar/core": "^0.18.1",
 		"@event-calendar/day-grid": "^0.18.1",
 		"@event-calendar/interaction": "^0.18.1",
