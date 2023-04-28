@@ -10,7 +10,7 @@ jobs:
   build:
     
     name: Build Image
-    runs-on: ssdnodes-la-1
+    runs-on: self-hosted
    
     steps:
     - name: Check out code
