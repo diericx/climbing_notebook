@@ -1,7 +1,7 @@
 import { error, fail, redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { SERVER_ERROR } from '$lib/helperTypes';
-import { prisma, type TrainingProgramComplete } from '$lib/prisma';
+import { prisma } from '$lib/prisma';
 import { TrainingProgramFormData, TrainingProgramRepo } from '$lib/trainingProgram';
 import { APIError } from '$lib/errors';
 import type { TrainingProgram } from '@prisma/client';
@@ -10,24 +10,25 @@ export const load: PageServerLoad = async ({ locals, params }) => {
   const { user } = await locals.auth.validateUser();
   const id = Number(params.id);
 
-  const repo = new TrainingProgramRepo(prisma);
-  let trainingProgram: TrainingProgramComplete;
   try {
-    trainingProgram = await repo.getOne(Number(id), user?.userId);
+    const repo = new TrainingProgramRepo(prisma);
+    const trainingProgram = await repo.getOne(Number(id), user?.userId);
+    const trainingProgramOriginal = JSON.parse(JSON.stringify(trainingProgram));
+
+    return {
+      trainingProgram,
+      trainingProgramOriginal,
+    };
   } catch (e) {
     if (e instanceof APIError) {
-      return fail(401, { message: e.detail })
+      throw error(404, {
+        message: 'Not found'
+      });
     }
     console.error(e)
     throw error(500, { message: SERVER_ERROR })
   }
 
-  const trainingProgramOriginal = JSON.parse(JSON.stringify(trainingProgram));
-
-  return {
-    trainingProgram,
-    trainingProgramOriginal,
-  };
 };
 
 export const actions: Actions = {

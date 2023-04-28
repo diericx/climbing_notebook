@@ -114,7 +114,7 @@
 	<div>
 		<h2>New Entry</h2>
 		<hr />
-		<ExerciseEventForm {exerciseEventFormData} />
+		<ExerciseEventForm action="/exerciseEvent?/newExerciseEvent" {exerciseEventFormData} />
 	</div>
 </div>
 
