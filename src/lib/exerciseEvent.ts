@@ -1,7 +1,6 @@
 import type { ExerciseEvent, PrismaClient } from '@prisma/client';
 import { APIError } from './errors';
-import { toNum } from './utils'
-import dayjs from 'dayjs';
+import { isDateInTheSameWeekAsToday, toNum } from './utils'
 
 export class ExerciseEventFormData {
   date: Date | undefined = undefined;
@@ -141,11 +140,9 @@ export class ExerciseEventRepo {
     const newDateStr = newDate.toISOString().split('T')[0];
     const strippedDate = new Date(newDateStr);
 
-    // Perform a lazy trim
+    // Perform a lazy trim by removing anything that is not in this week
     e.markedCompletions.filter(c => {
-      const d1 = dayjs(c);
-      const d2 = dayjs(newDate);
-      return d2.diff(d1, 'd') <= 7
+      return isDateInTheSameWeekAsToday(c)
     })
 
     // Either add or remove the given date

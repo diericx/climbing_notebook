@@ -55,7 +55,7 @@ model ExerciseEvent {
   ownerId    String    @map("owner_id")
   owner      AuthUser  @relation(fields: [ownerId], references: [id])
 
-  // These values exist for the case that an EE is simply an exercise in a program
+  // A list of dates that this exercise has been marked completed for
   markedCompletions    DateTime[]
   exerciseGroup        ExerciseGroup?      @relation(fields: [exerciseGroupId], references: [id], onDelete: Cascade)
   exerciseGroupId      Int?
