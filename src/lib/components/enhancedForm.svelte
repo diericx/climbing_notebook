@@ -20,6 +20,13 @@
 	onMount(async () => {
 		formData = { ...formDataDefaults };
 	});
+
+	// If the formData variable coming in is undefined, set it to the defaults
+	$: {
+		if (formData == undefined) {
+			formData = { ...formDataDefaults };
+		}
+	}
 </script>
 
 <form
