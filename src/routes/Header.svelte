@@ -1,5 +1,4 @@
 <script lang="ts">
-	import logo from '$lib/images/logo.svg';
 	import type { GlobalUserAttributes } from 'lucia-auth';
 	let showMenu = false;
 
@@ -20,7 +19,6 @@
 			<nav class="px-6 py-3 mx-auto md:flex md:items-center">
 				<div class="flex items-center justify-between">
 					<a href="/" class="flex items-center">
-						<img src={logo} class="h-6 mr-2 sm:h-9" alt="Logo" />
 						<span
 							style="line-height: 20px"
 							class="self-center text-xl font-semibold whitespace-nowrap text-gray-800"
