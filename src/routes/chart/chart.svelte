@@ -3,13 +3,48 @@
 	import { evaluate } from 'mathjs';
 	import { confirmDelete } from '$lib/utils';
 	import { enhance } from '$app/forms';
+	import type { ExerciseEvent, Metric } from '@prisma/client';
+
+	type DataSet = {
+		name?: string;
+		values: number[];
+	};
+	type DataPoints = {
+		[key: number]: number;
+	};
+	type ChartData = {
+		labels: string[];
+		datasets: DataSet[];
+		dataPoints: DataPoints;
+		start: Date;
+		end: Date;
+		discreteDomains: number;
+	};
 
 	export let chart: Chart;
 	// The objects (either exerciseEvent or metric) that we will be matching against.
-	export let targetObjects = [];
+	export let exerciseEvents: ExerciseEvent[] = [];
+	export let metrics: Metric[] = [];
 
 	function dateToEUString(d: Date) {
 		return `${d.getDate()}-${d.getMonth()}-${d.getFullYear()}`;
+	}
+
+	function addDataPoint(d: Date, v: number) {
+		// Add data in heatmap format
+		chartData.dataPoints[Math.floor(d.getTime() / 1000)] = v;
+
+		// NOTE: this functionality expects the events to be sorted by date
+		let dataIndex = chartData.labels.findIndex((l) => l == dateToEUString(d));
+		if (dataIndex == -1) {
+			// If the date label is not found, create it and the corresponding score
+			// Inserted at head because list is sorted date descending
+			chartData.labels = [dateToEUString(d), ...chartData.labels];
+			chartData.datasets[0].values = [v, ...chartData.datasets[0].values];
+		} else {
+			// If the date label is found, use the index to update the score
+			chartData.datasets[0].values[dataIndex] = v;
+		}
 	}
 
 	// Init frappe charts data
@@ -18,43 +53,44 @@
 	ayearAgo.setDate(today.getDate() - 365);
 	let chartData = {
 		labels: [],
-		datasets: [{ values: [] }],
-		dataPoints: {},
+		datasets: [{ values: [] } as DataSet],
+		dataPoints: {} as DataPoints,
 		start: ayearAgo,
 		end: today,
 		discreteDomains: 0
-	};
+	} as ChartData;
 
 	// Get all the events that match the pattern
-	let matchedObjects = targetObjects.filter((e) =>
+	let matchedExerciseEvents = exerciseEvents.filter((e) =>
 		e.name.match(new RegExp(chart.patternToMatch, 'i'))
 	);
+	let matchedMetrics = metrics.filter((e) => e.name.match(new RegExp(chart.patternToMatch, 'i')));
 
-	matchedObjects.forEach((e) => {
+	matchedExerciseEvents.forEach((e) => {
+		if (e.date == undefined) {
+			return;
+		}
 		// Calculate the score by applying the equation
 		let score = evaluate(chart.equation, {
 			sets: e.sets,
 			reps: e.reps,
 			weight: e.weight,
 			minutes: e.minutes,
-			seconds: e.seconds,
+			seconds: e.seconds
+		});
+
+		addDataPoint(e.date, score);
+	});
+	matchedMetrics.forEach((e) => {
+		if (e.date == undefined) {
+			return;
+		}
+		// Calculate the score by applying the equation
+		let score = evaluate(chart.equation, {
 			value: e.value
 		});
 
-		// Add data in heatmap format
-		chartData.dataPoints[Math.floor(new Date(e.date).getTime() / 1000)] = score;
-
-		// NOTE: this functionality expects the events to be sorted by date
-		let dataIndex = chartData.labels.findIndex((l) => l == dateToEUString(new Date(e.date)));
-		if (dataIndex == -1) {
-			// If the date label is not found, create it and the corresponding score
-			// Inserted at head because list is sorted date descending
-			chartData.labels = [dateToEUString(new Date(e.date)), ...chartData.labels];
-			chartData.datasets[0].values = [score, ...chartData.datasets[0].values];
-		} else {
-			// If the date label is found, use the index to update the score
-			chartData.datasets[0].values[dataIndex] += score;
-		}
+		addDataPoint(e.date, score);
 	});
 </script>
 
