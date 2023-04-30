@@ -122,15 +122,7 @@ Notes:
 	function setupNewExerciseModal(parent: ExerciseGroupComplete | TrainingProgramDayComplete) {
 		newExerciseModalData = {
 			parent,
-			exercise: {
-				name: '',
-				sets: 0,
-				reps: 0,
-				minutes: 0,
-				seconds: 0,
-				weight: 0,
-				difficulty: 0
-			} as ExerciseEvent,
+			exercise: undefined,
 			exerciseFormData: undefined
 		};
 		showNewExerciseModal = true;
@@ -164,10 +156,10 @@ Notes:
 	}
 
 	function addExerciseFromModal() {
-		const { parent, exercise } = newExerciseModalData;
-		if (parent == undefined || parent.exercises == undefined || exercise == undefined) {
+		const { parent, exerciseFormData } = newExerciseModalData;
+		if (parent == undefined || parent.exercises == undefined || exerciseFormData == undefined) {
 			console.error(
-				'Parent object does not have exercises array or given exercises is undefined and thus we cannot add to it.'
+				'Parent object does not have exercises array, given exercises is undefined and thus we cannot add to it, or exercise form data was empty.'
 			);
 			return;
 		}
@@ -175,7 +167,7 @@ Notes:
 			console.error('Page data does not exist');
 			return;
 		}
-		parent.exercises = [...parent.exercises, exercise];
+		parent.exercises = [...parent.exercises, exerciseFormData];
 		trainingProgram = trainingProgram;
 		newExerciseModalData.parent = undefined;
 		showNewExerciseModal = false;

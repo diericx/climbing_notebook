@@ -32,7 +32,7 @@
 							</span>
 						{/if}
 						{exerciseEvent.sets}x{exerciseEvent.reps} :
-						{exerciseEvent.minutes}m{exerciseEvent.seconds} : {exerciseEvent.weight}kg
+						{exerciseEvent.minutes}m{exerciseEvent.seconds}s : {exerciseEvent.weight}kg
 						{#if exerciseEvent.difficulty}
 							: {exerciseEvent.difficulty}
 							difficulty
