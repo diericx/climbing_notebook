@@ -21,7 +21,7 @@
 	<div>
 		<h2>New Journal Entry</h2>
 		<hr />
-		<JournalEntryForm journalEntryFormData={new JournalEntryFormData(form?.journalEntryFormData)} />
+		<JournalEntryForm formData={new JournalEntryFormData(form?.journalEntryFormData)} />
 	</div>
 </div>
 

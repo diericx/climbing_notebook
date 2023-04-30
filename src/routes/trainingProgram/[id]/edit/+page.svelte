@@ -13,6 +13,7 @@ Notes:
 	import ExerciseEventForm from '../../../exerciseEvent/form.svelte';
 	import ExerciseEventsList from '../../../exerciseEvent/list.svelte';
 	import ExerciseGroupList from '../../groupList.svelte';
+	import { ExerciseEventFormData } from '$lib/exerciseEvent';
 
 	export let data: PageData;
 	let scrollY: number;
@@ -102,7 +103,7 @@ Notes:
 	type ExerciseModalData = {
 		parent: ExerciseGroupComplete | TrainingProgramDayComplete | undefined;
 		exercise: ExerciseEvent | undefined;
-		exerciseForForm: ExerciseEvent | undefined;
+		exerciseFormData: ExerciseEventFormData | undefined;
 	};
 
 	let showNewExerciseModal = false;
@@ -110,12 +111,12 @@ Notes:
 	let newExerciseModalData: ExerciseModalData = {
 		parent: undefined,
 		exercise: undefined,
-		exerciseForForm: undefined
+		exerciseFormData: undefined
 	};
 	let editExerciseModalData = {
 		parent: undefined,
 		exercise: undefined,
-		exerciseForForm: undefined
+		exerciseFormData: undefined
 	} as ExerciseModalData;
 
 	function setupNewExerciseModal(parent: ExerciseGroupComplete | TrainingProgramDayComplete) {
@@ -130,7 +131,7 @@ Notes:
 				weight: 0,
 				difficulty: 0
 			} as ExerciseEvent,
-			exerciseForForm: undefined
+			exerciseFormData: undefined
 		};
 		showNewExerciseModal = true;
 	}
@@ -140,7 +141,7 @@ Notes:
 	) {
 		editExerciseModalData = {
 			// The data to be used and bound to in the form
-			exerciseForForm: { ...exercise },
+			exerciseFormData: new ExerciseEventFormData(exercise),
 			// The original exercise to be updated
 			exercise,
 			parent
@@ -151,13 +152,13 @@ Notes:
 	function editExerciseFromModal() {
 		if (
 			editExerciseModalData.exercise == undefined ||
-			editExerciseModalData.exerciseForForm == undefined ||
+			editExerciseModalData.exerciseFormData == undefined ||
 			trainingProgram == undefined
 		) {
 			console.error('Cannoy edit exercise from modal because target or source is undefined.');
 			return;
 		}
-		Object.assign(editExerciseModalData.exercise, editExerciseModalData.exerciseForForm);
+		Object.assign(editExerciseModalData.exercise, editExerciseModalData.exerciseFormData);
 		trainingProgram = trainingProgram;
 		showEditExerciseModal = false;
 	}
@@ -186,7 +187,7 @@ Notes:
 <Modal bind:showModal={showNewExerciseModal}>
 	<h1>New Exercise</h1>
 	<ExerciseEventForm
-		exerciseEventFormData={newExerciseModalData.exercise}
+		bind:formData={newExerciseModalData.exerciseFormData}
 		showDate={false}
 		showDifficulty={false}
 	/>
@@ -199,7 +200,7 @@ Notes:
 <Modal bind:showModal={showEditExerciseModal}>
 	<h1>Edit Exercise</h1>
 	<ExerciseEventForm
-		exerciseEventFormData={editExerciseModalData.exerciseForForm}
+		bind:formData={editExerciseModalData.exerciseFormData}
 		showDate={false}
 		showDifficulty={false}
 	/>

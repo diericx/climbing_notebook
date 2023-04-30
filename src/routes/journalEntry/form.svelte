@@ -1,32 +1,32 @@
 <script lang="ts">
 	import { JournalEntryFormData } from '$lib/journalEntry';
-	import TabEnabledTextArea from '$lib/components/tabEnabledTextArea.svelte';
-	import { enhance } from '$app/forms';
-	import DateInput from '$lib/components/dateInput.svelte';
 	import type { JournalEntry } from '@prisma/client';
-	import { page } from '$app/stores';
+	import TabEnabledTextArea from '$lib/components/tabEnabledTextArea.svelte';
+	import DateInput from '$lib/components/dateInput.svelte';
+	import EnhancedForm from '$lib/components/enhancedForm.svelte';
 
 	// Form action to execute
-	export let action = '?/newJournalEntry';
-
-	// Add redirect data
-	if ($page.url.searchParams.has('redirectTo')) {
-		action += '&redirectTo=' + $page.url.searchParams.get('redirectTo');
-	}
+	export let action = '/journalEntry?/newJournalEntry';
 
 	export let journalEntry: JournalEntry | undefined = undefined;
-	export let journalEntryFormData: JournalEntryFormData = new JournalEntryFormData();
-	if (journalEntry != undefined) {
-		journalEntryFormData = new JournalEntryFormData(journalEntry);
-	}
+	export let formData = new JournalEntryFormData();
 </script>
 
-<form method="POST" {action} use:enhance>
+<EnhancedForm
+	{action}
+	bind:formData
+	formDataDefaults={new JournalEntryFormData(
+		journalEntry || {
+			date: new Date(),
+			content: ''
+		}
+	)}
+>
 	<input type="hidden" name="type" value="climbing" />
 
 	<label class="font-bold" for="date">Date</label>
 	<br />
-	<DateInput name="date" bind:date={journalEntryFormData.date} style="width: 150px" />
+	<DateInput name="date" bind:date={formData.date} style="width: 150px" />
 	<br />
 
 	<label class="font-bold" for="content">Content</label>
@@ -56,10 +56,10 @@ Injury tracking:
 
 leftRingFingerPainA2Pulley: 3
 rightShoulderPain: 2"
-		bind:value={journalEntryFormData.content}
+		bind:value={formData.content}
 	/>
 
 	<br />
 
 	<button class="bg-green-300 hover:bg-green-400 text-white font-bold px-2 rounded">Submit</button>
-</form>
+</EnhancedForm>
