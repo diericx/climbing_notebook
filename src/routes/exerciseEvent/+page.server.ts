@@ -1,6 +1,5 @@
 import type { Actions } from './$types';
 import type { PageServerLoad } from './$types';
-import type { Profile } from '@prisma/client';
 import { prisma, type ProfileWithActiveTrainingProgram } from '$lib/prisma';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { APIError } from '$lib/errors';
