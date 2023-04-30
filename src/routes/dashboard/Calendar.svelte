@@ -4,9 +4,9 @@
 	import DayGrid from '@event-calendar/day-grid';
 	import Interraction from '@event-calendar/interaction';
 	import type { CalendarEvent, JournalEntry } from '@prisma/client';
-	import ModalShowJournalEntry from './dashboard/modalShowJournalEntry.svelte';
-	import ModalShowCalendarEvent from './dashboard/modalShowCalendarEvent.svelte';
-	import ModalNewCalendarEvent from './dashboard/modalNewCalendarEvent.svelte';
+	import ModalShowJournalEntry from './ModalShowJournalEntry.svelte';
+	import ModalShowCalendarEvent from './ModalShowCalendarEvent.svelte';
+	import ModalNewCalendarEvent from './ModalNewCalendarEvent.svelte';
 
 	export let calendarEvents: CalendarEvent[];
 	export let journalEntries: JournalEntry[];

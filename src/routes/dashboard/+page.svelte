@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import Chart from '../chart/chart.svelte';
-	import Calendar from '../Calendar.svelte';
+	import Calendar from './Calendar.svelte';
 
 	export let data: PageData;
 	$: profile = data.profile;
