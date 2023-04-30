@@ -4,12 +4,11 @@
 	import ExerciseEventForm from './form.svelte';
 	import { ExerciseEventFormData } from '$lib/exerciseEvent';
 	import type { ExerciseEvent } from '@prisma/client';
-	import type { ProfileWithActiveTrainingProgram, TrainingProgramComplete } from '$lib/prisma';
-	import dayjs from 'dayjs';
-	import ExerciseEventsList from './list.svelte';
-	import WeeklyCalendar from './weekCalendar.svelte';
+	import type { TrainingProgramComplete } from '$lib/prisma';
 	import { getDayWeekStartsMonday, isDateInTheSameDayAsToday } from '$lib/utils';
 	import { isDateInTheSameWeekAsToday } from '$lib/utils';
+	import ExerciseEventsList from './list.svelte';
+	import WeeklyCalendar from './weekCalendar.svelte';
 
 	export let data: PageData;
 	export let form: ActionData;
@@ -53,6 +52,8 @@
 		exerciseEventFormData.sets = e.sets;
 		exerciseEventFormData.reps = e.reps;
 		exerciseEventFormData.weight = e.weight;
+		exerciseEventFormData.minutes = e.minutes;
+		exerciseEventFormData.seconds = e.seconds;
 
 		// Focus the form element
 		const el = document.querySelector('#exerciseEventForm');
@@ -114,7 +115,10 @@
 	<div>
 		<h2>New Entry</h2>
 		<hr />
-		<ExerciseEventForm action="/exerciseEvent?/newExerciseEvent" {exerciseEventFormData} />
+		<ExerciseEventForm
+			action="/exerciseEvent?/newExerciseEvent"
+			bind:formData={exerciseEventFormData}
+		/>
 	</div>
 </div>
 

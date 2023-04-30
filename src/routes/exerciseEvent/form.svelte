@@ -1,36 +1,45 @@
 <script lang="ts">
 	import { ExerciseEventFormData } from '$lib/exerciseEvent';
 	import TabEnabledTextArea from '$lib/components/tabEnabledTextArea.svelte';
-	import { page } from '$app/stores';
 	import type { ExerciseEvent } from '@prisma/client';
 	import DateInput from '$lib/components/dateInput.svelte';
+	import EnhancedForm from '$lib/components/enhancedForm.svelte';
 
 	// Form action to execute, which may need to be specified if this is
 	// used outside of this route
 	export let action = '';
 
-	// Add redirect data
-	if ($page.url.searchParams.has('redirectTo')) {
-		action += '&redirectTo=' + $page.url.searchParams.get('redirectTo');
-	}
-
+	// The exercise event that this form represents, which defines the defaults only
 	export let exerciseEvent: ExerciseEvent | undefined = undefined;
-	export let exerciseEventFormData: ExerciseEventFormData = new ExerciseEventFormData();
-	if (exerciseEvent != undefined) {
-		exerciseEventFormData = new ExerciseEventFormData(exerciseEvent);
-	}
+	export let formData = new ExerciseEventFormData();
 
 	export let showDifficulty = true;
 	export let showDate = true;
 </script>
 
-<form method="POST" {action}>
+<EnhancedForm
+	{action}
+	bind:formData
+	formDataDefaults={new ExerciseEventFormData(
+		exerciseEvent || {
+			date: new Date(),
+			name: '',
+			sets: 0,
+			reps: 0,
+			minutes: 0,
+			seconds: 0,
+			weight: 0,
+			difficulty: 0,
+			notes: ''
+		}
+	)}
+>
 	{#if showDate}
 		<div class="flex">
 			<div>
 				<label for="date">Date</label>
 				<br />
-				<DateInput name="date" bind:date={exerciseEventFormData.date} style="width: 150px" />
+				<DateInput name="date" bind:date={formData.date} style="width: 150px" />
 			</div>
 		</div>
 	{/if}
@@ -41,7 +50,7 @@
 			type="text"
 			name="name"
 			placeholder="Pull-Ups 3x7"
-			bind:value={exerciseEventFormData.name}
+			bind:value={formData.name}
 			style="width: 150px"
 		/>
 	</div>
@@ -50,23 +59,13 @@
 		<div>
 			<label for="sets">Sets</label>
 			<br />
-			<input
-				type="number"
-				style="width: 75px"
-				name="sets"
-				bind:value={exerciseEventFormData.sets}
-			/>
+			<input type="number" style="width: 75px" name="sets" bind:value={formData.sets} />
 		</div>
 
 		<div>
 			<label for="reps">Reps</label>
 			<br />
-			<input
-				type="number"
-				style="width: 75px"
-				name="reps"
-				bind:value={exerciseEventFormData.reps}
-			/>
+			<input type="number" style="width: 75px" name="reps" bind:value={formData.reps} />
 		</div>
 
 		<div class="w-full md:hidden" />
@@ -74,23 +73,13 @@
 		<div>
 			<label for="minutes">Minutes</label>
 			<br />
-			<input
-				type="number"
-				name="minutes"
-				style="width: 75px"
-				bind:value={exerciseEventFormData.minutes}
-			/>
+			<input type="number" name="minutes" style="width: 75px" bind:value={formData.minutes} />
 		</div>
 
 		<div>
 			<label for="seconds">Seconds</label>
 			<br />
-			<input
-				type="number"
-				name="seconds"
-				style="width: 75px"
-				bind:value={exerciseEventFormData.seconds}
-			/>
+			<input type="number" name="seconds" style="width: 75px" bind:value={formData.seconds} />
 		</div>
 
 		<div class="w-full md:hidden" />
@@ -103,7 +92,7 @@
 				step="0.1"
 				name="weight"
 				style="width: 75px"
-				bind:value={exerciseEventFormData.weight}
+				bind:value={formData.weight}
 			/>
 		</div>
 
@@ -115,7 +104,7 @@
 					type="number"
 					name="difficulty"
 					style="width: 75px"
-					bind:value={exerciseEventFormData.difficulty}
+					bind:value={formData.difficulty}
 				/>
 			</div>
 		{/if}
@@ -130,7 +119,7 @@
 			rows="3"
 			placeholder=""
 			class="w-full"
-			bind:value={exerciseEventFormData.notes}
+			bind:value={formData.notes}
 		/>
 	</div>
 
@@ -138,4 +127,4 @@
 		<button class="bg-green-300 hover:bg-green-400 text-white font-bold px-2 rounded">Submit</button
 		>
 	{/if}
-</form>
+</EnhancedForm>
