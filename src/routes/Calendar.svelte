@@ -4,11 +4,29 @@
 	import DayGrid from '@event-calendar/day-grid';
 	import Interraction from '@event-calendar/interaction';
 	import type { CalendarEvent, JournalEntry } from '@prisma/client';
+	import ModalShowJournalEntry from './dashboard/modalShowJournalEntry.svelte';
+	import ModalShowCalendarEvent from './dashboard/modalShowCalendarEvent.svelte';
+	import ModalNewCalendarEvent from './dashboard/modalNewCalendarEvent.svelte';
 
 	export let calendarEvents: CalendarEvent[];
 	export let journalEntries: JournalEntry[];
-	export let onJournalEntryCalEventClick;
-	export let onCalendarEventClick;
+
+	let journalEntry: JournalEntry | undefined = undefined;
+	let showModalJournalEntry = false;
+	let calendarEvent: CalendarEvent | undefined = undefined;
+	let showModalCalendarEvent = false;
+	let showModalNewCalendarEvent = false;
+
+	type EventExtendedProps = {
+		onClick: () => void;
+	};
+	type Event = {
+		start: Date;
+		end: Date;
+		backgroundColor: string;
+		title: string;
+		extendedProps: EventExtendedProps;
+	};
 
 	let journalEntryEvents = journalEntries.map((j) => {
 		return {
@@ -17,7 +35,12 @@
 			backgroundColor: '#7dd3fc',
 			allDay: true,
 			title: j.content.substring(0, 15),
-			extendedProps: { onClick: () => onJournalEntryCalEventClick(j) }
+			extendedProps: {
+				onClick: () => {
+					journalEntry = j;
+					showModalJournalEntry = true;
+				}
+			}
 		};
 	});
 
@@ -27,22 +50,33 @@
 		backgroundColor: e.color,
 		allDay: true,
 		title: e.title,
-		extendedProps: { onClick: () => onCalendarEventClick(e) }
+		extendedProps: {
+			onClick: () => {
+				calendarEvent = e;
+				showModalCalendarEvent = true;
+			}
+		}
 	}));
 
 	let plugins = [TimeGrid, DayGrid, Interraction];
 	$: options = {
 		view: 'dayGridMonth',
 		firstDay: 1,
-		eventTimeFormat: (time) => {
+		eventTimeFormat: () => {
 			return '';
 		},
 		pointer: true,
 		events: [...journalEntryEvents, ..._calendarEvents],
-		eventClick: ({ event }) => {
+		eventClick: ({ event }: { event: Event }) => {
 			event.extendedProps.onClick();
 		}
 	};
 </script>
 
+<button on:click={() => (showModalNewCalendarEvent = true)}> New Event </button>
+
 <Calendar {plugins} {options} />
+
+<ModalShowJournalEntry bind:showModal={showModalJournalEntry} {journalEntry} />
+<ModalShowCalendarEvent bind:showModal={showModalCalendarEvent} {calendarEvent} />
+<ModalNewCalendarEvent bind:showModal={showModalNewCalendarEvent} />
