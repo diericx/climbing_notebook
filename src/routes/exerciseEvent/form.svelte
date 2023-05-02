@@ -4,7 +4,6 @@
 	import type { ExerciseEvent, ExerciseGroup, TrainingProgramDay } from '@prisma/client';
 	import DateInput from '$lib/components/dateInput.svelte';
 	import EnhancedForm from '$lib/components/enhancedForm.svelte';
-	import { assign } from 'svelte/internal';
 	import { assignDefined } from '$lib/utils';
 
 	// Form action to execute, which may need to be specified if this is
