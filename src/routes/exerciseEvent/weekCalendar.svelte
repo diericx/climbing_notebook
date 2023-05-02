@@ -7,10 +7,6 @@
 
 	export let trainingProgram: TrainingProgramWithDays;
 	export let fillExerciseEventFormFunc: (e: ExerciseEvent) => void;
-	export let findMatchingExerciseOnSameDayFunc: (
-		e: ExerciseEvent,
-		day: number
-	) => ExerciseEvent | undefined;
 
 	onMount(() => {
 		scrollIntoView();
@@ -59,8 +55,6 @@
 								<CalExerciseEvent
 									date={daysFromToday(i - getDayWeekStartsMonday(new Date()))}
 									{exercise}
-									isInferredAsCompleted={findMatchingExerciseOnSameDayFunc(exercise, i) !=
-										undefined}
 									{fillExerciseEventFormFunc}
 								/>
 							{/each}
@@ -71,8 +65,6 @@
 									<CalExerciseEvent
 										date={daysFromToday(i - getDayWeekStartsMonday(new Date()))}
 										{exercise}
-										isInferredAsCompleted={findMatchingExerciseOnSameDayFunc(exercise, i) !=
-											undefined}
 										{fillExerciseEventFormFunc}
 									/>
 								{/each}
