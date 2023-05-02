@@ -57,16 +57,21 @@
 		<div class="text-sm text-gray-400">Matching exercise found</div>
 	{/if}
 	<div class="mt-1 text-sm text-gray-500">
-		{#if exercise.sets != 0 || exercise.reps != 0}
-			{exercise.sets}x{exercise.reps}
+		<div>
+			{#if exercise.sets != 0 || exercise.reps != 0}
+				{exercise.sets}x{exercise.reps}
+			{/if}
+			{#if exercise.minutes != 0 || exercise.seconds != 0}
+				: {exercise.minutes}m{exercise.seconds}s
+			{/if}
+			{#if exercise.weight != 0}
+				: {exercise.weight}kg
+			{/if}
+		</div>
+		{#if exercise.notes != ''}
+			<div>{exercise.notes}</div>
 		{/if}
-		{#if exercise.minutes != 0 || exercise.seconds != 0}
-			: {exercise.minutes}m{exercise.seconds}s
-		{/if}
-		{#if exercise.weight != 0}
-			: {exercise.weight}kg
-		{/if}
-		<br />
+
 		<div class="pt-1">
 			<button class="bg-sky-400 text-white" on:click={() => fillExerciseEventFormFunc(exercise)}
 				>Fill Form Below</button
