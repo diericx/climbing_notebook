@@ -12,7 +12,7 @@
 		"paths": {
 		  "$lib": ["./src/lib"],
       "$lib/*": ["./src/lib/*"],
-      "$app": ["/node_modules/@sveltejs/kit/assets/app"],
+      "$app": ["./node_modules/@sveltejs/kit/assets/app"],
 		}
 
 	},
