@@ -45,7 +45,6 @@ export const actions: Actions = {
   newExerciseEvent: async ({ locals, request, url }) => {
     const rawFormData = Object.fromEntries((await request.formData()).entries());
     const { user } = await locals.auth.validateUser();
-
     // Validate input fields
     const input = new ExerciseEventFormData(rawFormData);
     const { message, isValid } = input.validate()
@@ -62,6 +61,12 @@ export const actions: Actions = {
       }
       console.error(e)
       throw error(500, { message: SERVER_ERROR })
+    }
+
+    if (rawFormData.exerciseToMarkCompletedId != undefined) {
+      const exerciseToMarkCompletedId = Number(rawFormData.exerciseToMarkCompletedId);
+      const dateToMarkCompleted = new Date(rawFormData.dateToMarkCompleted);
+      await repo.setCompleted(exerciseToMarkCompletedId, user?.userId, dateToMarkCompleted, true)
     }
 
     if (url.searchParams.has('redirectTo')) {

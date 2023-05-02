@@ -165,14 +165,14 @@ model AuthUser {
 
   auth_session    AuthSession[]
   auth_key        AuthKey[]
-  JournalEntry    JournalEntry[]
-  ExerciseEvents  ExerciseEvent[]
-  Profile         Profile?
-  TrainingProgram TrainingProgram[]
-  ExerciseGroup   ExerciseGroup[]
-  Chart           Chart[]
+  journalEntry    JournalEntry[]
+  exerciseEvents  ExerciseEvent[]
+  profile         Profile?
+  trainingProgram TrainingProgram[]
+  exerciseGroup   ExerciseGroup[]
+  chart           Chart[]
   metric          Metric[]
-  CalendarEvent   CalendarEvent[]
+  calendarEvent   CalendarEvent[]
 
   @@map("user")
 }

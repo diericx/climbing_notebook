@@ -4,6 +4,8 @@
 	import type { ExerciseEvent, ExerciseGroup, TrainingProgramDay } from '@prisma/client';
 	import DateInput from '$lib/components/dateInput.svelte';
 	import EnhancedForm from '$lib/components/enhancedForm.svelte';
+	import { assign } from 'svelte/internal';
+	import { assignDefined } from '$lib/utils';
 
 	// Form action to execute, which may need to be specified if this is
 	// used outside of this route
@@ -11,6 +13,8 @@
 
 	// The exercise event that this form represents, which defines the defaults only
 	export let exerciseEvent: ExerciseEvent | undefined = undefined;
+	export let dateToMarkCompleted: Date | undefined = undefined;
+	export let exerciseToMarkCompleted: ExerciseEvent | undefined = undefined;
 	export let exerciseGroup: ExerciseGroup | undefined = undefined;
 	export let trainingProgramDay: TrainingProgramDay | undefined = undefined;
 	export let formData = new ExerciseEventFormData();
@@ -27,17 +31,20 @@
 	{onSuccess}
 	bind:formData
 	formDataDefaults={new ExerciseEventFormData(
-		exerciseEvent || {
-			date: new Date(),
-			name: '',
-			sets: 0,
-			reps: 0,
-			minutes: 0,
-			seconds: 0,
-			weight: 0,
-			difficulty: 0,
-			notes: ''
-		}
+		assignDefined(
+			{
+				date: new Date(),
+				name: '',
+				sets: 0,
+				reps: 0,
+				minutes: 0,
+				seconds: 0,
+				weight: 0,
+				difficulty: 0,
+				notes: ''
+			},
+			exerciseEvent || {}
+		)
 	)}
 >
 	{#if exerciseGroup != undefined}
@@ -45,6 +52,10 @@
 	{/if}
 	{#if trainingProgramDay != undefined}
 		<input type="hidden" name="trainingProgramDayId" value={trainingProgramDay.id} />
+	{/if}
+	{#if exerciseToMarkCompleted != undefined}
+		<input type="hidden" name="exerciseToMarkCompletedId" value={exerciseToMarkCompleted.id} />
+		<input type="hidden" name="dateToMarkCompleted" value={dateToMarkCompleted} />
 	{/if}
 
 	{#if showDate}
