@@ -6,11 +6,15 @@
 
 	export let showModal = false;
 	export let exerciseEvent: ExerciseEvent | undefined = undefined;
+	export let exerciseToMarkCompleted: ExerciseEvent | undefined = undefined;
+	export let dateToMarkCompleted: Date | undefined = undefined;
 	export let exerciseGroup: ExerciseGroup | undefined = undefined;
 	export let trainingProgramDay: TrainingProgramDay | undefined = undefined;
 	export let formData = new ExerciseEventFormData();
 	export let title = 'New Exercise';
 	export let action: string;
+	export let showDate = false;
+	export let showDifficulty = false;
 	const formId = crypto.randomUUID();
 
 	function changeShowModal(value: boolean) {
@@ -24,11 +28,13 @@
 		{action}
 		id={formId}
 		{exerciseEvent}
+		{exerciseToMarkCompleted}
+		{dateToMarkCompleted}
 		{exerciseGroup}
 		{trainingProgramDay}
 		bind:formData
-		showDate={false}
-		showDifficulty={false}
+		{showDate}
+		{showDifficulty}
 		showButton={false}
 		onSuccess={() => (showModal = false)}
 	/>

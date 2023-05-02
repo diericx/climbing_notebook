@@ -9,6 +9,8 @@
 	import { isDateInTheSameWeekAsToday } from '$lib/utils';
 	import ExerciseEventsList from './list.svelte';
 	import WeeklyCalendar from './weekCalendar.svelte';
+	import ModalExerciseEvent from '../trainingProgram/[id]/edit/ModalExerciseEvent.svelte';
+	import Icon from '@iconify/svelte';
 
 	export let data: PageData;
 	export let form: ActionData;
@@ -111,18 +113,21 @@
 	</div>
 </div>
 
-<div id="exerciseEventForm">
-	<div>
-		<h2>New Entry</h2>
-		<hr />
-		<ExerciseEventForm
-			action="/exerciseEvent?/newExerciseEvent"
-			bind:formData={exerciseEventFormData}
-		/>
-	</div>
-</div>
-
 <div class="pt-8">
+	<ModalExerciseEvent
+		action="/exerciseEvent?/newExerciseEvent"
+		title="New Exercise Event"
+		let:changeShowModal
+		showDate
+		showDifficulty
+	>
+		<div slot="open-modal-buttons" class="mb-2">
+			<button class="icon-button ml-0" on:click={() => changeShowModal(true)}>
+				<Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
+				<span class="ml-1 mr-1">New Exercise Event </span>
+			</button>
+		</div>
+	</ModalExerciseEvent>
 	<h2>Today</h2>
 	<hr />
 	<ExerciseEventsList exerciseEvents={todaysExerciseEvents} />

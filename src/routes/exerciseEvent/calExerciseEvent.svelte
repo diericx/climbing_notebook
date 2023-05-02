@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { isDateInTheSameWeekAsToday } from '$lib/utils';
 	import type { ExerciseEvent } from '@prisma/client';
+	import ModalExerciseEvent from '../trainingProgram/[id]/edit/ModalExerciseEvent.svelte';
 
 	export let exercise: ExerciseEvent;
 	// An exercise is inferred as completed if a matching exercise event is found
 	export let isInferredAsCompleted = false;
-	export let fillExerciseEventFormFunc: (e: ExerciseEvent) => void;
 	export let date: Date;
 
 	$: isMarkedCompleted =
@@ -73,22 +72,25 @@
 		{/if}
 
 		<div class="pt-1">
-			<button class="bg-sky-400 text-white" on:click={() => fillExerciseEventFormFunc(exercise)}
-				>Fill Form Below</button
-			>
-			<form
-				method="POST"
+			<ModalExerciseEvent
 				action="/exerciseEvent?/newExerciseEvent"
-				class="inline float-right"
-				use:enhance
+				title="Complete Exercise"
+				let:changeShowModal
+				exerciseEvent={exercise}
+				exerciseToMarkCompleted={exercise}
+				dateToMarkCompleted={date}
+				showDate
+				showDifficulty
 			>
-				<input type="hidden" name="name" value={exercise.name} />
-				<input type="hidden" name="sets" value={exercise.sets} />
-				<input type="hidden" name="reps" value={exercise.reps} />
-				<input type="hidden" name="minutes" value={exercise.minutes} />
-				<input type="hidden" name="seconds" value={exercise.seconds} />
-				<input type="hidden" name="weight" value={exercise.weight} />
-			</form>
+				<div slot="open-modal-buttons">
+					<button
+						class="icon-button text-white py-0 m-0 border-0 bg-green-300 hover:bg-green-400"
+						on:click={() => changeShowModal(true)}
+					>
+						<span class="ml-1 mr-1">Complete </span>
+					</button>
+				</div>
+			</ModalExerciseEvent>
 		</div>
 	</div>
 </div>
