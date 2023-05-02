@@ -4,8 +4,6 @@
 	import ModalExerciseEvent from '../trainingProgram/[id]/edit/ModalExerciseEvent.svelte';
 
 	export let exercise: ExerciseEvent;
-	// An exercise is inferred as completed if a matching exercise event is found
-	export let isInferredAsCompleted = false;
 	export let date: Date;
 
 	$: isMarkedCompleted =
@@ -19,10 +17,7 @@
 </script>
 
 <div
-	class="col rounded-md border p-2 mb-2 leading-5 {isInferredAsCompleted
-		? 'opacity-50 bg-green-200'
-		: 'opacity-100 shadow bg-white'}
-		{isMarkedCompleted ? 'opacity-40 bg-green-300' : ''}"
+	class="col rounded-md border p-2 mb-2 leading-5 bg-white {isMarkedCompleted ? 'opacity-50' : ''}"
 >
 	<div class="flex items-center">
 		<form
@@ -39,8 +34,7 @@
 			<input
 				type="checkbox"
 				name="isCompleted"
-				checked={isInferredAsCompleted || isMarkedCompleted}
-				disabled={isInferredAsCompleted}
+				checked={isMarkedCompleted}
 				on:change={() => {
 					formForIsMarkedCompleted.requestSubmit();
 					// Update the UI now, changes/truth will be updated once the form
@@ -52,9 +46,6 @@
 		</form>
 		{exercise.name}
 	</div>
-	{#if isInferredAsCompleted}
-		<div class="text-sm text-gray-400">Matching exercise found</div>
-	{/if}
 	<div class="mt-1 text-sm text-gray-500">
 		<div>
 			{#if exercise.sets != 0 || exercise.reps != 0}
@@ -84,7 +75,10 @@
 			>
 				<div slot="open-modal-buttons">
 					<button
-						class="icon-button text-white py-0 m-0 border-0 bg-green-300 hover:bg-green-400"
+						class="icon-button text-white py-0 m-0 border-0 bg-green-300 {isMarkedCompleted
+							? 'hover:bg-green-300'
+							: 'hover:bg-green-400'}"
+						disabled={isMarkedCompleted}
 						on:click={() => changeShowModal(true)}
 					>
 						<span class="ml-1 mr-1">Complete </span>

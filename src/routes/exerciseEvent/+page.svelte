@@ -64,18 +64,6 @@
 			behavior: 'smooth'
 		});
 	}
-
-	// Given an exercise event and a day, this function will return an exercise event
-	// that matches the provided event and is on the same day (of the week), or undefined.
-	const findMatchingExerciseOnSameDay = (e: ExerciseEvent, day: number) => {
-		return thisWeeksExerciseEvents.find((_e) => {
-			if (!_e.date) {
-				return false;
-			}
-			let _day = getDayWeekStartsMonday(_e.date);
-			return e.name == _e.name && day == _day;
-		});
-	};
 </script>
 
 {#if form?.message}<p class="error">{form?.message}</p>{/if}
@@ -107,7 +95,6 @@
 			<WeeklyCalendar
 				trainingProgram={activeTrainingProgram}
 				fillExerciseEventFormFunc={fillExerciseEventForm}
-				findMatchingExerciseOnSameDayFunc={findMatchingExerciseOnSameDay}
 			/>
 		{/if}
 	</div>
