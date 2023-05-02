@@ -63,6 +63,9 @@
 		{#if exercise.minutes != 0 || exercise.seconds != 0}
 			: {exercise.minutes}m{exercise.seconds}s
 		{/if}
+		{#if exercise.weight != 0}
+			: {exercise.weight}kg
+		{/if}
 		<br />
 		<div class="pt-1">
 			<button class="bg-sky-400 text-white" on:click={() => fillExerciseEventFormFunc(exercise)}
