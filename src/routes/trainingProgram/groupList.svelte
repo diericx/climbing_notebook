@@ -5,9 +5,9 @@
 	export let exerciseGroups: ExerciseGroupComplete[];
 </script>
 
-<ul class="divide-y divide-gray-200 border-t border-r border-l shadow">
+<ul class="divide-y divide-gray-200 border-t border-b">
 	{#each exerciseGroups as group}
-		<li class="bg-white py-2 px-3">
+		<li class="bg-white py-2">
 			<div class="flex items-center md:space-x-3">
 				<div class="mr-2">
 					<Icon icon="material-symbols:list-alt" width="35" />

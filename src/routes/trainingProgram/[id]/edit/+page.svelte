@@ -7,13 +7,14 @@ Notes:
 	import type { PageData } from './$types';
 	import { beforeNavigate } from '$app/navigation';
 	import { enhance } from '$app/forms';
-	import Modal from '../../../Modal.svelte';
-	import type { ExerciseEvent, ExerciseGroup } from '@prisma/client';
-	import type { ExerciseGroupComplete, TrainingProgramDayComplete } from '$lib/prisma';
-	import ExerciseEventForm from '../../../exerciseEvent/form.svelte';
+	import Icon from '@iconify/svelte';
 	import ExerciseEventsList from '../../../exerciseEvent/list.svelte';
 	import ExerciseGroupList from '../../groupList.svelte';
-	import { ExerciseEventFormData } from '$lib/exerciseEvent';
+	import ModalExerciseEvent from './ModalExerciseEvent.svelte';
+	import ModalExerciseGroup from './ModalExerciseGroup.svelte';
+	import ModalTrainingProgram from './ModalTrainingProgram.svelte';
+	import ModalTrainingProgramDay from './ModalTrainingProgramDay.svelte';
+	import { confirmDelete } from '$lib/utils';
 
 	export let data: PageData;
 	let scrollY: number;
@@ -42,336 +43,197 @@ Notes:
 			}
 		}
 	});
-
-	function addGroup() {
-		// TODO: use classes for this
-		trainingProgram.exerciseGroups = [
-			...trainingProgram.exerciseGroups,
-			{
-				id: crypto.randomUUID(),
-				trainingProgramId: trainingProgram.id,
-				ownerId: trainingProgram.ownerId,
-				name: '',
-				exercises: []
-			}
-		];
-	}
-
-	function removeGroup(g: ExerciseGroup) {
-		if (trainingProgram) {
-			trainingProgram.exerciseGroups = trainingProgram.exerciseGroups.filter((_g) => _g.id != g.id);
-		}
-	}
-
-	function removeExercise(e, group) {
-		group.exercises = group.exercises.filter((_e) => _e.id != e.id);
-		trainingProgram = trainingProgram;
-	}
-
-	function addGroupToDayOnSubmit(e, dayIndex) {
-		let formData = new FormData(e.target);
-		let groupId = formData.get('groupId');
-
-		// groupId can be null one some edge cases of browsers defaulting to disabled values
-		if (groupId == null) {
-			return;
-		}
-
-		// Find the group
-		// Compare ids as string because we set temp string ids for new groups that
-		// have not been saved yet
-		const group = trainingProgram.exerciseGroups.find((g) => g.id.toString() == groupId);
-		if (group == undefined) {
-			console.error('Could not find group when trying to add to day.');
-			return;
-		}
-
-		// Add the object directly here, being a pointer and will thus be updated
-		// in the list as the data changes
-		trainingProgram.days[dayIndex].exerciseGroups = [
-			...trainingProgram.days[dayIndex].exerciseGroups,
-			group
-		];
-	}
-
-	function removeGroupFromDay(dayIndex, group) {
-		trainingProgram.days[dayIndex].exerciseGroups = trainingProgram.days[
-			dayIndex
-		].exerciseGroups.filter((_g) => _g.id != group.id);
-	}
-
-	type ExerciseModalData = {
-		parent: ExerciseGroupComplete | TrainingProgramDayComplete | undefined;
-		exercise: ExerciseEvent | undefined;
-		exerciseFormData: ExerciseEventFormData | undefined;
-	};
-
-	let showNewExerciseModal = false;
-	let showEditExerciseModal = false;
-	let newExerciseModalData: ExerciseModalData = {
-		parent: undefined,
-		exercise: undefined,
-		exerciseFormData: undefined
-	};
-	let editExerciseModalData = {
-		parent: undefined,
-		exercise: undefined,
-		exerciseFormData: undefined
-	} as ExerciseModalData;
-
-	function setupNewExerciseModal(parent: ExerciseGroupComplete | TrainingProgramDayComplete) {
-		newExerciseModalData = {
-			parent,
-			exercise: undefined,
-			exerciseFormData: undefined
-		};
-		showNewExerciseModal = true;
-	}
-	function setupEditExerciseModal(
-		exercise: ExerciseEvent,
-		parent: ExerciseGroupComplete | TrainingProgramDayComplete
-	) {
-		editExerciseModalData = {
-			// The data to be used and bound to in the form
-			exerciseFormData: new ExerciseEventFormData(exercise),
-			// The original exercise to be updated
-			exercise,
-			parent
-		};
-		showEditExerciseModal = true;
-	}
-
-	function editExerciseFromModal() {
-		if (
-			editExerciseModalData.exercise == undefined ||
-			editExerciseModalData.exerciseFormData == undefined ||
-			trainingProgram == undefined
-		) {
-			console.error('Cannoy edit exercise from modal because target or source is undefined.');
-			return;
-		}
-		Object.assign(editExerciseModalData.exercise, editExerciseModalData.exerciseFormData);
-		trainingProgram = trainingProgram;
-		showEditExerciseModal = false;
-	}
-
-	function addExerciseFromModal() {
-		const { parent, exerciseFormData } = newExerciseModalData;
-		if (parent == undefined || parent.exercises == undefined || exerciseFormData == undefined) {
-			console.error(
-				'Parent object does not have exercises array, given exercises is undefined and thus we cannot add to it, or exercise form data was empty.'
-			);
-			return;
-		}
-		if (trainingProgram == undefined) {
-			console.error('Page data does not exist');
-			return;
-		}
-		parent.exercises = [...parent.exercises, exerciseFormData];
-		trainingProgram = trainingProgram;
-		newExerciseModalData.parent = undefined;
-		showNewExerciseModal = false;
-	}
 </script>
 
 <svelte:window bind:scrollY />
 
-<Modal bind:showModal={showNewExerciseModal}>
-	<h1>New Exercise</h1>
-	<ExerciseEventForm
-		bind:formData={newExerciseModalData.exerciseFormData}
-		showDate={false}
-		showDifficulty={false}
-	/>
-
-	<div slot="buttons">
-		<button on:click={() => addExerciseFromModal()}>Add Exercise</button>
-	</div>
-</Modal>
-
-<Modal bind:showModal={showEditExerciseModal}>
-	<h1>Edit Exercise</h1>
-	<ExerciseEventForm
-		bind:formData={editExerciseModalData.exerciseFormData}
-		showDate={false}
-		showDifficulty={false}
-	/>
-
-	<div slot="buttons">
-		<button on:click={() => editExerciseFromModal()}>Save</button>
-	</div>
-</Modal>
-
-<div style="top: 0px; position: sticky; " class="{scrollY > 70 ? 'bg-white shadow' : ''} p-2">
-	<div>
-		<div class="inline-block">
-			<form method="POST" action="?/patchTrainingProgram" use:enhance>
-				<input type="hidden" name="id" value={trainingProgram?.id} />
-				<input type="hidden" name="trainingProgram" value={JSON.stringify(trainingProgram)} />
-				<button
-					disabled={!thereAreUnsavedChanges()}
-					type="submit"
-					class="{thereAreUnsavedChanges()
-						? 'bg-green-400'
-						: 'bg-green-200'} {thereAreUnsavedChanges()
-						? 'hover:bg-green-500'
-						: 'hover:bg-green-200'} text-white font-bold px-8 py-2 rounded text-xl"
-				>
-					Save</button
-				>
-			</form>
-		</div>
-		{#if thereAreUnsavedChanges()}
-			<div class="font-bold inline-block text-red-300">You have unsaved changes!</div>
-		{/if}
-	</div>
-</div>
-
 <div class="grid grid-cols-1">
 	<div class="mb-5" />
 
-	<div class="mb-5">
-		<label for="programName">Program Name</label>
-		<br />
-		<input
-			type="text"
-			id="programName"
-			placeholder="Program Name"
-			bind:value={trainingProgram.name}
-			style="max-width: 300px"
-		/>
+	<div class="mb-10 flex items-center">
+		<h1 class="font-bold inline">
+			{trainingProgram.name}
+		</h1>
+
+		<ModalTrainingProgram
+			{trainingProgram}
+			action={`/trainingProgram/${trainingProgram.id}/edit?/editTrainingProgram`}
+			let:changeShowModal
+		>
+			<div slot="open-modal-buttons">
+				<button type="button" class="icon-button" on:click={() => changeShowModal(true)}>
+					<Icon icon="material-symbols:edit-outline" height="18" />
+					<span class="ml-1 mr-1"> Edit </span>
+				</button>
+			</div>
+		</ModalTrainingProgram>
 	</div>
 
 	<div class="mb-10">
-		<div class="mb-5">
-			<h1>
-				<b>Exercise Groups</b>
-			</h1>
-			<p class="text-slate-400">
-				Exercise groups can be applied to multiple week days. This is useful if you want a large
-				group of exercises to be performed multiple times per week.
-			</p>
+		<div class="flex justify-between">
+			<div class="text-xl">Exercise Groups</div>
+			<ModalExerciseGroup
+				action={`/trainingProgram/${trainingProgram.id}/edit?/addExerciseGroup`}
+			/>
 		</div>
-		<button
-			class="bg-green-400 hover:bg-green-500 text-white font-bold px-2 mb-4 rounded"
-			on:click={() => addGroup()}>Add Group</button
-		>
+
+		<div class="mb-2" />
 
 		{#each trainingProgram.exerciseGroups as group}
-			<div class="rounded px-4 py-4 mb-4 bg-white shadow">
+			<div class="rounded-lg px-4 pb-4 pt-3 border mb-4 bg-white">
 				<div class="flex items-center">
-					<input
-						type="text"
-						class="mb-4"
-						placeholder="Group Name"
-						bind:value={group.name}
-						style="max-width: 300px"
-					/>
-					<div class="flex-1" />
-					<div>
-						<button
-							class="float-right align-middle bg-red-400 hover:bg-red-500 text-white font-bold px-2 rounded"
-							on:click={() => removeGroup(group)}>Delete Group</button
+					<div class="flex mb-7 w-full">
+						<h2 class="font-bold">{group.name}</h2>
+
+						<ModalExerciseGroup
+							exerciseGroup={group}
+							action={`/trainingProgram/${trainingProgram.id}/group/${group.id}?/editExerciseGroup`}
+							let:changeShowModal
 						>
+							<div slot="open-modal-buttons">
+								<button type="button" class="icon-button" on:click={() => changeShowModal(true)}>
+									<Icon icon="material-symbols:edit-outline" height="18" />
+									<span class="ml-1 mr-1"> Edit </span>
+								</button>
+							</div>
+						</ModalExerciseGroup>
+
+						<div class="flex-1" />
+
+						<form
+							use:enhance
+							method="POST"
+							action={`/trainingProgram/${trainingProgram.id}/group/${group.id}?/deleteExerciseGroup`}
+							class="flex-initial"
+						>
+							<input type="hidden" name="exerciseGroupId" value={group.id} />
+							<button on:click={confirmDelete} class="icon-button" type="submit">
+								<Icon icon="mdi:trash-outline" height="18" />
+								<span class="ml-1 mr-1"> Delete </span>
+							</button>
+						</form>
 					</div>
+					<div />
 				</div>
 
 				<div>
-					<ExerciseEventsList exerciseEvents={group.exercises} shouldShowDate={false}>
-						<div slot="buttons" let:exerciseEvent>
-							<button
-								class="align-middle bg-green-400 hover:bg-green-500 text-white font-bold px-2 mr-2 rounded"
-								on:click={() => setupEditExerciseModal(exerciseEvent, group)}>Edit</button
-							>
-							<button
-								class="align-middle bg-red-400 hover:bg-red-500 text-white font-bold px-2 rounded"
-								on:click={() => removeExercise(exerciseEvent, group)}>Delete</button
-							>
-						</div>
-					</ExerciseEventsList>
+					<div class="flex w-full items-center">
+						<span class="items-end text-lg font-light">Exercises</span>
+						<div class="flex-1" />
+						<ModalExerciseEvent
+							exerciseGroup={group}
+							action="/exerciseEvent?/newExerciseEvent"
+							let:changeShowModal
+						>
+							<div class="mb-2" slot="open-modal-buttons">
+								<button class="icon-button mr-0" on:click={() => changeShowModal(true)}>
+									<Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
+									<span class="ml-1 mr-1"> Add Exercise </span>
+								</button>
+							</div>
+						</ModalExerciseEvent>
+					</div>
+
+					<ExerciseEventsList exerciseEvents={group.exercises} shouldShowDate={false} />
 				</div>
-				<button
-					class="bg-green-400 hover:bg-green-500 text-white font-bold px-2 mt-2 rounded"
-					on:click={() => setupNewExerciseModal(group)}>Add Exercise</button
-				>
 			</div>
 		{/each}
 	</div>
 
 	<div class="mb-5">
-		<h1>
-			<b>Days</b>
-		</h1>
+		<div class="text-xl">Days</div>
 		<p class="text-slate-400">Set exercises and exercise groups for each day of the week.</p>
 	</div>
 
 	<div>
 		{#each trainingProgram.days as day, i}
-			<h2>
-				<b>{daysOfTheWeek[i]}</b>
-			</h2>
-			<div class="bg-white rounded px-4 py-4 mb-4 shadow">
-				<input
-					type="text"
-					class="mb-4"
-					name="dayDescription"
-					placeholder="Day Description"
-					bind:value={day.description}
-					style="max-width: 300px"
-				/>
-				<h2>
-					<b>Exercise Groups</b>
-				</h2>
-				<hr />
-				<ExerciseGroupList exerciseGroups={day.exerciseGroups}>
-					<div slot="buttons" let:group>
-						<button
-							class="bg-red-400 hover:bg-red-500 text-white font-bold px-2 rounded"
-							on:click={() => removeGroupFromDay(i, group)}>Remove</button
-						>
+			<div class="bg-white rounded-lg px-4 pt-3 pb-3 mb-10 border">
+				<div class="flex mb-4">
+					<div class="mr-2">
+						<h2>
+							<b>{daysOfTheWeek[i]}</b>
+						</h2>
+						<span class="text-gray-400">
+							<i>{day.description || 'No description for this day'}</i>
+						</span>
 					</div>
-				</ExerciseGroupList>
-
-				<div class="mb-5">
-					<form on:submit|preventDefault={(e) => addGroupToDayOnSubmit(e, i)}>
-						<select name="groupId">
-							{#each trainingProgram.exerciseGroups as group}
-								<option
-									value={group.id}
-									disabled={day.exerciseGroups.find((_g) => _g.id == group.id)}
-								>
-									{group.name}
-								</option>
-							{/each}
-						</select>
-						<br />
-						<button
-							class="bg-green-400 hover:bg-green-500 text-white font-bold px-2 rounded"
-							type="submit">Add Group</button
-						>
-					</form>
+					<ModalTrainingProgramDay
+						trainingProgramDay={day}
+						action={`/trainingProgram/${trainingProgram.id}/day/${day.id}?/editTrainingProgramDay`}
+						let:changeShowModal
+					>
+						<div slot="open-modal-buttons">
+							<button
+								type="button"
+								class="text-gray-400 border ml-2 bg-white hover:bg-gray-50 font-medium rounded text-sm p-1 text-center inline-flex items-center mr-2"
+								on:click={() => changeShowModal(true)}
+							>
+								<Icon icon="material-symbols:edit-outline" height="18" />
+								<span class="ml-1 mr-1"> Edit </span>
+							</button>
+						</div>
+					</ModalTrainingProgramDay>
 				</div>
 
-				<h2>
-					<b>Exercises</b>
-				</h2>
-				<hr />
-				<ExerciseEventsList exerciseEvents={day.exercises} shouldShowDate={false}>
-					<div slot="buttons" let:exerciseEvent>
-						<button
-							class="align-middle bg-green-400 hover:bg-green-500 text-white font-bold px-2 mr-2 rounded"
-							on:click={() => setupEditExerciseModal(exerciseEvent, day)}>Edit</button
+				<div class="mb-12">
+					<div class="flex w-full justify-between items-end">
+						<div class="font-bold text-lg">Exercise Groups</div>
+						<form
+							use:enhance
+							method="POST"
+							action={`/trainingProgram/${trainingProgram.id}/day/${day.id}/?/connectExerciseGroup`}
+							class="flex items-end"
 						>
-						<button
-							class="align-middle bg-red-400 hover:bg-red-500 text-white font-bold px-2 rounded"
-							on:click={() => removeExercise(exerciseEvent, day)}>Delete</button
-						>
+							<input type="hidden" value={day.id} name="trainingProgramDayId" />
+							<select name="exerciseGroupId" class="pr-8 py-1">
+								{#each trainingProgram.exerciseGroups as group}
+									<option
+										value={group.id}
+										disabled={day.exerciseGroups.find((_g) => _g.id == group.id) != undefined}
+									>
+										{group.name}
+									</option>
+								{/each}
+							</select>
+							<button class="icon-button mb-2 mr-0" type="submit">
+								<Icon icon="fluent:plug-connected-add-20-regular" height="18" />
+								<span class="ml-1 mr-1"> Connect</span>
+							</button>
+						</form>
 					</div>
-				</ExerciseEventsList>
-				<button
-					class="bg-green-400 hover:bg-green-500 text-white font-bold px-2 mt-2 rounded"
-					on:click={() => setupNewExerciseModal(day)}>Add Exercise</button
-				>
+					<ExerciseGroupList exerciseGroups={day.exerciseGroups}>
+						<div slot="buttons" let:group>
+							<form
+								use:enhance
+								method="POST"
+								action={`/trainingProgram/${trainingProgram.id}/day/${day.id}/?/disconnectExerciseGroup`}
+							>
+								<input type="hidden" value={group.id} name="exerciseGroupId" />
+								<button type="submit" class="icon-button">
+									<Icon icon="fluent:plug-disconnected-20-regular" height="18" />
+									<span class="ml-1 mr-1"> Disconnect </span>
+								</button>
+							</form>
+						</div>
+					</ExerciseGroupList>
+				</div>
+
+				<div class="flex justify-between">
+					<div class="text-lg font-bold">Exercises</div>
+					<ModalExerciseEvent
+						trainingProgramDay={day}
+						action="/exerciseEvent?/newExerciseEvent"
+						let:changeShowModal
+					>
+						<div slot="open-modal-buttons" class="mb-2">
+							<button class="icon-button mr-0" on:click={() => changeShowModal(true)}>
+								<Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
+								<span class="ml-1 mr-1"> Add Exercise </span>
+							</button>
+						</div>
+					</ModalExerciseEvent>
+				</div>
+				<ExerciseEventsList exerciseEvents={day.exercises} shouldShowDate={false} />
 			</div>
 		{/each}
 	</div>

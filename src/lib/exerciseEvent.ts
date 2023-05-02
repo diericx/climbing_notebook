@@ -12,13 +12,15 @@ export class ExerciseEventFormData {
   minutes: number | undefined = undefined;
   difficulty: number | undefined = undefined;
   notes: string | undefined = undefined;
+  trainingProgramDayId: number | undefined = undefined;
+  exerciseGroupId: number | undefined = undefined;
 
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   constructor(obj: any | undefined = undefined) {
     if (obj == undefined) {
       return
     }
-    const { date, name, sets, reps, weight, seconds, minutes, difficulty, notes } = obj;
+    const { date, name, sets, reps, weight, seconds, minutes, difficulty, notes, exerciseGroupId, trainingProgramDayId } = obj;
     this.date = date == undefined ? undefined : new Date(date);
     this.name = name;
     this.sets = sets == undefined ? undefined : toNum(sets, 0);
@@ -28,6 +30,8 @@ export class ExerciseEventFormData {
     this.minutes = minutes == undefined ? undefined : toNum(minutes, 0);
     this.difficulty = difficulty == undefined ? undefined : toNum(difficulty, 0);
     this.notes = notes;
+    this.exerciseGroupId = exerciseGroupId == undefined ? undefined : Number(exerciseGroupId);
+    this.trainingProgramDayId = trainingProgramDayId == undefined ? undefined : Number(trainingProgramDayId);
   }
 
   validate() {

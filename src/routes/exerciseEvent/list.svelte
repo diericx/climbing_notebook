@@ -3,15 +3,15 @@
 	import { confirmDelete } from '$lib/utils';
 	import type { ExerciseEvent } from '@prisma/client';
 	import Icon from '@iconify/svelte';
+	import ModalExerciseEvent from '../trainingProgram/[id]/edit/ModalExerciseEvent.svelte';
 
-	export let redirectTo = '/exerciseEvent';
 	export let exerciseEvents: ExerciseEvent[];
 	export let shouldShowDate = true;
 </script>
 
-<ul class="divide-y divide-gray-200 border-t border-r border-l shadow">
+<ul class="divide-y divide-gray-200 border-t">
 	{#each exerciseEvents as exerciseEvent}
-		<li class="bg-white py-2 px-3">
+		<li class="bg-white py-2">
 			<div class="flex items-center md:space-x-3">
 				<div class="mr-2">
 					<Icon icon="healthicons:exercise-weights" width="35" />
@@ -39,17 +39,31 @@
 						{/if}
 					</p>
 				</div>
-				<div class="flex min-w-0 float-right space-x-2">
+				<div class="flex min-w-0 float-right">
 					<slot name="buttons" {exerciseEvent}>
+						<ModalExerciseEvent
+							action={`/exerciseEvent/${exerciseEvent.id}/edit?/editExerciseEvent`}
+							{exerciseEvent}
+							let:changeShowModal
+						>
+							<div slot="open-modal-buttons" class="inline">
+								<button class="icon-button" on:click={() => changeShowModal(true)}>
+									<Icon icon="material-symbols:edit-outline" height="18" />
+									<span class="ml-1 mr-1"> Edit </span>
+								</button>
+							</div>
+						</ModalExerciseEvent>
 						<form
+							class="inline"
+							use:enhance
 							method="POST"
 							action={`/exerciseEvent/${exerciseEvent.id}/edit?/deleteExerciseEvent`}
-							use:enhance
 						>
-							<input type="hidden" name="id" value={exerciseEvent.id} />
-							<button on:click={confirmDelete}>Delete</button>
+							<button on:click={confirmDelete} class="icon-button" type="submit">
+								<Icon icon="mdi:trash-outline" height="18" />
+								<span class="ml-1 mr-1"> Delete </span>
+							</button>
 						</form>
-						<a href={`/exerciseEvent/${exerciseEvent.id}/edit?redirectTo=${redirectTo}`}>Edit</a>
 					</slot>
 				</div>
 			</div>
