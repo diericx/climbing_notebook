@@ -80,6 +80,17 @@
 							href="/trainingProgram"
 							on:click={closeNavbar}>Training Programs</a
 						>
+						<div style="position: relative">
+							<a
+								class="px-3 text-gray-600 hover:text-blue-400"
+								href="/feedback"
+								on:click={closeNavbar}>Feedback</a
+							>
+							<span
+								class="rounded-full bg-green-400 text-xs text-white px-1"
+								style="position: absolute; top: -10px; left: 65px">New</span
+							>
+						</div>
 					</div>
 
 					<div
