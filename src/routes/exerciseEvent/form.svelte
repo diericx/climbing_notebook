@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { ExerciseEventFormData } from '$lib/exerciseEvent';
 	import TabEnabledTextArea from '$lib/components/tabEnabledTextArea.svelte';
-	import type { ExerciseEvent } from '@prisma/client';
+	import type { ExerciseEvent, ExerciseGroup, TrainingProgramDay } from '@prisma/client';
 	import DateInput from '$lib/components/dateInput.svelte';
 	import EnhancedForm from '$lib/components/enhancedForm.svelte';
 
@@ -11,14 +11,20 @@
 
 	// The exercise event that this form represents, which defines the defaults only
 	export let exerciseEvent: ExerciseEvent | undefined = undefined;
+	export let exerciseGroup: ExerciseGroup | undefined = undefined;
+	export let trainingProgramDay: TrainingProgramDay | undefined = undefined;
 	export let formData = new ExerciseEventFormData();
-
 	export let showDifficulty = true;
 	export let showDate = true;
+	export let id = crypto.randomUUID();
+	export let showButton = true;
+	export let onSuccess: (() => void) | undefined = undefined;
 </script>
 
 <EnhancedForm
 	{action}
+	{id}
+	{onSuccess}
 	bind:formData
 	formDataDefaults={new ExerciseEventFormData(
 		exerciseEvent || {
@@ -34,6 +40,13 @@
 		}
 	)}
 >
+	{#if exerciseGroup != undefined}
+		<input type="hidden" name="exerciseGroupId" value={exerciseGroup.id} />
+	{/if}
+	{#if trainingProgramDay != undefined}
+		<input type="hidden" name="trainingProgramDayId" value={trainingProgramDay.id} />
+	{/if}
+
 	{#if showDate}
 		<div class="flex">
 			<div>
@@ -43,6 +56,7 @@
 			</div>
 		</div>
 	{/if}
+
 	<div>
 		<label for="name">Name</label>
 		<br />
@@ -123,7 +137,7 @@
 		/>
 	</div>
 
-	{#if action}
+	{#if showButton}
 		<button class="bg-green-300 hover:bg-green-400 text-white font-bold px-2 rounded">Submit</button
 		>
 	{/if}

@@ -1,11 +1,13 @@
 import type { PrismaClient, TrainingProgram } from '@prisma/client';
 import { APIError } from './errors';
+import type { ExerciseGroupFormData } from './exerciseGroup';
 import type { ExerciseGroupComplete, TrainingProgramComplete, TrainingProgramDayComplete } from './prisma';
+import type { TrainingProgramDayFormData } from './trainingProgramDay';
 
 export class TrainingProgramFormData {
   name = '';
-  days: TrainingProgramDayComplete[] = [];
-  exerciseGroups: ExerciseGroupComplete[] = [];
+  days: TrainingProgramDayComplete[] | undefined = undefined;
+  exerciseGroups: ExerciseGroupComplete[] | undefined = undefined;
 
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   constructor(obj: any | undefined = undefined) {
@@ -140,112 +142,15 @@ export class TrainingProgramRepo {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.')
     }
 
-
-    // Note: everything below is done transactionally as it is mutating all the data.
-    // if something fails we want to maintain previous state.
-
-    // Delete all the exercises on each day
-    const deleteAllExercisesOnEachDay = trainingProgram.days.map(day =>
-      this.prisma.exerciseEvent.deleteMany({
-        where: {
-          trainingProgramDayId: Number(day.id),
-          ownerId,
-        },
-      })
-    )
-
-    // Delete all the exercise groups and their exercises (via cascade)
-    const deleteAllExerciseGroupsAndTheirExercises = this.prisma.exerciseGroup.deleteMany({
-      where: {
-        trainingProgramId: Number(id),
-        ownerId,
-      },
-    });
-
     // Update training program
-    const updateTrainingProgram = this.prisma.trainingProgram.updateMany({
+    return this.prisma.trainingProgram.update({
       where: {
         id,
-        ownerId,
       },
       data: {
-        name: data.name,
+        ...data,
       },
     });
-
-    // Update days
-    const updateDays = data.days.map(d =>
-      this.prisma.trainingProgramDay.update({
-        where: {
-          id: d.id,
-        },
-        data: {
-          description: d.description,
-        }
-      })
-    )
-
-    // Create groups with their exercises
-    const createGroupsAndTheirExercises = data.exerciseGroups.map(g => {
-      const trainingProgramDayIds: number[] = []
-      data.days.map(d => {
-        if (d.exerciseGroups.find(_g => _g.id == g.id)) {
-          trainingProgramDayIds.push(d.id)
-        }
-      })
-
-      return this.prisma.exerciseGroup.create({
-        data: {
-          trainingProgramId: Number(g.trainingProgramId),
-          ownerId: ownerId,
-          name: g.name,
-          exercises: {
-            create: g.exercises.map(e => ({
-              name: e.name,
-              sets: Number(e.sets),
-              reps: Number(e.reps),
-              minutes: Number(e.minutes),
-              seconds: Number(e.seconds),
-              weight: Number(e.weight),
-              ownerId,
-              notes: e.notes,
-            }))
-          },
-          trainingProgramDays: {
-            connect: trainingProgramDayIds.map(_id => ({
-              id: _id,
-            }))
-          }
-        }
-      })
-
-    })
-
-    // Create exercises for each day
-    const createExercisesForEachDay = this.prisma.exerciseEvent.createMany({
-      data: data.days.map(d => d.exercises.map(e => ({
-        name: e.name,
-        sets: Number(e.sets),
-        reps: Number(e.reps),
-        minutes: Number(e.minutes),
-        seconds: Number(e.seconds),
-        weight: Number(e.weight),
-        ownerId,
-        trainingProgramDayId: Number(d.id),
-        notes: e.notes,
-      }))).flat(1)
-    })
-
-    await this.prisma.$transaction([
-      ...deleteAllExercisesOnEachDay,
-      deleteAllExerciseGroupsAndTheirExercises,
-      updateTrainingProgram,
-      ...updateDays,
-      ...createGroupsAndTheirExercises,
-      createExercisesForEachDay,
-    ])
-
-    return this.getOne(id, ownerId);
   }
 
   async delete(id: number, ownerId: string): Promise<TrainingProgram> {
@@ -254,6 +159,138 @@ export class TrainingProgramRepo {
     return await this.prisma.trainingProgram.delete({
       where: {
         id
+      }
+    })
+  }
+
+  async addExerciseGroup(exerciseGroup: ExerciseGroupFormData, id: number, ownerId: string): Promise<TrainingProgram> {
+    if (exerciseGroup.name == undefined) {
+      throw new APIError('INVALID_INPUT', '')
+    }
+    await this.getOneAndValidateOwner(id, ownerId);
+    return await this.prisma.trainingProgram.update({
+      where: {
+        id
+      },
+      data: {
+        exerciseGroups: {
+          create: {
+            ...exerciseGroup,
+            name: exerciseGroup.name,
+            owner: {
+              connect: {
+                id: ownerId,
+              }
+            }
+          }
+        }
+      }
+    })
+  }
+
+  async editExerciseGroup(exerciseGroup: ExerciseGroupFormData, trainingProgramId: number, exerciseGroupId: number, ownerId: string): Promise<TrainingProgram> {
+    if (exerciseGroup.name == undefined) {
+      throw new APIError('INVALID_INPUT', '')
+    }
+    await this.getOneAndValidateOwner(trainingProgramId, ownerId);
+    return await this.prisma.trainingProgram.update({
+      where: {
+        id: trainingProgramId,
+      },
+      data: {
+        exerciseGroups: {
+          update: {
+            where: {
+              id: exerciseGroupId,
+            },
+            data: {
+              ...exerciseGroup
+            }
+          }
+        }
+      }
+    })
+  }
+
+  async deleteExerciseGroup(id: number, ownerId: string, exerciseGroupId: number): Promise<TrainingProgram> {
+    await this.getOneAndValidateOwner(id, ownerId);
+    return await this.prisma.trainingProgram.update({
+      where: {
+        id
+      },
+      data: {
+        exerciseGroups: {
+          delete: {
+            id: exerciseGroupId,
+          }
+        }
+      }
+    })
+  }
+
+  async connectExerciseGroupToDay(trainingProgramId: number, groupId: number, trainingProgramDayId: number, ownerId: string): Promise<TrainingProgram> {
+    await this.getOneAndValidateOwner(trainingProgramId, ownerId);
+    return await this.prisma.trainingProgram.update({
+      where: {
+        id: trainingProgramId,
+      },
+      data: {
+        days: {
+          update: {
+            where: {
+              id: trainingProgramDayId,
+            },
+            data: {
+              exerciseGroups: {
+                connect: [{ id: groupId }]
+              }
+            }
+          }
+        }
+      }
+    })
+  }
+
+  async disconnectExerciseGroupFromDay(trainingProgramId: number, groupId: number, trainingProgramDayId: number, ownerId: string): Promise<TrainingProgram> {
+    await this.getOneAndValidateOwner(trainingProgramId, ownerId);
+    return await this.prisma.trainingProgram.update({
+      where: {
+        id: trainingProgramId,
+      },
+      data: {
+        days: {
+          update: {
+            where: {
+              id: trainingProgramDayId,
+            },
+            data: {
+              exerciseGroups: {
+                disconnect: [{ id: groupId }]
+              }
+            }
+          }
+        }
+      }
+    })
+  }
+
+  async editTrainingProgramDay(data: TrainingProgramDayFormData, trainingProgramId: number, trainingProgramDayId: number, ownerId: string): Promise<TrainingProgram> {
+    await this.getOneAndValidateOwner(trainingProgramId, ownerId);
+    return await this.prisma.trainingProgram.update({
+      where: {
+        id: trainingProgramId,
+      },
+      data: {
+        days: {
+          update: {
+            where: {
+              id: trainingProgramDayId,
+            },
+            data: {
+              ...data
+            }
+          }
+        }
       }
     })
   }

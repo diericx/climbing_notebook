@@ -29,10 +29,10 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 };
 
 export const actions: Actions = {
-  deleteExerciseEvent: async ({ locals, request, url }) => {
+  deleteExerciseEvent: async ({ locals, params, request, url }) => {
     const { user } = await locals.auth.validateUser();
     const rawFormData = Object.fromEntries((await request.formData()).entries());
-    const id = Number(rawFormData.id)
+    const id = Number(params.id) || Number(rawFormData.id)
 
     const repo = new ExerciseEventRepo(prisma);
     try {

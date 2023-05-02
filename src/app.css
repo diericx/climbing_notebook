@@ -108,5 +108,10 @@
     @apply bg-red-300 text-white
   }
 
+  .icon-button {
+    @apply text-gray-400 font-medium text-center text-sm;
+    @apply bg-white hover:bg-gray-50 border;
+    @apply ml-2 p-1 inline-flex items-center rounded;
+  }
 }
 
