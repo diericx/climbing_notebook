@@ -1,10 +1,9 @@
 <script lang="ts">
-	import CalendarEventForm from '../../form.svelte';
-	import { CalendarEventFormData } from '$lib/calendarEvent';
-	import type { ActionData, PageData } from './$types';
+	import FormCalendarEvent from '$lib/components/forms/FormCalendarEvent.svelte';
+	import type { PageData } from './$types';
 
 	export let data: PageData;
-	export let form: ActionData;
+	$: form = data.form;
 </script>
 
 {#if form?.message}<p class="error">{form?.message}</p>{/if}
@@ -14,11 +13,6 @@
 <div class="grid grid-cols-1">
 	<div>
 		<h1>Edit Calendar Event</h1>
-		<CalendarEventForm
-			shouldUseEnhance={false}
-			action="?/editCalendarEvent"
-			calendarEvent={data.calendarEvent}
-			calendarEventFormData={new CalendarEventFormData(form?.calendarEventFormData)}
-		/>
+		<FormCalendarEvent action="?/editCalendarEvent" data={form} />
 	</div>
 </div>

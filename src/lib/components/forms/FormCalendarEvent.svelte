@@ -3,7 +3,6 @@
 	import { superForm } from 'sveltekit-superforms/client';
 	import { page } from '$app/stores';
 	import type { CalendarEventSchema } from '$lib/calendarEvent';
-	import DateInput from '$lib/components/dateInput.svelte';
 	import TextField from './TextField.svelte';
 	import TextArea from './TextArea.svelte';
 	import DateField from './DateField.svelte';
@@ -15,7 +14,7 @@
 	// Form customization
 	export let id = crypto.randomUUID();
 	export let showSubmitButton = true;
-	export let onSuccess: (() => Promise<void>) | undefined;
+	export let onSuccess: (() => Promise<void>) | undefined = undefined;
 
 	// Add redirect data
 	if ($page.url.searchParams.has('redirectTo')) {
@@ -30,7 +29,7 @@
 			}
 		}
 	});
-	const { form, enhance, constraints, errors } = superFrm;
+	const { enhance } = superFrm;
 </script>
 
 <form method="POST" {action} use:enhance {id}>

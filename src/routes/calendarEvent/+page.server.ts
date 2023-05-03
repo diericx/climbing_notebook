@@ -1,8 +1,8 @@
-import { CalendarEventFormData, CalendarEventRepo, calendarEventSchema } from '$lib/calendarEvent';
+import { CalendarEventRepo, calendarEventSchema } from '$lib/calendarEvent';
 import { APIError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { superValidate } from 'sveltekit-superforms/server';
 

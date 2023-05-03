@@ -1,51 +1,49 @@
 import type { Actions, PageServerLoad } from './$types';
-import { CalendarEventFormData, CalendarEventRepo } from '$lib/calendarEvent';
+import { CalendarEventRepo, calendarEventSchema } from '$lib/calendarEvent';
 import { APIError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
-import type { CalendarEvent } from '@prisma/client';
 import { error, fail, redirect } from '@sveltejs/kit';
+import { superValidate } from 'sveltekit-superforms/server';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
   const { user } = await locals.auth.validateUser();
   const id = Number(params.id);
 
-  const repo = new CalendarEventRepo(prisma);
-  let calendarEvent: CalendarEvent;
   try {
-    calendarEvent = await repo.getOne(id, user?.userId);
+    const repo = new CalendarEventRepo(prisma);
+    const calendarEvent = await repo.getOne(id, user?.userId);
+    const form = await superValidate(calendarEvent, calendarEventSchema);
+
+    return {
+      calendarEvent,
+      form
+    };
   } catch (e) {
     if (e instanceof APIError) {
-      return fail(401, { message: e.detail })
+      throw error(401, { message: e.detail })
     }
     console.error(e)
     throw error(500, { message: SERVER_ERROR })
   }
-
-  return {
-    calendarEvent,
-  };
 };
 
 export const actions: Actions = {
   editCalendarEvent: async ({ locals, params, request, url }) => {
-    const rawFormData = Object.fromEntries((await request.formData()).entries());
     const { user } = await locals.auth.validateUser();
     const id = Number(params.id);
+    const form = await superValidate(request, calendarEventSchema);
 
-    // Validate input fields
-    const input = new CalendarEventFormData(rawFormData);
-    const { message, isValid } = input.validate()
-    if (!isValid) {
-      return fail(401, { message, calendarEventFormData: rawFormData })
+    if (!form.valid) {
+      return fail(400, { form });
     }
 
     const repo = new CalendarEventRepo(prisma);
     try {
-      await repo.update(input, id, user?.userId);
+      await repo.update(form.data, id, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, calendarEventFormData: rawFormData })
+        return fail(401, { message: e.detail, form })
       }
       console.error(e)
       throw error(500, { message: SERVER_ERROR })
