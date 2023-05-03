@@ -1,12 +1,13 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import Chart from '../chart/chart.svelte';
-	import Calendar from './Calendar.svelte';
+	import Calendar from '$lib/components/Calendar.svelte';
 
 	export let data: PageData;
 	$: profile = data.profile;
 	$: journalEntries = data.journalEntries;
 	$: calendarEvents = data.calendarEvents;
+	$: newCalendarEventFormData = data.newCalendarEventFormData;
 </script>
 
 <br />
@@ -33,7 +34,11 @@
 	<hr />
 
 	<div>
-		<Calendar calendarEvents={calendarEvents || []} journalEntries={journalEntries || []} />
+		<Calendar
+			{newCalendarEventFormData}
+			calendarEvents={calendarEvents || []}
+			journalEntries={journalEntries || []}
+		/>
 	</div>
 </div>
 

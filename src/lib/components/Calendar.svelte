@@ -4,12 +4,15 @@
 	import DayGrid from '@event-calendar/day-grid';
 	import Interraction from '@event-calendar/interaction';
 	import type { CalendarEvent, JournalEntry } from '@prisma/client';
-	import ModalShowJournalEntry from './ModalShowJournalEntry.svelte';
-	import ModalShowCalendarEvent from './ModalShowCalendarEvent.svelte';
-	import ModalNewCalendarEvent from './ModalNewCalendarEvent.svelte';
+	import ModalShowJournalEntry from '$lib/components/modals/ModalShowJournalEntry.svelte';
+	import ModalShowCalendarEvent from '$lib/components/modals/ModalShowCalendarEvent.svelte';
+	import ModalNewCalendarEvent from '$lib/components/modals/ModalNewCalendarEvent.svelte';
+	import type { Validation } from 'sveltekit-superforms/index';
+	import type { CalendarEventSchema } from '$lib/calendarEvent';
 
 	export let calendarEvents: CalendarEvent[];
 	export let journalEntries: JournalEntry[];
+	export let newCalendarEventFormData: Validation<CalendarEventSchema>;
 
 	let journalEntry: JournalEntry | undefined = undefined;
 	let showModalJournalEntry = false;
@@ -79,4 +82,4 @@
 
 <ModalShowJournalEntry bind:showModal={showModalJournalEntry} {journalEntry} />
 <ModalShowCalendarEvent bind:showModal={showModalCalendarEvent} {calendarEvent} />
-<ModalNewCalendarEvent bind:showModal={showModalNewCalendarEvent} />
+<ModalNewCalendarEvent {newCalendarEventFormData} bind:showModal={showModalNewCalendarEvent} />

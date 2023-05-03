@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { JournalEntry } from '@prisma/client';
-	import Modal from '../Modal.svelte';
+	import Modal from '$lib/components/modals/Modal.svelte';
 
 	export let showModal = false;
 	export let journalEntry: JournalEntry | undefined = undefined;

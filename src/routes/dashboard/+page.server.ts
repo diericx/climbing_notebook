@@ -10,7 +10,8 @@ import { error, fail, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { auth } from '$lib/server/lucia';
 import { JournalEntryRepo } from '$lib/journalEntry';
-import { CalendarEventRepo } from '$lib/calendarEvent';
+import { CalendarEventRepo, calendarEventSchema } from '$lib/calendarEvent';
+import { superValidate } from 'sveltekit-superforms/server';
 
 export const load: PageServerLoad = async ({ locals }) => {
   // Unprotected page, session may not exist
@@ -25,21 +26,18 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   try {
     const profile = await profileRepo.getOne(user?.userId);
-
     const charts = await chartRepo.get(user?.userId);
-
     // Get exercise events in the past month for the charts
     const dateMin = new Date()
     dateMin.setDate(dateMin.getDate() - 31)
     const exerciseEvents = await exerciseEventRepo.get(user?.userId, dateMin, new Date());
-
     // Get metris in the past month for the charts
     const metrics = await metricRepo.get(user?.userId, dateMin, new Date());
-
     const journalEntries = await journalEntryRepo.get(user?.userId);
-
     const calendarEvents = await calendarEventRepo.get(user?.userId);
-    return { user, profile, charts, exerciseEvents, metrics, journalEntries, calendarEvents }
+
+    const newCalendarEventFormData = await superValidate(calendarEventSchema);
+    return { user, profile, charts, exerciseEvents, metrics, journalEntries, calendarEvents, newCalendarEventFormData }
   } catch (e) {
     if (e instanceof APIError) {
       throw error(401, { message: e.detail })

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { CalendarEvent, JournalEntry } from '@prisma/client';
-	import Modal from '../Modal.svelte';
+	import type { CalendarEvent } from '@prisma/client';
+	import Modal from '$lib/components/modals/Modal.svelte';
 	import { invalidateAll } from '$app/navigation';
 	import { enhance } from '$app/forms';
 	import { confirmDelete } from '$lib/utils';
