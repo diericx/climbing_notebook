@@ -6,7 +6,7 @@ export const calendarEventSchema = z.object({
   dateStart: z.date().default(new Date()),
   dateEnd: z.date().default(new Date()),
   title: z.string().min(1).default(''),
-  content: z.string().default(''),
+  content: z.string().optional(),
   color: z.string().default('green')
 });
 export const calendarEventPartialSchema = calendarEventSchema.partial();

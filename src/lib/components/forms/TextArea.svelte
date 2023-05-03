@@ -4,12 +4,12 @@
 	import { formFieldProxy } from 'sveltekit-superforms/client';
 	import type { z, AnyZodObject } from 'zod';
 
-	type T = $$Generic<AnyZodObject>;
+	export type T = $$Generic<AnyZodObject>;
 
 	export let form: SuperForm<UnwrapEffects<T>, unknown>;
 	export let field: keyof z.infer<T> | FieldPath<z.infer<T>>;
-	export let cols: string | undefined = undefined;
-	export let rows: string | undefined = undefined;
+	export let cols: number | undefined = undefined;
+	export let rows: number | undefined = undefined;
 	export let placeholder = '';
 	let className: string;
 	export { className as class };

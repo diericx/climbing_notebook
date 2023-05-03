@@ -1,13 +1,12 @@
 <script lang="ts">
-	import type { UnwrapEffects, Validation } from 'sveltekit-superforms';
-	import { superForm, type SuperForm } from 'sveltekit-superforms/client';
+	import type { Validation } from 'sveltekit-superforms';
+	import { superForm } from 'sveltekit-superforms/client';
 	import { page } from '$app/stores';
 	import type { CalendarEventSchema } from '$lib/calendarEvent';
 	import DateInput from '$lib/components/dateInput.svelte';
-	import TabEnabledTextArea from '$lib/components/tabEnabledTextArea.svelte';
 	import TextField from './TextField.svelte';
-	import type { z } from 'zod';
 	import TextArea from './TextArea.svelte';
+	import DateField from './DateField.svelte';
 
 	// Incoming form data
 	export let data: Validation<CalendarEventSchema>;
@@ -23,7 +22,7 @@
 		action += '&redirectTo=' + $page.url.searchParams.get('redirectTo');
 	}
 
-	const superFrm = superForm(data, {
+	const superFrm = superForm<CalendarEventSchema>(data, {
 		resetForm: true,
 		onResult({ result }) {
 			if (result.type == 'success' && onSuccess != undefined) {
@@ -35,38 +34,16 @@
 </script>
 
 <form method="POST" {action} use:enhance {id}>
-	<label class="font-bold" for="dateStart">Date Start</label>
-	<br />
-	<DateInput
-		name="dateStart"
-		bind:date={$form.dateStart}
-		style="width: 150px"
-		{...$constraints.dateEnd}
-	/>
-	<br />
-
-	<label class="font-bold" for="dateEnd">Date End</label>
-	<br />
-	<DateInput
-		name="dateEnd"
-		bind:date={$form.dateEnd}
-		style="width: 150px"
-		{...$constraints.dateEnd}
-	/>
-	<br />
-	{#if $errors.dateEnd}
-		<span class="invalid">{$errors.dateEnd}</span>
-		<br />
-	{/if}
-
+	<DateField name="dateStart" form={superFrm} field="dateStart" />
+	<DateField name="dateEnd" form={superFrm} field="dateEnd" />
 	<TextField name="title" form={superFrm} field="title" placeholder={'Trip to Moab'} />
 	<TextField name="color" form={superFrm} field="color" placeholder={'green'} />
 	<TextArea
 		name="content"
 		form={superFrm}
 		field="content"
-		cols="40"
-		rows="10"
+		cols={40}
+		rows={10}
 		class="w-full"
 		placeholder={'Going to Moab with Megan and Alex'}
 	/>

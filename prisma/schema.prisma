@@ -122,7 +122,7 @@ model JournalEntry {
   createdAt DateTime @default(now()) @map("created_at")
   date      DateTime
   type      String
-  content   String
+  content   String?
   ownerId   String   @map("owner_id")
   owner     AuthUser @relation(fields: [ownerId], references: [id])
   metrics   Metric[]
@@ -151,7 +151,7 @@ model CalendarEvent {
   dateStart DateTime @map("date_start")
   dateEnd   DateTime @map("date_end")
   title     String
-  content   String
+  content   String?
   color     String
 
   @@map("calendar_event")
