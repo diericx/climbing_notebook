@@ -10,6 +10,8 @@
 	export let field: keyof z.infer<T> | FieldPath<z.infer<T>>;
 	export let placeholder = '';
 	export let step = '1';
+	let className: string = '';
+	export { className as class };
 
 	const { path, value, errors, constraints } = formFieldProxy(form, field);
 </script>
@@ -19,6 +21,7 @@
 	<br />
 	<input
 		type="number"
+		class={className}
 		{placeholder}
 		{step}
 		data-invalid={$errors}

@@ -30,16 +30,27 @@ export const load: PageServerLoad = async ({ locals }) => {
   }
 
   const newExerciseEventForm = await superValidate(exerciseEventSchema);
+  // Create edit forms for each existing exercise
   const exerciseEventForms = await Promise.all(exerciseEvents.map(e => {
     return superValidate(e, exerciseEventSchema, {
       id: e.id.toString()
     });
   }));
+  // Create forms for each exercise in the training program
+  const trainingProgramExerciseEventForms: Validation<ExerciseEventSchema>[] = [];
+  if (profile.activeTrainingProgram != undefined) {
+    profile.activeTrainingProgram.days.map(async (d) => {
+      d.exercises.map(async (e) => {
+        trainingProgramExerciseEventForms.push(await superValidate({ ...e, date: new Date() }, exerciseEventSchema, { id: e.id.toString() }));
+      });
+    });
+  }
 
   return {
     exerciseEvents,
-    exerciseEventForms,
     newExerciseEventForm,
+    exerciseEventForms,
+    trainingProgramExerciseEventForms,
     profile,
   };
 };
@@ -75,6 +86,6 @@ export const actions: Actions = {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
     }
 
-    return { success: true };
+    return { form };
   }
 }

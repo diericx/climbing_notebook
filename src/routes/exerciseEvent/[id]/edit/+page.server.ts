@@ -1,32 +1,10 @@
 import type { Actions } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
-import type { ExerciseEvent } from '@prisma/client';
 import { SERVER_ERROR } from '$lib/helperTypes';
-import { ExerciseEventRepo } from '$lib/exerciseEvent';
+import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
 import { APIError } from '$lib/errors';
 import { prisma } from '$lib/prisma';
-
-export const load: PageServerLoad = async ({ locals, params }) => {
-  const { user } = await locals.auth.validateUser();
-  const id = Number(params.id);
-
-  const repo = new ExerciseEventRepo(prisma);
-  let exerciseEvent: ExerciseEvent;
-  try {
-    exerciseEvent = await repo.getOne(id, user?.userId);
-  } catch (e) {
-    if (e instanceof APIError) {
-      return fail(401, { message: e.detail })
-    }
-    console.error(e)
-    throw error(500, { message: SERVER_ERROR })
-  }
-
-  return {
-    exerciseEvent,
-  };
-};
+import { superValidate } from 'sveltekit-superforms/server';
 
 export const actions: Actions = {
   deleteExerciseEvent: async ({ locals, params, request, url }) => {
@@ -53,19 +31,20 @@ export const actions: Actions = {
   },
 
   editExerciseEvent: async ({ locals, params, request, url }) => {
-    const rawFormData = Object.fromEntries((await request.formData()).entries());
     const { user } = await locals.auth.validateUser();
     const id = Number(params.id);
+    const form = await superValidate(request, exerciseEventSchema);
 
-    // Validate input fields
-    const input = new ExerciseEventFormData(rawFormData);
+    if (!form.valid) {
+      return fail(400, { form });
+    }
 
     const repo = new ExerciseEventRepo(prisma);
     try {
-      await repo.update(input, id, user?.userId);
+      await repo.update(form.data, id, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, exerciseEventFormData: rawFormData })
+        return fail(401, { message: e.detail, form })
       }
       console.error(e)
       throw error(500, { message: SERVER_ERROR })
@@ -75,7 +54,7 @@ export const actions: Actions = {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
     }
 
-    return { success: true };
+    return { form };
   },
 
   setCompleted: async ({ locals, params, request }) => {

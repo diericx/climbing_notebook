@@ -59,23 +59,23 @@
 	<TextField name="name" field="name" form={newSuperForm} placeholder={'Pull-ups 3x7'} />
 
 	<div class="flex flex-wrap gap-2">
-		<NumberField name="sets" field="sets" form={newSuperForm} />
-		<NumberField name="reps" field="reps" form={newSuperForm} />
+		<NumberField class="w-20" name="sets" field="sets" form={newSuperForm} />
+		<NumberField class="w-20" name="reps" field="reps" form={newSuperForm} />
 
 		<div class="w-full md:hidden" />
-		<NumberField name="minutes" field="minutes" form={newSuperForm} />
-		<NumberField name="seconds" field="seconds" form={newSuperForm} />
+		<NumberField class="w-20" name="minutes" field="minutes" form={newSuperForm} />
+		<NumberField class="w-20" name="seconds" field="seconds" form={newSuperForm} />
 
 		<div class="w-full md:hidden" />
 
-		<NumberField name="weight" field="weight" step={'0.1'} form={newSuperForm} />
+		<NumberField class="w-20" name="weight" field="weight" step={'0.1'} form={newSuperForm} />
 
 		{#if showDifficulty}
-			<NumberField name="difficulty" field="difficulty" form={newSuperForm} />
+			<NumberField class="w-20" name="difficulty" field="difficulty" form={newSuperForm} />
 		{/if}
 	</div>
 
-	<TextArea name="notes" field="notes" form={newSuperForm} />
+	<TextArea class="w-full" name="notes" field="notes" form={newSuperForm} />
 
 	{#if showSubmitButton}
 		<button class="bg-green-300 hover:bg-green-400 text-white font-bold px-2 rounded">Submit</button

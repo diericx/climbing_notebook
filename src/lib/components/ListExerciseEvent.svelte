@@ -6,7 +6,6 @@
 	import { confirmDelete } from '$lib/utils';
 	import ModalExerciseEvent from '$lib/components/modals/ModalExerciseEvent.svelte';
 	import Icon from '@iconify/svelte';
-	import { date } from 'zod';
 
 	export let exerciseEvents: ExerciseEvent[];
 	export let exerciseEventForms: Validation<ExerciseEventSchema>[];
@@ -50,7 +49,6 @@
 							formData={exerciseEventForms.find(
 								(f) => f.id.toString() == exerciseEvent.id.toString()
 							)}
-							{exerciseEvent}
 							let:changeShowModal
 						>
 							<div slot="open-modal-buttons" class="inline">

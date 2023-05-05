@@ -2,8 +2,11 @@
 	import { enhance } from '$app/forms';
 	import type { ExerciseEvent } from '@prisma/client';
 	import ModalExerciseEvent from '$lib/components/modals/ModalExerciseEvent.svelte';
+	import type { Validation } from 'sveltekit-superforms/index';
+	import type { ExerciseEventSchema } from '$lib/exerciseEvent';
 
 	export let exercise: ExerciseEvent;
+	export let form: Validation<ExerciseEventSchema>;
 	export let date: Date;
 
 	$: isMarkedCompleted =
@@ -13,7 +16,7 @@
 			return d1 == d2;
 		}) != undefined;
 
-	let formForIsMarkedCompleted;
+	let formForIsMarkedCompleted: HTMLElement;
 </script>
 
 <div
@@ -64,10 +67,10 @@
 
 		<div class="pt-1">
 			<ModalExerciseEvent
+				formData={form}
 				action="/exerciseEvent?/newExerciseEvent"
 				title="Complete Exercise"
 				let:changeShowModal
-				exerciseEvent={exercise}
 				exerciseToMarkCompleted={exercise}
 				dateToMarkCompleted={date}
 				showDate
@@ -81,7 +84,7 @@
 						disabled={isMarkedCompleted}
 						on:click={() => changeShowModal(true)}
 					>
-						<span class="ml-1 mr-1">Complete </span>
+						<span class="ml-1 mr-1">Complete</span>
 					</button>
 				</div>
 			</ModalExerciseEvent>

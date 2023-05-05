@@ -11,6 +11,7 @@
 
 	export let data: PageData;
 	$: newExerciseEventForm = data.newExerciseEventForm;
+	$: trainingProgramExerciseEventForms = data.trainingProgramExerciseEventForms;
 	$: exerciseEventForms = data.exerciseEventForms;
 	$: activeTrainingProgram = data.profile?.activeTrainingProgram as TrainingProgramComplete;
 	$: exerciseEvents = data.exerciseEvents as ExerciseEvent[];
@@ -56,7 +57,10 @@
 
 			<br />
 
-			<WeeklyCalendar trainingProgram={activeTrainingProgram} />
+			<WeeklyCalendar
+				forms={trainingProgramExerciseEventForms}
+				trainingProgram={activeTrainingProgram}
+			/>
 		{/if}
 	</div>
 </div>
