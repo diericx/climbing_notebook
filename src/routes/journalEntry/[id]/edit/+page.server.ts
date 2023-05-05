@@ -24,10 +24,8 @@ export const load: PageServerLoad = async ({ locals, params }) => {
     throw error(500, { message: SERVER_ERROR })
   }
 
-  const form = await superValidate(journalEntry, journalEntrySchema);
   return {
     journalEntry,
-    form,
   };
 };
 

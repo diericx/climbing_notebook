@@ -5,12 +5,12 @@ import { isDateInTheSameWeekAsToday } from './utils'
 
 export const exerciseEventSchema = z.object({
   date: z.date().default(new Date()).nullish(),
-  name: z.string(),
-  sets: z.number(),
-  reps: z.number(),
-  weight: z.number(),
-  seconds: z.number(),
-  minutes: z.number(),
+  name: z.string().default(''),
+  sets: z.number().default(0),
+  reps: z.number().default(0),
+  weight: z.number().default(0),
+  seconds: z.number().default(0),
+  minutes: z.number().default(0),
   difficulty: z.number().default(0).nullish(),
   notes: z.string().nullish(),
   trainingProgramDayId: z.number().nullish(),

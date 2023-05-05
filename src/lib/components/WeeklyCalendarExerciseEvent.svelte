@@ -2,15 +2,12 @@
 	import { enhance } from '$app/forms';
 	import type { ExerciseEvent } from '@prisma/client';
 	import ModalExerciseEvent from '$lib/components/modals/ModalExerciseEvent.svelte';
-	import type { Validation } from 'sveltekit-superforms/index';
-	import type { ExerciseEventSchema } from '$lib/exerciseEvent';
 
-	export let exercise: ExerciseEvent;
-	export let form: Validation<ExerciseEventSchema>;
+	export let exerciseEvent: ExerciseEvent;
 	export let date: Date;
 
 	$: isMarkedCompleted =
-		exercise.markedCompletions.find((c) => {
+		exerciseEvent.markedCompletions.find((c) => {
 			let d1 = c.toISOString().split('T')[0];
 			let d2 = date.toISOString().split('T')[0];
 			return d1 == d2;
@@ -26,7 +23,7 @@
 		<form
 			method="POST"
 			bind:this={formForIsMarkedCompleted}
-			action={`/exerciseEvent/${exercise.id}/edit?/setCompleted`}
+			action={`/exerciseEvent/${exerciseEvent.id}/edit?/setCompleted`}
 			use:enhance={() => {
 				return async ({ update }) => {
 					update({ reset: false });
@@ -47,32 +44,33 @@
 				class="w-4 h-4 mr-2 rounded-full border-gray-400 text-green-600 disabled:text-green-300 focus:ring-red-200"
 			/>
 		</form>
-		{exercise.name}
+		{exerciseEvent.name}
 	</div>
 	<div class="mt-1 text-sm text-gray-500">
 		<div>
-			{#if exercise.sets != 0 || exercise.reps != 0}
-				{exercise.sets}x{exercise.reps}
+			{#if exerciseEvent.sets != 0 || exerciseEvent.reps != 0}
+				{exerciseEvent.sets}x{exerciseEvent.reps}
 			{/if}
-			{#if exercise.minutes != 0 || exercise.seconds != 0}
-				: {exercise.minutes}m{exercise.seconds}s
+			{#if exerciseEvent.minutes != 0 || exerciseEvent.seconds != 0}
+				: {exerciseEvent.minutes}m{exerciseEvent.seconds}s
 			{/if}
-			{#if exercise.weight != 0}
-				: {exercise.weight}kg
+			{#if exerciseEvent.weight != 0}
+				: {exerciseEvent.weight}kg
 			{/if}
 		</div>
-		{#if exercise.notes != ''}
-			<div>{exercise.notes}</div>
+		{#if exerciseEvent.notes != ''}
+			<div>{exerciseEvent.notes}</div>
 		{/if}
 
 		<div class="pt-1">
 			<ModalExerciseEvent
-				formData={form}
+				formData={exerciseEvent}
 				action="/exerciseEvent?/newExerciseEvent"
 				title="Complete Exercise"
 				let:changeShowModal
-				exerciseToMarkCompleted={exercise}
+				exerciseToMarkCompleted={exerciseEvent}
 				dateToMarkCompleted={date}
+				applyDefaults={true}
 				showDate
 				showDifficulty
 			>

@@ -13,11 +13,9 @@ export const load: PageServerLoad = async ({ locals, params }) => {
   try {
     const repo = new CalendarEventRepo(prisma);
     const calendarEvent = await repo.getOne(id, user?.userId);
-    const form = await superValidate(calendarEvent, calendarEventSchema);
 
     return {
       calendarEvent,
-      form
     };
   } catch (e) {
     if (e instanceof APIError) {

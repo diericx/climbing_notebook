@@ -1,30 +1,39 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import type { JournalEntrySchema } from '$lib/journalEntry';
-	import type { Validation } from 'sveltekit-superforms/index';
-	import { superForm } from 'sveltekit-superforms/client';
+	import { journalEntrySchema, type JournalEntrySchema } from '$lib/journalEntry';
+	import { defaultData, superForm } from 'sveltekit-superforms/client';
 	import DateField from './DateField.svelte';
 	import TextArea from './TextArea.svelte';
+	import type { JournalEntry } from '@prisma/client';
+	import { assignDefined } from '$lib/utils';
 
 	// Form action to execute
 	export let action = '/journalEntry?/newJournalEntry';
-	export let form: Validation<JournalEntrySchema>;
+	export let data: JournalEntry | undefined = undefined;
 	export let onSuccess: (() => void) | undefined = undefined;
 	export let id = crypto.randomUUID();
+	export let applyDefaults = false;
 
 	// Add redirect data
 	if ($page.url.searchParams.has('redirectTo')) {
 		action += '&redirectTo=' + $page.url.searchParams.get('redirectTo');
 	}
 
-	const newSuperForm = superForm<JournalEntrySchema>(form, {
-		resetForm: true,
-		onResult({ result }) {
-			if (result.type == 'success' && onSuccess != undefined) {
-				onSuccess();
+	let formData = data;
+	if (applyDefaults) {
+		formData = assignDefined(defaultData(journalEntrySchema), data || {});
+	}
+	const newSuperForm = superForm<JournalEntrySchema>(
+		assignDefined(formData,
+		{
+			resetForm: true,
+			onResult({ result }) {
+				if (result.type == 'success' && onSuccess != undefined) {
+					onSuccess();
+				}
 			}
 		}
-	});
+	);
 	const { enhance } = newSuperForm;
 </script>
 

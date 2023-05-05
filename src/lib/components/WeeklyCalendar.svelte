@@ -2,12 +2,9 @@
 	import type { TrainingProgramWithDays } from '$lib/prisma';
 	import CalExerciseEvent from '$lib/components/WeeklyCalendarExerciseEvent.svelte';
 	import { daysFromToday, getDayWeekStartsMonday } from '$lib/utils';
-	import type { Validation } from 'sveltekit-superforms/index';
-	import type { ExerciseEventSchema } from '$lib/exerciseEvent';
 	import { onMount } from 'svelte';
 
 	export let trainingProgram: TrainingProgramWithDays;
-	export let forms: Validation<ExerciseEventSchema>[];
 
 	onMount(() => {
 		scrollIntoView();
@@ -52,21 +49,19 @@
 							{#if day.exercises.length == 0 && day.exerciseGroups.length == 0}
 								<p class="text-gray-400 italic">No exercises for this day</p>
 							{/if}
-							{#each day.exercises as exercise}
+							{#each day.exercises as exerciseEvent}
 								<CalExerciseEvent
-									form={forms.find((f) => f.id.toString() == exercise.id.toString())}
+									{exerciseEvent}
 									date={daysFromToday(i - getDayWeekStartsMonday(new Date()))}
-									{exercise}
 								/>
 							{/each}
 
 							{#each day.exerciseGroups as group}
 								<p class="font-bold">{group.name}</p>
-								{#each group.exercises as exercise}
+								{#each group.exercises as exerciseEvent}
 									<CalExerciseEvent
-										form={forms.find((f) => f.id.toString() == exercise.id.toString())}
+										{exerciseEvent}
 										date={daysFromToday(i - getDayWeekStartsMonday(new Date()))}
-										{exercise}
 									/>
 								{/each}
 							{/each}

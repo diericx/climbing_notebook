@@ -36,7 +36,6 @@ export const actions: Actions = {
     const { user } = await locals.auth.validateUser();
     const form = await superValidate(request, chartSchema);
     const id = Number(params.id);
-    console.log(params)
 
     if (!form.valid) {
       return fail(400, { form });

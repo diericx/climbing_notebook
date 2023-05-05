@@ -7,7 +7,6 @@
 	$: profile = data.profile;
 	$: journalEntries = data.journalEntries;
 	$: calendarEvents = data.calendarEvents;
-	$: newCalendarEventFormData = data.newCalendarEventFormData;
 </script>
 
 <br />
@@ -34,11 +33,7 @@
 	<hr />
 
 	<div>
-		<Calendar
-			{newCalendarEventFormData}
-			calendarEvents={calendarEvents || []}
-			journalEntries={journalEntries || []}
-		/>
+		<Calendar calendarEvents={calendarEvents || []} journalEntries={journalEntries || []} />
 	</div>
 </div>
 

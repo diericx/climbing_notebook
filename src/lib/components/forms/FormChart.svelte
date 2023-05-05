@@ -1,23 +1,29 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import type { Validation } from 'sveltekit-superforms/index';
-	import type { ChartSchema } from '$lib/chart';
-	import { superForm } from 'sveltekit-superforms/client';
+	import { chartSchema } from '$lib/chart';
+	import { defaultData, superForm } from 'sveltekit-superforms/client';
 	import TextField from './TextField.svelte';
 	import SelectField from './SelectField.svelte';
+	import type { Chart } from '@prisma/client';
+	import { assignDefined } from '$lib/utils';
 
-	export let data: Validation<ChartSchema>;
+	export let data: Chart | undefined = undefined;
 	export let action = '?/newExerciseEvent';
 	export let id = crypto.randomUUID();
 	export let showSubmitButton = true;
 	export let onSuccess: (() => Promise<void>) | undefined = undefined;
+	export let applyDefaults = false;
 
 	// Add redirect data
 	if ($page.url.searchParams.has('redirectTo')) {
 		action += '&redirectTo=' + $page.url.searchParams.get('redirectTo');
 	}
 
-	const newSuperForm = superForm<ChartSchema>(data, {
+	let formData = data;
+	if (applyDefaults) {
+		formData = assignDefined(defaultData(chartSchema), data || {});
+	}
+	const newSuperForm = superForm(formData, {
 		resetForm: true,
 		onResult({ result }) {
 			if (result.type == 'success' && onSuccess != undefined) {

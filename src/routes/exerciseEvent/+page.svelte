@@ -10,9 +10,7 @@
 	import Icon from '@iconify/svelte';
 
 	export let data: PageData;
-	$: newExerciseEventForm = data.newExerciseEventForm;
 	$: trainingProgramExerciseEventForms = data.trainingProgramExerciseEventForms;
-	$: exerciseEventForms = data.exerciseEventForms;
 	$: activeTrainingProgram = data.profile?.activeTrainingProgram as TrainingProgramComplete;
 	$: exerciseEvents = data.exerciseEvents as ExerciseEvent[];
 
@@ -57,10 +55,7 @@
 
 			<br />
 
-			<WeeklyCalendar
-				forms={trainingProgramExerciseEventForms}
-				trainingProgram={activeTrainingProgram}
-			/>
+			<WeeklyCalendar trainingProgram={activeTrainingProgram} />
 		{/if}
 	</div>
 </div>
@@ -69,7 +64,6 @@
 	<ModalExerciseEvent
 		action="/exerciseEvent?/newExerciseEvent"
 		title="New Exercise Event"
-		formData={newExerciseEventForm}
 		let:changeShowModal
 		showDate
 		showDifficulty
@@ -83,11 +77,11 @@
 	</ModalExerciseEvent>
 	<h2>Today</h2>
 	<hr />
-	<ListExerciseEvent {exerciseEventForms} exerciseEvents={todaysExerciseEvents} />
+	<ListExerciseEvent exerciseEvents={todaysExerciseEvents} />
 </div>
 
 <div class="pt-8">
 	<h2>History</h2>
 	<hr />
-	<ListExerciseEvent {exerciseEventForms} exerciseEvents={pastExerciseEvents} />
+	<ListExerciseEvent exerciseEvents={pastExerciseEvents} />
 </div>

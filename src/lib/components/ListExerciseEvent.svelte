@@ -1,14 +1,11 @@
 <script lang="ts">
 	import type { ExerciseEvent } from '@prisma/client';
-	import type { ExerciseEventSchema } from '$lib/exerciseEvent';
-	import type { Validation } from 'sveltekit-superforms/index';
 	import { enhance } from '$app/forms';
 	import { confirmDelete } from '$lib/utils';
 	import ModalExerciseEvent from '$lib/components/modals/ModalExerciseEvent.svelte';
 	import Icon from '@iconify/svelte';
 
 	export let exerciseEvents: ExerciseEvent[];
-	export let exerciseEventForms: Validation<ExerciseEventSchema>[];
 	export let shouldShowDate = true;
 </script>
 
@@ -21,7 +18,7 @@
 				</div>
 				{#if shouldShowDate}
 					<div class="flex-initial hidden md:block">
-						{new Date(exerciseEvent.date).toLocaleDateString('en-US')}
+						{new Date(exerciseEvent.date || '').toLocaleDateString('en-US')}
 					</div>
 				{/if}
 
@@ -30,7 +27,7 @@
 					<p class="text-sm text-gray-400">
 						{#if shouldShowDate}
 							<span class="md:hidden">
-								{new Date(exerciseEvent.date).toLocaleDateString('en-US')}
+								{new Date(exerciseEvent.date || '').toLocaleDateString('en-US')}
 								<br />
 							</span>
 						{/if}
@@ -46,9 +43,7 @@
 					<slot name="buttons" {exerciseEvent}>
 						<ModalExerciseEvent
 							action={`/exerciseEvent/${exerciseEvent.id}/edit?/editExerciseEvent`}
-							formData={exerciseEventForms.find(
-								(f) => f.id.toString() == exerciseEvent.id.toString()
-							)}
+							formData={exerciseEvent}
 							let:changeShowModal
 						>
 							<div slot="open-modal-buttons" class="inline">

@@ -1,27 +1,34 @@
 <script lang="ts">
 	import type { Validation } from 'sveltekit-superforms';
-	import { superForm } from 'sveltekit-superforms/client';
+	import { defaultData, superForm } from 'sveltekit-superforms/client';
 	import { page } from '$app/stores';
-	import type { CalendarEventSchema } from '$lib/calendarEvent';
+	import { calendarEventSchema, type CalendarEventSchema } from '$lib/calendarEvent';
 	import TextField from './TextField.svelte';
 	import TextArea from './TextArea.svelte';
 	import DateField from './DateField.svelte';
+	import type { CalendarEvent } from '@prisma/client';
+	import { assignDefined } from '$lib/utils';
 
 	// Incoming form data
-	export let data: Validation<CalendarEventSchema>;
+	export let data: CalendarEvent | undefined = undefined;
 	// Form action to execute
 	export let action = '?/newCalendarEvent';
 	// Form customization
 	export let id = crypto.randomUUID();
 	export let showSubmitButton = true;
 	export let onSuccess: (() => Promise<void>) | undefined = undefined;
+	export let applyDefaults = false;
 
 	// Add redirect data
 	if ($page.url.searchParams.has('redirectTo')) {
 		action += '&redirectTo=' + $page.url.searchParams.get('redirectTo');
 	}
 
-	const superFrm = superForm<CalendarEventSchema>(data, {
+	let formData = data;
+	if (applyDefaults) {
+		formData = assignDefined(defaultData(calendarEventSchema), data || {});
+	}
+	const newSuperForm = superForm<CalendarEventSchema>(formData, {
 		resetForm: true,
 		onResult({ result }) {
 			if (result.type == 'success' && onSuccess != undefined) {
@@ -29,17 +36,17 @@
 			}
 		}
 	});
-	const { enhance } = superFrm;
+	const { enhance } = newSuperForm;
 </script>
 
 <form method="POST" {action} use:enhance {id}>
-	<DateField name="dateStart" form={superFrm} field="dateStart" />
-	<DateField name="dateEnd" form={superFrm} field="dateEnd" />
-	<TextField name="title" form={superFrm} field="title" placeholder={'Trip to Moab'} />
-	<TextField name="color" form={superFrm} field="color" placeholder={'green'} />
+	<DateField name="dateStart" form={newSuperForm} field="dateStart" />
+	<DateField name="dateEnd" form={newSuperForm} field="dateEnd" />
+	<TextField name="title" form={newSuperForm} field="title" placeholder={'Trip to Moab'} />
+	<TextField name="color" form={newSuperForm} field="color" placeholder={'green'} />
 	<TextArea
 		name="content"
-		form={superFrm}
+		form={newSuperForm}
 		field="content"
 		cols={40}
 		rows={10}

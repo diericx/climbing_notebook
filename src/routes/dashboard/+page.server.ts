@@ -10,8 +10,7 @@ import { error, fail, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { auth } from '$lib/server/lucia';
 import { JournalEntryRepo } from '$lib/journalEntry';
-import { CalendarEventRepo, calendarEventSchema } from '$lib/calendarEvent';
-import { superValidate } from 'sveltekit-superforms/server';
+import { CalendarEventRepo } from '$lib/calendarEvent';
 
 export const load: PageServerLoad = async ({ locals }) => {
   // Unprotected page, session may not exist
@@ -36,8 +35,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     const journalEntries = await journalEntryRepo.get(user?.userId);
     const calendarEvents = await calendarEventRepo.get(user?.userId);
 
-    const newCalendarEventFormData = await superValidate(calendarEventSchema);
-    return { user, profile, charts, exerciseEvents, metrics, journalEntries, calendarEvents, newCalendarEventFormData }
+    return { user, profile, charts, exerciseEvents, metrics, journalEntries, calendarEvents }
   } catch (e) {
     if (e instanceof APIError) {
       throw error(401, { message: e.detail })

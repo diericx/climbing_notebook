@@ -18,11 +18,8 @@ export const load: PageServerLoad = async ({ locals }) => {
     throw error(500, { message: SERVER_ERROR })
   }
 
-  const newJournalEntryForm = superValidate(journalEntrySchema);
-
   return {
     journalEntries,
-    newJournalEntryForm,
   };
 };
 

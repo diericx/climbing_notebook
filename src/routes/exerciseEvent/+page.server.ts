@@ -29,28 +29,29 @@ export const load: PageServerLoad = async ({ locals }) => {
     throw error(500, { message: SERVER_ERROR })
   }
 
-  const newExerciseEventForm = await superValidate(exerciseEventSchema);
-  // Create edit forms for each existing exercise
-  const exerciseEventForms = await Promise.all(exerciseEvents.map(e => {
-    return superValidate(e, exerciseEventSchema, {
-      id: e.id.toString()
-    });
-  }));
-  // Create forms for each exercise in the training program
-  const trainingProgramExerciseEventForms: Validation<ExerciseEventSchema>[] = [];
-  if (profile.activeTrainingProgram != undefined) {
-    profile.activeTrainingProgram.days.map(async (d) => {
-      d.exercises.map(async (e) => {
-        trainingProgramExerciseEventForms.push(await superValidate({ ...e, date: new Date() }, exerciseEventSchema, { id: e.id.toString() }));
-      });
-    });
-  }
+  console.log(exerciseEventSchema.parse({}))
+  // const newExerciseEventForm = await superValidate(exerciseEventSchema);
+  // // Create edit forms for each existing exercise
+  // const exerciseEventForms = await Promise.all(exerciseEvents.map(e => {
+  //   return superValidate(e, exerciseEventSchema, {
+  //     id: e.id.toString()
+  //   });
+  // }));
+  // // Create forms for each exercise in the training program
+  // const trainingProgramExerciseEventForms: Validation<ExerciseEventSchema>[] = [];
+  // if (profile.activeTrainingProgram != undefined) {
+  //   profile.activeTrainingProgram.days.map(async (d) => {
+  //     d.exercises.map(async (e) => {
+  //       trainingProgramExerciseEventForms.push(await superValidate({ ...e, date: new Date() }, exerciseEventSchema, { id: e.id.toString() }));
+  //     });
+  //   });
+  // }
 
   return {
     exerciseEvents,
-    newExerciseEventForm,
-    exerciseEventForms,
-    trainingProgramExerciseEventForms,
+    // newExerciseEventForm,
+    // exerciseEventForms,
+    // trainingProgramExerciseEventForms,
     profile,
   };
 };

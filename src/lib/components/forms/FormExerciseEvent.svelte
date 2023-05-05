@@ -1,16 +1,15 @@
 <script lang="ts">
 	import type { ExerciseEvent, ExerciseGroup, TrainingProgramDay } from '@prisma/client';
-	import type { Validation } from 'sveltekit-superforms/index';
-	import type { ExerciseEventSchema } from '$lib/exerciseEvent';
 	import { page } from '$app/stores';
-	import { superForm } from 'sveltekit-superforms/client';
+	import { defaultData, superForm } from 'sveltekit-superforms/client';
 	import TextField from './TextField.svelte';
 	import TextArea from './TextArea.svelte';
 	import DateField from './DateField.svelte';
 	import NumberField from './NumberField.svelte';
+	import { exerciseEventSchema } from '$lib/exerciseEvent';
+	import { assignDefined } from '$lib/utils';
 
-	// TODO: rename to 'form'
-	export let data: Validation<ExerciseEventSchema>;
+	export let data: ExerciseEvent | undefined;
 	export let action = '';
 
 	export let dateToMarkCompleted: Date | undefined = undefined;
@@ -22,6 +21,7 @@
 	export let id = crypto.randomUUID();
 	export let showSubmitButton = true;
 	export let onSuccess: (() => void) | undefined = undefined;
+	export let applyDefaults = false;
 
 	// Add redirect data
 	if ($page.url.searchParams.has('redirectTo')) {
@@ -34,7 +34,11 @@
 		}&dateToMarkCompleted=${dateToMarkCompleted.toString()}`;
 	}
 
-	const newSuperForm = superForm<ExerciseEventSchema>(data, {
+	let formData = data;
+	if (applyDefaults) {
+		formData = assignDefined(defaultData(exerciseEventSchema), data || {});
+	}
+	const newSuperForm = superForm(formData, {
 		resetForm: true,
 		onResult({ result }) {
 			if (result.type == 'success' && onSuccess != undefined) {

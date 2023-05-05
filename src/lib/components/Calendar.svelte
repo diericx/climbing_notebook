@@ -7,12 +7,9 @@
 	import ModalShowJournalEntry from '$lib/components/modals/ModalShowJournalEntry.svelte';
 	import ModalShowCalendarEvent from '$lib/components/modals/ModalShowCalendarEvent.svelte';
 	import ModalNewCalendarEvent from '$lib/components/modals/ModalNewCalendarEvent.svelte';
-	import type { Validation } from 'sveltekit-superforms/index';
-	import type { CalendarEventSchema } from '$lib/calendarEvent';
 
 	export let calendarEvents: CalendarEvent[];
 	export let journalEntries: JournalEntry[];
-	export let newCalendarEventFormData: Validation<CalendarEventSchema>;
 
 	let journalEntry: JournalEntry | undefined = undefined;
 	let showModalJournalEntry = false;
@@ -82,4 +79,4 @@
 
 <ModalShowJournalEntry bind:showModal={showModalJournalEntry} {journalEntry} />
 <ModalShowCalendarEvent bind:showModal={showModalCalendarEvent} {calendarEvent} />
-<ModalNewCalendarEvent {newCalendarEventFormData} bind:showModal={showModalNewCalendarEvent} />
+<ModalNewCalendarEvent bind:showModal={showModalNewCalendarEvent} />

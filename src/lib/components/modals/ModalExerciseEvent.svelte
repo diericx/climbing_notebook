@@ -1,11 +1,9 @@
 <script lang="ts">
 	import type { ExerciseEvent, ExerciseGroup, TrainingProgramDay } from '@prisma/client';
 	import Modal from '$lib/components/modals/Modal.svelte';
-	import type { ExerciseEventSchema } from '$lib/exerciseEvent';
-	import type { Validation } from 'sveltekit-superforms/index';
 	import ExerciseEventForm from '$lib/components/forms/FormExerciseEvent.svelte';
 
-	export let formData: Validation<ExerciseEventSchema>;
+	export let formData: ExerciseEvent | undefined = undefined;
 	export let showModal = false;
 	export let exerciseToMarkCompleted: ExerciseEvent | undefined = undefined;
 	export let dateToMarkCompleted: Date | undefined = undefined;
@@ -15,6 +13,7 @@
 	export let action: string;
 	export let showDate = false;
 	export let showDifficulty = false;
+	export let applyDefaults = false;
 	const formId = crypto.randomUUID();
 
 	function changeShowModal(value: boolean) {
@@ -32,6 +31,7 @@
 		{exerciseGroup}
 		{trainingProgramDay}
 		{showDate}
+		{applyDefaults}
 		data={formData}
 		{showDifficulty}
 		showSubmitButton={false}

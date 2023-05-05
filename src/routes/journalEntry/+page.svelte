@@ -1,11 +1,10 @@
 <script lang="ts">
-	import type { PageData, ActionData } from './$types';
+	import type { PageData } from './$types';
 	import FormJournalEntry from '$lib/components/forms/FormJournalEntry.svelte';
 	import { confirmDelete } from '$lib/utils';
 	import { enhance } from '$app/forms';
 
 	export let data: PageData;
-	$: newJournalEntryForm = data.newJournalEntryForm;
 </script>
 
 <h1>Journal</h1>
@@ -16,7 +15,7 @@
 	<div>
 		<h2>New Journal Entry</h2>
 		<hr />
-		<FormJournalEntry form={newJournalEntryForm} />
+		<FormJournalEntry />
 	</div>
 </div>
 
