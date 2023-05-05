@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import Chart from '../chart/chart.svelte';
+	import Chart from '$lib/components/Chart.svelte';
 	import Calendar from '$lib/components/Calendar.svelte';
 
 	export let data: PageData;
