@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { ExerciseEventFormData } from '$lib/exerciseEvent';
-	import Modal from '../../../Modal.svelte';
-	import ExerciseEventForm from '../../../exerciseEvent/form.svelte';
 	import type { ExerciseEvent, ExerciseGroup, TrainingProgramDay } from '@prisma/client';
+	import Modal from '$lib/components/modals/Modal.svelte';
+	import type { ExerciseEventSchema } from '$lib/exerciseEvent';
+	import type { Validation } from 'sveltekit-superforms/index';
+	import ExerciseEventForm from '$lib/components/forms/FormExerciseEvent.svelte';
 
+	export let formData: Validation<ExerciseEventSchema>;
 	export let showModal = false;
-	export let exerciseEvent: ExerciseEvent | undefined = undefined;
 	export let exerciseToMarkCompleted: ExerciseEvent | undefined = undefined;
 	export let dateToMarkCompleted: Date | undefined = undefined;
 	export let exerciseGroup: ExerciseGroup | undefined = undefined;
 	export let trainingProgramDay: TrainingProgramDay | undefined = undefined;
-	export let formData = new ExerciseEventFormData();
 	export let title = 'New Exercise';
 	export let action: string;
 	export let showDate = false;
@@ -27,15 +27,14 @@
 	<ExerciseEventForm
 		{action}
 		id={formId}
-		{exerciseEvent}
 		{exerciseToMarkCompleted}
 		{dateToMarkCompleted}
 		{exerciseGroup}
 		{trainingProgramDay}
-		bind:formData
 		{showDate}
+		data={formData}
 		{showDifficulty}
-		showButton={false}
+		showSubmitButton={false}
 		onSuccess={() => (showModal = false)}
 	/>
 

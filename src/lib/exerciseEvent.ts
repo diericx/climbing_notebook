@@ -1,60 +1,22 @@
 import type { ExerciseEvent, PrismaClient } from '@prisma/client';
+import { z } from 'zod';
 import { APIError } from './errors';
-import { isDateInTheSameWeekAsToday, toNum } from './utils'
+import { isDateInTheSameWeekAsToday } from './utils'
 
-export class ExerciseEventFormData {
-  date: Date | undefined = undefined;
-  name: string | undefined = undefined;
-  sets: number | undefined = undefined;
-  reps: number | undefined = undefined;
-  weight: number | undefined = undefined;
-  seconds: number | undefined = undefined;
-  minutes: number | undefined = undefined;
-  difficulty: number | undefined = undefined;
-  notes: string | undefined = undefined;
-  trainingProgramDayId: number | undefined = undefined;
-  exerciseGroupId: number | undefined = undefined;
-
-  /* eslint-disable  @typescript-eslint/no-explicit-any */
-  constructor(obj: any | undefined = undefined) {
-    if (obj == undefined) {
-      return
-    }
-    const { date, name, sets, reps, weight, seconds, minutes, difficulty, notes, exerciseGroupId, trainingProgramDayId } = obj;
-    this.date = date == undefined ? undefined : new Date(date);
-    this.name = name;
-    this.sets = sets == undefined ? undefined : toNum(sets, 0);
-    this.reps = reps == undefined ? undefined : toNum(reps, 0);
-    this.weight = weight == undefined ? undefined : toNum(weight, 0);
-    this.seconds = seconds == undefined ? undefined : toNum(seconds, 0);
-    this.minutes = minutes == undefined ? undefined : toNum(minutes, 0);
-    this.difficulty = difficulty == undefined ? undefined : toNum(difficulty, 0);
-    this.notes = notes;
-    this.exerciseGroupId = exerciseGroupId == undefined ? undefined : Number(exerciseGroupId);
-    this.trainingProgramDayId = trainingProgramDayId == undefined ? undefined : Number(trainingProgramDayId);
-  }
-
-  validate() {
-    if (this.date && isNaN(this.date.valueOf())) {
-      return {
-        isValid: false,
-        message: 'Invalid date.'
-      }
-    }
-
-    if (!this.name || this.name == '') {
-      return {
-        isValid: false,
-        message: 'Name is required.'
-      }
-    }
-
-    return {
-      isValid: true,
-      message: '',
-    }
-  }
-}
+export const exerciseEventSchema = z.object({
+  date: z.date().default(new Date()).nullish(),
+  name: z.string(),
+  sets: z.number(),
+  reps: z.number(),
+  weight: z.number(),
+  seconds: z.number(),
+  minutes: z.number(),
+  difficulty: z.number().default(0).nullish(),
+  notes: z.string().nullish(),
+  trainingProgramDayId: z.number().nullish(),
+  exerciseGroupId: z.number().nullish(),
+});
+export type ExerciseEventSchema = typeof exerciseEventSchema;
 
 export class ExerciseEventRepo {
   constructor(private readonly prisma: PrismaClient) { }
@@ -74,12 +36,10 @@ export class ExerciseEventRepo {
     return exerciseEvent
   }
 
-  async new(data: ExerciseEventFormData, ownerId: string): Promise<ExerciseEvent> {
+  async new(data: z.infer<ExerciseEventSchema>, ownerId: string): Promise<ExerciseEvent> {
     return await this.prisma.exerciseEvent.create({
       data: {
-        // TODO: Don't deconstruct?
         ...data,
-        date: new Date(data.date),
         ownerId,
         createdAt: new Date(),
       }
@@ -108,20 +68,12 @@ export class ExerciseEventRepo {
     return this.getOneAndValidateOwner(id, ownerId)
   }
 
-  async update(data: ExerciseEventFormData, id: number, ownerId: string): Promise<ExerciseEvent> {
+  async update(data: z.infer<ExerciseEventSchema>, id: number, ownerId: string): Promise<ExerciseEvent> {
     await this.getOneAndValidateOwner(id, ownerId);
 
     return await this.prisma.exerciseEvent.update({
       data: {
-        sets: data.sets,
-        reps: data.reps,
-        weight: data.weight,
-        minutes: data.minutes,
-        seconds: data.seconds,
-        difficulty: data.difficulty,
-        notes: data.notes,
-        name: data.name,
-        date: data.date,
+        ...data
       },
       where: {
         id: Number(id),

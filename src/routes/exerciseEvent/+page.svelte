@@ -1,23 +1,17 @@
 <script lang="ts">
-	import type { PageData, ActionData } from './$types';
+	import type { PageData } from './$types';
 
-	import ExerciseEventForm from './form.svelte';
-	import { ExerciseEventFormData } from '$lib/exerciseEvent';
 	import type { ExerciseEvent } from '@prisma/client';
 	import type { TrainingProgramComplete } from '$lib/prisma';
-	import { getDayWeekStartsMonday, isDateInTheSameDayAsToday } from '$lib/utils';
-	import { isDateInTheSameWeekAsToday } from '$lib/utils';
-	import ExerciseEventsList from './list.svelte';
-	import WeeklyCalendar from './weekCalendar.svelte';
-	import ModalExerciseEvent from '../trainingProgram/[id]/edit/ModalExerciseEvent.svelte';
+	import { isDateInTheSameDayAsToday } from '$lib/utils';
+	import ListExerciseEvent from '$lib/components/ListExerciseEvent.svelte';
+	import WeeklyCalendar from '$lib/components/WeeklyCalendar.svelte';
+	import ModalExerciseEvent from '$lib/components/modals/ModalExerciseEvent.svelte';
 	import Icon from '@iconify/svelte';
 
 	export let data: PageData;
-	export let form: ActionData;
-	let exerciseEventFormData: ExerciseEventFormData = new ExerciseEventFormData(
-		form?.exerciseEventFormData
-	);
-
+	$: newExerciseEventForm = data.newExerciseEventForm;
+	$: exerciseEventForms = data.exerciseEventForms;
 	$: activeTrainingProgram = data.profile?.activeTrainingProgram as TrainingProgramComplete;
 	$: exerciseEvents = data.exerciseEvents as ExerciseEvent[];
 
@@ -29,14 +23,6 @@
 		return isDateInTheSameDayAsToday(e.date);
 	}) as ExerciseEvent[];
 
-	// Filter out only this weeks exercise events
-	$: thisWeeksExerciseEvents = exerciseEvents.filter((e) => {
-		if (!e.date) {
-			return false;
-		}
-		return isDateInTheSameWeekAsToday(e.date);
-	}) as ExerciseEvent[];
-
 	// Filter out only exercise events that aren't today
 	$: pastExerciseEvents = exerciseEvents.filter((e) => {
 		if (!e.date) {
@@ -46,29 +32,7 @@
 		const [eDateStr] = e.date.toISOString().split('T');
 		return eDateStr < todayStr;
 	}) as ExerciseEvent[];
-
-	// Takes in an exercise event and fills the form on this page with the
-	// respective data
-	function fillExerciseEventForm(e: ExerciseEvent) {
-		exerciseEventFormData.name = e.name;
-		exerciseEventFormData.sets = e.sets;
-		exerciseEventFormData.reps = e.reps;
-		exerciseEventFormData.weight = e.weight;
-		exerciseEventFormData.minutes = e.minutes;
-		exerciseEventFormData.seconds = e.seconds;
-
-		// Focus the form element
-		const el = document.querySelector('#exerciseEventForm');
-		if (!el) return;
-		el.scrollIntoView({
-			behavior: 'smooth'
-		});
-	}
 </script>
-
-{#if form?.message}<p class="error">{form?.message}</p>{/if}
-
-<br />
 
 <h1>Weekly Program Calendar</h1>
 
@@ -92,10 +56,7 @@
 
 			<br />
 
-			<WeeklyCalendar
-				trainingProgram={activeTrainingProgram}
-				fillExerciseEventFormFunc={fillExerciseEventForm}
-			/>
+			<WeeklyCalendar trainingProgram={activeTrainingProgram} />
 		{/if}
 	</div>
 </div>
@@ -104,6 +65,7 @@
 	<ModalExerciseEvent
 		action="/exerciseEvent?/newExerciseEvent"
 		title="New Exercise Event"
+		formData={newExerciseEventForm}
 		let:changeShowModal
 		showDate
 		showDifficulty
@@ -117,11 +79,11 @@
 	</ModalExerciseEvent>
 	<h2>Today</h2>
 	<hr />
-	<ExerciseEventsList exerciseEvents={todaysExerciseEvents} />
+	<ListExerciseEvent {exerciseEventForms} exerciseEvents={todaysExerciseEvents} />
 </div>
 
 <div class="pt-8">
 	<h2>History</h2>
 	<hr />
-	<ExerciseEventsList exerciseEvents={pastExerciseEvents} />
+	<ListExerciseEvent {exerciseEventForms} exerciseEvents={pastExerciseEvents} />
 </div>

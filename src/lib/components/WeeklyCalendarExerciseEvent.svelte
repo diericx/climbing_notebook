@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { ExerciseEvent } from '@prisma/client';
-	import ModalExerciseEvent from '../trainingProgram/[id]/edit/ModalExerciseEvent.svelte';
+	import ModalExerciseEvent from '$lib/components/modals/ModalExerciseEvent.svelte';
 
 	export let exercise: ExerciseEvent;
 	export let date: Date;

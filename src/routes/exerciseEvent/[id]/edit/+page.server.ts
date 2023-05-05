@@ -3,7 +3,7 @@ import { error, fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { ExerciseEvent } from '@prisma/client';
 import { SERVER_ERROR } from '$lib/helperTypes';
-import { ExerciseEventFormData, ExerciseEventRepo } from '$lib/exerciseEvent';
+import { ExerciseEventRepo } from '$lib/exerciseEvent';
 import { APIError } from '$lib/errors';
 import { prisma } from '$lib/prisma';
 

@@ -1,11 +1,15 @@
 <script lang="ts">
+	import type { ExerciseEvent } from '@prisma/client';
+	import type { ExerciseEventSchema } from '$lib/exerciseEvent';
+	import type { Validation } from 'sveltekit-superforms/index';
 	import { enhance } from '$app/forms';
 	import { confirmDelete } from '$lib/utils';
-	import type { ExerciseEvent } from '@prisma/client';
+	import ModalExerciseEvent from '$lib/components/modals/ModalExerciseEvent.svelte';
 	import Icon from '@iconify/svelte';
-	import ModalExerciseEvent from '../trainingProgram/[id]/edit/ModalExerciseEvent.svelte';
+	import { date } from 'zod';
 
 	export let exerciseEvents: ExerciseEvent[];
+	export let exerciseEventForms: Validation<ExerciseEventSchema>[];
 	export let shouldShowDate = true;
 </script>
 
@@ -43,6 +47,9 @@
 					<slot name="buttons" {exerciseEvent}>
 						<ModalExerciseEvent
 							action={`/exerciseEvent/${exerciseEvent.id}/edit?/editExerciseEvent`}
+							formData={exerciseEventForms.find(
+								(f) => f.id.toString() == exerciseEvent.id.toString()
+							)}
 							{exerciseEvent}
 							let:changeShowModal
 						>

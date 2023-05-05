@@ -20,7 +20,6 @@ export const actions: Actions = {
   newChart: async ({ request, url, locals }) => {
     const { user } = await locals.auth.validateUser();
     const form = await superValidate(request, chartSchema);
-    console.log(form)
 
     if (!form.valid) {
       return fail(400, { form });
