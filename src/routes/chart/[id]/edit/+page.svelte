@@ -1,23 +1,17 @@
 <script lang="ts">
-	import ChartForm from '../../form.svelte';
-	import { ChartFormData } from '$lib/chart';
-	import type { ActionData, PageData } from './$types';
+	import ChartForm from '$lib/components/forms/FormChart.svelte';
+	import type { PageData } from './$types';
+	import { page } from '$app/stores';
 
 	export let data: PageData;
-	export let form: ActionData;
+	$: newChartForm = data.newChartForm;
 </script>
-
-{#if form?.message}<p class="error">{form?.message}</p>{/if}
 
 <br />
 
 <div class="grid grid-cols-1">
 	<div>
 		<h1>Edit Chart</h1>
-		<ChartForm
-			action="?/editChart"
-			chart={data.chart}
-			chartFormData={new ChartFormData(form?.chartFormData)}
-		/>
+		<ChartForm action={`/chart/${$page.params.id}/edit?/edit`} data={newChartForm} />
 	</div>
 </div>
