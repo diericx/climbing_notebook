@@ -1,12 +1,12 @@
 <script lang="ts">
 	import type { PageData, ActionData } from './$types';
-	import JournalEntryForm from './form.svelte';
+	import FormJournalEntry from '$lib/components/forms/FormJournalEntry.svelte';
 	import { confirmDelete } from '$lib/utils';
 	import { enhance } from '$app/forms';
-	import { JournalEntryFormData } from '$lib/journalEntry';
 
 	export let data: PageData;
 	export let form: ActionData;
+	$: newJournalEntryForm = data.newJournalEntryForm;
 </script>
 
 {#if form?.message}<p class="error">{form?.message}</p>{/if}
@@ -21,7 +21,7 @@
 	<div>
 		<h2>New Journal Entry</h2>
 		<hr />
-		<JournalEntryForm formData={new JournalEntryFormData(form?.journalEntryFormData)} />
+		<FormJournalEntry form={newJournalEntryForm} />
 	</div>
 </div>
 
@@ -43,7 +43,7 @@
 						<input type="hidden" name="id" value={item.id} />
 						<button on:click={confirmDelete}>Delete</button>
 					</form>
-					<a href="/journalEntry/{item.id}/edit?redirectTo=/journalEntry">Edit</a>
+					<a href={`/journalEntry/${item.id}/edit?redirectTo=/journalEntry`}>Edit</a>
 					<p class="whitespace-pre-wrap bg-white w-full px-1 py-3">{item.content}</p>
 				</div>
 			</div>

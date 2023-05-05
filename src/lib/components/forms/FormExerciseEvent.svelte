@@ -9,6 +9,7 @@
 	import DateField from './DateField.svelte';
 	import NumberField from './NumberField.svelte';
 
+	// TODO: rename to 'form'
 	export let data: Validation<ExerciseEventSchema>;
 	export let action = '';
 

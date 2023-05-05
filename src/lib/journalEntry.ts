@@ -1,54 +1,18 @@
 import type { JournalEntry, PrismaClient } from '@prisma/client';
-import { isNaN } from 'mathjs';
+import { z } from 'zod';
 import { APIError } from './errors';
 import { matchMetricsInString, parseMetricStrings, toNum } from './utils';
 
-export class JournalEntryFormData {
-  date: Date = new Date();
-  content = '';
-  type = '';
-
-  /* eslint-disable  @typescript-eslint/no-explicit-any */
-  constructor(obj: any | undefined = undefined) {
-    if (obj == undefined) {
-      return
-    }
-    const { date, content, type } = obj;
-    this.date = date == undefined ? this.date : new Date(date);
-    this.content = content == undefined ? this.content : content;
-    this.type = type == undefined ? this.type : type;
-  }
-
-  validate() {
-    if (isNaN(this.date.valueOf())) {
-      return {
-        isValid: false,
-        message: 'Invalid date.'
-      }
-    }
-    if (this.content == '') {
-      return {
-        isValid: false,
-        message: 'Content is required.'
-      }
-    }
-    if (this.type == '') {
-      return {
-        isValid: false,
-        message: 'Type is required.'
-      }
-    }
-
-    return {
-      isValid: true,
-      message: '',
-    }
-  }
-}
+export const journalEntrySchema = z.object({
+  date: z.date().default(new Date()),
+  content: z.string(),
+  type: z.string(),
+});
+export type JournalEntrySchema = typeof journalEntrySchema;
 
 export class JournalEntryRepo {
   constructor(private readonly prisma: PrismaClient) { }
-  async new(data: JournalEntryFormData, ownerId: string): Promise<JournalEntry> {
+  async new(data: z.infer<JournalEntrySchema>, ownerId: string): Promise<JournalEntry> {
     // Fetch journalEntries with same day to validate this is a new date
     const journalEntries: JournalEntry[] = await this.prisma.journalEntry.findMany({
       where: {
@@ -113,7 +77,7 @@ export class JournalEntryRepo {
     return journalEntry;
   }
 
-  async update(data: JournalEntryFormData, id: number, ownerId: string): Promise<JournalEntry> {
+  async update(data: z.infer<JournalEntrySchema>, id: number, ownerId: string): Promise<JournalEntry> {
     const journalEntry = await this.prisma.journalEntry.findUnique({
       where: {
         id
