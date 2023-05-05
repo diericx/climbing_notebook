@@ -1,12 +1,11 @@
 import type { Actions } from './$types';
 import type { PageServerLoad } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
-import { JournalEntryRepo, journalEntrySchema, type JournalEntrySchema } from '$lib/journalEntry';
+import { JournalEntryRepo, journalEntrySchema } from '$lib/journalEntry';
 import { prisma } from '$lib/prisma';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { APIError } from '$lib/errors';
 import { superValidate } from 'sveltekit-superforms/server';
-import type { Validation } from 'sveltekit-superforms/index';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { user } = await locals.auth.validateUser();
@@ -20,16 +19,10 @@ export const load: PageServerLoad = async ({ locals }) => {
   }
 
   const newJournalEntryForm = superValidate(journalEntrySchema);
-  const editJournalEntryForms: Validation<JournalEntrySchema>[] = [];
-  journalEntries.map(async je => {
-    const form = await superValidate(je, journalEntrySchema);
-    editJournalEntryForms.push(form)
-  })
 
   return {
     journalEntries,
     newJournalEntryForm,
-    editJournalEntryForms,
   };
 };
 

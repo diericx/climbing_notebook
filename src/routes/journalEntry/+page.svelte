@@ -5,13 +5,8 @@
 	import { enhance } from '$app/forms';
 
 	export let data: PageData;
-	export let form: ActionData;
 	$: newJournalEntryForm = data.newJournalEntryForm;
 </script>
-
-{#if form?.message}<p class="error">{form?.message}</p>{/if}
-
-<br />
 
 <h1>Journal</h1>
 
