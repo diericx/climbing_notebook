@@ -64,7 +64,7 @@
 
 		<div class="pt-1">
 			<ModalExerciseEvent
-				formData={exerciseEvent}
+				data={exerciseEvent}
 				action="/exerciseEvent?/newExerciseEvent"
 				title="Complete Exercise"
 				let:changeShowModal

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { ExerciseEvent } from '@prisma/client';
 	import Modal from '$lib/components/modals/Modal.svelte';
-	import ExerciseEventForm from '$lib/components/forms/FormExerciseEvent.svelte';
+	import FormExerciseEvent from '$lib/components/forms/FormExerciseEvent.svelte';
 
 	export let data: ExerciseEvent | undefined = undefined;
 	export let isModalVisible = false;
@@ -11,7 +11,6 @@
 	export let action: string;
 	export let showDate = false;
 	export let showDifficulty = false;
-	export let applyDefaults = false;
 	const formId = crypto.randomUUID();
 
 	function showModal() {
@@ -24,13 +23,12 @@
 
 <Modal bind:showModal={isModalVisible}>
 	<h1>{title}</h1>
-	<ExerciseEventForm
+	<FormExerciseEvent
 		{action}
 		id={formId}
 		{exerciseToMarkCompleted}
 		{dateToMarkCompleted}
 		{showDate}
-		{applyDefaults}
 		{data}
 		{showDifficulty}
 		showSubmitButton={false}
