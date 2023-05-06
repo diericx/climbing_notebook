@@ -4,37 +4,39 @@
 	import { defaultData, superForm } from 'sveltekit-superforms/client';
 	import DateField from './DateField.svelte';
 	import TextArea from './TextArea.svelte';
-	import type { JournalEntry } from '@prisma/client';
 	import { assignDefined } from '$lib/utils';
+	import type { JournalEntry } from '@prisma/client';
+	import type { z } from 'zod';
 
 	// Form action to execute
 	export let action = '/journalEntry?/newJournalEntry';
 	export let data: JournalEntry | undefined = undefined;
 	export let onSuccess: (() => void) | undefined = undefined;
 	export let id = crypto.randomUUID();
-	export let applyDefaults = false;
 
 	// Add redirect data
 	if ($page.url.searchParams.has('redirectTo')) {
 		action += '&redirectTo=' + $page.url.searchParams.get('redirectTo');
 	}
 
-	let formData = data;
-	if (applyDefaults) {
-		data = assignDefined(defaultData(journalEntrySchema), data || {});
-	}
-	const newSuperForm = superForm<JournalEntrySchema>(formData, {
+	let formData: z.infer<JournalEntrySchema> = assignDefined(
+		defaultData(journalEntrySchema),
+		data || {}
+	);
+	const newSuperForm = superForm(formData, {
 		resetForm: true,
+		id,
 		onResult({ result }) {
 			if (result.type == 'success' && onSuccess != undefined) {
 				onSuccess();
 			}
 		}
 	});
-	const { enhance } = newSuperForm;
+	const { enhance, form } = newSuperForm;
 </script>
 
 <form method="POST" {action} use:enhance {id}>
+	<input type="hidden" name="_formId" value={id} />
 	<input type="hidden" name="type" value="climbing" />
 
 	<DateField name="date" field="date" form={newSuperForm} />

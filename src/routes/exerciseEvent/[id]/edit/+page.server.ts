@@ -31,15 +31,16 @@ export const actions: Actions = {
   },
 
   editExerciseEvent: async ({ locals, params, request, url }) => {
+    const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
     const id = Number(params.id);
-    const form = await superValidate(request, exerciseEventSchema);
+    const form = await superValidate(formData, exerciseEventSchema, {
+      id: formData.get('_formId')?.toString(),
+    });
 
     if (!form.valid) {
       return fail(400, { form });
     }
-
-    console.log(form);
 
     const repo = new ExerciseEventRepo(prisma);
     try {

@@ -5,13 +5,13 @@
 	import type { ExerciseGroup } from '@prisma/client';
 	import { exerciseGroupSchema, type ExerciseGroupSchema } from '$lib/exerciseGroup';
 	import TextField from './TextField.svelte';
+	import type { z } from 'zod';
 
 	// Form action to execute
 	export let action = '';
 	export let data: ExerciseGroup | undefined = undefined;
 	export let onSuccess: (() => void) | undefined = undefined;
 	export let id = crypto.randomUUID();
-	export let applyDefaults = false;
 	export let showSubmitButton = true;
 
 	// Add redirect data
@@ -19,13 +19,14 @@
 		action += '&redirectTo=' + $page.url.searchParams.get('redirectTo');
 	}
 
-	let formData = data;
-	if (applyDefaults) {
-		data = assignDefined(defaultData(exerciseGroupSchema), data || {});
-	}
+	let formData: z.infer<ExerciseGroupSchema> = assignDefined(
+		defaultData(exerciseGroupSchema),
+		data || {}
+	);
 	const newSuperForm = superForm<ExerciseGroupSchema>(formData, {
 		resetForm: true,
 		dataType: 'json',
+		id,
 		onResult({ result }) {
 			if (result.type == 'success' && onSuccess != undefined) {
 				onSuccess();
@@ -36,6 +37,8 @@
 </script>
 
 <form method="POST" {action} use:enhance {id}>
+	<input type="hidden" name="_formId" value={id} />
+
 	<input type="hidden" name="type" value="climbing" />
 
 	<TextField name="name" field="name" form={newSuperForm} />

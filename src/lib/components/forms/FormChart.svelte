@@ -1,30 +1,28 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { chartSchema } from '$lib/chart';
+	import { chartSchema, type ChartSchema } from '$lib/chart';
 	import { defaultData, superForm } from 'sveltekit-superforms/client';
 	import TextField from './TextField.svelte';
 	import SelectField from './SelectField.svelte';
 	import type { Chart } from '@prisma/client';
 	import { assignDefined } from '$lib/utils';
+	import type { z } from 'zod';
 
 	export let data: Chart | undefined = undefined;
 	export let action = '?/newExerciseEvent';
 	export let id = crypto.randomUUID();
 	export let showSubmitButton = true;
 	export let onSuccess: (() => Promise<void>) | undefined = undefined;
-	export let applyDefaults = false;
 
 	// Add redirect data
 	if ($page.url.searchParams.has('redirectTo')) {
 		action += '&redirectTo=' + $page.url.searchParams.get('redirectTo');
 	}
 
-	let formData = data;
-	if (applyDefaults) {
-		formData = assignDefined(defaultData(chartSchema), data || {});
-	}
+	let formData: z.infer<ChartSchema> = assignDefined(defaultData(chartSchema), data || {});
 	const newSuperForm = superForm(formData, {
 		resetForm: true,
+		id,
 		onResult({ result }) {
 			if (result.type == 'success' && onSuccess != undefined) {
 				onSuccess();
@@ -35,6 +33,8 @@
 </script>
 
 <form method="POST" use:enhance {action} {id}>
+	<input type="hidden" name="_formId" value={id} />
+
 	<TextField name="name" form={newSuperForm} field="name" placeholder={'Pull-ups volume'} />
 
 	<SelectField name="type" form={newSuperForm} field="type">

@@ -26,7 +26,10 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
   newJournalEntry: async ({ request, url, locals }) => {
     const { user } = await locals.auth.validateUser();
-    const form = await superValidate(request, journalEntrySchema);
+    const formData = await request.formData();
+    const form = await superValidate(formData, journalEntrySchema, {
+      id: formData.get('_formId')?.toString(),
+    });
 
     if (!form.valid) {
       return fail(400, { form });

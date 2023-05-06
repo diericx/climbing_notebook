@@ -4,7 +4,7 @@
 	import { formFieldProxy } from 'sveltekit-superforms/client';
 	import type { z, AnyZodObject } from 'zod';
 
-	export type T = $$Generic<AnyZodObject>;
+	type T = $$Generic<AnyZodObject>;
 
 	export let form: SuperForm<UnwrapEffects<T>, unknown>;
 	export let field: keyof z.infer<T> | FieldPath<z.infer<T>>;
@@ -43,7 +43,6 @@
 		{placeholder}
 		data-invalid={$errors}
 		bind:value={$value}
-		{...$constraints}
 		{...$$restProps}
 	/>
 </label>

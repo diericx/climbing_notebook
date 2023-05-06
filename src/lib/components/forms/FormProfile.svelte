@@ -5,27 +5,24 @@
 	import { assignDefined } from '$lib/utils';
 	import { profileSchema, type ProfileSchema } from '$lib/profile';
 	import type { Profile } from '@prisma/client';
+	import type { z } from 'zod';
 
 	// Form action to execute
 	export let action = '/profile/editProfile?/editProfile';
 	export let data: Profile | undefined = undefined;
 	export let onSuccess: (() => void) | undefined = undefined;
 	export let id = crypto.randomUUID();
-	export let applyDefaults = false;
 
 	// Add redirect data
 	if ($page.url.searchParams.has('redirectTo')) {
 		action += '&redirectTo=' + $page.url.searchParams.get('redirectTo');
 	}
 
-	let formData = data;
-	if (applyDefaults) {
-		formData = assignDefined(defaultData(profileSchema), data || {});
-	}
-	console.log(formData);
+	let formData: z.infer<ProfileSchema> = assignDefined(defaultData(profileSchema), data || {});
 	const newSuperForm = superForm<ProfileSchema>(formData, {
 		resetForm: true,
 		dataType: 'json',
+		id,
 		onResult({ result }) {
 			if (result.type == 'success' && onSuccess != undefined) {
 				onSuccess();
@@ -36,6 +33,8 @@
 </script>
 
 <form method="POST" {action} use:enhance {id}>
+	<input type="hidden" name="_formId" value={id} />
+
 	<input type="hidden" name="type" value="climbing" />
 	<TextArea
 		name="goals"

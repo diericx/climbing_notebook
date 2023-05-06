@@ -28,9 +28,12 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 
 export const actions: Actions = {
   editCalendarEvent: async ({ locals, params, request, url }) => {
+    const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
     const id = Number(params.id);
-    const form = await superValidate(request, calendarEventSchema);
+    const form = await superValidate(formData, calendarEventSchema, {
+      id: formData.get('_formId')?.toString(),
+    });
 
     if (!form.valid) {
       return fail(400, { form });

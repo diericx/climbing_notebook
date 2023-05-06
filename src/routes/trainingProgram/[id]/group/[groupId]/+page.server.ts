@@ -5,6 +5,7 @@ import { TrainingProgramRepo } from '$lib/trainingProgram';
 import { APIError } from '$lib/errors';
 import { superValidate } from 'sveltekit-superforms/server';
 import { exerciseGroupSchema } from '$lib/exerciseGroup';
+import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
 
 export const actions: Actions = {
   editExerciseGroup: async ({ locals, request, url, params }) => {
@@ -57,4 +58,34 @@ export const actions: Actions = {
 
     return { success: true };
   },
+
+  newExerciseEvent: async ({ locals, request, url, params }) => {
+    const { user } = await locals.auth.validateUser();
+    const form = await superValidate(request, exerciseEventSchema);
+    const groupId = Number(params.groupId);
+    console.log(form)
+
+    if (!form.valid) {
+      return fail(400, { form });
+    }
+
+    console.log(form)
+    // form.data.exerciseGroupId = groupId;
+    // const repo = new ExerciseEventRepo(prisma);
+    // try {
+    //   await repo.new(form.data, user?.userId)
+    // } catch (e) {
+    //   if (e instanceof APIError) {
+    //     return fail(401, { message: e.detail, form })
+    //   }
+    //   console.error(e)
+    //   throw error(500, { message: SERVER_ERROR })
+    // }
+    //
+    // if (url.searchParams.has('redirectTo')) {
+    //   throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    // }
+    //
+    // return { form };
+  }
 }

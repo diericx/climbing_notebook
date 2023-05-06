@@ -33,8 +33,11 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 
 export const actions: Actions = {
   edit: async ({ locals, params, request, url }) => {
+    const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
-    const form = await superValidate(request, chartSchema);
+    const form = await superValidate(formData, chartSchema, {
+      id: formData.get('_formId')?.toString(),
+    });
     const id = Number(params.id);
 
     if (!form.valid) {

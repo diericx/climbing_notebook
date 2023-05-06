@@ -106,7 +106,8 @@ Notes:
 						<span class="items-end text-lg font-light">Exercises</span>
 						<div class="flex-1" />
 						<ModalExerciseEvent
-							action={`/trainingProgram/${trainingProgram.id}/group/${group.id}?/addExerciseEvent`}
+							action={`/trainingProgram/${trainingProgram.id}/group/${group.id}?/newExerciseEvent`}
+							applyDefaults={true}
 							let:changeShowModal
 						>
 							<div class="mb-2" slot="open-modal-buttons">

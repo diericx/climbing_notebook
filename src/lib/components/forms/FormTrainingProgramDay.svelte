@@ -5,13 +5,13 @@
 	import { assignDefined } from '$lib/utils';
 	import TextField from './TextField.svelte';
 	import { trainingProgramDaySchema, type TrainingProgramDaySchema } from '$lib/trainingProgramDay';
+	import type { z } from 'zod';
 
 	// Form action to execute
 	export let action = '';
 	export let data: TrainingProgramDay | undefined = undefined;
 	export let onSuccess: (() => void) | undefined = undefined;
 	export let id = crypto.randomUUID();
-	export let applyDefaults = false;
 	export let showSubmitButton = true;
 
 	// Add redirect data
@@ -19,12 +19,13 @@
 		action += '&redirectTo=' + $page.url.searchParams.get('redirectTo');
 	}
 
-	let formData = data;
-	if (applyDefaults) {
-		data = assignDefined(defaultData(trainingProgramDaySchema), data || {});
-	}
+	let formData: z.infer<TrainingProgramDaySchema> = assignDefined(
+		defaultData(trainingProgramDaySchema),
+		data || {}
+	);
 	const newSuperForm = superForm<TrainingProgramDaySchema>(formData, {
 		resetForm: true,
+		id,
 		onResult({ result }) {
 			if (result.type == 'success' && onSuccess != undefined) {
 				onSuccess();
@@ -35,6 +36,8 @@
 </script>
 
 <form method="POST" {action} use:enhance {id}>
+	<input type="hidden" name="_formId" value={id} />
+
 	<input type="hidden" name="type" value="climbing" />
 
 	<TextField name="description" field="description" form={newSuperForm} />

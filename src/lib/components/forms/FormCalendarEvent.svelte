@@ -8,6 +8,7 @@
 	import DateField from './DateField.svelte';
 	import type { CalendarEvent } from '@prisma/client';
 	import { assignDefined } from '$lib/utils';
+	import type { z } from 'zod';
 
 	// Incoming form data
 	export let data: CalendarEvent | undefined = undefined;
@@ -17,19 +18,19 @@
 	export let id = crypto.randomUUID();
 	export let showSubmitButton = true;
 	export let onSuccess: (() => Promise<void>) | undefined = undefined;
-	export let applyDefaults = false;
 
 	// Add redirect data
 	if ($page.url.searchParams.has('redirectTo')) {
 		action += '&redirectTo=' + $page.url.searchParams.get('redirectTo');
 	}
 
-	let formData = data;
-	if (applyDefaults) {
-		formData = assignDefined(defaultData(calendarEventSchema), data || {});
-	}
+	let formData: z.infer<CalendarEventSchema> = assignDefined(
+		defaultData(calendarEventSchema),
+		data || {}
+	);
 	const newSuperForm = superForm<CalendarEventSchema>(formData, {
 		resetForm: true,
+		id,
 		onResult({ result }) {
 			if (result.type == 'success' && onSuccess != undefined) {
 				onSuccess();
@@ -40,6 +41,8 @@
 </script>
 
 <form method="POST" {action} use:enhance {id}>
+	<input type="hidden" name="_formId" value={id} />
+
 	<DateField name="dateStart" form={newSuperForm} field="dateStart" />
 	<DateField name="dateEnd" form={newSuperForm} field="dateEnd" />
 	<TextField name="title" form={newSuperForm} field="title" placeholder={'Trip to Moab'} />

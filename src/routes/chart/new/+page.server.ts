@@ -1,6 +1,6 @@
 import type { Actions, PageServerLoad } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
-import { ChartFormData, ChartRepo, chartSchema } from '$lib/chart';
+import { ChartRepo, chartSchema } from '$lib/chart';
 import { prisma } from '$lib/prisma';
 import { APIError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
@@ -16,8 +16,11 @@ export const load: PageServerLoad = async ({ url }) => {
 
 export const actions: Actions = {
   newChart: async ({ request, url, locals }) => {
+    const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
-    const form = await superValidate(request, chartSchema);
+    const form = await superValidate(formData, chartSchema, {
+      id: formData.get('_formId')?.toString(),
+    });
 
     if (!form.valid) {
       return fail(400, { form });

@@ -6,8 +6,9 @@
 	import TextArea from './TextArea.svelte';
 	import DateField from './DateField.svelte';
 	import NumberField from './NumberField.svelte';
-	import { exerciseEventSchema } from '$lib/exerciseEvent';
+	import { exerciseEventSchema, type ExerciseEventSchema } from '$lib/exerciseEvent';
 	import { assignDefined } from '$lib/utils';
+	import type { z } from 'zod';
 
 	export let data: ExerciseEvent | undefined;
 	export let action = '';
@@ -19,7 +20,6 @@
 	export let id = crypto.randomUUID();
 	export let showSubmitButton = true;
 	export let onSuccess: (() => void) | undefined = undefined;
-	export let applyDefaults = false;
 
 	// Add redirect data
 	if ($page.url.searchParams.has('redirectTo')) {
@@ -32,12 +32,14 @@
 		}&dateToMarkCompleted=${dateToMarkCompleted.toString()}`;
 	}
 
-	let formData = data;
-	if (applyDefaults) {
-		formData = assignDefined(defaultData(exerciseEventSchema), data || {});
-	}
+	let formData: z.infer<ExerciseEventSchema> = assignDefined(
+		defaultData(exerciseEventSchema),
+		data || {}
+	);
 	const newSuperForm = superForm(formData, {
-		resetForm: true,
+		invalidateAll: true,
+		applyAction: false,
+		id,
 		onResult({ result }) {
 			if (result.type == 'success' && onSuccess != undefined) {
 				onSuccess();
@@ -48,8 +50,14 @@
 </script>
 
 <form method="POST" {action} use:enhance {id}>
-	<input type="hidden" name="exerciseGroupId" value={data?.exerciseGroupId} />
-	<input type="hidden" name="trainingProgramDayId" value={data?.trainingProgramDayId} />
+	<input type="hidden" name="_formId" value={id} />
+
+	{#if data?.exerciseGroupId}
+		<input type="hidden" name="exerciseGroupId" value={data?.exerciseGroupId} />
+	{/if}
+	{#if data?.trainingProgramDayId}
+		<input type="hidden" name="trainingProgramDayId" value={data?.trainingProgramDayId} />
+	{/if}
 
 	{#if showDate}
 		<DateField name="date" field="date" form={newSuperForm} />
