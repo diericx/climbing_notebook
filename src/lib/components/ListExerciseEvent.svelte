@@ -7,12 +7,6 @@
 
 	export let exerciseEvents: ExerciseEvent[];
 	export let shouldShowDate = true;
-
-	let exerciseEventModalProps = {
-		action: '',
-		exerciseEvent: undefined
-	};
-	let isExerciseEventModalVisible = false;
 </script>
 
 <ul class="divide-y divide-gray-200 border-t">

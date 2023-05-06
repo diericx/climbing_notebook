@@ -107,7 +107,6 @@ Notes:
 						<div class="flex-1" />
 						<ModalExerciseEvent
 							action={`/trainingProgram/${trainingProgram.id}/group/${group.id}?/newExerciseEvent`}
-							applyDefaults={true}
 							let:changeShowModal
 						>
 							<div class="mb-2" slot="open-modal-buttons">

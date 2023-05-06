@@ -18,7 +18,9 @@
 	let formData: z.infer<typeof schema> = assignDefined(defaultData(schema), data || {});
 	const newSuperForm = superForm(formData, {
 		resetForm: false,
+		invalidateAll: true,
 		id,
+		dataType: 'json',
 		onResult({ result }) {
 			if (result.type == 'success' && onSuccess != undefined) {
 				onSuccess();
