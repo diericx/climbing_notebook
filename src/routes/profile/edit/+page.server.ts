@@ -52,6 +52,6 @@ export const actions: Actions = {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
     }
 
-    return { success: true };
+    return { form };
   }
 }

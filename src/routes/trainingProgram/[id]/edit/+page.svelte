@@ -5,25 +5,19 @@ Notes:
 -->
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { beforeNavigate } from '$app/navigation';
 	import { enhance } from '$app/forms';
 	import Icon from '@iconify/svelte';
-	import ExerciseEventsList from '../../../exerciseEvent/list.svelte';
-	import ExerciseGroupList from '../../groupList.svelte';
-	import ModalExerciseEvent from './ModalExerciseEvent.svelte';
-	import ModalExerciseGroup from './ModalExerciseGroup.svelte';
-	import ModalTrainingProgram from './ModalTrainingProgram.svelte';
-	import ModalTrainingProgramDay from './ModalTrainingProgramDay.svelte';
+	import ExerciseEventsList from '$lib/components/ListExerciseEvent.svelte';
+	import ExerciseGroupList from '$lib/components/ListExerciseGroup.svelte';
+	import ModalExerciseEvent from '$lib/components/modals/ModalExerciseEvent.svelte';
 	import { confirmDelete } from '$lib/utils';
+	import ModalTrainingProgram from '$lib/components/modals/ModalTrainingProgram.svelte';
+	import ModalExerciseGroup from '$lib/components/modals/ModalExerciseGroup.svelte';
+	import ModalTrainingProgramDay from '$lib/components/modals/ModalTrainingProgramDay.svelte';
 
 	export let data: PageData;
 	let scrollY: number;
-
 	$: trainingProgram = data.trainingProgram;
-	$: trainingProgramOriginal = data.trainingProgramOriginal;
-	$: thereAreUnsavedChanges = () => {
-		return JSON.stringify(trainingProgram) !== JSON.stringify(trainingProgramOriginal);
-	};
 
 	let daysOfTheWeek = [
 		'Monday',
@@ -34,15 +28,6 @@ Notes:
 		'Saturday',
 		'Sunday'
 	];
-
-	// Add a confirmation before leaving if the user has changed anything without saving
-	beforeNavigate((nav) => {
-		if (thereAreUnsavedChanges()) {
-			if (!confirm('You have unsaved changes, are you sure you want to leave this page?')) {
-				nav.cancel();
-			}
-		}
-	});
 </script>
 
 <svelte:window bind:scrollY />
@@ -56,7 +41,7 @@ Notes:
 		</h1>
 
 		<ModalTrainingProgram
-			{trainingProgram}
+			data={trainingProgram}
 			action={`/trainingProgram/${trainingProgram.id}/edit?/editTrainingProgram`}
 			let:changeShowModal
 		>
@@ -86,7 +71,7 @@ Notes:
 						<h2 class="font-bold">{group.name}</h2>
 
 						<ModalExerciseGroup
-							exerciseGroup={group}
+							data={group}
 							action={`/trainingProgram/${trainingProgram.id}/group/${group.id}?/editExerciseGroup`}
 							let:changeShowModal
 						>
@@ -121,8 +106,7 @@ Notes:
 						<span class="items-end text-lg font-light">Exercises</span>
 						<div class="flex-1" />
 						<ModalExerciseEvent
-							exerciseGroup={group}
-							action="/exerciseEvent?/newExerciseEvent"
+							action={`/trainingProgram/${trainingProgram.id}/group/${group.id}?/addExerciseEvent`}
 							let:changeShowModal
 						>
 							<div class="mb-2" slot="open-modal-buttons">
@@ -158,7 +142,7 @@ Notes:
 						</span>
 					</div>
 					<ModalTrainingProgramDay
-						trainingProgramDay={day}
+						data={day}
 						action={`/trainingProgram/${trainingProgram.id}/day/${day.id}?/editTrainingProgramDay`}
 						let:changeShowModal
 					>
@@ -222,7 +206,7 @@ Notes:
 					<div class="text-lg font-bold">Exercises</div>
 					<ModalExerciseEvent
 						trainingProgramDay={day}
-						action="/exerciseEvent?/newExerciseEvent"
+						action={`/trainingProgram/${trainingProgram.id}/day/${day.id}/?/addExerciseEvent`}
 						let:changeShowModal
 					>
 						<div slot="open-modal-buttons" class="mb-2">

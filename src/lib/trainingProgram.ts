@@ -1,38 +1,15 @@
 import type { PrismaClient, TrainingProgram } from '@prisma/client';
+import { z } from 'zod';
 import { APIError } from './errors';
 import type { ExerciseGroupFormData } from './exerciseGroup';
 import type { ExerciseGroupComplete, TrainingProgramComplete, TrainingProgramDayComplete } from './prisma';
 import type { TrainingProgramDayFormData } from './trainingProgramDay';
 
-export class TrainingProgramFormData {
-  name = '';
-  days: TrainingProgramDayComplete[] | undefined = undefined;
-  exerciseGroups: ExerciseGroupComplete[] | undefined = undefined;
 
-  /* eslint-disable  @typescript-eslint/no-explicit-any */
-  constructor(obj: any | undefined = undefined) {
-    if (obj == undefined) {
-      return
-    }
-    const { name, days, exerciseGroups } = obj;
-    this.name = name == undefined ? this.name : name;
-    this.days = days == undefined ? this.days : days as TrainingProgramDayComplete[];
-    this.exerciseGroups = exerciseGroups == undefined ? this.exerciseGroups : exerciseGroups as ExerciseGroupComplete[];
-  }
-
-  validate() {
-    if (this.name == '') {
-      return {
-        isValid: false,
-        message: 'Name is required.'
-      }
-    }
-    return {
-      isValid: true,
-      message: '',
-    }
-  }
-}
+export const trainingProgramSchema = z.object({
+  name: z.string(),
+});
+export type TrainingProgramSchema = typeof trainingProgramSchema;
 
 export class TrainingProgramRepo {
   constructor(private readonly prisma: PrismaClient) { }
@@ -91,7 +68,7 @@ export class TrainingProgramRepo {
     return trainingProgram
   }
 
-  async new(data: TrainingProgramFormData, ownerId: string): Promise<TrainingProgram> {
+  async new(data: z.infer<TrainingProgramSchema>, ownerId: string): Promise<TrainingProgram> {
     return await this.prisma.trainingProgram.create({
       data: {
         name: data.name,
@@ -125,7 +102,7 @@ export class TrainingProgramRepo {
     return this.getOneAndValidateOwner(id, ownerId)
   }
 
-  async update(data: TrainingProgramFormData, id: number, ownerId: string): Promise<TrainingProgram> {
+  async update(data: z.infer<TrainingProgramSchema>, id: number, ownerId: string): Promise<TrainingProgram> {
     // Get current training program
     const trainingProgram = await this.prisma.trainingProgram.findUnique({
       where: {

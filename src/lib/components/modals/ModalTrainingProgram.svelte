@@ -1,12 +1,10 @@
 <script lang="ts">
-	import Modal from '../../../Modal.svelte';
 	import type { TrainingProgram } from '@prisma/client';
-	import { TrainingProgramFormData } from '$lib/trainingProgram';
-	import TrainingProgramForm from '../../form.svelte';
+	import FormTrainingProgram from '../forms/FormTrainingProgram.svelte';
+	import Modal from './Modal.svelte';
 
 	export let showModal = false;
-	export let trainingProgram: TrainingProgram | undefined = undefined;
-	export let formData = new TrainingProgramFormData();
+	export let data: TrainingProgram | undefined = undefined;
 	export let action: string;
 	const formId = crypto.randomUUID();
 
@@ -18,24 +16,23 @@
 <Modal bind:showModal>
 	<h1>Edit Training Program</h1>
 
-	<TrainingProgramForm
-		{trainingProgram}
+	<FormTrainingProgram
+		{data}
 		id={formId}
 		{action}
-		showButton={false}
+		showSubmitButton={false}
 		onSuccess={() => (showModal = false)}
 	/>
 
 	<div slot="buttons">
-		<slot name="modal-buttons" {formData} {changeShowModal}>
+		<slot name="modal-buttons" {data} {changeShowModal}>
 			<button type="submit" form={formId} value="Submit">Submit</button>
 		</slot>
 	</div>
 </Modal>
-<slot name="open-modal-buttons" {formData} {changeShowModal}>
+<slot name="open-modal-buttons" {data} {changeShowModal}>
 	<button
 		class="align-middle bg-green-400 hover:bg-green-500 text-white font-bold px-2 rounded"
 		on:click={() => changeShowModal(true)}>New Training Program</button
 	>
 </slot>
-

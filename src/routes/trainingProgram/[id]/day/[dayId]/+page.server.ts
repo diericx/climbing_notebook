@@ -2,9 +2,10 @@
 import { error, fail, redirect, type Actions } from '@sveltejs/kit';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
-import { TrainingProgramRepo } from '$lib/trainingProgram';
+import { TrainingProgramRepo, trainingProgramSchema } from '$lib/trainingProgram';
 import { APIError } from '$lib/errors';
-import { TrainingProgramDayFormData } from '$lib/trainingProgramDay';
+import { superValidate } from 'sveltekit-superforms/server';
+import { trainingProgramDaySchema } from '$lib/trainingProgramDay';
 
 export const actions: Actions = {
   connectExerciseGroup: async ({ locals, request, url, params }) => {
@@ -64,28 +65,30 @@ export const actions: Actions = {
   },
 
   editTrainingProgramDay: async ({ locals, request, url, params }) => {
-    const rawFormData = Object.fromEntries((await request.formData()).entries());
+    const form = await superValidate(request, trainingProgramDaySchema);
     const { user } = await locals.auth.validateUser();
     const trainingProgramId = Number(params.id);
     const trainingProgramDayId = Number(params.dayId);
 
-    const input = new TrainingProgramDayFormData(rawFormData);
+    if (!form.valid) {
+      return fail(400, { form });
+    }
 
     const repo = new TrainingProgramRepo(prisma);
     try {
-      await repo.editTrainingProgramDay(input, trainingProgramId, trainingProgramDayId, user?.userId);
+      await repo.editTrainingProgramDay(form.data, trainingProgramId, trainingProgramDayId, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, trainingProgramFormData: rawFormData })
+        return fail(401, { message: e.detail, form })
       }
       console.error(e)
-      return fail(500, { message: SERVER_ERROR })
+      return fail(500, { message: SERVER_ERROR, form })
     }
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
     }
 
-    return { success: true };
+    return { form };
   },
 }
