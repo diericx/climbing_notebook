@@ -21,19 +21,16 @@
 
 	let formData = data;
 	if (applyDefaults) {
-		formData = assignDefined(defaultData(journalEntrySchema), data || {});
+		data = assignDefined(defaultData(journalEntrySchema), data || {});
 	}
-	const newSuperForm = superForm<JournalEntrySchema>(
-		assignDefined(formData,
-		{
-			resetForm: true,
-			onResult({ result }) {
-				if (result.type == 'success' && onSuccess != undefined) {
-					onSuccess();
-				}
+	const newSuperForm = superForm<JournalEntrySchema>(formData, {
+		resetForm: true,
+		onResult({ result }) {
+			if (result.type == 'success' && onSuccess != undefined) {
+				onSuccess();
 			}
 		}
-	);
+	});
 	const { enhance } = newSuperForm;
 </script>
 

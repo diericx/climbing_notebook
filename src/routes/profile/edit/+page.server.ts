@@ -4,8 +4,9 @@ import type { PageServerLoad } from '../$types';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import type { Profile } from '@prisma/client';
 import { prisma } from '$lib/prisma';
-import { ProfileFormData, ProfileRepo } from '$lib/profile';
+import { ProfileRepo, profileSchema } from '$lib/profile';
 import { APIError } from '$lib/errors';
+import { superValidate } from 'sveltekit-superforms/server';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { user } = await locals.auth.validateUser();
@@ -29,22 +30,19 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 export const actions: Actions = {
   editProfile: async ({ locals, request, url }) => {
-    const rawFormData = Object.fromEntries((await request.formData()).entries());
     const { user } = await locals.auth.validateUser();
+    const form = await superValidate(request, profileSchema);
 
-    // Validate input fields
-    const input = new ProfileFormData(rawFormData);
-    const { message, isValid } = input.validate()
-    if (!isValid) {
-      return fail(401, { message, profileFormData: rawFormData })
+    if (!form.valid) {
+      return fail(400, { form });
     }
 
     const repo = new ProfileRepo(prisma);
     try {
-      await repo.update(input, user?.userId);
+      await repo.update(form.data, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, profileFormData: rawFormData })
+        return fail(401, { message: e.detail, form })
       }
       console.error(e)
       throw error(500, { message: SERVER_ERROR })
