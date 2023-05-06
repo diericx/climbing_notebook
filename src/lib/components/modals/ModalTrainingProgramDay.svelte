@@ -16,7 +16,12 @@
 <Modal bind:showModal>
 	<h1>Edit Program Day</h1>
 
-	<FormTrainingProgramDay id={formId} {action} onSuccess={() => (showModal = false)} />
+	<FormTrainingProgramDay
+		id={formId}
+		{action}
+		onSuccess={() => (showModal = false)}
+		showSubmitButton={false}
+	/>
 
 	<div slot="buttons">
 		<slot name="modal-buttons" {data} {changeShowModal}>

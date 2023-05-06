@@ -1,14 +1,12 @@
 <script lang="ts">
-	import type { ExerciseEvent, ExerciseGroup, TrainingProgramDay } from '@prisma/client';
+	import type { ExerciseEvent } from '@prisma/client';
 	import Modal from '$lib/components/modals/Modal.svelte';
 	import ExerciseEventForm from '$lib/components/forms/FormExerciseEvent.svelte';
 
-	export let formData: ExerciseEvent | undefined = undefined;
+	export let data: ExerciseEvent | undefined = undefined;
 	export let showModal = false;
 	export let exerciseToMarkCompleted: ExerciseEvent | undefined = undefined;
 	export let dateToMarkCompleted: Date | undefined = undefined;
-	export let exerciseGroup: ExerciseGroup | undefined = undefined;
-	export let trainingProgramDay: TrainingProgramDay | undefined = undefined;
 	export let title = 'New Exercise';
 	export let action: string;
 	export let showDate = false;
@@ -28,23 +26,21 @@
 		id={formId}
 		{exerciseToMarkCompleted}
 		{dateToMarkCompleted}
-		{exerciseGroup}
-		{trainingProgramDay}
 		{showDate}
 		{applyDefaults}
-		data={formData}
+		{data}
 		{showDifficulty}
 		showSubmitButton={false}
 		onSuccess={() => (showModal = false)}
 	/>
 
 	<div slot="buttons">
-		<slot name="modal-buttons" {formData} {changeShowModal}>
+		<slot name="modal-buttons" {data} {changeShowModal}>
 			<button type="submit" form={formId} value="Submit">Save</button>
 		</slot>
 	</div>
 </Modal>
-<slot name="open-modal-buttons" {formData} {changeShowModal}>
+<slot name="open-modal-buttons" {data} {changeShowModal}>
 	<button
 		type="submit"
 		form={formId}

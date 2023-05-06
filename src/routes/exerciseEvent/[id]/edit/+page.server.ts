@@ -39,6 +39,8 @@ export const actions: Actions = {
       return fail(400, { form });
     }
 
+    console.log(form);
+
     const repo = new ExerciseEventRepo(prisma);
     try {
       await repo.update(form.data, id, user?.userId);

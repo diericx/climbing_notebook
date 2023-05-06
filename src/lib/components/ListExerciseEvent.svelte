@@ -43,7 +43,7 @@
 					<slot name="buttons" {exerciseEvent}>
 						<ModalExerciseEvent
 							action={`/exerciseEvent/${exerciseEvent.id}/edit?/editExerciseEvent`}
-							formData={exerciseEvent}
+							data={exerciseEvent}
 							let:changeShowModal
 						>
 							<div slot="open-modal-buttons" class="inline">

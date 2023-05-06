@@ -14,8 +14,6 @@
 
 	export let dateToMarkCompleted: Date | undefined = undefined;
 	export let exerciseToMarkCompleted: ExerciseEvent | undefined = undefined;
-	export let exerciseGroup: ExerciseGroup | undefined = undefined;
-	export let trainingProgramDay: TrainingProgramDay | undefined = undefined;
 	export let showDifficulty = true;
 	export let showDate = true;
 	export let id = crypto.randomUUID();
@@ -50,12 +48,8 @@
 </script>
 
 <form method="POST" {action} use:enhance {id}>
-	{#if exerciseGroup != undefined}
-		<input type="hidden" name="exerciseGroupId" value={exerciseGroup.id} />
-	{/if}
-	{#if trainingProgramDay != undefined}
-		<input type="hidden" name="trainingProgramDayId" value={trainingProgramDay.id} />
-	{/if}
+	<input type="hidden" name="exerciseGroupId" value={data?.exerciseGroupId} />
+	<input type="hidden" name="trainingProgramDayId" value={data?.trainingProgramDayId} />
 
 	{#if showDate}
 		<DateField name="date" field="date" form={newSuperForm} />
