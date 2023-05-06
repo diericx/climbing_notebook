@@ -1,49 +1,27 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { chartSchema, type ChartSchema } from '$lib/chart';
-	import { defaultData, superForm } from 'sveltekit-superforms/client';
+	import { chartSchema } from '$lib/chart';
 	import TextField from './TextField.svelte';
 	import SelectField from './SelectField.svelte';
 	import type { Chart } from '@prisma/client';
-	import { assignDefined } from '$lib/utils';
-	import type { z } from 'zod';
+	import Form from './Form.svelte';
 
 	export let data: Chart | undefined = undefined;
 	export let action = '?/newExerciseEvent';
 	export let id = crypto.randomUUID();
 	export let showSubmitButton = true;
 	export let onSuccess: (() => Promise<void>) | undefined = undefined;
-
-	// Add redirect data
-	if ($page.url.searchParams.has('redirectTo')) {
-		action += '&redirectTo=' + $page.url.searchParams.get('redirectTo');
-	}
-
-	let formData: z.infer<ChartSchema> = assignDefined(defaultData(chartSchema), data || {});
-	const newSuperForm = superForm(formData, {
-		resetForm: true,
-		id,
-		onResult({ result }) {
-			if (result.type == 'success' && onSuccess != undefined) {
-				onSuccess();
-			}
-		}
-	});
-	const { enhance } = newSuperForm;
 </script>
 
-<form method="POST" use:enhance {action} {id}>
-	<input type="hidden" name="_formId" value={id} />
+<Form schema={chartSchema} {data} {action} {id} {onSuccess} let:form>
+	<TextField name="name" {form} field="name" placeholder={'Pull-ups volume'} />
 
-	<TextField name="name" form={newSuperForm} field="name" placeholder={'Pull-ups volume'} />
-
-	<SelectField name="type" form={newSuperForm} field="type">
+	<SelectField name="type" {form} field="type">
 		<option value="line"> Line Graph </option>
 		<option value="bar"> Bar Graph </option>
 		<option value="heatmap"> Heatmap </option>
 	</SelectField>
 
-	<SelectField name="matchAgainst" form={newSuperForm} field="matchAgainst">
+	<SelectField name="matchAgainst" {form} field="matchAgainst">
 		<option value="metrics"> Metrics </option>
 		<option value="exerciseEvents"> Exercise Events </option>
 	</SelectField>
@@ -58,12 +36,7 @@
 		For simple matching just enter the desired name such as "pull-ups".
 	</span>
 	<br />
-	<TextField
-		name="patternToMatch"
-		form={newSuperForm}
-		field="patternToMatch"
-		placeholder={'pull-ups'}
-	/>
+	<TextField name="patternToMatch" {form} field="patternToMatch" placeholder={'pull-ups'} />
 	<br />
 
 	<label class="font-bold" for="equation">Equation</label>
@@ -79,11 +52,11 @@
 		For example, a valid equation when matching against exercise events might be: sets*reps*weight
 	</span>
 	<br />
-	<TextField name="equation" form={newSuperForm} field="equation" placeholder={'sets*reps'} />
+	<TextField name="equation" {form} field="equation" placeholder={'sets*reps'} />
 	<br />
 
 	{#if showSubmitButton}
 		<button class="bg-green-300 hover:bg-green-400 text-white font-bold px-2 rounded">Submit</button
 		>
 	{/if}
-</form>
+</Form>
