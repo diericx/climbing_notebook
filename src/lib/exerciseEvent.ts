@@ -59,7 +59,7 @@ export class ExerciseEventRepo {
         },
       },
       orderBy: {
-        date: 'desc',
+        name: 'asc',
       },
     }) as ExerciseEvent[];
   }

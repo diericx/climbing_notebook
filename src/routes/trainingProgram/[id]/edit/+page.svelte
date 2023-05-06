@@ -41,7 +41,7 @@ Notes:
 		</h1>
 
 		<ModalTrainingProgram
-			data={trainingProgram}
+			bind:data={trainingProgram}
 			action={`/trainingProgram/${trainingProgram.id}/edit?/editTrainingProgram`}
 			let:changeShowModal
 		>
@@ -71,7 +71,7 @@ Notes:
 						<h2 class="font-bold">{group.name}</h2>
 
 						<ModalExerciseGroup
-							data={group}
+							bind:data={group}
 							action={`/trainingProgram/${trainingProgram.id}/group/${group.id}?/editExerciseGroup`}
 							let:changeShowModal
 						>

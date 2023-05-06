@@ -12,7 +12,7 @@
 	export let showSubmitButton = true;
 </script>
 
-<Form schema={exerciseGroupSchema} {data} {action} {id} {onSuccess} let:form>
+<Form schema={exerciseGroupSchema} bind:data {action} {id} {onSuccess} let:form>
 	<input type="hidden" name="type" value="climbing" />
 
 	<TextField name="name" field="name" {form} />

@@ -17,7 +17,7 @@
 	<h1>Edit Training Program</h1>
 
 	<FormTrainingProgram
-		{data}
+		bind:data
 		id={formId}
 		{action}
 		showSubmitButton={false}

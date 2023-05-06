@@ -6,7 +6,7 @@
 
 	export let schema: z.ZodObject<ZodRawShape>;
 	export let data: any = {};
-	export let id = crypto.randomUUID();
+	export let id: string;
 	export let onSuccess: (() => Promise<void>) | undefined = undefined;
 	export let action = '?/newCalendarEvent';
 
@@ -18,11 +18,15 @@
 	let formData: z.infer<typeof schema> = assignDefined(defaultData(schema), data || {});
 	const newSuperForm = superForm(formData, {
 		resetForm: false,
+		applyAction: false,
 		invalidateAll: true,
 		id,
 		dataType: 'json',
 		onResult({ result }) {
 			if (result.type == 'success' && onSuccess != undefined) {
+				if (result.data && result.data.form && result.data.form.data) {
+					data = assignDefined(data, result.data.form.data);
+				}
 				onSuccess();
 			}
 		}

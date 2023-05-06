@@ -18,7 +18,13 @@
 <Modal bind:showModal>
 	<h1>{title}</h1>
 
-	<FormExerciseGroup {data} id={formId} {action} onSuccess={() => (showModal = false)} />
+	<FormExerciseGroup
+		bind:data
+		id={formId}
+		{action}
+		showSubmitButton={false}
+		onSuccess={() => (showModal = false)}
+	/>
 
 	<div slot="buttons">
 		<slot name="modal-buttons" {data} {changeShowModal}>

@@ -10,7 +10,6 @@
 	import Icon from '@iconify/svelte';
 
 	export let data: PageData;
-	$: trainingProgramExerciseEventForms = data.trainingProgramExerciseEventForms;
 	$: activeTrainingProgram = data.profile?.activeTrainingProgram as TrainingProgramComplete;
 	$: exerciseEvents = data.exerciseEvents as ExerciseEvent[];
 

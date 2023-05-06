@@ -44,10 +44,11 @@
 						<ModalExerciseEvent
 							action={`/exerciseEvent/${exerciseEvent.id}/edit?/editExerciseEvent`}
 							data={exerciseEvent}
-							let:showModal
+							formId={exerciseEvent.id.toString()}
+							let:changeShowModal
 						>
 							<div slot="open-modal-buttons" class="inline">
-								<button class="icon-button" on:click={showModal}>
+								<button class="icon-button" on:click={() => changeShowModal(true)}>
 									<Icon icon="material-symbols:edit-outline" height="18" />
 									<span class="ml-1 mr-1"> Edit {exerciseEvent.id} </span>
 								</button>

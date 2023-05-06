@@ -11,34 +11,32 @@
 	export let action: string;
 	export let showDate = false;
 	export let showDifficulty = false;
-	const formId = crypto.randomUUID();
+	export let formId = crypto.randomUUID();
 
-	function showModal() {
-		isModalVisible = true;
-	}
-	function hideModal() {
-		isModalVisible = false;
+	function changeShowModal(val: boolean) {
+		isModalVisible = val;
 	}
 </script>
 
 <Modal bind:showModal={isModalVisible}>
 	<h1>{title}</h1>
+	{data?.name}
 	<FormExerciseEvent
 		{action}
 		id={formId}
 		{exerciseToMarkCompleted}
 		{dateToMarkCompleted}
 		{showDate}
-		{data}
+		bind:data
 		{showDifficulty}
 		showSubmitButton={false}
 		onSuccess={() => (isModalVisible = false)}
 	/>
 
 	<div slot="buttons">
-		<slot name="modal-buttons" {data} {showModal}>
+		<slot name="modal-buttons" {data} {changeShowModal}>
 			<button type="submit" form={formId} value="Submit">Save</button>
 		</slot>
 	</div>
 </Modal>
-<slot name="open-modal-buttons" {data} {showModal} />
+<slot name="open-modal-buttons" {data} {changeShowModal} />

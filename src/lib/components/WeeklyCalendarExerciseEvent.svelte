@@ -70,7 +70,6 @@
 				let:changeShowModal
 				exerciseToMarkCompleted={exerciseEvent}
 				dateToMarkCompleted={date}
-				applyDefaults={true}
 				showDate
 				showDifficulty
 			>
