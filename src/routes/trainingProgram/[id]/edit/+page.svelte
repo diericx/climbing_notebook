@@ -6,7 +6,6 @@
 	import ExerciseGroupList from '$lib/components/ListExerciseGroup.svelte';
 	import { confirmDelete } from '$lib/utils';
 	import ModalTrainingProgram from '$lib/components/modals/ModalTrainingProgram.svelte';
-	import ModalExerciseGroup from '$lib/components/modals/ModalExerciseGroup.svelte';
 	import ModalTrainingProgramDay from '$lib/components/modals/ModalTrainingProgramDay.svelte';
 	import { modalStore } from '@skeletonlabs/skeleton';
 
@@ -52,9 +51,21 @@
 	<div class="mb-10">
 		<div class="flex justify-between">
 			<div class="text-xl">Exercise Groups</div>
-			<ModalExerciseGroup
-				action={`/trainingProgram/${trainingProgram.id}/edit?/addExerciseGroup`}
-			/>
+			<button
+				class="btn btn-sm variant-ringed"
+				on:click={() =>
+					modalStore.trigger({
+						type: 'component',
+						component: 'formModalExerciseGroup',
+						meta: {
+							action: `/trainingProgram/${trainingProgram.id}/edit?/addExerciseGroup`,
+							title: 'Add Exercise'
+						}
+					})}
+			>
+				<Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
+				<span>Add Group</span>
+			</button>
 		</div>
 
 		<div class="mb-2" />
@@ -65,18 +76,22 @@
 					<div class="flex mb-7 w-full">
 						<h2 class="font-bold">{group.name}</h2>
 
-						<ModalExerciseGroup
-							bind:data={group}
-							action={`/trainingProgram/${trainingProgram.id}/group/${group.id}?/editExerciseGroup`}
-							let:changeShowModal
+						<button
+							class="btn btn-sm variant-ringed"
+							on:click={() =>
+								modalStore.trigger({
+									type: 'component',
+									component: 'formModalExerciseGroup',
+									meta: {
+										data: group,
+										action: `/trainingProgram/${trainingProgram.id}/group/${group.id}?/editExerciseGroup`,
+										title: 'Add Exercise'
+									}
+								})}
 						>
-							<div slot="open-modal-buttons">
-								<button type="button" class="icon-button" on:click={() => changeShowModal(true)}>
-									<Icon icon="material-symbols:edit-outline" height="18" />
-									<span class="ml-1 mr-1"> Edit </span>
-								</button>
-							</div>
-						</ModalExerciseGroup>
+							<Icon icon="material-symbols:edit-outline" height="18" />
+							<span>Edit</span>
+						</button>
 
 						<div class="flex-1" />
 

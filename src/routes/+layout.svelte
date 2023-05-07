@@ -14,6 +14,7 @@
 	import { navigating } from '$app/stores';
 	import type { PageData } from './$types';
 	import FormModalExerciseEvent from '$lib/components/modals/FormModalExerciseEvent.svelte';
+	import FormModalExerciseGroup from '$lib/components/modals/FormModalExerciseGroup.svelte';
 
 	export let data: PageData;
 
@@ -31,7 +32,8 @@
 	}
 
 	const modalComponentRegistry: Record<string, ModalComponent> = {
-		formModalExerciseEvent: { ref: FormModalExerciseEvent }
+		formModalExerciseEvent: { ref: FormModalExerciseEvent },
+		formModalExerciseGroup: { ref: FormModalExerciseGroup }
 	};
 </script>
 

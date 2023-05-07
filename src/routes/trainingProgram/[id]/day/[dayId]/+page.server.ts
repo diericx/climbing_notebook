@@ -66,7 +66,10 @@ export const actions: Actions = {
   },
 
   editTrainingProgramDay: async ({ locals, request, url, params }) => {
-    const form = await superValidate(request, trainingProgramDaySchema);
+    const formData = await request.formData();
+    const form = await superValidate(formData, trainingProgramDaySchema, {
+      id: formData.get('_formId')?.toString(),
+    });
     const { user } = await locals.auth.validateUser();
     const trainingProgramId = Number(params.id);
     const trainingProgramDayId = Number(params.dayId);
@@ -94,8 +97,11 @@ export const actions: Actions = {
   },
 
   newExerciseEvent: async ({ locals, request, url, params }) => {
+    const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
-    const form = await superValidate(request, exerciseEventSchema);
+    const form = await superValidate(formData, exerciseEventSchema, {
+      id: formData.get('_formId')?.toString(),
+    });
     const dayId = Number(params.dayId);
 
     if (!form.valid) {
