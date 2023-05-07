@@ -52,7 +52,7 @@
 		<div class="flex justify-between">
 			<div class="text-xl">Exercise Groups</div>
 			<button
-				class="btn btn-sm variant-ringed"
+				class="btn btn-sm variant-filled"
 				on:click={() =>
 					modalStore.trigger({
 						type: 'component',
@@ -76,22 +76,24 @@
 					<div class="flex mb-7 w-full">
 						<h2 class="font-bold">{group.name}</h2>
 
-						<button
-							class="btn btn-sm variant-ringed"
-							on:click={() =>
-								modalStore.trigger({
-									type: 'component',
-									component: 'formModalExerciseGroup',
-									meta: {
-										data: group,
-										action: `/trainingProgram/${trainingProgram.id}/group/${group.id}?/editExerciseGroup`,
-										title: 'Add Exercise'
-									}
-								})}
-						>
-							<Icon icon="material-symbols:edit-outline" height="18" />
-							<span>Edit</span>
-						</button>
+						<div>
+							<button
+								class="btn btn-sm variant-ringed"
+								on:click={() =>
+									modalStore.trigger({
+										type: 'component',
+										component: 'formModalExerciseGroup',
+										meta: {
+											data: group,
+											action: `/trainingProgram/${trainingProgram.id}/group/${group.id}?/editExerciseGroup`,
+											title: 'Add Exercise'
+										}
+									})}
+							>
+								<Icon icon="material-symbols:edit-outline" height="18" />
+								<span>Edit</span>
+							</button>
+						</div>
 
 						<div class="flex-1" />
 
@@ -102,7 +104,7 @@
 							class="flex-initial"
 						>
 							<input type="hidden" name="exerciseGroupId" value={group.id} />
-							<button on:click={confirmDelete} class="icon-button" type="submit">
+							<button on:click={confirmDelete} class="btn btn-sm variant-ringed" type="submit">
 								<Icon icon="mdi:trash-outline" height="18" />
 								<span class="ml-1 mr-1"> Delete </span>
 							</button>
@@ -112,11 +114,11 @@
 				</div>
 
 				<div>
-					<div class="flex w-full items-center">
+					<div class="flex w-full items-center mb-2">
 						<span class="items-end text-lg font-light">Exercises</span>
 						<div class="flex-1" />
 						<button
-							class="btn btn-sm variant-ringed"
+							class="btn btn-sm variant-filled"
 							on:click={() =>
 								modalStore.trigger({
 									type: 'component',

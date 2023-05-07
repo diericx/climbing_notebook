@@ -66,7 +66,7 @@
 							method="POST"
 							action={`/exerciseEvent/${exerciseEvent.id}/edit?/deleteExerciseEvent`}
 						>
-							<button class="btn btn-sm variant-filled" type="submit" on:click={confirmDelete}>
+							<button class="btn btn-sm variant-ringed" type="submit" on:click={confirmDelete}>
 								<Icon icon="mdi:trash-outline" height="18" />
 								<span class="ml-1 mr-1"> Delete </span>
 							</button>
