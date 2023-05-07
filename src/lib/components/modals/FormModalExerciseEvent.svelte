@@ -2,6 +2,9 @@
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import FormExerciseEvent from '../forms/FormExerciseEvent.svelte';
 	import FormModal from './FormModal.svelte';
+
+	let exerciseToMarkCompleted = $modalStore[0]?.meta?.exerciseToMarkCompleted;
+	let dateToMarkCompleted = $modalStore[0]?.meta?.dateToMarkCompleted;
 </script>
 
 <FormModal let:data let:action let:id>
@@ -10,6 +13,8 @@
 			{data}
 			{action}
 			{id}
+			{exerciseToMarkCompleted}
+			{dateToMarkCompleted}
 			showSubmitButton={false}
 			onSuccess={() => {
 				modalStore.close();

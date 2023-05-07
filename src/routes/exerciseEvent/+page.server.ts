@@ -43,8 +43,6 @@ export const actions: Actions = {
     const form = await superValidate(formData, exerciseEventSchema, {
       id: formData.get('_formId')?.toString(),
     });
-    console.log(Object.fromEntries(formData))
-    console.log(form)
 
     if (!form.valid) {
       return fail(400, { form });
@@ -61,10 +59,10 @@ export const actions: Actions = {
       throw error(500, { message: SERVER_ERROR })
     }
 
-    const exerciseToMarkCompletedId = url.searchParams.get('exerciseToMarkCompletedId');
-    const dateToMarkCompleted = url.searchParams.get('dateToMarkCompleted');
+    const exerciseToMarkCompletedId = formData.get('exerciseToMarkCompletedId');
+    const dateToMarkCompleted = formData.get('dateToMarkCompleted');
     if (exerciseToMarkCompletedId != null && dateToMarkCompleted != null) {
-      await repo.setCompleted(Number(exerciseToMarkCompletedId), user?.userId, new Date(dateToMarkCompleted), true)
+      await repo.setCompleted(Number(exerciseToMarkCompletedId), user?.userId, new Date(dateToMarkCompleted.toString()), true)
     }
 
     if (url.searchParams.has('redirectTo')) {

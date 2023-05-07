@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { ExerciseEvent } from '@prisma/client';
-	import ModalExerciseEvent from '$lib/components/modals/ModalExerciseEvent.svelte';
+	import { modalStore } from '@skeletonlabs/skeleton';
 
 	export let exerciseEvent: ExerciseEvent;
 	export let date: Date;
@@ -63,28 +63,27 @@
 		{/if}
 
 		<div class="pt-1">
-			<ModalExerciseEvent
-				data={exerciseEvent}
-				action="/exerciseEvent?/newExerciseEvent"
-				title="Complete Exercise"
-				let:changeShowModal
-				exerciseToMarkCompleted={exerciseEvent}
-				dateToMarkCompleted={date}
-				showDate
-				showDifficulty
+			<button
+				class="btn btn-sm variant-ringed bg-green-300 {isMarkedCompleted
+					? 'hover:bg-green-300'
+					: 'hover:bg-green-400'}"
+				disabled={isMarkedCompleted}
+				on:click={() =>
+					modalStore.trigger({
+						type: 'component',
+						component: 'formModalExerciseEvent',
+						meta: {
+							// remove gropu id and program id so this will be considered an exercise event
+							data: { ...exerciseEvent, exerciseGroupId: null, trainingProgramDayId: null },
+							action: `/exerciseEvent?/newExerciseEvent`,
+							title: 'Complete Exercise',
+							exerciseToMarkCompleted: exerciseEvent,
+							dateToMarkCompleted: date
+						}
+					})}
 			>
-				<div slot="open-modal-buttons">
-					<button
-						class="icon-button text-white py-0 m-0 border-0 bg-green-300 {isMarkedCompleted
-							? 'hover:bg-green-300'
-							: 'hover:bg-green-400'}"
-						disabled={isMarkedCompleted}
-						on:click={() => changeShowModal(true)}
-					>
-						<span class="ml-1 mr-1">Complete</span>
-					</button>
-				</div>
-			</ModalExerciseEvent>
+				<span>Complete</span>
+			</button>
 		</div>
 	</div>
 </div>

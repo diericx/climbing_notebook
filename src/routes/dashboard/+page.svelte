@@ -2,7 +2,6 @@
 	import type { PageData } from './$types';
 	import Chart from '$lib/components/Chart.svelte';
 	import Calendar from '$lib/components/Calendar.svelte';
-	import { modalStore } from '@skeletonlabs/skeleton';
 
 	export let data: PageData;
 	$: profile = data.profile;
@@ -10,12 +9,10 @@
 	$: calendarEvents = data.calendarEvents;
 </script>
 
-<button on:click={() => modalStore.trigger(alert)}>trigger</button>
-
 <br />
 
 <div class="pb-4">
-	<h1 class="inline">Your Goals</h1>
+	<h2 class="inline">Your Goals</h2>
 	<a href={`/profile/edit?redirectTo=/`}>Edit</a>
 
 	<hr />
@@ -32,7 +29,7 @@
 </div>
 
 <div>
-	<h1>Calendar</h1>
+	<h2>Calendar</h2>
 	<hr />
 
 	<div>

@@ -13,7 +13,6 @@
 	import '@event-calendar/core/index.css';
 	import { navigating } from '$app/stores';
 	import type { PageData } from './$types';
-	import ModalExerciseEvent from '$lib/components/modals/ModalExerciseEvent.svelte';
 	import FormModalExerciseEvent from '$lib/components/modals/FormModalExerciseEvent.svelte';
 
 	export let data: PageData;

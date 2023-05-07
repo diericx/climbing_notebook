@@ -9,10 +9,13 @@ import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
 
 export const actions: Actions = {
   editExerciseGroup: async ({ locals, request, url, params }) => {
+    const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
     const trainingProgramId = Number(params.id);
     const exerciseGroupId = Number(params.groupId);
-    const form = await superValidate(request, exerciseGroupSchema);
+    const form = await superValidate(formData, exerciseGroupSchema, {
+      id: formData.get('_formId')?.toString(),
+    });
 
     if (!form.valid) {
       return fail(400, { form });
@@ -60,8 +63,11 @@ export const actions: Actions = {
   },
 
   newExerciseEvent: async ({ locals, request, url, params }) => {
+    const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
-    const form = await superValidate(request, exerciseEventSchema);
+    const form = await superValidate(formData, exerciseEventSchema, {
+      id: formData.get('_formId')?.toString(),
+    });
     const groupId = Number(params.groupId);
 
     if (!form.valid) {

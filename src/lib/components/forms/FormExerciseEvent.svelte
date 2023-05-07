@@ -17,12 +17,6 @@
 	export let id = crypto.randomUUID();
 	export let showSubmitButton = true;
 	export let onSuccess: (() => void) | undefined = undefined;
-	// Add other query data
-	if (exerciseToMarkCompleted != undefined && dateToMarkCompleted != undefined) {
-		action += `&exerciseToMarkCompletedId=${
-			exerciseToMarkCompleted.id
-		}&dateToMarkCompleted=${dateToMarkCompleted.toString()}`;
-	}
 </script>
 
 <Form schema={exerciseEventSchema} bind:data {action} {id} {onSuccess} let:form>
@@ -31,6 +25,12 @@
 	{/if}
 	{#if data?.trainingProgramDayId}
 		<input type="hidden" name="trainingProgramDayId" value={data?.trainingProgramDayId} />
+	{/if}
+	{#if exerciseToMarkCompleted != undefined}
+		<input type="hidden" name="exerciseToMarkCompletedId" value={exerciseToMarkCompleted.id} />
+	{/if}
+	{#if dateToMarkCompleted != undefined}
+		<input type="hidden" name="dateToMarkCompleted" value={dateToMarkCompleted.toString()} />
 	{/if}
 
 	{#if showDate}

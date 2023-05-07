@@ -1,19 +1,14 @@
-<!--
-Notes:
-- This component is effectively one complex form that is updating a single json object to be submitted
-- Assumes group name uniqueness, if duplicates exist unexpected behavior will occur
--->
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { enhance } from '$app/forms';
 	import Icon from '@iconify/svelte';
 	import ExerciseEventsList from '$lib/components/ListExerciseEvent.svelte';
 	import ExerciseGroupList from '$lib/components/ListExerciseGroup.svelte';
-	import ModalExerciseEvent from '$lib/components/modals/ModalExerciseEvent.svelte';
 	import { confirmDelete } from '$lib/utils';
 	import ModalTrainingProgram from '$lib/components/modals/ModalTrainingProgram.svelte';
 	import ModalExerciseGroup from '$lib/components/modals/ModalExerciseGroup.svelte';
 	import ModalTrainingProgramDay from '$lib/components/modals/ModalTrainingProgramDay.svelte';
+	import { modalStore } from '@skeletonlabs/skeleton';
 
 	export let data: PageData;
 	let scrollY: number;
@@ -105,17 +100,21 @@ Notes:
 					<div class="flex w-full items-center">
 						<span class="items-end text-lg font-light">Exercises</span>
 						<div class="flex-1" />
-						<ModalExerciseEvent
-							action={`/trainingProgram/${trainingProgram.id}/group/${group.id}?/newExerciseEvent`}
-							let:changeShowModal
+						<button
+							class="btn btn-sm variant-ringed"
+							on:click={() =>
+								modalStore.trigger({
+									type: 'component',
+									component: 'formModalExerciseEvent',
+									meta: {
+										action: `/trainingProgram/${trainingProgram.id}/group/${group.id}?/newExerciseEvent`,
+										title: 'Add Exercise'
+									}
+								})}
 						>
-							<div class="mb-2" slot="open-modal-buttons">
-								<button class="icon-button mr-0" on:click={() => changeShowModal(true)}>
-									<Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-									<span class="ml-1 mr-1"> Add Exercise </span>
-								</button>
-							</div>
-						</ModalExerciseEvent>
+							<Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
+							<span>Add Exercise</span>
+						</button>
 					</div>
 
 					<ExerciseEventsList exerciseEvents={group.exercises} shouldShowDate={false} />
@@ -204,18 +203,21 @@ Notes:
 
 				<div class="flex justify-between">
 					<div class="text-lg font-bold">Exercises</div>
-					<ModalExerciseEvent
-						trainingProgramDay={day}
-						action={`/trainingProgram/${trainingProgram.id}/day/${day.id}/?/addExerciseEvent`}
-						let:changeShowModal
+					<button
+						class="btn btn-sm variant-ringed"
+						on:click={() =>
+							modalStore.trigger({
+								type: 'component',
+								component: 'formModalExerciseEvent',
+								meta: {
+									action: `/trainingProgram/${trainingProgram.id}/day/${day.id}?/newExerciseEvent`,
+									title: 'Add Exercise'
+								}
+							})}
 					>
-						<div slot="open-modal-buttons" class="mb-2">
-							<button class="icon-button mr-0" on:click={() => changeShowModal(true)}>
-								<Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-								<span class="ml-1 mr-1"> Add Exercise </span>
-							</button>
-						</div>
-					</ModalExerciseEvent>
+						<Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
+						<span>Add Exercise</span>
+					</button>
 				</div>
 				<ExerciseEventsList exerciseEvents={day.exercises} shouldShowDate={false} />
 			</div>
