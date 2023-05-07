@@ -34,18 +34,22 @@
 			{trainingProgram.name}
 		</h1>
 
-		<ModalTrainingProgram
-			bind:data={trainingProgram}
-			action={`/trainingProgram/${trainingProgram.id}/edit?/editTrainingProgram`}
-			let:changeShowModal
+		<button
+			class="btn btn-sm variant-ringed"
+			on:click={() =>
+				modalStore.trigger({
+					type: 'component',
+					component: 'formModalTrainingProgram',
+					meta: {
+						data: trainingProgram,
+						action: `/trainingProgram/${trainingProgram.id}/edit?/editTrainingProgram`,
+						title: 'Add Exercise'
+					}
+				})}
 		>
-			<div slot="open-modal-buttons">
-				<button type="button" class="icon-button" on:click={() => changeShowModal(true)}>
-					<Icon icon="material-symbols:edit-outline" height="18" />
-					<span class="ml-1 mr-1"> Edit </span>
-				</button>
-			</div>
-		</ModalTrainingProgram>
+			<Icon icon="material-symbols:edit-outline" height="18" />
+			<span>Edit</span>
+		</button>
 	</div>
 
 	<div class="mb-10">

@@ -1,13 +1,12 @@
 import type { PrismaClient, TrainingProgram } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
-import type { ExerciseGroupFormData } from './exerciseGroup';
-import type { ExerciseGroupComplete, TrainingProgramComplete, TrainingProgramDayComplete } from './prisma';
-import type { TrainingProgramDayFormData } from './trainingProgramDay';
+import type { ExerciseGroupSchema } from './exerciseGroup';
+import type { TrainingProgramComplete } from './prisma';
 
 
 export const trainingProgramSchema = z.object({
-  name: z.string(),
+  name: z.string().min(1),
 });
 export type TrainingProgramSchema = typeof trainingProgramSchema;
 
@@ -140,10 +139,7 @@ export class TrainingProgramRepo {
     })
   }
 
-  async addExerciseGroup(exerciseGroup: ExerciseGroupFormData, id: number, ownerId: string): Promise<TrainingProgram> {
-    if (exerciseGroup.name == undefined) {
-      throw new APIError('INVALID_INPUT', '')
-    }
+  async addExerciseGroup(exerciseGroup: z.infer<ExerciseGroupSchema>, id: number, ownerId: string): Promise<TrainingProgram> {
     await this.getOneAndValidateOwner(id, ownerId);
     return await this.prisma.trainingProgram.update({
       where: {
@@ -165,10 +161,7 @@ export class TrainingProgramRepo {
     })
   }
 
-  async editExerciseGroup(exerciseGroup: ExerciseGroupFormData, trainingProgramId: number, exerciseGroupId: number, ownerId: string): Promise<TrainingProgram> {
-    if (exerciseGroup.name == undefined) {
-      throw new APIError('INVALID_INPUT', '')
-    }
+  async editExerciseGroup(exerciseGroup: z.infer<ExerciseGroupSchema>, trainingProgramId: number, exerciseGroupId: number, ownerId: string): Promise<TrainingProgram> {
     await this.getOneAndValidateOwner(trainingProgramId, ownerId);
     return await this.prisma.trainingProgram.update({
       where: {
@@ -251,7 +244,7 @@ export class TrainingProgramRepo {
     })
   }
 
-  async editTrainingProgramDay(data: TrainingProgramDayFormData, trainingProgramId: number, trainingProgramDayId: number, ownerId: string): Promise<TrainingProgram> {
+  async editTrainingProgramDay(data: z.infer<TrainingProgramSchema>, trainingProgramId: number, trainingProgramDayId: number, ownerId: string): Promise<TrainingProgram> {
     await this.getOneAndValidateOwner(trainingProgramId, ownerId);
     return await this.prisma.trainingProgram.update({
       where: {

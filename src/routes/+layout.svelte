@@ -15,6 +15,7 @@
 	import type { PageData } from './$types';
 	import FormModalExerciseEvent from '$lib/components/modals/FormModalExerciseEvent.svelte';
 	import FormModalExerciseGroup from '$lib/components/modals/FormModalExerciseGroup.svelte';
+	import FormModalTrainingProgram from '$lib/components/modals/FormModalTrainingProgram.svelte';
 
 	export let data: PageData;
 
@@ -33,7 +34,8 @@
 
 	const modalComponentRegistry: Record<string, ModalComponent> = {
 		formModalExerciseEvent: { ref: FormModalExerciseEvent },
-		formModalExerciseGroup: { ref: FormModalExerciseGroup }
+		formModalExerciseGroup: { ref: FormModalExerciseGroup },
+		formModalTrainingProgram: { ref: FormModalTrainingProgram }
 	};
 </script>
 
