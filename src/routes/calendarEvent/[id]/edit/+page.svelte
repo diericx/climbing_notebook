@@ -3,7 +3,6 @@
 	import type { PageData } from './$types';
 
 	export let data: PageData;
-	$: calendarEvent = data.calendarEvent;
 </script>
 
 <div class="grid grid-cols-1">

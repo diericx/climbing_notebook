@@ -7,8 +7,6 @@
 	$: journalEntry = data.journalEntry;
 </script>
 
-<br />
-
 <div class="grid grid-cols-1">
 	<div>
 		<h2>Edit Journal Entry</h2>

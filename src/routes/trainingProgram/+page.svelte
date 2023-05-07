@@ -2,18 +2,13 @@
 	import { enhance } from '$app/forms';
 	import type { TrainingProgramWithDays } from '$lib/prisma';
 	import { confirmDelete } from '$lib/utils';
-	import type { PageData, ActionData } from './$types';
+	import type { PageData } from './$types';
 
 	export let data: PageData;
-	export let form: ActionData;
 
 	$: profile = data.profile;
 	$: trainingPrograms = data.trainingPrograms as TrainingProgramWithDays[];
 </script>
-
-{#if form?.message}<p class="error">{form?.message}</p>{/if}
-
-<br />
 
 <div>
 	<div>

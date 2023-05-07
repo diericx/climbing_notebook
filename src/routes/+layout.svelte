@@ -159,7 +159,7 @@
 	</svelte:fragment>
 
 	<div class="container mx-auto px-3">
-		<main>
+		<main class="pt-8">
 			<slot />
 		</main>
 	</div>

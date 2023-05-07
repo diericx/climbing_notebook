@@ -7,8 +7,6 @@
 	$: newChartForm = data.newChartForm;
 </script>
 
-<br />
-
 <div class="grid grid-cols-1">
 	<div>
 		<h1>Edit Chart</h1>

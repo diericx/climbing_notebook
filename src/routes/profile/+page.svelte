@@ -5,8 +5,6 @@
 	const { profile, user } = data;
 </script>
 
-<br />
-
 <h1>Account Info</h1>
 <hr />
 <p>Username: {user?.username}</p>

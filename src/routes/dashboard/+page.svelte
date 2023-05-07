@@ -11,8 +11,6 @@
 	$: calendarEvents = data.calendarEvents;
 </script>
 
-<br />
-
 <div class="mb-12">
 	<h1 class="inline">Your Goals</h1>
 	<a href={`/profile/edit?redirectTo=/`}>Edit</a>

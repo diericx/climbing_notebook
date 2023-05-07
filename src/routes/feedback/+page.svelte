@@ -1,5 +1,3 @@
-<br />
-
 <h1>Feedback</h1>
 <hr />
 If you have any feedback or would like to request any features, feel free to send me an email!
