@@ -4,18 +4,11 @@
 	import DayGrid from '@event-calendar/day-grid';
 	import Interraction from '@event-calendar/interaction';
 	import type { CalendarEvent, JournalEntry } from '@prisma/client';
-	import ModalShowJournalEntry from '$lib/components/modals/ModalShowJournalEntry.svelte';
-	import ModalShowCalendarEvent from '$lib/components/modals/ModalShowCalendarEvent.svelte';
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import Icon from '@iconify/svelte';
 
 	export let calendarEvents: CalendarEvent[];
 	export let journalEntries: JournalEntry[];
-
-	let journalEntry: JournalEntry | undefined = undefined;
-	let showModalJournalEntry = false;
-	let calendarEvent: CalendarEvent | undefined = undefined;
-	let showModalCalendarEvent = false;
 
 	type EventExtendedProps = {
 		onClick: () => void;
@@ -37,8 +30,13 @@
 			title: j.content.substring(0, 15),
 			extendedProps: {
 				onClick: () => {
-					journalEntry = j;
-					showModalJournalEntry = true;
+					modalStore.trigger({
+						type: 'component',
+						component: 'modalJournalEntry',
+						meta: {
+							data: j
+						}
+					});
 				}
 			}
 		};
@@ -52,8 +50,13 @@
 		title: e.title,
 		extendedProps: {
 			onClick: () => {
-				calendarEvent = e;
-				showModalCalendarEvent = true;
+				modalStore.trigger({
+					type: 'component',
+					component: 'modalCalendarEvent',
+					meta: {
+						data: e
+					}
+				});
 			}
 		}
 	}));
@@ -88,7 +91,5 @@
 	<Icon icon="material-symbols:edit-outline" height="18" />
 	<span>New Calendar Event</span>
 </button>
-<Calendar {plugins} {options} />
 
-<ModalShowJournalEntry bind:showModal={showModalJournalEntry} {journalEntry} />
-<ModalShowCalendarEvent bind:showModal={showModalCalendarEvent} {calendarEvent} />
+<Calendar {plugins} {options} />
