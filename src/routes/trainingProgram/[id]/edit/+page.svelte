@@ -5,8 +5,6 @@
 	import ExerciseEventsList from '$lib/components/ListExerciseEvent.svelte';
 	import ExerciseGroupList from '$lib/components/ListExerciseGroup.svelte';
 	import { confirmDelete } from '$lib/utils';
-	import ModalTrainingProgram from '$lib/components/modals/ModalTrainingProgram.svelte';
-	import ModalTrainingProgramDay from '$lib/components/modals/ModalTrainingProgramDay.svelte';
 	import { modalStore } from '@skeletonlabs/skeleton';
 
 	export let data: PageData;
@@ -161,22 +159,24 @@
 							<i>{day.description || 'No description for this day'}</i>
 						</span>
 					</div>
-					<ModalTrainingProgramDay
-						data={day}
-						action={`/trainingProgram/${trainingProgram.id}/day/${day.id}?/editTrainingProgramDay`}
-						let:changeShowModal
-					>
-						<div slot="open-modal-buttons">
-							<button
-								type="button"
-								class="text-gray-400 border ml-2 bg-white hover:bg-gray-50 font-medium rounded text-sm p-1 text-center inline-flex items-center mr-2"
-								on:click={() => changeShowModal(true)}
-							>
-								<Icon icon="material-symbols:edit-outline" height="18" />
-								<span class="ml-1 mr-1"> Edit </span>
-							</button>
-						</div>
-					</ModalTrainingProgramDay>
+					<div>
+						<button
+							class="btn btn-sm variant-ringed"
+							on:click={() =>
+								modalStore.trigger({
+									type: 'component',
+									component: 'formModalTrainingProgramDay',
+									meta: {
+										data: day,
+										action: `/trainingProgram/${trainingProgram.id}/day/${day.id}?/editTrainingProgramDay`,
+										title: 'Add Exercise'
+									}
+								})}
+						>
+							<Icon icon="material-symbols:edit-outline" height="18" />
+							<span>Edit</span>
+						</button>
+					</div>
 				</div>
 
 				<div class="mb-12">

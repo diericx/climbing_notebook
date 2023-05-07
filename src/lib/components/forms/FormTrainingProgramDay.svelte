@@ -7,7 +7,7 @@
 	// Form action to execute
 	export let action = '';
 	export let data: TrainingProgramDay | undefined = undefined;
-	export let onSuccess: (() => Promise<void>) | undefined = undefined;
+	export let onSuccess: (() => void) | undefined = undefined;
 	export let id = crypto.randomUUID();
 	export let showSubmitButton = true;
 </script>
