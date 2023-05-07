@@ -41,7 +41,7 @@
 					meta: {
 						data: trainingProgram,
 						action: `/trainingProgram/${trainingProgram.id}/edit?/editTrainingProgram`,
-						title: 'Add Exercise'
+						title: 'Edit Training Program'
 					}
 				})}
 		>
@@ -61,7 +61,7 @@
 						component: 'formModalExerciseGroup',
 						meta: {
 							action: `/trainingProgram/${trainingProgram.id}/edit?/addExerciseGroup`,
-							title: 'Add Exercise'
+							title: 'Add Group'
 						}
 					})}
 			>
@@ -88,7 +88,7 @@
 										meta: {
 											data: group,
 											action: `/trainingProgram/${trainingProgram.id}/group/${group.id}?/editExerciseGroup`,
-											title: 'Add Exercise'
+											title: 'Edit Exercise'
 										}
 									})}
 							>

@@ -6,7 +6,8 @@
 	import type { CalendarEvent, JournalEntry } from '@prisma/client';
 	import ModalShowJournalEntry from '$lib/components/modals/ModalShowJournalEntry.svelte';
 	import ModalShowCalendarEvent from '$lib/components/modals/ModalShowCalendarEvent.svelte';
-	import ModalNewCalendarEvent from '$lib/components/modals/ModalNewCalendarEvent.svelte';
+	import { modalStore } from '@skeletonlabs/skeleton';
+	import Icon from '@iconify/svelte';
 
 	export let calendarEvents: CalendarEvent[];
 	export let journalEntries: JournalEntry[];
@@ -15,7 +16,6 @@
 	let showModalJournalEntry = false;
 	let calendarEvent: CalendarEvent | undefined = undefined;
 	let showModalCalendarEvent = false;
-	let showModalNewCalendarEvent = false;
 
 	type EventExtendedProps = {
 		onClick: () => void;
@@ -73,10 +73,22 @@
 	};
 </script>
 
-<button on:click={() => (showModalNewCalendarEvent = true)}> New Event </button>
-
+<button
+	class="btn btn-sm variant-filled"
+	on:click={() =>
+		modalStore.trigger({
+			type: 'component',
+			component: 'formModalCalendarEvent',
+			meta: {
+				action: `/calendarEvent?/new`,
+				title: 'New Calendar Event'
+			}
+		})}
+>
+	<Icon icon="material-symbols:edit-outline" height="18" />
+	<span>New Calendar Event</span>
+</button>
 <Calendar {plugins} {options} />
 
 <ModalShowJournalEntry bind:showModal={showModalJournalEntry} {journalEntry} />
 <ModalShowCalendarEvent bind:showModal={showModalCalendarEvent} {calendarEvent} />
-<ModalNewCalendarEvent bind:showModal={showModalNewCalendarEvent} />

@@ -13,7 +13,7 @@
 	// Form customization
 	export let id = crypto.randomUUID();
 	export let showSubmitButton = true;
-	export let onSuccess: (() => Promise<void>) | undefined = undefined;
+	export let onSuccess: (() => void) | undefined = undefined;
 </script>
 
 <Form schema={calendarEventSchema} {data} {action} {id} {onSuccess} let:form>

@@ -17,6 +17,7 @@
 	import FormModalExerciseGroup from '$lib/components/modals/FormModalExerciseGroup.svelte';
 	import FormModalTrainingProgram from '$lib/components/modals/FormModalTrainingProgram.svelte';
 	import FormModalTrainingProgramDay from '$lib/components/modals/FormModalTrainingProgramDay.svelte';
+	import FormModalCalendarEvent from '$lib/components/modals/FormModalCalendarEvent.svelte';
 
 	export let data: PageData;
 
@@ -37,7 +38,8 @@
 		formModalExerciseEvent: { ref: FormModalExerciseEvent },
 		formModalExerciseGroup: { ref: FormModalExerciseGroup },
 		formModalTrainingProgram: { ref: FormModalTrainingProgram },
-		formModalTrainingProgramDay: { ref: FormModalTrainingProgramDay }
+		formModalTrainingProgramDay: { ref: FormModalTrainingProgramDay },
+		formModalCalendarEvent: { ref: FormModalCalendarEvent }
 	};
 </script>
 
