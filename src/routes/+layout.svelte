@@ -1,13 +1,20 @@
 <script lang="ts">
 	import NProgress from 'nprogress';
 	import Header from './Header.svelte';
+	import { Modal, type ModalComponent } from '@skeletonlabs/skeleton';
+	// Your selected Skeleton theme:
+	import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
+
+	// This contains the bulk of Skeletons required styles:
+	import '@skeletonlabs/skeleton/styles/all.css';
+
 	import './styles.css';
 	import '../app.css';
 	import '@event-calendar/core/index.css';
 	import { navigating } from '$app/stores';
 	import type { PageData } from './$types';
-	// NProgress css
-	import 'nprogress/nprogress.css';
+	import ModalExerciseEvent from '$lib/components/modals/ModalExerciseEvent.svelte';
+	import FormModalExerciseEvent from '$lib/components/modals/FormModalExerciseEvent.svelte';
 
 	export let data: PageData;
 
@@ -23,11 +30,16 @@
 			NProgress.done();
 		}
 	}
+
+	const modalComponentRegistry: Record<string, ModalComponent> = {
+		formModalExerciseEvent: { ref: FormModalExerciseEvent }
+	};
 </script>
 
 <div class="app">
 	<Header user={data.user} />
 
+	<Modal components={modalComponentRegistry} />
 	<div class="container mx-auto px-3">
 		<main>
 			<slot />

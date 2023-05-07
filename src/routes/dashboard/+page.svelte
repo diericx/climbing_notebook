@@ -2,12 +2,15 @@
 	import type { PageData } from './$types';
 	import Chart from '$lib/components/Chart.svelte';
 	import Calendar from '$lib/components/Calendar.svelte';
+	import { modalStore } from '@skeletonlabs/skeleton';
 
 	export let data: PageData;
 	$: profile = data.profile;
 	$: journalEntries = data.journalEntries;
 	$: calendarEvents = data.calendarEvents;
 </script>
+
+<button on:click={() => modalStore.trigger(alert)}>trigger</button>
 
 <br />
 

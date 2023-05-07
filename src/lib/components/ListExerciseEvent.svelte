@@ -4,6 +4,8 @@
 	import { confirmDelete } from '$lib/utils';
 	import ModalExerciseEvent from '$lib/components/modals/ModalExerciseEvent.svelte';
 	import Icon from '@iconify/svelte';
+	import { Modal, modalStore } from '@skeletonlabs/skeleton';
+	import type { ModalSettings, ModalComponent } from '@skeletonlabs/skeleton';
 
 	export let exerciseEvents: ExerciseEvent[];
 	export let shouldShowDate = true;
@@ -39,28 +41,31 @@
 						{/if}
 					</p>
 				</div>
-				<div class="flex min-w-0 float-right">
+				<div class="flex min-w-0 float-right space-x-2">
 					<slot name="buttons" {exerciseEvent}>
-						<ModalExerciseEvent
-							action={`/exerciseEvent/${exerciseEvent.id}/edit?/editExerciseEvent`}
-							data={exerciseEvent}
-							formId={exerciseEvent.id.toString()}
-							let:changeShowModal
+						<button
+							class="btn btn-sm variant-ringed"
+							on:click={() =>
+								modalStore.trigger({
+									type: 'component',
+									component: 'formModalExerciseEvent',
+									meta: {
+										data: exerciseEvent,
+										action: `/exerciseEvent/${exerciseEvent.id}/edit?/editExerciseEvent`,
+										title: 'Edit Exercise Event'
+									}
+								})}
 						>
-							<div slot="open-modal-buttons" class="inline">
-								<button class="icon-button" on:click={() => changeShowModal(true)}>
-									<Icon icon="material-symbols:edit-outline" height="18" />
-									<span class="ml-1 mr-1"> Edit {exerciseEvent.id} </span>
-								</button>
-							</div>
-						</ModalExerciseEvent>
+							<Icon icon="material-symbols:edit-outline" height="18" />
+							<span>Edit</span>
+						</button>
 						<form
 							class="inline"
 							use:enhance
 							method="POST"
 							action={`/exerciseEvent/${exerciseEvent.id}/edit?/deleteExerciseEvent`}
 						>
-							<button on:click={confirmDelete} class="icon-button" type="submit">
+							<button class="btn btn-sm variant-filled" type="submit" on:click={confirmDelete}>
 								<Icon icon="mdi:trash-outline" height="18" />
 								<span class="ml-1 mr-1"> Delete </span>
 							</button>

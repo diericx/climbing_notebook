@@ -16,7 +16,7 @@
 	export let showDate = true;
 	export let id = crypto.randomUUID();
 	export let showSubmitButton = true;
-	export let onSuccess: (() => Promise<void>) | undefined = undefined;
+	export let onSuccess: (() => void) | undefined = undefined;
 	// Add other query data
 	if (exerciseToMarkCompleted != undefined && dateToMarkCompleted != undefined) {
 		action += `&exerciseToMarkCompletedId=${

@@ -7,7 +7,7 @@
 	export let schema: z.ZodObject<ZodRawShape>;
 	export let data: any = {};
 	export let id: string;
-	export let onSuccess: (() => Promise<void>) | undefined = undefined;
+	export let onSuccess: (() => void) | undefined = undefined;
 	export let action = '?/newCalendarEvent';
 
 	// Add redirect data
@@ -34,7 +34,7 @@
 	const { enhance } = newSuperForm;
 </script>
 
-<form method="POST" {action} use:enhance {id}>
+<form method="POST" {action} use:enhance {id} class="form">
 	<input type="hidden" name="_formId" value={id} />
 	<slot form={newSuperForm} />
 </form>
