@@ -2,6 +2,8 @@
 	import type { PageData } from './$types';
 	import Chart from '$lib/components/Chart.svelte';
 	import Calendar from '$lib/components/Calendar.svelte';
+	import { modalStore } from '@skeletonlabs/skeleton';
+	import Icon from '@iconify/svelte';
 
 	export let data: PageData;
 	$: profile = data.profile;
@@ -11,8 +13,8 @@
 
 <br />
 
-<div class="pb-4">
-	<h2 class="inline">Your Goals</h2>
+<div class="mb-12">
+	<h1 class="inline">Your Goals</h1>
 	<a href={`/profile/edit?redirectTo=/`}>Edit</a>
 
 	<hr />
@@ -28,8 +30,26 @@
 	{/if}
 </div>
 
-<div>
-	<h2>Calendar</h2>
+<div class="mb-12">
+	<div class="flex justify-between mb-2">
+		<h1>Calendar</h1>
+		<button
+			class="btn btn-sm variant-filled"
+			on:click={() =>
+				modalStore.trigger({
+					type: 'component',
+					component: 'formModalCalendarEvent',
+					meta: {
+						action: `/calendarEvent?/new`,
+						title: 'New Calendar Event'
+					}
+				})}
+		>
+			<Icon icon="material-symbols:edit-outline" height="18" />
+			<span>New Calendar Event</span>
+		</button>
+	</div>
+
 	<hr />
 
 	<div>

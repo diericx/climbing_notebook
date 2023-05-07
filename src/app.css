@@ -4,10 +4,13 @@
 
 @layer base {
   h1 {
-    @apply text-2xl;
+    @apply text-3xl !important;
   }
   h2 {
-    @apply text-lg;
+    @apply text-2xl !important;
+  }
+  h3 {
+    @apply text-base !important;
   }
 }
 
@@ -117,5 +120,8 @@
     @apply bg-white hover:bg-gray-50 border;
     @apply ml-2 p-1 inline-flex items-center rounded;
   }
-}
 
+  .card {
+    background-color: white;
+  }
+}

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { camelToTitle } from '$lib/utils';
 	import type { FieldPath, UnwrapEffects } from 'sveltekit-superforms';
 	import type { SuperForm } from 'sveltekit-superforms/client';
 	import { formFieldProxy } from 'sveltekit-superforms/client';
@@ -13,7 +14,7 @@
 </script>
 
 <label>
-	<span class="font-bold">{String(path)}</span>
+	<span class="font-bold">{camelToTitle(String(path))}</span>
 	<br />
 	<select bind:value={$value} data-invalid={$errors} {...$constraints} {...$$restProps}>
 		<slot />

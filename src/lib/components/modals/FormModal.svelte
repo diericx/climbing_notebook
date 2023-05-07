@@ -8,9 +8,9 @@
 	let action = $modalStore[0]?.meta?.action;
 </script>
 
-<div class="card">
+<div class="card w-modal">
 	<header class="card-header">
-		<h3 class="font-bold">{title}</h3>
+		<h2 class="font-bold">{title}</h2>
 	</header>
 	<section class="p-4">
 		<slot name="content" {action} {data} {id} />

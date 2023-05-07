@@ -4,7 +4,7 @@
 	let calendarEvent = $modalStore[0]?.meta?.data as CalendarEvent;
 </script>
 
-<div class="card">
+<div class="card w-modal">
 	<header class="card-header">
 		<h3 class="font-bold">Event</h3>
 	</header>

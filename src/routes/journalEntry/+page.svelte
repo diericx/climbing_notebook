@@ -7,8 +7,6 @@
 	export let data: PageData;
 </script>
 
-<h1>Journal</h1>
-
 <br />
 
 <div class="grid grid-cols-1">

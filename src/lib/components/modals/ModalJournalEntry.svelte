@@ -4,7 +4,7 @@
 	let journalEntry = $modalStore[0]?.meta?.data as JournalEntry;
 </script>
 
-<div class="card">
+<div class="card w-modal">
 	<header class="card-header">
 		<h3 class="font-bold">Journal Entry</h3>
 	</header>

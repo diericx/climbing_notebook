@@ -76,20 +76,4 @@
 	};
 </script>
 
-<button
-	class="btn btn-sm variant-filled"
-	on:click={() =>
-		modalStore.trigger({
-			type: 'component',
-			component: 'formModalCalendarEvent',
-			meta: {
-				action: `/calendarEvent?/new`,
-				title: 'New Calendar Event'
-			}
-		})}
->
-	<Icon icon="material-symbols:edit-outline" height="18" />
-	<span>New Calendar Event</span>
-</button>
-
 <Calendar {plugins} {options} />
