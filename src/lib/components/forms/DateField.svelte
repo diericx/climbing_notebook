@@ -28,10 +28,8 @@
 		{...$$restProps}
 	/>
 </label>
-<br />
 {#if $errors}
-	<span class="invalid">{$errors}</span>
-	<br />
+	<div class="invalid">{$errors}</div>
 {/if}
 
 <style lang="scss">
