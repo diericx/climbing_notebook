@@ -63,9 +63,9 @@
     @apply text-gray-400
   }
 
-  button {
-    @apply px-2 bg-white rounded shadow border-gray-200
-  }
+  /* button { */
+  /*   @apply px-2 bg-white rounded shadow border-gray-200 */
+  /* } */
 
   table {
     @apply w-full table-auto text-left text-gray-400 shadow
@@ -86,9 +86,9 @@
     @apply px-6 py-1
   }
 
-  a {
-    @apply text-blue-500
-  }
+  /* a { */
+  /*   color: inherit; */
+  /* } */
 
   hr {
     @apply pb-2

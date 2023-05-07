@@ -45,6 +45,7 @@
 		"@event-calendar/day-grid": "^0.18.1",
 		"@event-calendar/interaction": "^0.18.1",
 		"@event-calendar/time-grid": "^0.18.1",
+		"@floating-ui/dom": "^1.2.7",
 		"@fontsource/fira-mono": "^4.5.10",
 		"@fontsource/pt-sans": "^4.5.11",
 		"@iconify/svelte": "^3.1.3",
