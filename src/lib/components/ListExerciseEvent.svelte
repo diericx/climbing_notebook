@@ -2,16 +2,17 @@
 	import type { ExerciseEvent } from '@prisma/client';
 	import { enhance } from '$app/forms';
 	import { confirmDelete } from '$lib/utils';
-	import ModalExerciseEvent from '$lib/components/modals/ModalExerciseEvent.svelte';
 	import Icon from '@iconify/svelte';
-	import { Modal, modalStore } from '@skeletonlabs/skeleton';
-	import type { ModalSettings, ModalComponent } from '@skeletonlabs/skeleton';
+	import { modalStore } from '@skeletonlabs/skeleton';
 
 	export let exerciseEvents: ExerciseEvent[];
 	export let shouldShowDate = true;
 </script>
 
 <ul class="divide-y divide-gray-200 border-t">
+	{#if exerciseEvents.length == 0}
+		<span class="italic text-gray-400">No exercises</span>
+	{/if}
 	{#each exerciseEvents as exerciseEvent}
 		<li class="bg-white py-2">
 			<div class="flex items-center md:space-x-3">

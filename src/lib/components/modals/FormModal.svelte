@@ -16,7 +16,7 @@
 		<slot name="content" {action} {data} {id} />
 	</section>
 	<footer class="card-footer float-right space-x-4">
-		<button type="submit" class="btn variant-ghost-surface" form={id}>Cancel</button>
-		<slot name="footer" />
+		<button class="btn variant-ghost-surface" on:click={() => modalStore.close()}>Cancel</button>
+		<slot name="footer" {id} {action} {data} />
 	</footer>
 </div>

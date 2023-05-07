@@ -6,8 +6,8 @@
 	import { isDateInTheSameDayAsToday } from '$lib/utils';
 	import ListExerciseEvent from '$lib/components/ListExerciseEvent.svelte';
 	import WeeklyCalendar from '$lib/components/WeeklyCalendar.svelte';
-	import ModalExerciseEvent from '$lib/components/modals/ModalExerciseEvent.svelte';
 	import Icon from '@iconify/svelte';
+	import { modalStore } from '@skeletonlabs/skeleton';
 
 	export let data: PageData;
 	$: activeTrainingProgram = data.profile?.activeTrainingProgram as TrainingProgramComplete;
@@ -60,27 +60,27 @@
 </div>
 
 <div class="pt-8">
-	<ModalExerciseEvent
-		action="/exerciseEvent?/newExerciseEvent"
-		title="New Exercise Event"
-		let:changeShowModal
-		showDate
-		showDifficulty
+	<button
+		class="btn btn-sm variant-filled mb-2"
+		on:click={() =>
+			modalStore.trigger({
+				type: 'component',
+				component: 'formModalExerciseEvent',
+				meta: {
+					action: `/exerciseEvent?/newExerciseEvent`,
+					title: 'New Exercise Event'
+				}
+			})}
 	>
-		<div slot="open-modal-buttons" class="mb-2">
-			<button class="icon-button ml-0" on:click={() => changeShowModal(true)}>
-				<Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-				<span class="ml-1 mr-1">New Exercise Event </span>
-			</button>
-		</div>
-	</ModalExerciseEvent>
-	<h2>Today</h2>
-	<hr />
+		<Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
+		<span>New Exercise Event</span>
+	</button>
+
+	<h4>Today</h4>
 	<ListExerciseEvent exerciseEvents={todaysExerciseEvents} />
 </div>
 
 <div class="pt-8">
-	<h2>History</h2>
-	<hr />
+	<h4>History</h4>
 	<ListExerciseEvent exerciseEvents={pastExerciseEvents} />
 </div>
