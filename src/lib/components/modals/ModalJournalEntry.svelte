@@ -6,7 +6,7 @@
 
 <div class="card w-modal">
 	<header class="card-header">
-		<h3 class="font-bold">Journal Entry</h3>
+		<h2 class="font-bold">Journal Entry</h2>
 	</header>
 	<section class="p-4">
 		<h4>

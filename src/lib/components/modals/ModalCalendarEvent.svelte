@@ -6,9 +6,12 @@
 
 <div class="card w-modal">
 	<header class="card-header">
-		<h3 class="font-bold">Event</h3>
+		<h2 class="font-bold">Event</h2>
 	</header>
 	<section class="p-4">
+		<h4>
+			{new Date(calendarEvent?.dateStart || '').toLocaleDateString('en-US') || ''}
+		</h4>
 		<h4>{calendarEvent.title}</h4>
 		{#if calendarEvent?.content}
 			<p class="whitespace-pre-wrap">{calendarEvent?.content}</p>

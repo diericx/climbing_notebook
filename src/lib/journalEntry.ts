@@ -1,5 +1,5 @@
 import type { JournalEntry, PrismaClient } from '@prisma/client';
-import { z } from 'zod';
+import { date, z } from 'zod';
 import { APIError } from './errors';
 import { matchMetricsInString, parseMetricStrings, toNum } from './utils';
 
@@ -13,13 +13,30 @@ export type JournalEntrySchema = typeof journalEntrySchema;
 export class JournalEntryRepo {
   constructor(private readonly prisma: PrismaClient) { }
   async new(data: z.infer<JournalEntrySchema>, ownerId: string): Promise<JournalEntry> {
+    const minDate = new Date(data.date.toISOString().split('T')[0]);
+    const maxDate = new Date(data.date.toISOString().split('T')[0]);
+    maxDate.setDate(maxDate.getDate() + 1);
     // Fetch journalEntries with same day to validate this is a new date
     const journalEntries: JournalEntry[] = await this.prisma.journalEntry.findMany({
       where: {
-        ownerId,
-        date: new Date(data.date),
+        AND: [
+          {
+            ownerId,
+          },
+          {
+            date: {
+              gte: minDate,
+            }
+          },
+          {
+            date: {
+              lt: maxDate,
+            }
+          }
+        ]
       },
     }) as JournalEntry[];
+    console.log(journalEntries)
     if (journalEntries.length > 0) {
       throw new APIError('UNIQUENESS_COLLISION', 'A journal entry for that date already exists')
     }

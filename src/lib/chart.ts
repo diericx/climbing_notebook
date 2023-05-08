@@ -5,7 +5,16 @@ import { APIError } from './errors';
 export const chartSchema = z.object({
   name: z.string().min(1),
   type: z.string().min(1),
-  patternToMatch: z.string(),
+  patternToMatch: z.string().superRefine((val, ctx) => {
+    try {
+      new RegExp(val, 'i')
+    } catch (e) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: e.message,
+      });
+    }
+  }),
   matchAgainst: z.string(),
   equation: z.string(),
 })

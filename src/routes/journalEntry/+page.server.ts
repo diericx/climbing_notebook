@@ -40,7 +40,10 @@ export const actions: Actions = {
       await repo.new(form.data, user?.userId)
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form })
+        if (e.message == 'UNIQUENESS_COLLISION') {
+          form.message = 'Journal entry for that date already exists'
+          return fail(401, { form })
+        }
       }
       console.error(e)
       throw error(500, { message: SERVER_ERROR })

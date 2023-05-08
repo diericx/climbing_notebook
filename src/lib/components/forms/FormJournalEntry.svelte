@@ -12,7 +12,7 @@
 	export let id = crypto.randomUUID();
 </script>
 
-<Form schema={journalEntrySchema} {data} {action} {id} {onSuccess} let:form>
+<Form schema={journalEntrySchema} {data} {action} {id} {onSuccess} resetForm={true} let:form>
 	<input type="hidden" name="_formId" value={id} />
 	<input type="hidden" name="type" value="climbing" />
 

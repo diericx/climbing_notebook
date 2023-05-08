@@ -9,6 +9,7 @@
 	export let id: string;
 	export let onSuccess: (() => void) | undefined = undefined;
 	export let action = '?/newCalendarEvent';
+	export let resetForm = false;
 
 	// Add redirect data
 	if ($page.url.searchParams.has('redirectTo')) {
@@ -17,7 +18,7 @@
 
 	let formData: z.infer<typeof schema> = assignDefined(defaultData(schema), data || {});
 	const newSuperForm = superForm(formData, {
-		resetForm: false,
+		resetForm,
 		applyAction: true,
 		invalidateAll: true,
 		id,
