@@ -1,5 +1,5 @@
 import type { JournalEntry, PrismaClient } from '@prisma/client';
-import { date, z } from 'zod';
+import { z } from 'zod';
 import { APIError } from './errors';
 import { matchMetricsInString, parseMetricStrings, toNum } from './utils';
 

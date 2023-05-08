@@ -15,18 +15,21 @@ export function toNum(val: any, def: any): any {
 }
 
 export function matchMetricsInString(s: string) {
-  return s.match(/^[a-zA-Z0-9]*: [0-9]*$/gm) || []
+  return s.match(/^(\w+):\s*(?:([0-9]*))\s*$/gm) || []
 }
 
 export function parseMetricStrings(s: string[]) {
-  return s.map(_s => {
-    const splitString = _s.split(': ')
-    return {
-      name: splitString[0],
-      value: splitString[1]
+  return s.reduce((result, _s) => {
+    const splitString = _s.trim().replace(/\s/g, '').split(':')
+    if (splitString[1] != '') {
+      result.push({
+        name: splitString[0],
+        value: splitString[1]
+      }
+      )
     }
-  }
-  )
+    return result;
+  }, [])
 }
 
 export function getFirstDayOfTheWeek(d: Date) {
