@@ -24,7 +24,7 @@
 <ul class="roman">
 	<li>
 		<h2><b>Climbing Journal</b></h2>
-		A place to keep nots on progress and more importantly<b>injuries</b> as suggested by MacLeod in
+		A place to keep notes on progress and more importantly injuries as suggested by MacLeod in
 		<i>Make or Break (pg. 22, 27)</i>
 		<ul class="list-disc px-6">
 			<li>Simple and open ended journaling tool; jot notes any day it seems useful</li>

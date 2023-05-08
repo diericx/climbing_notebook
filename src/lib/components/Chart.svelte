@@ -27,6 +27,8 @@
 	export let exerciseEvents: ExerciseEvent[] = [];
 	export let metrics: Metric[] = [];
 
+	let equationErrorMessage: string | undefined = undefined;
+
 	function addDataPoint(d: Date, v: number) {
 		let dateStr = d.toISOString().split('T')[0];
 		// Add data in heatmap format
@@ -68,16 +70,21 @@
 		if (e.date == undefined) {
 			return;
 		}
-		// Calculate the score by applying the equation
-		let score = evaluate(chart.equation, {
-			sets: e.sets,
-			reps: e.reps,
-			weight: e.weight,
-			minutes: e.minutes,
-			seconds: e.seconds
-		});
 
-		addDataPoint(e.date, score);
+		try {
+			// Calculate the score by applying the equation
+			let score = evaluate(chart.equation, {
+				sets: e.sets,
+				reps: e.reps,
+				weight: e.weight,
+				minutes: e.minutes,
+				seconds: e.seconds
+			});
+
+			addDataPoint(e.date, score);
+		} catch (e) {
+			equationErrorMessage = e.message;
+		}
 	});
 	matchedMetrics.forEach((e) => {
 		if (e.date == undefined) {
@@ -108,6 +115,9 @@
 		</form>
 	</div>
 	<div class="overflow-scroll">
+		{#if equationErrorMessage}
+			<div class="invalid">Equation error: {equationErrorMessage}</div>
+		{/if}
 		<Chart data={chartData} type={chart.type} discreteDomains={0} height={170} />
 	</div>
 </div>
