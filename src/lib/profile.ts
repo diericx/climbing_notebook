@@ -1,28 +1,13 @@
 import type { PrismaClient } from '@prisma/client';
+import { z } from 'zod';
 import { APIError } from './errors';
 import type { ProfileWithActiveTrainingProgram } from './prisma';
 
-export class ProfileFormData {
-  goals: string | undefined = undefined;
-  activeTrainingProgramId: number | undefined;
-
-  /* eslint-disable  @typescript-eslint/no-explicit-any */
-  constructor(obj: any | undefined = undefined) {
-    if (obj == undefined) {
-      return
-    }
-    const { goals, activeTrainingProgramId } = obj;
-    this.goals = goals == undefined ? this.goals : goals;
-    this.activeTrainingProgramId = activeTrainingProgramId == undefined ? this.activeTrainingProgramId : Number(activeTrainingProgramId);
-  }
-
-  validate() {
-    return {
-      isValid: true,
-      message: '',
-    }
-  }
-}
+export const profileSchema = z.object({
+  goals: z.string().optional(),
+  activeTrainingProgramId: z.number().optional(),
+});
+export type ProfileSchema = typeof profileSchema;
 
 export class ProfileRepo {
   constructor(private readonly prisma: PrismaClient) { }
@@ -75,12 +60,11 @@ export class ProfileRepo {
     return this.getOneAndValidateOwner(ownerId)
   }
 
-  async update(data: ProfileFormData, ownerId: number): Promise<ProfileWithActiveTrainingProgram> {
+  async update(data: z.infer<ProfileSchema>, ownerId: string): Promise<ProfileWithActiveTrainingProgram> {
     await this.getOneAndValidateOwner(ownerId);
 
     return await this.prisma.profile.update({
       data: {
-        // TODO: Don't deconstruct?
         ...data,
       },
       where: {

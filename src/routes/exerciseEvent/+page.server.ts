@@ -4,8 +4,9 @@ import { prisma, type ProfileWithActiveTrainingProgram } from '$lib/prisma';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { APIError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
-import { ExerciseEventFormData, ExerciseEventRepo } from '$lib/exerciseEvent';
+import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
 import { ProfileRepo } from '$lib/profile';
+import { superValidate } from 'sveltekit-superforms/server';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { user } = await locals.auth.validateUser();
@@ -14,9 +15,6 @@ export const load: PageServerLoad = async ({ locals }) => {
   try {
     exerciseEvents = await exerciseEventsRepo.get(user?.userId);
   } catch (e) {
-    if (e instanceof APIError) {
-      return fail(401, { message: e.detail })
-    }
     console.error(e)
     throw error(500, { message: SERVER_ERROR })
   }
@@ -27,9 +25,6 @@ export const load: PageServerLoad = async ({ locals }) => {
   try {
     profile = await profileRepo.getOne(user?.userId);
   } catch (e) {
-    if (e instanceof APIError) {
-      return fail(401, { message: e.detail })
-    }
     console.error(e)
     throw error(500, { message: SERVER_ERROR })
   }
@@ -43,36 +38,37 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 export const actions: Actions = {
   newExerciseEvent: async ({ locals, request, url }) => {
-    const rawFormData = Object.fromEntries((await request.formData()).entries());
+    const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
-    // Validate input fields
-    const input = new ExerciseEventFormData(rawFormData);
-    const { message, isValid } = input.validate()
-    if (!isValid) {
-      return fail(401, { message, exerciseEventFormData: rawFormData })
+    const form = await superValidate(formData, exerciseEventSchema, {
+      id: formData.get('_formId')?.toString(),
+    });
+
+    if (!form.valid) {
+      return fail(400, { form });
     }
 
     const repo = new ExerciseEventRepo(prisma);
     try {
-      await repo.new(input, user?.userId)
+      await repo.new(form.data, user?.userId)
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, exerciseEventFormData: rawFormData })
+        return fail(401, { message: e.detail, form })
       }
       console.error(e)
       throw error(500, { message: SERVER_ERROR })
     }
 
-    if (rawFormData.exerciseToMarkCompletedId != undefined) {
-      const exerciseToMarkCompletedId = Number(rawFormData.exerciseToMarkCompletedId);
-      const dateToMarkCompleted = new Date(rawFormData.dateToMarkCompleted);
-      await repo.setCompleted(exerciseToMarkCompletedId, user?.userId, dateToMarkCompleted, true)
+    const exerciseToMarkCompletedId = formData.get('exerciseToMarkCompletedId');
+    const dateToMarkCompleted = formData.get('dateToMarkCompleted');
+    if (exerciseToMarkCompletedId != null && dateToMarkCompleted != null) {
+      await repo.setCompleted(Number(exerciseToMarkCompletedId), user?.userId, new Date(dateToMarkCompleted.toString()), true)
     }
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
     }
 
-    return { success: true };
+    return { form };
   }
 }

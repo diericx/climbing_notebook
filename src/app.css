@@ -4,10 +4,13 @@
 
 @layer base {
   h1 {
-    @apply text-2xl;
+    @apply text-2xl !important;
   }
   h2 {
-    @apply text-lg;
+    @apply text-xl !important;
+  }
+  h3 {
+    @apply text-base !important;
   }
 }
 
@@ -36,16 +39,20 @@
   input[type=number] {
     @apply basic-input
   }
-
+  input::placeholder {
+    @apply text-gray-400;
+  }
+  select {
+    @apply basic-input;
+  }
   textarea {
-    @apply my-2 shadow appearance-none border border-gray-300 rounded py-2 px-3 text-gray-700 leading-tight;
+    @apply basic-input;
+  }
+  textarea::placeholder {
+    @apply text-gray-400;
   }
   .textarea:focus {
    @apply shadow;
-  }
-
-  select {
-    @apply my-2 shadow bg-white border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded leading-tight;
   }
 
   select:focus {
@@ -56,9 +63,9 @@
     @apply text-gray-400
   }
 
-  button {
-    @apply px-2 bg-white rounded shadow border-gray-200
-  }
+  /* button { */
+  /*   @apply px-2 bg-white rounded shadow border-gray-200 */
+  /* } */
 
   table {
     @apply w-full table-auto text-left text-gray-400 shadow
@@ -79,9 +86,9 @@
     @apply px-6 py-1
   }
 
-  a {
-    @apply text-blue-500
-  }
+  /* a { */
+  /*   color: inherit; */
+  /* } */
 
   hr {
     @apply pb-2
@@ -113,5 +120,15 @@
     @apply bg-white hover:bg-gray-50 border;
     @apply ml-2 p-1 inline-flex items-center rounded;
   }
-}
 
+  .card {
+    background-color: white;
+  }
+
+  .edit-btn {
+    @apply btn btn-sm variant-ringed;
+  }
+}
+.invalid {
+	color: orangered;
+}

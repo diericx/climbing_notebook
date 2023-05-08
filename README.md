@@ -53,3 +53,9 @@ docker run \
   climbingnotebook:master \
   prisma migrate deploy
 ```
+
+### Notes
+
+#### ZOD Schemas
+- nullish values must be set in the forms or they will be parsed as null and thus unset
+  in the database.

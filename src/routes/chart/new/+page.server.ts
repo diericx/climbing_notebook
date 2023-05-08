@@ -1,36 +1,37 @@
 import type { Actions, PageServerLoad } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
-import { ChartFormData, ChartRepo } from '$lib/chart';
+import { ChartRepo, chartSchema } from '$lib/chart';
 import { prisma } from '$lib/prisma';
 import { APIError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
+import { superValidate } from 'sveltekit-superforms/server';
 
 export const load: PageServerLoad = async ({ url }) => {
   const redirectTo = url.searchParams.get('redirectTo');
 
   return {
-    redirectTo
+    redirectTo,
   };
 };
 
 export const actions: Actions = {
   newChart: async ({ request, url, locals }) => {
-    const rawFormData = Object.fromEntries((await request.formData()).entries());
+    const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
+    const form = await superValidate(formData, chartSchema, {
+      id: formData.get('_formId')?.toString(),
+    });
 
-    // Validate input fields
-    const input = new ChartFormData(rawFormData);
-    const { message, isValid } = input.validate()
-    if (!isValid) {
-      return fail(401, { message, chartFormData: rawFormData })
+    if (!form.valid) {
+      return fail(400, { form });
     }
 
     const repo = new ChartRepo(prisma);
     try {
-      await repo.new(input, user?.userId)
+      await repo.new(form.data, user?.userId)
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, chartFormData: rawFormData })
+        return fail(401, { message: e.detail, form })
       }
       console.error(e)
       throw error(500, { message: SERVER_ERROR })
@@ -40,6 +41,6 @@ export const actions: Actions = {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
     }
 
-    return { success: true };
+    return { success: true, form };
   },
 }

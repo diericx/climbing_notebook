@@ -3,28 +3,30 @@ import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
 import { TrainingProgramRepo } from '$lib/trainingProgram';
 import { APIError } from '$lib/errors';
-import { ExerciseGroupFormData } from '$lib/exerciseGroup';
+import { superValidate } from 'sveltekit-superforms/server';
+import { exerciseGroupSchema } from '$lib/exerciseGroup';
+import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
 
 export const actions: Actions = {
-  addExerciseGroup: async ({ locals, request, url, params }) => {
-    const rawFormData = Object.fromEntries((await request.formData()).entries());
+  editExerciseGroup: async ({ locals, request, url, params }) => {
+    const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
-    const id = Number(params.id);
+    const trainingProgramId = Number(params.id);
+    const exerciseGroupId = Number(params.groupId);
+    const form = await superValidate(formData, exerciseGroupSchema, {
+      id: formData.get('_formId')?.toString(),
+    });
 
-    // Validate input fields
-    // NOTE: we are sending form data as json object back to be parsed 
-    const input = new ExerciseGroupFormData(rawFormData);
-    const { message, isValid } = input.validate()
-    if (!isValid) {
-      return fail(401, { message, trainingProgramFormData: rawFormData })
+    if (!form.valid) {
+      return fail(400, { form });
     }
 
     const repo = new TrainingProgramRepo(prisma);
     try {
-      await repo.addExerciseGroup(input, id, user?.userId);
+      await repo.editExerciseGroup(form.data, trainingProgramId, exerciseGroupId, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, exerciseGroupFormData: rawFormData })
+        return fail(401, { message: e.detail, form })
       }
       console.error(e)
       throw error(500, { message: SERVER_ERROR })
@@ -34,29 +36,20 @@ export const actions: Actions = {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
     }
 
-    return { success: true };
+    return { form };
   },
 
-  editExerciseGroup: async ({ locals, request, url, params }) => {
-    const rawFormData = Object.fromEntries((await request.formData()).entries());
+  deleteExerciseGroup: async ({ locals, url, params }) => {
     const { user } = await locals.auth.validateUser();
     const trainingProgramId = Number(params.id);
     const exerciseGroupId = Number(params.groupId);
 
-    // Validate input fields
-    // NOTE: we are sending form data as json object back to be parsed 
-    const input = new ExerciseGroupFormData(rawFormData);
-    const { message, isValid } = input.validate()
-    if (!isValid) {
-      return fail(401, { message, exerciseGroupFormData: rawFormData })
-    }
-
     const repo = new TrainingProgramRepo(prisma);
     try {
-      await repo.editExerciseGroup(input, trainingProgramId, exerciseGroupId, user?.userId);
+      await repo.deleteExerciseGroup(trainingProgramId, user?.userId, exerciseGroupId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, trainingProgramFormData: rawFormData })
+        return fail(401, { message: e.detail })
       }
       console.error(e)
       throw error(500, { message: SERVER_ERROR })
@@ -69,18 +62,25 @@ export const actions: Actions = {
     return { success: true };
   },
 
-  deleteExerciseGroup: async ({ locals, request, url, params }) => {
-    const rawFormData = Object.fromEntries((await request.formData()).entries());
+  newExerciseEvent: async ({ locals, request, url, params }) => {
+    const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
-    const id = Number(params.id);
-    const exerciseGroupId = Number(rawFormData.exerciseGroupId);
+    const form = await superValidate(formData, exerciseEventSchema, {
+      id: formData.get('_formId')?.toString(),
+    });
+    const groupId = Number(params.groupId);
 
-    const repo = new TrainingProgramRepo(prisma);
+    if (!form.valid) {
+      return fail(400, { form });
+    }
+
+    form.data.exerciseGroupId = groupId;
+    const repo = new ExerciseEventRepo(prisma);
     try {
-      await repo.deleteExerciseGroup(id, user?.userId, exerciseGroupId);
+      await repo.new(form.data, user?.userId)
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, trainingProgramFormData: rawFormData })
+        return fail(401, { message: e.detail, form })
       }
       console.error(e)
       throw error(500, { message: SERVER_ERROR })
@@ -90,6 +90,6 @@ export const actions: Actions = {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
     }
 
-    return { success: true };
-  },
+    return { form };
+  }
 }

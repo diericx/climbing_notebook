@@ -51,7 +51,7 @@ model ExerciseEvent {
   seconds    Int       @default(0)
   minutes    Int       @default(0)
   difficulty Int?
-  notes      String    @default("")
+  notes      String?
   ownerId    String    @map("owner_id")
   owner      AuthUser  @relation(fields: [ownerId], references: [id])
 
@@ -133,7 +133,7 @@ model JournalEntry {
 model Profile {
   id                      Int              @id @default(autoincrement())
   createdAt               DateTime         @default(now()) @map("created_at")
-  goals                   String
+  goals                   String?
   ownerId                 String           @unique @map("owner_id")
   owner                   AuthUser         @relation(fields: [ownerId], references: [id])
   activeTrainingProgramId Int?             @map("active_training_program_id")
@@ -151,7 +151,7 @@ model CalendarEvent {
   dateStart DateTime @map("date_start")
   dateEnd   DateTime @map("date_end")
   title     String
-  content   String
+  content   String?
   color     String
 
   @@map("calendar_event")

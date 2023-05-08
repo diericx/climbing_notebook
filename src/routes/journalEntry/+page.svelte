@@ -1,50 +1,56 @@
 <script lang="ts">
-	import type { PageData, ActionData } from './$types';
-	import JournalEntryForm from './form.svelte';
+	import type { PageData } from './$types';
+	import FormJournalEntry from '$lib/components/forms/FormJournalEntry.svelte';
 	import { confirmDelete } from '$lib/utils';
 	import { enhance } from '$app/forms';
-	import { JournalEntryFormData } from '$lib/journalEntry';
+	import Icon from '@iconify/svelte';
 
 	export let data: PageData;
-	export let form: ActionData;
 </script>
-
-{#if form?.message}<p class="error">{form?.message}</p>{/if}
-
-<br />
-
-<h1>Journal</h1>
-
-<br />
 
 <div class="grid grid-cols-1">
 	<div>
-		<h2>New Journal Entry</h2>
+		<h1>New Journal Entry</h1>
 		<hr />
-		<JournalEntryForm formData={new JournalEntryFormData(form?.journalEntryFormData)} />
+		<FormJournalEntry />
 	</div>
 </div>
 
 <div class="pt-8">
-	<h2>Your Entries</h2>
+	<h1>Entries</h1>
 	<hr />
 
 	<div>
 		{#each data.journalEntries as item}
-			<div class="flex justify-between">
-				<div class="w-full pb-5">
-					<h3 class="underline inline">{new Date(item.date).toLocaleDateString('en-US')}</h3>
-					<form
-						method="POST"
-						action={`/journalEntry/${item.id}/edit?/deleteJournalEntry`}
-						class="inline"
-						use:enhance
-					>
-						<input type="hidden" name="id" value={item.id} />
-						<button on:click={confirmDelete}>Delete</button>
-					</form>
-					<a href="/journalEntry/{item.id}/edit?redirectTo=/journalEntry">Edit</a>
-					<p class="whitespace-pre-wrap bg-white w-full px-1 py-3">{item.content}</p>
+			<div class="card p-4 flex-1 mb-4">
+				<div class="flex w-full justify-between">
+					<div>
+						<h3 class="font-bold">{new Date(item.date).toLocaleDateString('en-US')}</h3>
+					</div>
+					<div>
+						<a
+							class="btn btn-sm variant-ringed"
+							href={`/journalEntry/${item.id}/edit?redirectTo=/journalEntry`}
+						>
+							<Icon icon="material-symbols:edit-outline" height="18" />
+							Edit
+						</a>
+						<form
+							method="POST"
+							action={`/journalEntry/${item.id}/edit?/deleteJournalEntry`}
+							class="inline"
+							use:enhance
+						>
+							<input type="hidden" name="id" value={item.id} />
+							<button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
+								<Icon icon="mdi:trash-outline" height="18" />
+								Delete
+							</button>
+						</form>
+					</div>
+				</div>
+				<div>
+					<p class="whitespace-pre-wrap bg-white w-full py-2">{item.content}</p>
 				</div>
 			</div>
 		{/each}

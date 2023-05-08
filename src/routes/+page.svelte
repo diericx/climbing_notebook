@@ -1,5 +1,3 @@
-<br />
-
 <h1>Welcome to the Climbing Notebook</h1>
 <hr />
 

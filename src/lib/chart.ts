@@ -1,60 +1,24 @@
 import type { Chart, PrismaClient } from '@prisma/client';
+import { z } from 'zod';
 import { APIError } from './errors';
 
-export class ChartFormData {
-  date: Date = new Date();
-  name = '';
-  type = '';
-  patternToMatch = '';
-  matchAgainst = '';
-  equation = '';
-
-  /* eslint-disable  @typescript-eslint/no-explicit-any */
-  constructor(obj: any | undefined = undefined) {
-    if (obj == undefined) {
-      return
+export const chartSchema = z.object({
+  name: z.string().min(1),
+  type: z.string().min(1),
+  patternToMatch: z.string().superRefine((val, ctx) => {
+    try {
+      new RegExp(val, 'i')
+    } catch (e) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: e.message,
+      });
     }
-    const { date, name, type, patternToMatch, matchAgainst, equation } = obj;
-    this.date = date == undefined ? this.date : new Date(date);
-    this.name = name == undefined ? this.name : name;
-    this.type = type == undefined ? this.type : type;
-    this.patternToMatch = patternToMatch == undefined ? this.patternToMatch : patternToMatch;
-    this.matchAgainst = matchAgainst == undefined ? this.matchAgainst : matchAgainst;
-    this.equation = equation == undefined ? this.equation : equation;
-  }
-
-  validate() {
-    if (!this.name || this.name == '') {
-      return {
-        isValid: false,
-        message: 'Name is required.'
-      }
-    }
-    if (!this.type || this.type == '') {
-      return {
-        isValid: false,
-        message: 'Type is required.'
-      }
-    }
-    if (!this.matchAgainst || this.matchAgainst == '') {
-      return {
-        isValid: false,
-        message: 'Match against is required.'
-      }
-    }
-    if (!this.equation || this.equation == '') {
-      return {
-        isValid: false,
-        message: 'Equation is required.'
-      }
-    }
-    return {
-      isValid: true,
-      message: '',
-    }
-  }
-}
-
+  }),
+  matchAgainst: z.string(),
+  equation: z.string(),
+})
+export type ChartSchema = typeof chartSchema;
 
 export class ChartRepo {
   constructor(private readonly prisma: PrismaClient) { }
@@ -74,14 +38,10 @@ export class ChartRepo {
     return chart
   }
 
-  async new(data: ChartFormData, ownerId: string): Promise<Chart> {
+  async new(data: z.infer<ChartSchema>, ownerId: string): Promise<Chart> {
     return await this.prisma.chart.create({
       data: {
-        name: data.name,
-        type: data.type,
-        patternToMatch: data.patternToMatch,
-        matchAgainst: data.matchAgainst,
-        equation: data.equation,
+        ...data,
         ownerId: ownerId,
       }
     }) as Chart;
@@ -103,17 +63,11 @@ export class ChartRepo {
     return this.getOneAndValidateOwner(id, ownerId)
   }
 
-  async update(data: ChartFormData, id: number, ownerId: string): Promise<Chart> {
+  async update(data: z.infer<ChartSchema>, id: number, ownerId: string): Promise<Chart> {
     await this.getOneAndValidateOwner(id, ownerId);
 
     return await this.prisma.chart.update({
-      data: {
-        name: data.name,
-        type: data.type,
-        patternToMatch: data.patternToMatch,
-        matchAgainst: data.matchAgainst,
-        equation: data.equation,
-      },
+      data,
       where: {
         id: Number(id),
       },

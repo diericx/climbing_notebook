@@ -25,20 +25,16 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   try {
     const profile = await profileRepo.getOne(user?.userId);
-
     const charts = await chartRepo.get(user?.userId);
-
     // Get exercise events in the past month for the charts
     const dateMin = new Date()
     dateMin.setDate(dateMin.getDate() - 31)
     const exerciseEvents = await exerciseEventRepo.get(user?.userId, dateMin, new Date());
-
     // Get metris in the past month for the charts
     const metrics = await metricRepo.get(user?.userId, dateMin, new Date());
-
     const journalEntries = await journalEntryRepo.get(user?.userId);
-
     const calendarEvents = await calendarEventRepo.get(user?.userId);
+
     return { user, profile, charts, exerciseEvents, metrics, journalEntries, calendarEvents }
   } catch (e) {
     if (e instanceof APIError) {
