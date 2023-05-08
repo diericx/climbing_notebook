@@ -103,7 +103,3 @@
 .invalid {
 	color: orangered;
 }
-.bar {
-  height: 2px;
-  @apply bg-primary-500;
-}
