@@ -28,9 +28,12 @@
 			}
 		}
 	});
-	const { enhance } = newSuperForm;
+	const { enhance, message } = newSuperForm;
 </script>
 
+{#if $message}
+	<div class="invalid">{$message}</div>
+{/if}
 <form method="POST" {action} use:enhance {id} class="form">
 	<input type="hidden" name="_formId" value={id} />
 	<slot form={newSuperForm} />

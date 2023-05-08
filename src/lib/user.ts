@@ -1,9 +1,17 @@
-export function isUsernameValid(username: string) {
-  return (username && username !== '')
-}
-export function isPasswordValid(password: string) {
-  return (password && password !== '')
-}
-export function isEmailValid(email: string) {
-  return email !== '' && email.includes('@') && email.includes('.')
-}
+import { z } from 'zod';
+import isAlphaNumeric from 'validator/lib/isAlphanumeric';
+
+export const loginSchema = z.object({
+  username: z.string({ required_error: 'Username is required' }).min(1, { message: 'Username is required' }),
+  password: z.string().min(1),
+});
+export type LoginSchema = typeof loginSchema;
+
+export const signupSchema = z.object({
+  email: z.string().email(),
+  username: z.string().min(1, { message: 'Username is required' }).refine(s => isAlphaNumeric(s), {
+    message: 'Username must contain only letters or numbers and no spaces.'
+  }),
+  password: z.string().min(5, { message: 'Password must be at least 5 characters long' }),
+});
+export type SignupSchema = typeof signupSchema;

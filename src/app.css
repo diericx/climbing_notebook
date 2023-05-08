@@ -129,3 +129,6 @@
     @apply btn btn-sm variant-ringed;
   }
 }
+.invalid {
+	color: orangered;
+}

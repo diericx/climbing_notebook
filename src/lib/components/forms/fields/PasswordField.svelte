@@ -10,7 +10,6 @@
 	export let form: SuperForm<UnwrapEffects<T>, unknown>;
 	export let field: keyof z.infer<T> | FieldPath<z.infer<T>>;
 	export let placeholder = '';
-	export let type = 'text';
 
 	const { path, value, errors, constraints } = formFieldProxy(form, field);
 </script>
@@ -19,7 +18,7 @@
 	<span class="font-bold">{camelToTitle(String(path))}</span>
 	<br />
 	<input
-		type="text"
+		type="password"
 		{placeholder}
 		data-invalid={$errors}
 		bind:value={$value}
@@ -30,9 +29,3 @@
 {#if $errors}
 	<div class="invalid">{$errors}</div>
 {/if}
-
-<style lang="scss">
-	.invalid {
-		color: orangered;
-	}
-</style>

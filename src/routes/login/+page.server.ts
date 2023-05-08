@@ -1,11 +1,13 @@
 import type { Actions } from './$types';
-import { fail, redirect } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { isPasswordValid, isUsernameValid } from '$lib/user';
+import { isPasswordValid, isUsernameValid, loginSchema, signupSchema } from '$lib/user';
 import { auth } from '$lib/server/lucia';
 import { LuciaError } from 'lucia-auth';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
+import { superValidate } from 'sveltekit-superforms/server';
+import { Prisma } from '@prisma/client';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const session = await locals.auth.validate();
@@ -15,19 +17,17 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 export const actions: Actions = {
   login: async ({ request, locals }) => {
-    const form = await request.formData();
-    const username = form.get('username')?.toString();
-    const password = form.get('password')?.toString();
+    const formData = await request.formData();
+    const form = await superValidate(formData, loginSchema, {
+      id: formData.get('_formId')?.toString(),
+    });
 
-    if (!username || !isUsernameValid(username)) {
-      return fail(401, { message: 'Username cannot be empty' })
-    }
-    if (!password || !isPasswordValid(password)) {
-      return fail(401, { message: 'Password cannot be empty' })
+    if (!form.valid) {
+      return fail(400, { form });
     }
 
     try {
-      const key = await auth.useKey('username', username, password);
+      const key = await auth.useKey('username', form.data.username, form.data.password);
       const session = await auth.createSession(key.userId);
       locals.auth.setSession(session);
     } catch (e) {
@@ -40,42 +40,40 @@ export const actions: Actions = {
           e.message === 'AUTH_INVALID_SESSION_ID')
       ) {
         console.error(e.name, e.message);
-        return fail(401, { message: 'Incorrect username or password', username })
+        form.message = 'Incorrect username or password'
+        return fail(401, { form })
       }
 
       // Print and communicate unknown errors
-      console.error(e.name, e.message);
-      return fail(401, { message: SERVER_ERROR })
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR })
     }
 
     return {
-      success: true
+      form
     };
   },
 
   register: async ({ request, locals }) => {
-    const form = await request.formData();
-    const username = form.get('username')?.toString();
-    const password = form.get('password')?.toString();
-    const email = form.get('email');
+    const formData = await request.formData();
+    const form = await superValidate(formData, signupSchema, {
+      id: formData.get('_formId')?.toString(),
+    });
 
-    if (!username || !isUsernameValid(username)) {
-      return fail(401, { message: 'Username cannot be empty' })
-    }
-    if (!password || !isPasswordValid(password)) {
-      return fail(401, { message: 'Password cannot be empty' })
+    if (!form.valid) {
+      return fail(400, { form });
     }
 
     try {
       const user = await auth.createUser({
         primaryKey: {
           providerId: 'username',
-          providerUserId: username,
-          password
+          providerUserId: form.data.username,
+          password: form.data.password
         },
         attributes: {
-          username,
-          email
+          username: form.data.username,
+          email: form.data.email
         }
       });
       await prisma.profile.create({
@@ -97,17 +95,23 @@ export const actions: Actions = {
           e.message === 'AUTH_INVALID_PASSWORD' ||
           e.message === 'AUTH_INVALID_SESSION_ID')
       ) {
-        console.error(e.name, e.message);
-        return fail(401, { message: 'Incorrect username or password' })
+        form.message = 'Incorrect username or password';
+        return fail(401, { form })
       }
 
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError && e.code == 'P2002'
+      ) {
+        form.message = 'Username or email are already taken';
+        return fail(401, { form })
+      }
       // Print and communicate unknown errors
       console.error(e.name, e.message);
-      return fail(401, { message: SERVER_ERROR })
+      throw error(500, { message: SERVER_ERROR })
     }
 
     return {
-      success: true
+      form
     };
   }
 };
