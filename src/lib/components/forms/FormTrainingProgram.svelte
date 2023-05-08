@@ -20,7 +20,6 @@
 	<br />
 
 	{#if showSubmitButton}
-		<button class="bg-green-300 hover:bg-green-400 text-white font-bold px-2 rounded">Submit</button
-		>
+		<button class="btn btn-sm variant-filled">Submit</button>
 	{/if}
 </Form>

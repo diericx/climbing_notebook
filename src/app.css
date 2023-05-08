@@ -124,4 +124,8 @@
   .card {
     background-color: white;
   }
+
+  .edit-btn {
+    @apply btn btn-sm variant-ringed;
+  }
 }
