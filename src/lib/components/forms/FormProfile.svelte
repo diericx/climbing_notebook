@@ -5,7 +5,7 @@
 	import TextArea from './fields/TextArea.svelte';
 
 	// Form action to execute
-	export let action = '/profile/editProfile?/editProfile';
+	export let action = '/profile/edit?/editProfile';
 	export let data: Profile | undefined = undefined;
 	export let onSuccess: (() => Promise<void>) | undefined = undefined;
 	export let id = crypto.randomUUID();

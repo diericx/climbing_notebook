@@ -94,7 +94,7 @@
 	});
 </script>
 
-<div class="rounded bg-white shadow p-4">
+<div class="card p-4">
 	<h2 class="inline">{chart.name}</h2>
 	<div class="inline float-right">
 		<a href={`/chart/${chart.id}/edit?redirectTo=/`}>Edit</a>
