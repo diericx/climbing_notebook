@@ -3,6 +3,7 @@
 	import type { TrainingProgramWithDays } from '$lib/prisma';
 	import { confirmDelete } from '$lib/utils';
 	import Icon from '@iconify/svelte';
+	import { modalStore } from '@skeletonlabs/skeleton';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -15,10 +16,21 @@
 	<div>
 		<div class="flex justify-between mb-2">
 			<h1>Your Training Programs</h1>
-			<a class="btn btn-sm variant-filled" href="/trainingProgram/new?redirectTo=/trainingProgram">
+			<button
+				class="btn btn-sm variant-filled"
+				on:click={() =>
+					modalStore.trigger({
+						type: 'component',
+						component: 'formModalTrainingProgram',
+						meta: {
+							action: `/trainingProgram?/newTrainingProgram`,
+							title: 'New Training Program'
+						}
+					})}
+			>
 				<Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-				<span> New Program </span>
-			</a>
+				<span>New Program</span>
+			</button>
 		</div>
 		<hr />
 

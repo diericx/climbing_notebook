@@ -23,10 +23,7 @@
 		id,
 		dataType: 'json',
 		onResult({ result }) {
-			if (result.type == 'success' && onSuccess != undefined) {
-				if (result.data && result.data.form && result.data.form.data) {
-					data = assignDefined(data, result.data.form.data);
-				}
+			if ((result.type == 'success' || result.type == 'redirect') && onSuccess != undefined) {
 				onSuccess();
 			}
 		}
