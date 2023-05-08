@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms';
 	import type { TrainingProgramWithDays } from '$lib/prisma';
 	import { confirmDelete } from '$lib/utils';
+	import Icon from '@iconify/svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -12,14 +13,19 @@
 
 <div>
 	<div>
-		<h1>Your Training Programs</h1>
+		<div class="flex justify-between mb-2">
+			<h1>Your Training Programs</h1>
+			<a class="btn btn-sm variant-filled" href="/trainingProgram/new?redirectTo=/trainingProgram">
+				<Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
+				<span> New Program </span>
+			</a>
+		</div>
 		<hr />
-		<a href="/trainingProgram/new?redirectTo=/trainingProgram">New Training Program</a>
 
 		<div>
-			<ul class="divide-y divide-gray-200 border-t border-r border-l shadow">
+			<ul class="divide-y divide-gray-200 border">
 				{#each trainingPrograms as p}
-					<li class="bg-white py-2 px-6">
+					<li class="bg-white py-4 px-6">
 						<div class="flex items-center md:space-x-8">
 							<div class="flex-1 min-w-0">
 								<p>{p.name}</p>
@@ -30,16 +36,24 @@
 							<div class="flex items-center min-w-0 float-right space-x-2">
 								<form method="POST" action={`/profile/edit?/editProfile`} use:enhance>
 									<input type="hidden" name="activeTrainingProgramId" value={p.id} />
-									<input type="submit" class="link-button" value="Set As Active" />
+									<button class="btn btn-sm variant-ringed" type="submit" value="Set Active">
+										Set Active
+									</button>
 								</form>
-								<a href="/trainingProgram/{p.id}/edit">Edit</a>
+								<a class="btn btn-sm variant-ringed" href="/trainingProgram/{p.id}/edit">
+									<Icon icon="material-symbols:edit-outline" height="18" />
+									<span> Edit </span>
+								</a>
 								<form
 									method="POST"
 									action={`/trainingProgram/${p.id}/edit?/deleteTrainingProgram`}
 									use:enhance
 								>
 									<input type="hidden" name="id" value={p.id} />
-									<button on:click={confirmDelete}>Delete</button>
+									<button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
+										<Icon icon="mdi:trash-outline" height="18" />
+										<span> Delete </span>
+									</button>
 								</form>
 							</div>
 						</div>
