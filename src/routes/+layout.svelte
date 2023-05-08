@@ -1,15 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import NProgress from 'nprogress';
-	import Header from './Header.svelte';
-	import {
-		AppBar,
-		AppShell,
-		ListBox,
-		ListBoxItem,
-		Modal,
-		type ModalComponent
-	} from '@skeletonlabs/skeleton';
+	import { AppBar, AppShell, Modal, type ModalComponent } from '@skeletonlabs/skeleton';
 	// Your selected Skeleton theme:
 	import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
 	// This contains the bulk of Skeletons required styles:
@@ -129,7 +121,7 @@
 					{/each}
 				</div>
 
-				{#if data.user}
+				{#if data.user != undefined}
 					<div>
 						<button class="p-1" use:popup={popupCombobox}>
 							<Icon icon="iconamoon:profile-circle-fill" height="28" />

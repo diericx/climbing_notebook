@@ -1,7 +1,7 @@
 import type { Actions } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { isPasswordValid, isUsernameValid, loginSchema, signupSchema } from '$lib/user';
+import { loginSchema, signupSchema } from '$lib/user';
 import { auth } from '$lib/server/lucia';
 import { LuciaError } from 'lucia-auth';
 import { SERVER_ERROR } from '$lib/helperTypes';

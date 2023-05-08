@@ -10,7 +10,6 @@
 	export let form: SuperForm<UnwrapEffects<T>, unknown>;
 	export let field: keyof z.infer<T> | FieldPath<z.infer<T>>;
 	export let placeholder = '';
-	export let type = 'text';
 
 	const { path, value, errors, constraints } = formFieldProxy(form, field);
 </script>
