@@ -97,12 +97,17 @@
 		if (e.date == undefined) {
 			return;
 		}
-		// Calculate the score by applying the equation
-		let score = evaluate(chart.equation, {
-			value: e.value
-		});
 
-		addDataPoint(e.date, score);
+		try {
+			// Calculate the score by applying the equation
+			let score = evaluate(chart.equation, {
+				value: e.value
+			});
+
+			addDataPoint(e.date, score);
+		} catch (e) {
+			equationErrorMessage = e.message;
+		}
 	});
 </script>
 
