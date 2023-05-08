@@ -23,13 +23,15 @@
 	import ModalJournalEntry from '$lib/components/modals/ModalJournalEntry.svelte';
 	import { Drawer, drawerStore } from '@skeletonlabs/skeleton';
 	import Icon from '@iconify/svelte';
+	import { onMount } from 'svelte';
 
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	export let data: PageData;
 
 	NProgress.configure({
-		minimum: 0.16
+		minimum: 0.16,
+		parent: '#loading-bar'
 	});
 
 	$: {
@@ -91,7 +93,7 @@
 
 <AppShell slotSidebarLeft="bg-surface-500/5 w-0 lg:w-64">
 	<svelte:fragment slot="header">
-		<!-- <Header user={data.user} /> -->
+		<div id="loading-bar" style="position: fixed; width: 100%" />
 		<AppBar background="bg-white">
 			<svelte:fragment slot="lead">
 				<button class="md:hidden btn btn-sm mr-4" on:click={drawerOpen}>

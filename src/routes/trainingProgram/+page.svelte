@@ -15,22 +15,24 @@
 <div>
 	<div>
 		<div class="flex justify-between mb-2">
-			<h1>Your Training Programs</h1>
-			<button
-				class="btn btn-sm variant-filled"
-				on:click={() =>
-					modalStore.trigger({
-						type: 'component',
-						component: 'formModalTrainingProgram',
-						meta: {
-							action: `/trainingProgram?/newTrainingProgram`,
-							title: 'New Training Program'
-						}
-					})}
-			>
-				<Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-				<span>New Program</span>
-			</button>
+			<h1>Your Programs</h1>
+			<div>
+				<button
+					class="btn btn-sm variant-filled"
+					on:click={() =>
+						modalStore.trigger({
+							type: 'component',
+							component: 'formModalTrainingProgram',
+							meta: {
+								action: `/trainingProgram?/newTrainingProgram`,
+								title: 'New Training Program'
+							}
+						})}
+				>
+					<Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
+					<span>New Program</span>
+				</button>
+			</div>
 		</div>
 		<hr />
 

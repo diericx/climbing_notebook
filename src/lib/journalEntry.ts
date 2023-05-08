@@ -36,7 +36,6 @@ export class JournalEntryRepo {
         ]
       },
     }) as JournalEntry[];
-    console.log(journalEntries)
     if (journalEntries.length > 0) {
       throw new APIError('UNIQUENESS_COLLISION', 'A journal entry for that date already exists')
     }
