@@ -64,9 +64,7 @@
 
 		<div class="pt-1">
 			<button
-				class="btn btn-sm variant-ringed bg-green-300 {isMarkedCompleted
-					? 'hover:bg-green-300'
-					: 'hover:bg-green-400'}"
+				class="btn btn-sm variant-filled-primary bg-green-500 py-0 text-white"
 				disabled={isMarkedCompleted}
 				on:click={() =>
 					modalStore.trigger({

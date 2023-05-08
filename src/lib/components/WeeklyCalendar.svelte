@@ -26,6 +26,14 @@
 <div class="mb-3">
 	<h2 class="font-bold">{trainingProgram.name}</h2>
 	<a href={`/trainingProgram/${trainingProgram.id}/edit`}>Edit this training program</a>
+	<p>
+		<span class="text-gray-400 italic">
+			Exercises are completed automatically if an exercise is logged below on the same day with the
+			matching name.
+			<br />
+			Use the check box to manually mark something completed <b>without recording any data.</b>
+		</span>
+	</p>
 </div>
 
 <div class="overflow-scroll">

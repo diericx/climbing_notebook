@@ -32,8 +32,6 @@
 	}) as ExerciseEvent[];
 </script>
 
-<h1>Weekly Program Calendar</h1>
-
 <div class="pb-6">
 	<div>
 		{#if !activeTrainingProgram}
@@ -43,17 +41,6 @@
 				> page to create and set one.
 			</p>
 		{:else}
-			<p>
-				<span class="text-gray-400 italic">
-					Exercises are completed automatically if an exercise is logged below on the same day with
-					the matching name.
-					<br />
-					Use the check box to manually mark something completed <b>without recording any data.</b>
-				</span>
-			</p>
-
-			<br />
-
 			<WeeklyCalendar trainingProgram={activeTrainingProgram} />
 		{/if}
 	</div>
