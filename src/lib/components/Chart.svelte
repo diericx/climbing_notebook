@@ -28,6 +28,7 @@
 	export let metrics: Metric[] = [];
 
 	let equationErrorMessage: string | undefined = undefined;
+	let regexpErrorMessage: string | undefined = undefined;
 
 	function addDataPoint(d: Date, v: number) {
 		let dateStr = d.toISOString().split('T')[0];
@@ -61,10 +62,16 @@
 	} as ChartData;
 
 	// Get all the events that match the pattern
-	let matchedExerciseEvents = exerciseEvents.filter((e) =>
-		e.name.match(new RegExp(chart.patternToMatch, 'i'))
-	);
-	let matchedMetrics = metrics.filter((e) => e.name.match(new RegExp(chart.patternToMatch, 'i')));
+	let matchedExerciseEvents: ExerciseEvent[] = [];
+	let matchedMetrics: Metric[] = [];
+	try {
+		matchedExerciseEvents = exerciseEvents.filter((e) =>
+			e.name.match(new RegExp(chart.patternToMatch, 'i'))
+		);
+		matchedMetrics = metrics.filter((e) => e.name.match(new RegExp(chart.patternToMatch, 'i')));
+	} catch (e) {
+		regexpErrorMessage = e.toString();
+	}
 
 	matchedExerciseEvents.forEach((e) => {
 		if (e.date == undefined) {
@@ -117,6 +124,9 @@
 	<div class="overflow-scroll">
 		{#if equationErrorMessage}
 			<div class="invalid">Equation error: {equationErrorMessage}</div>
+		{/if}
+		{#if regexpErrorMessage}
+			<div class="invalid">Pattern error: {regexpErrorMessage.toString()}</div>
 		{/if}
 		<Chart data={chartData} type={chart.type} discreteDomains={0} height={170} />
 	</div>
