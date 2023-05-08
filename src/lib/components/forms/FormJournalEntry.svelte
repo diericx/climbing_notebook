@@ -40,7 +40,5 @@
 leftShoulderPain: 2`}
 	/>
 
-	<br />
-
 	<button class="btn btn-primary btn-sm variant-filled">Submit</button>
 </Form>

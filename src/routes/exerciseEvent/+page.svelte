@@ -47,23 +47,24 @@
 </div>
 
 <div class="pt-8">
-	<button
-		class="btn btn-sm variant-filled mb-2"
-		on:click={() =>
-			modalStore.trigger({
-				type: 'component',
-				component: 'formModalExerciseEvent',
-				meta: {
-					action: `/exerciseEvent?/newExerciseEvent`,
-					title: 'New Exercise Event'
-				}
-			})}
-	>
-		<Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-		<span>New Exercise Event</span>
-	</button>
-
-	<h4>Today</h4>
+	<div class="flex justify-between">
+		<h4>Today</h4>
+		<button
+			class="btn btn-sm variant-filled mb-2"
+			on:click={() =>
+				modalStore.trigger({
+					type: 'component',
+					component: 'formModalExerciseEvent',
+					meta: {
+						action: `/exerciseEvent?/newExerciseEvent`,
+						title: 'New Exercise Event'
+					}
+				})}
+		>
+			<Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
+			<span>New Exercise Event</span>
+		</button>
+	</div>
 	<ListExerciseEvent exerciseEvents={todaysExerciseEvents} />
 </div>
 
