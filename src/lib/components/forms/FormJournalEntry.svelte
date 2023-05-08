@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { journalEntrySchema } from '$lib/journalEntry';
-	import DateField from './DateField.svelte';
-	import TextArea from './TextArea.svelte';
+	import DateField from './fields/DateField.svelte';
+	import TextArea from './fields/TextArea.svelte';
 	import type { JournalEntry } from '@prisma/client';
 	import Form from './Form.svelte';
 

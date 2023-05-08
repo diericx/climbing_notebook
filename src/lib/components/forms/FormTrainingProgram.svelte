@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { TrainingProgram } from '@prisma/client';
 	import { trainingProgramSchema } from '$lib/trainingProgram';
-	import TextField from './TextField.svelte';
+	import TextField from './fields/TextField.svelte';
 	import Form from './Form.svelte';
 
 	// Form action to execute

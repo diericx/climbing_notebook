@@ -1,16 +1,13 @@
 <script lang="ts">
-	import { calendarEventSchema } from '$lib/calendarEvent';
-	import TextField from './TextField.svelte';
-	import TextArea from './TextArea.svelte';
-	import DateField from './DateField.svelte';
 	import type { CalendarEvent } from '@prisma/client';
 	import Form from './Form.svelte';
+	import TextArea from './fields/TextArea.svelte';
+	import DateField from './fields/DateField.svelte';
+	import TextField from './fields/TextField.svelte';
+	import { calendarEventSchema } from '$lib/calendarEvent';
 
-	// Incoming form data
 	export let data: CalendarEvent | undefined = undefined;
-	// Form action to execute
 	export let action = '?/newCalendarEvent';
-	// Form customization
 	export let id = crypto.randomUUID();
 	export let showSubmitButton = true;
 	export let onSuccess: (() => void) | undefined = undefined;

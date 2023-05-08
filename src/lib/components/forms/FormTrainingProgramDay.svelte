@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { TrainingProgramDay } from '@prisma/client';
-	import TextField from './TextField.svelte';
 	import { trainingProgramDaySchema } from '$lib/trainingProgramDay';
 	import Form from './Form.svelte';
+	import TextField from './fields/TextField.svelte';
 
 	// Form action to execute
 	export let action = '';

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import TextArea from './TextArea.svelte';
 	import { profileSchema } from '$lib/profile';
 	import type { Profile } from '@prisma/client';
 	import Form from './Form.svelte';
+	import TextArea from './fields/TextArea.svelte';
 
 	// Form action to execute
 	export let action = '/profile/editProfile?/editProfile';

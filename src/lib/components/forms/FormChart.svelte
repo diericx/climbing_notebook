@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { chartSchema } from '$lib/chart';
-	import TextField from './TextField.svelte';
-	import SelectField from './SelectField.svelte';
+	import TextField from './fields/TextField.svelte';
+	import SelectField from './fields/SelectField.svelte';
 	import type { Chart } from '@prisma/client';
 	import Form from './Form.svelte';
 

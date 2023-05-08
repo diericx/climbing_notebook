@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { ExerciseEvent } from '@prisma/client';
-	import TextField from './TextField.svelte';
-	import TextArea from './TextArea.svelte';
-	import DateField from './DateField.svelte';
-	import NumberField from './NumberField.svelte';
+	import TextField from './fields/TextField.svelte';
+	import TextArea from './fields/TextArea.svelte';
+	import DateField from './fields/DateField.svelte';
+	import NumberField from './fields/NumberField.svelte';
 	import { exerciseEventSchema } from '$lib/exerciseEvent';
 	import Form from './Form.svelte';
 
