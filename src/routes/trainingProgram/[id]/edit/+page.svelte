@@ -25,9 +25,7 @@
 <svelte:window bind:scrollY />
 
 <div class="grid grid-cols-1">
-	<div class="mb-5" />
-
-	<div class="mb-10 flex items-center">
+	<div class="mb-12 flex items-center justify-between">
 		<h1 class="font-bold inline">
 			{trainingProgram.name}
 		</h1>
@@ -51,7 +49,7 @@
 	</div>
 
 	<div class="mb-10">
-		<div class="flex justify-between">
+		<div class="flex justify-between mb-2">
 			<div class="text-xl">Exercise Groups</div>
 			<button
 				class="btn btn-sm variant-filled"
@@ -69,16 +67,15 @@
 				<span>Add Group</span>
 			</button>
 		</div>
-
-		<div class="mb-2" />
+		<hr class="mb-2" />
 
 		{#each trainingProgram.exerciseGroups as group}
 			<div class="rounded-lg px-4 pb-4 pt-3 border mb-4 bg-white">
 				<div class="flex items-center">
-					<div class="flex mb-7 w-full">
+					<div class="flex mb-7 w-full justify-between">
 						<h2 class="font-bold">{group.name}</h2>
 
-						<div>
+						<div class="flex space-x-2">
 							<button
 								class="btn btn-sm variant-ringed"
 								on:click={() =>
@@ -88,29 +85,26 @@
 										meta: {
 											data: group,
 											action: `/trainingProgram/${trainingProgram.id}/group/${group.id}?/editExerciseGroup`,
-											title: 'Edit Exercise'
+											title: 'Edit Group'
 										}
 									})}
 							>
 								<Icon icon="material-symbols:edit-outline" height="18" />
 								<span>Edit</span>
 							</button>
+							<form
+								use:enhance
+								method="POST"
+								action={`/trainingProgram/${trainingProgram.id}/group/${group.id}?/deleteExerciseGroup`}
+								class="flex-initial"
+							>
+								<input type="hidden" name="exerciseGroupId" value={group.id} />
+								<button on:click={confirmDelete} class="btn btn-sm variant-ringed" type="submit">
+									<Icon icon="mdi:trash-outline" height="18" />
+									<span class="ml-1 mr-1"> Delete </span>
+								</button>
+							</form>
 						</div>
-
-						<div class="flex-1" />
-
-						<form
-							use:enhance
-							method="POST"
-							action={`/trainingProgram/${trainingProgram.id}/group/${group.id}?/deleteExerciseGroup`}
-							class="flex-initial"
-						>
-							<input type="hidden" name="exerciseGroupId" value={group.id} />
-							<button on:click={confirmDelete} class="btn btn-sm variant-ringed" type="submit">
-								<Icon icon="mdi:trash-outline" height="18" />
-								<span class="ml-1 mr-1"> Delete </span>
-							</button>
-						</form>
 					</div>
 					<div />
 				</div>
@@ -142,15 +136,16 @@
 		{/each}
 	</div>
 
-	<div class="mb-5">
+	<div class="mb-2">
 		<div class="text-xl">Days</div>
 		<p class="text-slate-400">Set exercises and exercise groups for each day of the week.</p>
 	</div>
+	<hr class="mb-2" />
 
 	<div>
 		{#each trainingProgram.days as day, i}
 			<div class="bg-white rounded-lg px-4 pt-3 pb-3 mb-10 border">
-				<div class="flex mb-4">
+				<div class="flex mb-4 justify-between">
 					<div class="mr-2">
 						<h2>
 							<b>{daysOfTheWeek[i]}</b>
@@ -169,7 +164,7 @@
 									meta: {
 										data: day,
 										action: `/trainingProgram/${trainingProgram.id}/day/${day.id}?/editTrainingProgramDay`,
-										title: 'Add Exercise'
+										title: 'Edit Day'
 									}
 								})}
 						>
@@ -199,7 +194,7 @@
 									</option>
 								{/each}
 							</select>
-							<button class="icon-button mb-2 mr-0" type="submit">
+							<button class="btn btn-sm variant-filled mb-2 ml-2" type="submit">
 								<Icon icon="fluent:plug-connected-add-20-regular" height="18" />
 								<span class="ml-1 mr-1"> Connect</span>
 							</button>
@@ -213,7 +208,7 @@
 								action={`/trainingProgram/${trainingProgram.id}/day/${day.id}/?/disconnectExerciseGroup`}
 							>
 								<input type="hidden" value={group.id} name="exerciseGroupId" />
-								<button type="submit" class="icon-button">
+								<button class="btn btn-sm variant-ringed" type="submit">
 									<Icon icon="fluent:plug-disconnected-20-regular" height="18" />
 									<span class="ml-1 mr-1"> Disconnect </span>
 								</button>
@@ -222,10 +217,10 @@
 					</ExerciseGroupList>
 				</div>
 
-				<div class="flex justify-between">
+				<div class="flex justify-between items-end">
 					<div class="text-lg font-bold">Exercises</div>
 					<button
-						class="btn btn-sm variant-ringed"
+						class="btn btn-sm variant-filled mb-2"
 						on:click={() =>
 							modalStore.trigger({
 								type: 'component',
