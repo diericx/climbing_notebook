@@ -17,14 +17,11 @@
 	<h2>Login</h2>
 	<form method="POST" action={'?/login' + redirectTo}>
 		<label for="username">username</label>
-		<br />
 		<input type="username" name="username" value={form?.username || ''} />
-		<br />
 		<label for="password">password</label>
-		<br />
 		<input type="password" name="password" />
 		<br />
-		<button>Login</button>
+		<button class="btn btn-sm variant-filled">Login</button>
 	</form>
 </div>
 
@@ -34,17 +31,12 @@
 	<h2>Register</h2>
 	<form method="POST" action={'?/register' + redirectTo}>
 		<label for="username">username</label>
-		<br />
 		<input type="username" name="username" value={form?.username || ''} />
-		<br />
 		<label for="email">email</label>
-		<br />
 		<input type="email" name="email" value={form?.email || ''} />
-		<br />
 		<label for="password">password</label>
-		<br />
 		<input type="password" name="password" />
 		<br />
-		<button>Register</button>
+		<button class="btn btn-sm variant-filled">Register</button>
 	</form>
 </div>

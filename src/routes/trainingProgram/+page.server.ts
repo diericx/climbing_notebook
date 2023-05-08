@@ -23,7 +23,6 @@ export const load: PageServerLoad = async ({ locals }) => {
     throw error(500, { message: SERVER_ERROR })
   }
 
-  console.log('Loading training program profile...')
   const repo = new ProfileRepo(prisma);
   let profile: ProfileWithActiveTrainingProgram;
   try {
