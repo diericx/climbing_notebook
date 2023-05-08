@@ -27,20 +27,17 @@
 	export let exerciseEvents: ExerciseEvent[] = [];
 	export let metrics: Metric[] = [];
 
-	function dateToEUString(d: Date) {
-		return `${d.getDate()}-${d.getMonth()}-${d.getFullYear()}`;
-	}
-
 	function addDataPoint(d: Date, v: number) {
+		let dateStr = d.toISOString().split('T')[0];
 		// Add data in heatmap format
 		chartData.dataPoints[Math.floor(d.getTime() / 1000)] = v;
 
 		// NOTE: this functionality expects the events to be sorted by date
-		let dataIndex = chartData.labels.findIndex((l) => l == dateToEUString(d));
+		let dataIndex = chartData.labels.findIndex((l) => l == dateStr);
 		if (dataIndex == -1) {
 			// If the date label is not found, create it and the corresponding score
 			// Inserted at head because list is sorted date descending
-			chartData.labels = [dateToEUString(d), ...chartData.labels];
+			chartData.labels = [dateStr, ...chartData.labels];
 			chartData.datasets[0].values = [v, ...chartData.datasets[0].values];
 		} else {
 			// If the date label is found, use the index to update the score
