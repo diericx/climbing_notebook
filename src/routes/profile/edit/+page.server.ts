@@ -30,8 +30,11 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 export const actions: Actions = {
   editProfile: async ({ locals, request, url }) => {
+    const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
-    const form = await superValidate(request, profileSchema);
+    const form = await superValidate(formData, profileSchema, {
+      id: formData.get('_formId')?.toString(),
+    });
 
     if (!form.valid) {
       return fail(400, { form });

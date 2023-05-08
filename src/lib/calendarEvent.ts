@@ -6,7 +6,6 @@ export const calendarEventSchema = z.object({
   dateStart: z.date().default(new Date()),
   dateEnd: z.date().default(new Date()),
   title: z.string().min(1).default(''),
-  // TODO: test that nullish value won't override with null
   content: z.string().nullish(),
   color: z.string().default('green')
 });

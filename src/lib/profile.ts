@@ -4,8 +4,8 @@ import { APIError } from './errors';
 import type { ProfileWithActiveTrainingProgram } from './prisma';
 
 export const profileSchema = z.object({
-  goals: z.string().nullish(),
-  activeTrainingProgramId: z.number().nullish(),
+  goals: z.string().optional(),
+  activeTrainingProgramId: z.number().optional(),
 });
 export type ProfileSchema = typeof profileSchema;
 
