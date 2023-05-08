@@ -60,7 +60,7 @@
 	let popupCombobox: PopupSettings = {
 		event: 'focus-click',
 		target: 'combobox',
-		placement: 'bottom',
+		placement: 'bottom-end',
 		// Close the popup when the item is clicked
 		closeQuery: '.listbox-item'
 	};
