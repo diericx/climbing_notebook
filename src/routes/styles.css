@@ -27,15 +27,6 @@ p {
 	line-height: 1.5;
 }
 
-/* a { */
-/* 	color: var(--color-theme-1); */
-/* 	text-decoration: none; */
-/* } */
-
-/* a:hover { */
-/* 	text-decoration: underline; */
-/* } */
-
 pre {
 	font-size: 16px;
 	font-family: var(--font-mono);
@@ -54,16 +45,6 @@ pre {
 	flex-direction: column;
 	justify-content: center;
 	margin: 0 auto;
-}
-
-input,
-button {
-	font-size: inherit;
-	font-family: inherit;
-}
-
-button:focus:not(:focus-visible) {
-	outline: none;
 }
 
 @media (min-width: 720px) {

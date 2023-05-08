@@ -29,7 +29,6 @@
 					<!-- Mobile menu button -->
 					<div class="flex md:hidden">
 						<button
-							type="button"
 							class="py-1 text-gray-300 hover:text-gray-400 focus:outline-none focus:text-gray-400"
 							on:click={toggleNavbar}
 						>

@@ -104,7 +104,7 @@
 		</a>
 		<form method="POST" action={`/chart/${chart.id}/edit?/deleteChart`} class="inline" use:enhance>
 			<input type="hidden" name="id" value={chart.id} />
-			<button class="btn btn-sm variant-ringed" type="submit" on:click={confirmDelete}>
+			<button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
 				<Icon icon="mdi:trash-outline" height="18" />
 				Delete
 			</button>

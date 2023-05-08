@@ -27,7 +27,7 @@
 			some.
 		</p>
 	{:else}
-		<div class="card p-4">
+		<div class="card p-4 whitespace-pre-wrap">
 			{profile.goals}
 		</div>
 	{/if}

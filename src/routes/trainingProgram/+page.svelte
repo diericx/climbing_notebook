@@ -51,7 +51,7 @@
 								<div class="flex items-center min-w-0 float-right space-x-2">
 									<form method="POST" action={`/profile/edit?/editProfile`} use:enhance>
 										<input type="hidden" name="activeTrainingProgramId" value={p.id} />
-										<button class="btn btn-sm variant-ringed" type="submit" value="Set Active">
+										<button class="btn btn-sm variant-ringed" value="Set Active">
 											Set Active
 										</button>
 									</form>

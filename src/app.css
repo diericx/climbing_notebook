@@ -63,10 +63,6 @@
     @apply text-gray-400
   }
 
-  /* button { */
-  /*   @apply px-2 bg-white rounded shadow border-gray-200 */
-  /* } */
-
   table {
     @apply w-full table-auto text-left text-gray-400 shadow
   }
@@ -85,23 +81,8 @@
   td {
     @apply px-6 py-1
   }
-
-  /* a { */
-  /*   color: inherit; */
-  /* } */
-
   hr {
     @apply pb-2
-  }
-
-  .link-button { 
-    @apply shadow-none py-0 px-0 text-blue-500 bg-white;
-    background: none;
-    border: none;
-    cursor: pointer; 
-  }
-  .link-button:hover { 
-    text-decoration: underline;
   }
 
   .server-message {
@@ -115,18 +96,8 @@
     @apply bg-red-300 text-white
   }
 
-  .icon-button {
-    @apply text-gray-400 font-medium text-center text-sm;
-    @apply bg-white hover:bg-gray-50 border;
-    @apply ml-2 p-1 inline-flex items-center rounded;
-  }
-
   .card {
     background-color: white;
-  }
-
-  .edit-btn {
-    @apply btn btn-sm variant-ringed;
   }
 }
 .invalid {

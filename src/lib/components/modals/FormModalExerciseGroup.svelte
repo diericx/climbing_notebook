@@ -15,6 +15,6 @@
 		/>
 	</span>
 	<span slot="footer">
-		<button type="submit" class="btn variant-filled" form={id}>Submit</button>
+		<button class="btn variant-filled" form={id}>Submit</button>
 	</span>
 </FormModal>

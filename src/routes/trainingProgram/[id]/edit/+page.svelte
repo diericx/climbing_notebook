@@ -99,7 +99,7 @@
 								class="flex-initial"
 							>
 								<input type="hidden" name="exerciseGroupId" value={group.id} />
-								<button on:click={confirmDelete} class="btn btn-sm variant-ringed" type="submit">
+								<button on:click={confirmDelete} class="btn btn-sm variant-ringed">
 									<Icon icon="mdi:trash-outline" height="18" />
 									<span class="ml-1 mr-1"> Delete </span>
 								</button>
@@ -196,7 +196,7 @@
 									</option>
 								{/each}
 							</select>
-							<button class="btn btn-sm variant-filled mb-2 ml-2" type="submit">
+							<button class="btn btn-sm variant-filled mb-2 ml-2">
 								<Icon icon="fluent:plug-connected-add-20-regular" height="18" />
 								<span class="ml-1 mr-1"> Connect</span>
 							</button>
@@ -210,7 +210,7 @@
 								action={`/trainingProgram/${trainingProgram.id}/day/${day.id}/?/disconnectExerciseGroup`}
 							>
 								<input type="hidden" value={group.id} name="exerciseGroupId" />
-								<button class="btn btn-sm variant-ringed" type="submit">
+								<button class="btn btn-sm variant-ringed">
 									<Icon icon="fluent:plug-disconnected-20-regular" height="18" />
 									<span class="ml-1 mr-1"> Disconnect </span>
 								</button>
