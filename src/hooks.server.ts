@@ -4,8 +4,6 @@ import type { Handle } from '@sveltejs/kit';
 export const handle: Handle = async ({ event, resolve }) => {
   event.locals.auth = auth.handleRequest(event);
 
-  const response = await resolve(event)
-
   const { user } = await event.locals.auth.validateUser();
   if (
     event.url.pathname.startsWith('/chart') ||
@@ -25,5 +23,6 @@ export const handle: Handle = async ({ event, resolve }) => {
     }
   }
 
+  const response = await resolve(event)
   return response;
 };
