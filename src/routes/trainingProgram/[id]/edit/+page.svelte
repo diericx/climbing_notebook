@@ -2,8 +2,8 @@
 	import type { PageData } from './$types';
 	import { enhance } from '$app/forms';
 	import Icon from '@iconify/svelte';
-	import ExerciseEventsList from '$lib/components/ListExerciseEvent.svelte';
-	import ExerciseGroupList from '$lib/components/ListExerciseGroup.svelte';
+	import ListExerciseEvent from '$lib/components/ListExerciseEvent.svelte';
+	import ListExerciseGroup from '$lib/components/ListExerciseGroup.svelte';
 	import { confirmDelete } from '$lib/utils';
 	import { modalStore } from '@skeletonlabs/skeleton';
 
@@ -121,7 +121,9 @@
 									component: 'formModalExerciseEvent',
 									meta: {
 										action: `/trainingProgram/${trainingProgram.id}/group/${group.id}?/newExerciseEvent`,
-										title: 'Add Exercise'
+										title: 'Add Exercise',
+										showDate: false,
+										showDifficulty: false
 									}
 								})}
 						>
@@ -130,7 +132,7 @@
 						</button>
 					</div>
 
-					<ExerciseEventsList exerciseEvents={group.exercises} shouldShowDate={false} />
+					<ListExerciseEvent exerciseEvents={group.exercises} showDate={false} />
 				</div>
 			</div>
 		{/each}
@@ -200,7 +202,7 @@
 							</button>
 						</form>
 					</div>
-					<ExerciseGroupList exerciseGroups={day.exerciseGroups}>
+					<ListExerciseGroup exerciseGroups={day.exerciseGroups}>
 						<div slot="buttons" let:group>
 							<form
 								use:enhance
@@ -214,7 +216,7 @@
 								</button>
 							</form>
 						</div>
-					</ExerciseGroupList>
+					</ListExerciseGroup>
 				</div>
 
 				<div class="flex justify-between items-end">
@@ -227,7 +229,9 @@
 								component: 'formModalExerciseEvent',
 								meta: {
 									action: `/trainingProgram/${trainingProgram.id}/day/${day.id}?/newExerciseEvent`,
-									title: 'Add Exercise'
+									title: 'Add Exercise',
+									showDate: false,
+									showDifficulty: false
 								}
 							})}
 					>
@@ -235,7 +239,7 @@
 						<span>Add Exercise</span>
 					</button>
 				</div>
-				<ExerciseEventsList exerciseEvents={day.exercises} shouldShowDate={false} />
+				<ListExerciseEvent exerciseEvents={day.exercises} showDate={false} />
 			</div>
 		{/each}
 	</div>

@@ -6,7 +6,8 @@
 	import { modalStore } from '@skeletonlabs/skeleton';
 
 	export let exerciseEvents: ExerciseEvent[];
-	export let shouldShowDate = true;
+	export let showDate = true;
+	export let showDifficulty = true;
 </script>
 
 <ul class="divide-y divide-gray-200 border-t">
@@ -19,7 +20,7 @@
 				<div class="mr-2">
 					<Icon icon="healthicons:exercise-weights" width="35" />
 				</div>
-				{#if shouldShowDate}
+				{#if showDate}
 					<div class="flex-initial hidden md:block">
 						{new Date(exerciseEvent.date || '').toLocaleDateString('en-US')}
 					</div>
@@ -28,7 +29,7 @@
 				<div class="flex-1 min-w-0">
 					<p>{exerciseEvent.name}</p>
 					<p class="text-sm text-gray-400">
-						{#if shouldShowDate}
+						{#if showDate}
 							<span class="md:hidden">
 								{new Date(exerciseEvent.date || '').toLocaleDateString('en-US')}
 								<br />
@@ -36,7 +37,7 @@
 						{/if}
 						{exerciseEvent.sets}x{exerciseEvent.reps} :
 						{exerciseEvent.minutes}m{exerciseEvent.seconds}s : {exerciseEvent.weight}kg
-						{#if exerciseEvent.difficulty}
+						{#if exerciseEvent.difficulty && showDifficulty}
 							: {exerciseEvent.difficulty}
 							difficulty
 						{/if}
@@ -53,7 +54,9 @@
 									meta: {
 										data: exerciseEvent,
 										action: `/exerciseEvent/${exerciseEvent.id}/edit?/editExerciseEvent`,
-										title: 'Edit Exercise Event'
+										title: 'Edit Exercise Event',
+										showDate,
+										showDifficulty
 									}
 								})}
 						>

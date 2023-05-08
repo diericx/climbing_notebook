@@ -35,43 +35,47 @@
 		<hr />
 
 		<div>
-			<ul class="divide-y divide-gray-200 border">
-				{#each trainingPrograms as p}
-					<li class="bg-white py-4 px-6">
-						<div class="flex items-center md:space-x-8">
-							<div class="flex-1 min-w-0">
-								<p>{p.name}</p>
-								<p class="text-sm text-gray-400">
-									{profile?.activeTrainingProgramId == p.id ? 'Active' : ''}
-								</p>
+			{#if trainingPrograms.length == 0}
+				<p class="text-gray-400 italic">You have no training programs.</p>
+			{:else}
+				<ul class="divide-y divide-gray-200 border">
+					{#each trainingPrograms as p}
+						<li class="bg-white py-4 px-6">
+							<div class="flex items-center md:space-x-8">
+								<div class="flex-1 min-w-0">
+									<p>{p.name}</p>
+									<p class="text-sm text-gray-400">
+										{profile?.activeTrainingProgramId == p.id ? 'Active' : ''}
+									</p>
+								</div>
+								<div class="flex items-center min-w-0 float-right space-x-2">
+									<form method="POST" action={`/profile/edit?/editProfile`} use:enhance>
+										<input type="hidden" name="activeTrainingProgramId" value={p.id} />
+										<button class="btn btn-sm variant-ringed" type="submit" value="Set Active">
+											Set Active
+										</button>
+									</form>
+									<a class="btn btn-sm variant-ringed" href="/trainingProgram/{p.id}/edit">
+										<Icon icon="material-symbols:edit-outline" height="18" />
+										<span> Edit </span>
+									</a>
+									<form
+										method="POST"
+										action={`/trainingProgram/${p.id}/edit?/deleteTrainingProgram`}
+										use:enhance
+									>
+										<input type="hidden" name="id" value={p.id} />
+										<button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
+											<Icon icon="mdi:trash-outline" height="18" />
+											<span> Delete </span>
+										</button>
+									</form>
+								</div>
 							</div>
-							<div class="flex items-center min-w-0 float-right space-x-2">
-								<form method="POST" action={`/profile/edit?/editProfile`} use:enhance>
-									<input type="hidden" name="activeTrainingProgramId" value={p.id} />
-									<button class="btn btn-sm variant-ringed" type="submit" value="Set Active">
-										Set Active
-									</button>
-								</form>
-								<a class="btn btn-sm variant-ringed" href="/trainingProgram/{p.id}/edit">
-									<Icon icon="material-symbols:edit-outline" height="18" />
-									<span> Edit </span>
-								</a>
-								<form
-									method="POST"
-									action={`/trainingProgram/${p.id}/edit?/deleteTrainingProgram`}
-									use:enhance
-								>
-									<input type="hidden" name="id" value={p.id} />
-									<button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
-										<Icon icon="mdi:trash-outline" height="18" />
-										<span> Delete </span>
-									</button>
-								</form>
-							</div>
-						</div>
-					</li>
-				{/each}
-			</ul>
+						</li>
+					{/each}
+				</ul>
+			{/if}
 		</div>
 	</div>
 </div>
