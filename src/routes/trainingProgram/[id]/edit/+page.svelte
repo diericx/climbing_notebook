@@ -38,7 +38,7 @@
 					component: 'formModalTrainingProgram',
 					meta: {
 						data: trainingProgram,
-						action: `/trainingProgram/${trainingProgram.id}/edit?/editTrainingProgram`,
+						action: `/trainingProgram/${trainingProgram.id}?/edit`,
 						title: 'Edit Training Program'
 					}
 				})}
@@ -58,7 +58,7 @@
 						type: 'component',
 						component: 'formModalExerciseGroup',
 						meta: {
-							action: `/trainingProgram/${trainingProgram.id}/edit?/addExerciseGroup`,
+							action: `/trainingProgram/${trainingProgram.id}?/addExerciseGroup`,
 							title: 'Add Group'
 						}
 					})}
@@ -84,7 +84,7 @@
 										component: 'formModalExerciseGroup',
 										meta: {
 											data: group,
-											action: `/trainingProgram/${trainingProgram.id}/group/${group.id}?/editExerciseGroup`,
+											action: `/trainingProgram/${trainingProgram.id}/group/${group.id}?/edit`,
 											title: 'Edit Group'
 										}
 									})}
@@ -95,7 +95,7 @@
 							<form
 								use:enhance
 								method="POST"
-								action={`/trainingProgram/${trainingProgram.id}/group/${group.id}?/deleteExerciseGroup`}
+								action={`/trainingProgram/${trainingProgram.id}/group/${group.id}?/delete`}
 								class="flex-initial"
 							>
 								<input type="hidden" name="exerciseGroupId" value={group.id} />
@@ -165,7 +165,7 @@
 									component: 'formModalTrainingProgramDay',
 									meta: {
 										data: day,
-										action: `/trainingProgram/${trainingProgram.id}/day/${day.id}?/editTrainingProgramDay`,
+										action: `/trainingProgram/${trainingProgram.id}/day/${day.id}?/edit`,
 										title: 'Edit Day'
 									}
 								})}

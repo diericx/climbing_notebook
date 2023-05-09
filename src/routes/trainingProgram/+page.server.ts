@@ -42,7 +42,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 }
 
 export const actions: Actions = {
-  newTrainingProgram: async ({ locals, request, url }) => {
+  new: async ({ locals, request, url }) => {
     const { user } = await locals.auth.validateUser();
     const form = await superValidate(request, trainingProgramSchema);
 

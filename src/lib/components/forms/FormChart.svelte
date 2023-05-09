@@ -6,7 +6,7 @@
 	import Form from './Form.svelte';
 
 	export let data: Chart | undefined = undefined;
-	export let action = '?/newExerciseEvent';
+	export let action = '';
 	export let id = crypto.randomUUID();
 	export let showSubmitButton = true;
 	export let onSuccess: (() => Promise<void>) | undefined = undefined;

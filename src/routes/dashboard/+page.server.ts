@@ -6,9 +6,8 @@ import { SERVER_ERROR } from '$lib/helperTypes';
 import { MetricRepo } from '$lib/metric';
 import { prisma } from '$lib/prisma';
 import { ProfileRepo } from '$lib/profile';
-import { error, fail, type Actions } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { auth } from '$lib/server/lucia';
 import { JournalEntryRepo } from '$lib/journalEntry';
 import { CalendarEventRepo } from '$lib/calendarEvent';
 
@@ -42,14 +41,5 @@ export const load: PageServerLoad = async ({ locals }) => {
     }
     console.error(e)
     throw error(500, { message: SERVER_ERROR })
-  }
-}
-
-export const actions: Actions = {
-  signout: async ({ locals }) => {
-    const session = await locals.auth.validate();
-    if (!session) return fail(401);
-    await auth.invalidateSession(session.sessionId);
-    locals.auth.setSession(null);
   }
 }

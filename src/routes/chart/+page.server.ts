@@ -1,4 +1,4 @@
-import type { Actions, PageServerLoad } from './$types';
+import type { Actions } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { ChartRepo, chartSchema } from '$lib/chart';
 import { prisma } from '$lib/prisma';
@@ -6,16 +6,8 @@ import { APIError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { superValidate } from 'sveltekit-superforms/server';
 
-export const load: PageServerLoad = async ({ url }) => {
-  const redirectTo = url.searchParams.get('redirectTo');
-
-  return {
-    redirectTo,
-  };
-};
-
 export const actions: Actions = {
-  newChart: async ({ request, url, locals }) => {
+  new: async ({ request, url, locals }) => {
     const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
     const form = await superValidate(formData, chartSchema, {

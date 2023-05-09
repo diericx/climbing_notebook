@@ -4,12 +4,12 @@
 	import FormJournalEntry from '$lib/components/forms/FormJournalEntry.svelte';
 
 	export let data: PageData;
-	$: journalEntry = data.journalEntry;
+	const { journalEntry } = data;
 </script>
 
 <div class="grid grid-cols-1">
 	<div>
 		<h2>Edit Journal Entry</h2>
-		<FormJournalEntry action="?/editJournalEntry" data={journalEntry} />
+		<FormJournalEntry action={`/journalEntry/${journalEntry.id}?/edit`} data={journalEntry} />
 	</div>
 </div>

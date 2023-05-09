@@ -5,6 +5,6 @@
 <div class="grid grid-cols-1">
 	<div>
 		<h1>New Chart</h1>
-		<ChartForm action="?/newChart" />
+		<ChartForm action="/chart?/new" />
 	</div>
 </div>

@@ -56,7 +56,7 @@
 					type: 'component',
 					component: 'formModalExerciseEvent',
 					meta: {
-						action: `/exerciseEvent?/newExerciseEvent`,
+						action: `/exerciseEvent?/new`,
 						title: 'New Exercise Event'
 					}
 				})}

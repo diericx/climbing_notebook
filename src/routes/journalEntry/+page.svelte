@@ -37,7 +37,7 @@
 						</a>
 						<form
 							method="POST"
-							action={`/journalEntry/${item.id}/edit?/deleteJournalEntry`}
+							action={`/journalEntry/${item.id}?/delete`}
 							class="inline"
 							use:enhance
 						>

@@ -53,7 +53,7 @@
 									component: 'formModalExerciseEvent',
 									meta: {
 										data: exerciseEvent,
-										action: `/exerciseEvent/${exerciseEvent.id}/edit?/editExerciseEvent`,
+										action: `/exerciseEvent/${exerciseEvent.id}?/edit`,
 										title: 'Edit Exercise Event',
 										showDate,
 										showDifficulty
@@ -67,7 +67,7 @@
 							class="inline"
 							use:enhance
 							method="POST"
-							action={`/exerciseEvent/${exerciseEvent.id}/edit?/deleteExerciseEvent`}
+							action={`/exerciseEvent/${exerciseEvent.id}?/delete`}
 						>
 							<button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
 								<Icon icon="mdi:trash-outline" height="18" />

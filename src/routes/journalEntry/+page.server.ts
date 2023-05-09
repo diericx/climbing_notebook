@@ -24,7 +24,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-  newJournalEntry: async ({ request, url, locals }) => {
+  new: async ({ request, url, locals }) => {
     const { user } = await locals.auth.validateUser();
     const formData = await request.formData();
     const form = await superValidate(formData, journalEntrySchema, {

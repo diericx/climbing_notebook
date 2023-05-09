@@ -3,11 +3,15 @@
 	import type { PageData } from './$types';
 
 	export let data: PageData;
+	const { calendarEvent } = data;
 </script>
 
 <div class="grid grid-cols-1">
 	<div>
 		<h1>Edit Calendar Event</h1>
-		<FormCalendarEvent action="?/editCalendarEvent" data={data.calendarEvent} />
+		<FormCalendarEvent
+			action={`/calendarEvent/${calendarEvent.id}?/edit`}
+			data={data.calendarEvent}
+		/>
 	</div>
 </div>

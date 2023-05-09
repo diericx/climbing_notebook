@@ -7,7 +7,7 @@
 	import { calendarEventSchema } from '$lib/calendarEvent';
 
 	export let data: CalendarEvent | undefined = undefined;
-	export let action = '?/newCalendarEvent';
+	export let action = '';
 	export let id = crypto.randomUUID();
 	export let showSubmitButton = true;
 	export let onSuccess: (() => void) | undefined = undefined;

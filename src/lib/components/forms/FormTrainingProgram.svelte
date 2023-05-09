@@ -5,7 +5,7 @@
 	import Form from './Form.svelte';
 
 	// Form action to execute
-	export let action = '/trainingProgram?/newTrainingProgram';
+	export let action = '';
 	export let data: TrainingProgram | undefined = undefined;
 	export let onSuccess: (() => void) | undefined = undefined;
 	export let id = crypto.randomUUID();

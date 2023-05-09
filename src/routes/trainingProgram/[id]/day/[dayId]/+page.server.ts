@@ -2,7 +2,7 @@
 import { error, fail, redirect, type Actions } from '@sveltejs/kit';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
-import { TrainingProgramRepo, trainingProgramSchema } from '$lib/trainingProgram';
+import { TrainingProgramRepo } from '$lib/trainingProgram';
 import { APIError } from '$lib/errors';
 import { superValidate } from 'sveltekit-superforms/server';
 import { trainingProgramDaySchema } from '$lib/trainingProgramDay';
@@ -65,7 +65,7 @@ export const actions: Actions = {
     return { success: true };
   },
 
-  editTrainingProgramDay: async ({ locals, request, url, params }) => {
+  edit: async ({ locals, request, url, params }) => {
     const formData = await request.formData();
     const form = await superValidate(formData, trainingProgramDaySchema, {
       id: formData.get('_formId')?.toString(),

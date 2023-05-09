@@ -8,7 +8,7 @@ import { exerciseGroupSchema } from '$lib/exerciseGroup';
 import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
 
 export const actions: Actions = {
-  editExerciseGroup: async ({ locals, request, url, params }) => {
+  edit: async ({ locals, request, url, params }) => {
     const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
     const trainingProgramId = Number(params.id);
@@ -39,7 +39,7 @@ export const actions: Actions = {
     return { form };
   },
 
-  deleteExerciseGroup: async ({ locals, url, params }) => {
+  delete: async ({ locals, url, params }) => {
     const { user } = await locals.auth.validateUser();
     const trainingProgramId = Number(params.id);
     const exerciseGroupId = Number(params.groupId);

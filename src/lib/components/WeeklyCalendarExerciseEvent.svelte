@@ -73,7 +73,7 @@
 						meta: {
 							// remove gropu id and program id so this will be considered an exercise event
 							data: { ...exerciseEvent, exerciseGroupId: null, trainingProgramDayId: null },
-							action: `/exerciseEvent?/newExerciseEvent`,
+							action: `/exerciseEvent?/new`,
 							title: 'Complete Exercise',
 							exerciseToMarkCompleted: exerciseEvent,
 							dateToMarkCompleted: date

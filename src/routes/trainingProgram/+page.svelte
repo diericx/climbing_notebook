@@ -24,7 +24,7 @@
 							type: 'component',
 							component: 'formModalTrainingProgram',
 							meta: {
-								action: `/trainingProgram?/newTrainingProgram`,
+								action: `/trainingProgram?/new`,
 								title: 'New Training Program'
 							}
 						})}
@@ -51,7 +51,7 @@
 									</p>
 								</div>
 								<div class="flex items-center min-w-0 float-right space-x-2">
-									<form method="POST" action={`/profile/edit?/editProfile`} use:enhance>
+									<form method="POST" action={`/profile?/edit`} use:enhance>
 										<input type="hidden" name="activeTrainingProgramId" value={p.id} />
 										<button class="btn btn-sm variant-ringed" value="Set Active">
 											Set Active
@@ -61,11 +61,7 @@
 										<Icon icon="material-symbols:edit-outline" height="18" />
 										<span> Edit </span>
 									</a>
-									<form
-										method="POST"
-										action={`/trainingProgram/${p.id}/edit?/deleteTrainingProgram`}
-										use:enhance
-									>
+									<form method="POST" action={`/trainingProgram/${p.id}?/delete`} use:enhance>
 										<input type="hidden" name="id" value={p.id} />
 										<button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
 											<Icon icon="mdi:trash-outline" height="18" />

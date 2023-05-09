@@ -37,7 +37,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 
 export const actions: Actions = {
-  newExerciseEvent: async ({ locals, request, url }) => {
+  new: async ({ locals, request, url }) => {
     const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
     const form = await superValidate(formData, exerciseEventSchema, {

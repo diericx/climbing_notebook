@@ -10,6 +10,6 @@
 
 <div class="grid grid-cols-1">
 	<div>
-		<ProfileForm data={data?.profile} />
+		<ProfileForm action="/profile?/edit" data={data?.profile} />
 	</div>
 </div>
