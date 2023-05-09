@@ -59,7 +59,6 @@
 		"lucia-auth": "1.4.0",
 		"mathjs": "^11.8.0",
 		"nprogress": "^0.2.0",
-		"svelte-frappe-charts": "^1.10.0",
-		"validator": "^13.9.0"
+		"svelte-frappe-charts": "^1.10.0"
 	}
 }
