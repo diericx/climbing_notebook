@@ -10,21 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Chart {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now()) @map("created_at")
-  ownerId   String   @map("owner_id")
-  owner     AuthUser @relation(fields: [ownerId], references: [id])
-
-  name           String
-  type           String @default("line")
-  patternToMatch String @map("pattern_to_match")
-  matchAgainst   String @map("match_against")
-  equation       String
-
-  @@map("chart")
-}
-
 model ExerciseGroup {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
@@ -157,6 +142,67 @@ model CalendarEvent {
   @@map("calendar_event")
 }
 
+model CustomQuery {
+  id         String                 @id @default(cuid())
+  name       String
+  table      String
+  operator   String
+  conditions CustomQueryCondition[]
+  dataset    Dataset[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  ownerId   String   @map("owner_id")
+
+  @@map("custom_query")
+}
+
+model CustomQueryCondition {
+  id            String       @id @default(cuid())
+  column        String
+  condition     String
+  value         String
+  customQuery   CustomQuery? @relation(fields: [customQueryId], references: [id], onDelete: Cascade)
+  customQueryId String?      @map("custom_query_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  ownerId   String   @map("owner_id")
+
+  @@map("query_condition")
+}
+
+model Widget {
+  id    String @id @default(cuid())
+  name  String
+  width String
+  order Int
+  type  String
+
+  // For chart and calendar heatmap type
+  datasets Dataset[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  ownerId   String   @map("owner_id")
+
+  @@map("widget")
+}
+
+model Dataset {
+  id            String      @id @default(cuid())
+  type          String      @default("line")
+  name          String
+  equation      String
+  color         String
+  customQuery   CustomQuery @relation(fields: [customQueryId], references: [id], onDelete: Cascade)
+  customQueryId String      @map("query_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  ownerId   String   @map("owner_id")
+  widget    Widget   @relation(fields: [widgetId], references: [id], onDelete: Cascade)
+  widgetId  String
+
+  @@map("dataset")
+}
+
 model AuthUser {
   id        String   @id @unique
   createdAt DateTime @default(now()) @map("created_at")
@@ -170,7 +216,6 @@ model AuthUser {
   profile         Profile?
   trainingProgram TrainingProgram[]
   exerciseGroup   ExerciseGroup[]
-  chart           Chart[]
   metric          Metric[]
   calendarEvent   CalendarEvent[]
 

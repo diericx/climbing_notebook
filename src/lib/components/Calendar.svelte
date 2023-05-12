@@ -5,7 +5,6 @@
 	import Interraction from '@event-calendar/interaction';
 	import type { CalendarEvent, JournalEntry } from '@prisma/client';
 	import { modalStore } from '@skeletonlabs/skeleton';
-	import Icon from '@iconify/svelte';
 
 	export let calendarEvents: CalendarEvent[];
 	export let journalEntries: JournalEntry[];

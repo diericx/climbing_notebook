@@ -1,26 +1,59 @@
 import type { Actions } from './$types';
+import { error, fail, redirect } from '@sveltejs/kit';
 import { SERVER_ERROR } from '$lib/helperTypes';
-import { error } from 'console';
-import { fail, redirect } from '@sveltejs/kit';
-import { ChartRepo, chartSchema, datasetSchema } from '$lib/chart';
 import { prisma } from '$lib/prisma';
 import { APIError } from '$lib/errors';
 import { superValidate } from 'sveltekit-superforms/server';
+import { customQueryConditionSchema, CustomQueryRepo, customQuerySchema } from '$lib/customQuery';
+import type { PageServerLoad } from './$types';
+import type { ExerciseEvent, Metric } from '@prisma/client';
 
+export const load: PageServerLoad = async ({ locals, params }) => {
+  const { user } = await locals.auth.validateUser();
+  const id = params.id;
+
+  const repo = new CustomQueryRepo(prisma);
+  try {
+    const query = await repo.getOneAndValidateOwner(id, user?.userId);
+    let exerciseEvents: ExerciseEvent[] = [];
+    let metrics: Metric[] = [];
+
+    if (query.conditions.length > 0) {
+      const results = await repo.runCustomQuery(id, user?.userId);
+      // Cast the arrays for type safety
+      if (query.table == 'exerciseEvent') {
+        exerciseEvents = results;
+      } else if (query.table == 'metric') {
+        metrics = results;
+      }
+    }
+    return {
+      query,
+      exerciseEvents,
+      metrics,
+    };
+  } catch (e) {
+    if (e instanceof APIError) {
+      throw error(404, { message: 'Not found' })
+    }
+    console.error(e)
+    throw error(500, { message: SERVER_ERROR })
+  }
+};
 export const actions: Actions = {
-  edit: async ({ locals, params, request, url }) => {
+  update: async ({ request, locals, params, url }) => {
     const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
-    const form = await superValidate(formData, chartSchema, {
+    const form = await superValidate(formData, customQuerySchema, {
       id: formData.get('_formId')?.toString(),
     });
-    const id = Number(params.id);
+    const id = params.id;
 
     if (!form.valid) {
       return fail(400, { form });
     }
 
-    const repo = new ChartRepo(prisma);
+    const repo = new CustomQueryRepo(prisma);
     try {
       await repo.update(form.data, id, user?.userId);
     } catch (e) {
@@ -35,15 +68,14 @@ export const actions: Actions = {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
     }
 
-    return { success: true, form };
+    return { form };
   },
 
-  delete: async ({ locals, request, url }) => {
+  delete: async ({ params, locals, url }) => {
     const { user } = await locals.auth.validateUser();
-    const rawFormData = Object.fromEntries((await request.formData()).entries());
-    const id = Number(rawFormData.id)
+    const id = params.id;
 
-    const repo = new ChartRepo(prisma);
+    const repo = new CustomQueryRepo(prisma);
     try {
       await repo.delete(id, user?.userId);
     } catch (e) {
@@ -60,10 +92,11 @@ export const actions: Actions = {
 
     return { success: true };
   },
-  addDataset: async ({ locals, request, url, params }) => {
+
+  addCondition: async ({ request, locals, params, url }) => {
     const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
-    const form = await superValidate(formData, datasetSchema, {
+    const form = await superValidate(formData, customQueryConditionSchema, {
       id: formData.get('_formId')?.toString(),
     });
     const id = params.id;
@@ -72,9 +105,9 @@ export const actions: Actions = {
       return fail(400, { form });
     }
 
-    const repo = new ChartRepo(prisma);
+    const repo = new CustomQueryRepo(prisma);
     try {
-      await repo.addDataset(form.data, id, user?.userId)
+      await repo.addCondition(form.data, id, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
         return fail(401, { message: e.detail, form })
@@ -88,5 +121,6 @@ export const actions: Actions = {
     }
 
     return { form };
-  }
+  },
+
 }

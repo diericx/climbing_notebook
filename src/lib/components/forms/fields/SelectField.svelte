@@ -9,14 +9,22 @@
 
 	export let form: SuperForm<UnwrapEffects<T>, unknown>;
 	export let field: keyof z.infer<T> | FieldPath<z.infer<T>>;
+	export let label: string | undefined = undefined;
 
 	const { path, value, errors, constraints } = formFieldProxy(form, field);
 </script>
 
 <label>
-	<span class="font-bold">{camelToTitle(String(path))}</span>
+	<span class="font-bold">{label || camelToTitle(String(path))}</span>
 	<br />
-	<select bind:value={$value} data-invalid={$errors} {...$constraints} {...$$restProps}>
+	<slot name="description" />
+	<select
+		class="select w-auto bg-white"
+		bind:value={$value}
+		data-invalid={$errors}
+		{...$constraints}
+		{...$$restProps}
+	>
 		<slot />
 	</select>
 </label>

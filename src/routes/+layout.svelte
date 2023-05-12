@@ -24,6 +24,10 @@
 	import ModalJournalEntry from '$lib/components/modals/ModalJournalEntry.svelte';
 	import { Drawer, drawerStore } from '@skeletonlabs/skeleton';
 	import Icon from '@iconify/svelte';
+	import FormModalCustomQuery from '$lib/components/modals/FormModalCustomQuery.svelte';
+	import FormModalCustomQueryCondition from '$lib/components/modals/FormModalCustomQueryCondition.svelte';
+	import FormModalWidget from '$lib/components/modals/FormModalWidget.svelte';
+	import FormModalDataset from '$lib/components/modals/FormModalDataset.svelte';
 
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
@@ -48,6 +52,10 @@
 		formModalTrainingProgram: { ref: FormModalTrainingProgram },
 		formModalTrainingProgramDay: { ref: FormModalTrainingProgramDay },
 		formModalCalendarEvent: { ref: FormModalCalendarEvent },
+		formModalCustomQuery: { ref: FormModalCustomQuery },
+		formModalCustomQueryCondition: { ref: FormModalCustomQueryCondition },
+		formModalWidget: { ref: FormModalWidget },
+		formModalDataset: { ref: FormModalDataset },
 		modalCalendarEvent: { ref: ModalCalendarEvent },
 		modalJournalEntry: { ref: ModalJournalEntry }
 	};
@@ -71,7 +79,8 @@
 		{ title: 'Journal', url: '/journalEntry' },
 		{ title: 'Exercise Log', url: '/exerciseEvent' },
 		{ title: 'Training Programs', url: '/trainingProgram' },
-		{ title: 'Feedback', url: '/feedback' }
+		{ title: 'Feedback', url: '/feedback' },
+		{ title: 'Queries', url: '/query' }
 	];
 </script>
 

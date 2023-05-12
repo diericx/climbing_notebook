@@ -8,7 +8,7 @@
 	// Form action to execute
 	export let action = '/journalEntry?/new';
 	export let data: JournalEntry | undefined = undefined;
-	export let onSuccess: (() => Promise<void>) | undefined = undefined;
+	export let onSuccess: (() => void) | undefined = undefined;
 	export let id = crypto.randomUUID();
 </script>
 

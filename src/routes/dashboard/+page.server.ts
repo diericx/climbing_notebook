@@ -1,5 +1,3 @@
-
-import { ChartRepo } from '$lib/chart';
 import { APIError } from '$lib/errors';
 import { ExerciseEventRepo } from '$lib/exerciseEvent';
 import { SERVER_ERROR } from '$lib/helperTypes';
@@ -10,21 +8,23 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { JournalEntryRepo } from '$lib/journalEntry';
 import { CalendarEventRepo } from '$lib/calendarEvent';
+import { WidgetRepo } from '$lib/widget';
+import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
 
 export const load: PageServerLoad = async ({ locals }) => {
   // Unprotected page, session may not exist
   const { user } = await locals.auth.validateUser();
 
   const profileRepo = new ProfileRepo(prisma);
-  const chartRepo = new ChartRepo(prisma);
   const exerciseEventRepo = new ExerciseEventRepo(prisma);
   const metricRepo = new MetricRepo(prisma);
   const journalEntryRepo = new JournalEntryRepo(prisma);
   const calendarEventRepo = new CalendarEventRepo(prisma);
+  const widgetRepo = new WidgetRepo(prisma);
+  const customQueryRepo = new CustomQueryRepo(prisma);
 
   try {
     const profile = await profileRepo.getOne(user?.userId);
-    const charts = await chartRepo.get(user?.userId);
     // Get exercise events in the past month for the charts
     const dateMin = new Date()
     dateMin.setDate(dateMin.getDate() - 31)
@@ -33,8 +33,29 @@ export const load: PageServerLoad = async ({ locals }) => {
     const metrics = await metricRepo.get(user?.userId, dateMin, new Date());
     const journalEntries = await journalEntryRepo.get(user?.userId);
     const calendarEvents = await calendarEventRepo.get(user?.userId);
+    const widgets = await widgetRepo.get(user?.userId);
 
-    return { user, profile, charts, exerciseEvents, metrics, journalEntries, calendarEvents }
+    // compile datasets for widgets
+    const customQueryResults: CustomQueryResults[] = [];
+    for (const w of widgets) {
+      // Go through each widget and fetch cooresponding query results
+      if (w.type == 'chart' || w.type == 'heatmapCalendar') {
+        for (const dataset of w.datasets) {
+          // Don't run the same queries multiple times
+          if (customQueryResults.find(r => r.customQueryId == dataset.customQueryId)) {
+            continue;
+          }
+
+          const data = await customQueryRepo.runCustomQuery(dataset.customQueryId, user?.userId);
+          customQueryResults.push({
+            customQueryId: dataset.customQueryId,
+            data,
+          })
+        }
+      }
+    }
+
+    return { user, profile, exerciseEvents, metrics, journalEntries, calendarEvents, widgets, customQueryResults }
   } catch (e) {
     if (e instanceof APIError) {
       throw error(401, { message: e.detail })

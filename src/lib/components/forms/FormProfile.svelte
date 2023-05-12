@@ -19,8 +19,7 @@
 		{form}
 		class="w-full"
 		rows={15}
-		placeholder={`
-3 weeks
+		placeholder={`3 weeks
 - Be able to do 3 pull ups unassisted (shoulder recovery)
 
 3 months

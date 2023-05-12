@@ -72,3 +72,21 @@ const exerciseGroupComplete = _Prisma.validator<_Prisma.TrainingProgramDayArgs>(
   },
 })
 export type ExerciseGroupComplete = _Prisma.ExerciseGroupGetPayload<typeof exerciseGroupComplete>
+
+const widgetComplete = _Prisma.validator<_Prisma.WidgetArgs>()({
+  include: {
+    datasets: {
+      include: {
+        customQuery: true
+      }
+    }
+  },
+})
+export type WidgetComplete = _Prisma.WidgetGetPayload<typeof widgetComplete>
+
+const datasetComplete = _Prisma.validator<_Prisma.DatasetArgs>()({
+  include: {
+    customQuery: true
+  },
+})
+export type DatasetComplete = _Prisma.DatasetGetPayload<typeof datasetComplete>
