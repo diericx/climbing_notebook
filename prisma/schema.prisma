@@ -193,12 +193,12 @@ model Dataset {
   equation      String
   color         String
   customQuery   CustomQuery @relation(fields: [customQueryId], references: [id], onDelete: Cascade)
-  customQueryId String      @map("query_id")
+  customQueryId String      @map("custom_query_id")
 
   createdAt DateTime @default(now()) @map("created_at")
   ownerId   String   @map("owner_id")
   widget    Widget   @relation(fields: [widgetId], references: [id], onDelete: Cascade)
-  widgetId  String
+  widgetId  String   @map("widget_id")
 
   @@map("dataset")
 }
