@@ -35,12 +35,16 @@
 	);
 
 	type ChartDataPoint = {
-		x: number;
+		x: string;
 		y: number;
 	};
 	type ChartDataset = {
 		label: string;
 		data: ChartDataPoint[];
+		pointHoverRadius: number;
+		pointHitRadius: number;
+		type: string;
+		backgroundColor: string;
 	};
 
 	export let customQueryResults: CustomQueryResults[];
@@ -66,6 +70,14 @@
 			backgroundColor: dataset.color,
 			data: []
 		};
+		function addDataPoint(dataPoint: ChartDataPoint) {
+			let existingDatumIndex = chartDataset.data.findIndex((d) => d.x == dataPoint.x);
+			if (existingDatumIndex != -1) {
+				chartDataset.data[existingDatumIndex].y += dataPoint.y;
+			} else {
+				chartDataset.data.push(dataPoint);
+			}
+		}
 		if (dataset.customQuery.table == 'exerciseEvent') {
 			const data = customQueryResult.data as ExerciseEvent[];
 			for (const e of data) {
@@ -77,10 +89,7 @@
 						minutes: e.minutes,
 						seconds: e.seconds
 					});
-					chartDataset.data.push({
-						x: new Date(e.date).valueOf(),
-						y: score
-					});
+					addDataPoint({ x: e.date.toISOString().split('T')[0], y: score });
 				}
 			}
 		} else if (dataset.customQuery.table == 'metric') {
@@ -90,7 +99,7 @@
 					let score = evaluate(dataset.equation, {
 						value: m.value
 					});
-					chartDataset.data.push({ x: new Date(m.date).valueOf(), y: score });
+					addDataPoint({ x: m.date.toISOString().split('T')[0], y: score });
 				}
 			}
 		}
