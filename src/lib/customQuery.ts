@@ -40,6 +40,7 @@ export class CustomQueryRepo {
       const prismaCondition = {};
       prismaCondition[c.column] = {}
       prismaCondition[c.column][c.condition] = c.value;
+      prismaCondition[c.column]['mode'] = 'insensitive';
       return prismaCondition;
     });
 
