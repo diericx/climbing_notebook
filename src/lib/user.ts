@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const loginSchema = z.object({
   username: z.string({ required_error: 'Username is required' }).min(1, { message: 'Username is required' }),
-  password: z.string().min(1),
+  password: z.string(),
 });
 export type LoginSchema = typeof loginSchema;
 
