@@ -11,6 +11,7 @@ export const handle: Handle = async ({ event, resolve }) => {
     event.url.pathname.startsWith('/journalEntry') ||
     event.url.pathname.startsWith('/profile') ||
     event.url.pathname.startsWith('/trainingProgram') ||
+    event.url.pathname.startsWith('/query') ||
     event.url.pathname.startsWith('/dashboard')
   ) {
     if (!user) {
