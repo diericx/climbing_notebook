@@ -35,16 +35,14 @@ export class CustomQueryRepo {
 
   async runCustomQuery(id: string, ownerId: string) {
     const query = await this.getOneAndValidateOwner(id, ownerId)
-    const prismaQuery = { where: {}, orderBy: { date: 'asc' } };
-    prismaQuery.where[query.operator] = [...query.conditions.map(c => {
+    const prismaQuery = { where: { ownerId }, orderBy: { date: 'asc' } };
+    prismaQuery.where[query.operator] = query.conditions.map(c => {
       const prismaCondition = {};
       prismaCondition[c.column] = {}
       prismaCondition[c.column][c.condition] = c.value;
       prismaCondition[c.column]['mode'] = 'insensitive';
       return prismaCondition;
-    }),
-    { ownerId }
-    ]
+    })
 
     // Filter out exercise events in programs in an admittedly confusing double negative way
     if (query.table == 'exerciseEvent') {
