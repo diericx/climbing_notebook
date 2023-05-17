@@ -1,8 +1,5 @@
 import { auth } from '$lib/server/lucia';
 import type { Handle } from '@sveltejs/kit';
-import SegfaultHandler from 'segfault-handler';
-
-SegfaultHandler.registerHandler('crash.log');
 
 export const handle: Handle = async ({ event, resolve }) => {
   event.locals.auth = auth.handleRequest(event);
