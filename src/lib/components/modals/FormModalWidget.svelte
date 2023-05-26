@@ -5,6 +5,7 @@
 
 	let showType = $modalStore[0]?.meta?.showType;
 	let showOrder = $modalStore[0]?.meta?.showOrder;
+	let trainingPrograms = $modalStore[0]?.meta?.trainingPrograms;
 </script>
 
 <FormModal let:data let:action let:id>
@@ -15,6 +16,7 @@
 			{id}
 			{showType}
 			{showOrder}
+			{trainingPrograms}
 			showSubmitButton={false}
 			onSuccess={() => {
 				modalStore.close();

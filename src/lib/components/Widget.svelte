@@ -8,6 +8,7 @@
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import Calendar from './Calendar.svelte';
 	import Chart from './Chart.svelte';
+	import DailyCalendar from './DailyCalendar.svelte';
 	import HeatmapCalendar from './HeatmapCalendar.svelte';
 
 	export let widget: WidgetComplete;
@@ -68,5 +69,14 @@
 		<div>
 			<HeatmapCalendar datasets={widget.datasets} {customQueryResults} />
 		</div>
+	{:else if widget.type == 'dailyExerciseCalendar'}
+		{#if !widget.trainingProgramId}
+			<p class="text-gray-400 italic">
+				Training Program is not set. Edit the widget to finish configuration.
+			</p>
+		{:else}
+			<DailyCalendar trainingProgram={widget.trainingProgram} />
+		{/if}
+		<div />
 	{/if}
 </div>

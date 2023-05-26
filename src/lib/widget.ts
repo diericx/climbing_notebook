@@ -6,7 +6,8 @@ export const widgetSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
   width: z.enum(['half', 'full']).default('half'),
   order: z.number(),
-  type: z.enum(['chart', 'calendar', 'heatmapCalendar']).default('chart'),
+  type: z.enum(['chart', 'calendar', 'heatmapCalendar', 'dailyExerciseCalendar']).default('chart'),
+  trainingProgramId: z.number().nullish(),
 });
 export type WidgetSchema = typeof widgetSchema;
 
@@ -47,7 +48,49 @@ export class WidgetRepo {
           orderBy: {
             name: 'asc'
           }
-        }
+        },
+        trainingProgram: {
+
+          include: {
+            exerciseGroups: {
+              include: {
+                exercises: {
+                  orderBy: {
+                    name: 'asc',
+                  },
+                },
+              },
+              orderBy: {
+                name: 'asc',
+              },
+            },
+            days: {
+              include: {
+                exercises: {
+                  orderBy: {
+                    name: 'asc',
+                  },
+                },
+                exerciseGroups: {
+                  orderBy: {
+                    name: 'asc',
+                  },
+                  include: {
+                    exercises: {
+                      orderBy: {
+                        name: 'asc',
+                      }
+                    }
+                  }
+                },
+              },
+              orderBy: {
+                // Note: ui depends on this being sorted in this way
+                dayOfTheWeek: 'asc',
+              },
+            }
+          }
+        },
       }
     });
   }
@@ -65,7 +108,8 @@ export class WidgetRepo {
           orderBy: {
             name: 'asc'
           }
-        }
+        },
+        trainingProgram: true,
       }
     });
     if (query == null) {

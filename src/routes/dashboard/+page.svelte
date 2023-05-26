@@ -10,6 +10,8 @@
 	$: calendarEvents = data.calendarEvents;
 	$: widgets = data.widgets;
 	$: customQueryResults = data.customQueryResults;
+	$: trainingPrograms = data.trainingPrograms;
+	console.log(trainingPrograms);
 </script>
 
 <div class="mb-16">
@@ -49,7 +51,8 @@
 						meta: {
 							action: `/widget?/new`,
 							title: 'Add Widget',
-							showOrder: false
+							showOrder: false,
+							trainingPrograms: trainingPrograms
 						}
 					})}
 			>

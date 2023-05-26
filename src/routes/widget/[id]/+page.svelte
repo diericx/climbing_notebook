@@ -8,6 +8,7 @@
 	export let data: PageData;
 	$: widget = data.widget;
 	$: customQueries = data.customQueries;
+	$: trainingPrograms = data.trainingPrograms;
 </script>
 
 <div class="flex justify-between">
@@ -25,7 +26,8 @@
 						action: `/widget/${widget.id}?/update`,
 						title: 'Add Widget',
 						data: widget,
-						showType: false
+						showType: false,
+						trainingPrograms
 					}
 				})}
 		>
@@ -40,6 +42,7 @@
 	<p><b>Width:</b> {widget.width}</p>
 	<p><b>Order:</b> {widget.order}</p>
 	<p><b>Type:</b> {camelToTitle(widget.type)}</p>
+	<p><b>Training Program:</b> {widget.trainingProgram.name}</p>
 </div>
 
 {#if widget.type == 'chart' || widget.type == 'heatmapCalendar'}

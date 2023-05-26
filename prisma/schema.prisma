@@ -83,6 +83,7 @@ model TrainingProgram {
   days           TrainingProgramDay[]
   exerciseGroups ExerciseGroup[]
   profile        Profile[]
+  Widget         Widget[]
 
   @@map("training_program")
 }
@@ -178,10 +179,13 @@ model Widget {
   type  String
 
   // For chart and calendar heatmap type
-  datasets Dataset[]
+  datasets        Dataset[]
+  // For exercise event calendars
+  trainingProgram TrainingProgram? @relation(fields: [trainingProgramId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now()) @map("created_at")
-  ownerId   String   @map("owner_id")
+  createdAt         DateTime @default(now()) @map("created_at")
+  ownerId           String   @map("owner_id")
+  trainingProgramId Int?     @map("training_program_id")
 
   @@map("widget")
 }

@@ -10,6 +10,7 @@ import { JournalEntryRepo } from '$lib/journalEntry';
 import { CalendarEventRepo } from '$lib/calendarEvent';
 import { WidgetRepo } from '$lib/widget';
 import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
+import { TrainingProgramRepo } from '$lib/trainingProgram';
 
 export const load: PageServerLoad = async ({ locals }) => {
   // Unprotected page, session may not exist
@@ -22,6 +23,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   const calendarEventRepo = new CalendarEventRepo(prisma);
   const widgetRepo = new WidgetRepo(prisma);
   const customQueryRepo = new CustomQueryRepo(prisma);
+  const trainingProgramRepo = new TrainingProgramRepo(prisma);
 
   try {
     const profile = await profileRepo.getOne(user?.userId);
@@ -34,6 +36,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     const journalEntries = await journalEntryRepo.get(user?.userId);
     const calendarEvents = await calendarEventRepo.get(user?.userId);
     const widgets = await widgetRepo.get(user?.userId);
+    const trainingPrograms = await trainingProgramRepo.get(user?.userId);
 
     // compile datasets for widgets
     const customQueryResults: CustomQueryResults[] = [];
@@ -55,7 +58,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       }
     }
 
-    return { user, profile, exerciseEvents, metrics, journalEntries, calendarEvents, widgets, customQueryResults }
+    return { user, profile, exerciseEvents, metrics, journalEntries, calendarEvents, widgets, customQueryResults, trainingPrograms }
   } catch (e) {
     if (e instanceof APIError) {
       throw error(401, { message: e.detail })

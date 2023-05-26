@@ -2,6 +2,7 @@ import { CustomQueryRepo } from '$lib/customQuery';
 import { APIError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
+import { TrainingProgramRepo } from '$lib/trainingProgram';
 import { datasetSchema, WidgetRepo, widgetSchema } from '$lib/widget';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
@@ -11,19 +12,21 @@ export const load: PageServerLoad = async ({ locals, params }) => {
   const { user } = await locals.auth.validateUser();
   const widgetRepo = new WidgetRepo(prisma);
   const customQueryRepo = new CustomQueryRepo(prisma);
+  const trainingProgramRepo = new TrainingProgramRepo(prisma);
   const id = params.id;
   try {
     const widget = await widgetRepo.getOneAndValidateOwner(id, user?.userId);
     const customQueries = await customQueryRepo.get(user?.userId);
+    const trainingPrograms = await trainingProgramRepo.get(user?.userId);
     return {
       widget,
-      customQueries
+      customQueries,
+      trainingPrograms
     };
   } catch (e) {
     console.error(e)
     throw error(500, { message: SERVER_ERROR })
   }
-
 };
 
 export const actions: Actions = {

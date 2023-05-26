@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { CustomQuery } from '@prisma/client';
+	import type { CustomQuery, TrainingProgram } from '@prisma/client';
 	import Form from './Form.svelte';
 	import SelectField from './fields/SelectField.svelte';
 	import { widgetSchema } from '$lib/widget';
@@ -14,9 +14,23 @@
 	export let showSubmitButton = true;
 	export let showType = true;
 	export let showOrder = true;
+	export let trainingPrograms: TrainingProgram[] = [];
+
+	let type = '';
 </script>
 
 <Form schema={widgetSchema} {data} {action} {id} {onSuccess} resetForm={true} let:form>
+	<!-- 
+	Subscribe to the form so we can extract certain values. Placed in a function that
+	returns a string so it will not render anything. This code is stupid. So it goes.
+	-->
+	{(() => {
+		form.form.subscribe((_form) => {
+			type = _form.type;
+		});
+		return '';
+	})()}
+	<!-- {JSON.stringify(_form.fields.name)} -->
 	<TextField name="name" field="name" {form} />
 	{#if showOrder}
 		<NumberField name="order" field="order" {form} />
@@ -31,6 +45,15 @@
 			<option value="chart"> Chart </option>
 			<option value="calendar"> Full Calendar </option>
 			<option value="heatmapCalendar"> Heatmap Calendar </option>
+			<option value="dailyExerciseCalendar"> Daily Exercise Calendar </option>
+		</SelectField>
+	{/if}
+
+	{#if type == 'dailyExerciseCalendar'}
+		<SelectField name="trainingProgramId" field="trainingProgramId" {form}>
+			{#each trainingPrograms as trainingProgram}
+				<option value={trainingProgram.id}> {trainingProgram.name} </option>
+			{/each}
 		</SelectField>
 	{/if}
 
