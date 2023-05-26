@@ -29,13 +29,6 @@
 	<div class="row">
 		<div class="grid grid-cols-1">
 			<div id={daysOfTheWeek[todayDayOfTheWeek].toString()} class="px-2">
-				<div class="text-center px-2 mb-3 border-b-2 border-gray-600">
-					<p>{daysOfTheWeek[todayDayOfTheWeek]}</p>
-					<p class="text-gray-400 overflow-hidden whitespace-nowrap text-ellipsis">
-						{day.description}&nbsp;
-					</p>
-				</div>
-
 				<div style="height: 425px;" class="overflow-scroll">
 					{#if day.exercises.length == 0 && day.exerciseGroups.length == 0}
 						<p class="text-gray-400 italic">No exercises for this day</p>

@@ -58,7 +58,7 @@
 				: {exerciseEvent.weight}kg
 			{/if}
 		</div>
-		{#if exerciseEvent.notes != ''}
+		{#if exerciseEvent.notes}
 			<div>{exerciseEvent.notes}</div>
 		{/if}
 
