@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { CustomQueryResults } from '$lib/customQuery';
-	import type { WidgetComplete } from '$lib/prisma';
+	import type { ProfileWithActiveTrainingProgram, WidgetComplete } from '$lib/prisma';
 	import { confirmDelete } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import type { CalendarEvent, JournalEntry } from '@prisma/client';
@@ -15,6 +15,7 @@
 	export let customQueryResults: CustomQueryResults[];
 	export let calendarEvents: CalendarEvent[];
 	export let journalEntries: JournalEntry[];
+	export let profile: ProfileWithActiveTrainingProgram;
 </script>
 
 <div class="card p-4">
@@ -70,13 +71,17 @@
 			<HeatmapCalendar datasets={widget.datasets} {customQueryResults} />
 		</div>
 	{:else if widget.type == 'dailyExerciseCalendar'}
-		{#if !widget.trainingProgramId}
-			<p class="text-gray-400 italic">
-				Training Program is not set. Edit the widget to finish configuration.
-			</p>
+		{#if widget.trainingProgram == null}
+			{#if profile.activeTrainingProgram == null}
+				<p class="text-gray-400 italic">
+					This widget is set to use an active training program but no active training program was
+					found.
+				</p>
+			{:else}
+				<DailyCalendar trainingProgram={profile.activeTrainingProgram} />
+			{/if}
 		{:else}
-			<DailyCalendar trainingProgram={widget.trainingProgram} />
+			<DailyCalendar trainingProgram={profile.activeTrainingProgram || widget.trainingProgram} />
 		{/if}
-		<div />
 	{/if}
 </div>

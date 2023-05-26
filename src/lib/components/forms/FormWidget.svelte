@@ -51,6 +51,8 @@
 
 	{#if type == 'dailyExerciseCalendar'}
 		<SelectField name="trainingProgramId" field="trainingProgramId" {form}>
+			<option value={null}> Active Program Exercises </option>
+			<option disabled>---------</option>
 			{#each trainingPrograms as trainingProgram}
 				<option value={trainingProgram.id}> {trainingProgram.name} </option>
 			{/each}

@@ -42,7 +42,7 @@
 	<p><b>Width:</b> {widget.width}</p>
 	<p><b>Order:</b> {widget.order}</p>
 	<p><b>Type:</b> {camelToTitle(widget.type)}</p>
-	<p><b>Training Program:</b> {widget.trainingProgram.name}</p>
+	<p><b>Training Program:</b> {widget.trainingProgram?.name || 'Active Training Program'}</p>
 </div>
 
 {#if widget.type == 'chart' || widget.type == 'heatmapCalendar'}
