@@ -81,7 +81,7 @@
 				<DailyCalendar trainingProgram={profile.activeTrainingProgram} />
 			{/if}
 		{:else}
-			<DailyCalendar trainingProgram={profile.activeTrainingProgram || widget.trainingProgram} />
+			<DailyCalendar trainingProgram={widget.trainingProgram || profile.activeTrainingProgram} />
 		{/if}
 	{/if}
 </div>

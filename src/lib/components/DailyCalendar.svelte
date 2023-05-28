@@ -9,11 +9,6 @@
 	let daysOfTheWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 	const day = trainingProgram.days[todayDayOfTheWeek];
-	console.log('Today day of the week: ', todayDayOfTheWeek);
-	console.log('--------------------');
-	console.log(JSON.stringify(day));
-	console.log('--------------------');
-	console.log(JSON.stringify(trainingProgram));
 </script>
 
 <div class="overflow-scroll">
