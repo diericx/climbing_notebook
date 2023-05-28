@@ -19,4 +19,10 @@
 		<div class="leading-none mt-0 font-bold text-xl">{trainingProgram.owner.username}</div>
 	</div>
 </div>
-<WeeklyCalendar {user} {trainingProgram} shouldScrollIntoView={false} disableActionButtons={true} />
+<WeeklyCalendar
+	{user}
+	{trainingProgram}
+	shouldScrollIntoView={false}
+	disableActionButtons={true}
+	showMarkedCompleted={false}
+/>

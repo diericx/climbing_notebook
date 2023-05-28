@@ -6,13 +6,16 @@
 	export let exerciseEvent: ExerciseEvent;
 	export let date: Date;
 	export let disableActionButtons = false;
+	export let showMarkedCompleted = true;
 
 	$: isMarkedCompleted =
-		exerciseEvent.markedCompletions.find((c) => {
-			let d1 = c.toISOString().split('T')[0];
-			let d2 = date.toISOString().split('T')[0];
-			return d1 == d2;
-		}) != undefined;
+		showMarkedCompleted == true
+			? exerciseEvent.markedCompletions.find((c) => {
+					let d1 = c.toISOString().split('T')[0];
+					let d2 = date.toISOString().split('T')[0];
+					return d1 == d2;
+			  }) != undefined
+			: false;
 
 	let formForIsMarkedCompleted: HTMLElement;
 </script>

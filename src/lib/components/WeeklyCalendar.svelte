@@ -8,6 +8,7 @@
 	export let trainingProgram: TrainingProgramWithDays;
 	export let shouldScrollIntoView = false;
 	export let disableActionButtons = false;
+	export let showMarkedCompleted = true;
 	export let user: User | undefined;
 
 	onMount(() => {
@@ -81,6 +82,7 @@
 								<CalExerciseEvent
 									{exerciseEvent}
 									{disableActionButtons}
+									{showMarkedCompleted}
 									date={daysFromToday(i - getDayWeekStartsMonday(new Date()))}
 								/>
 							{/each}
@@ -91,6 +93,7 @@
 									<CalExerciseEvent
 										{disableActionButtons}
 										{exerciseEvent}
+										{showMarkedCompleted}
 										date={daysFromToday(i - getDayWeekStartsMonday(new Date()))}
 									/>
 								{/each}
