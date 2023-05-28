@@ -50,7 +50,6 @@ export class WidgetRepo {
           }
         },
         trainingProgram: {
-
           include: {
             exerciseGroups: {
               include: {

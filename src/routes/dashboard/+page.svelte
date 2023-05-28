@@ -11,7 +11,6 @@
 	$: widgets = data.widgets;
 	$: customQueryResults = data.customQueryResults;
 	$: trainingPrograms = data.trainingPrograms;
-	console.log(trainingPrograms);
 </script>
 
 <div class="mb-16">

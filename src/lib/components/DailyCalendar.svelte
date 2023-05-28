@@ -1,28 +1,19 @@
 <script lang="ts">
 	import type { TrainingProgramWithDays } from '$lib/prisma';
 	import CalExerciseEvent from '$lib/components/WeeklyCalendarExerciseEvent.svelte';
-	import { daysFromToday, getDayWeekStartsMonday } from '$lib/utils';
-	import { onMount } from 'svelte';
+	import { getDayWeekStartsMonday } from '$lib/utils';
 
 	export let trainingProgram: TrainingProgramWithDays;
 
-	onMount(() => {
-		scrollIntoView();
-	});
-
 	const todayDayOfTheWeek = getDayWeekStartsMonday(new Date());
 	let daysOfTheWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-	function scrollIntoView() {
-		const el = document.querySelector('#' + daysOfTheWeek[todayDayOfTheWeek]);
-		if (!el) return;
-		el.scrollIntoView({
-			behavior: 'smooth',
-			block: 'nearest',
-			inline: 'center'
-		});
-	}
 
 	const day = trainingProgram.days[todayDayOfTheWeek];
+	console.log('Today day of the week: ', todayDayOfTheWeek);
+	console.log('--------------------');
+	console.log(JSON.stringify(day));
+	console.log('--------------------');
+	console.log(JSON.stringify(trainingProgram));
 </script>
 
 <div class="overflow-scroll">
