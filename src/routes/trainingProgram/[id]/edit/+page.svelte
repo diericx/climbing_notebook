@@ -26,26 +26,49 @@
 
 <div class="grid grid-cols-1">
 	<div class="mb-12 flex items-center justify-between">
-		<h1 class="font-bold inline">
-			{trainingProgram.name}
-		</h1>
+		<div>
+			<h1 class="font-bold inline">
+				{trainingProgram.name}
+			</h1>
+			<p>
+				<b>Public: </b>
+				{trainingProgram.isPublic ? 'yes' : 'no'}
+			</p>
+		</div>
 
-		<button
-			class="btn btn-sm variant-ringed"
-			on:click={() =>
-				modalStore.trigger({
-					type: 'component',
-					component: 'formModalTrainingProgram',
-					meta: {
-						data: trainingProgram,
-						action: `/trainingProgram/${trainingProgram.id}?/edit`,
-						title: 'Edit Training Program'
-					}
-				})}
-		>
-			<Icon icon="material-symbols:edit-outline" height="18" />
-			<span>Edit</span>
-		</button>
+		<div class="flex">
+			<button
+				class="btn btn-sm variant-ringed justify-start mr-2"
+				on:click={() =>
+					modalStore.trigger({
+						type: 'component',
+						component: 'modalShareTrainingProgram',
+						meta: {
+							trainingProgram
+						}
+					})}
+			>
+				<Icon icon="mdi:share" height="18" />
+				<span>Share</span>
+			</button>
+
+			<button
+				class="btn btn-sm variant-ringed"
+				on:click={() =>
+					modalStore.trigger({
+						type: 'component',
+						component: 'formModalTrainingProgram',
+						meta: {
+							data: trainingProgram,
+							action: `/trainingProgram/${trainingProgram.id}?/edit`,
+							title: 'Edit Training Program'
+						}
+					})}
+			>
+				<Icon icon="material-symbols:edit-outline" height="18" />
+				<span>Edit</span>
+			</button>
+		</div>
 	</div>
 
 	<div class="mb-10">

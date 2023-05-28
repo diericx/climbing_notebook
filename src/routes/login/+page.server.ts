@@ -16,7 +16,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-  login: async ({ request, locals }) => {
+  login: async ({ request, locals, url }) => {
     const formData = await request.formData();
     const form = await superValidate(formData, loginSchema, {
       id: formData.get('_formId')?.toString(),
@@ -49,12 +49,15 @@ export const actions: Actions = {
       throw error(500, { message: SERVER_ERROR })
     }
 
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
     return {
       form
     };
   },
 
-  register: async ({ request, locals }) => {
+  register: async ({ request, locals, url }) => {
     const formData = await request.formData();
     const form = await superValidate(formData, signupSchema, {
       id: formData.get('_formId')?.toString(),
@@ -110,6 +113,9 @@ export const actions: Actions = {
       throw error(500, { message: SERVER_ERROR })
     }
 
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
     return {
       form
     };

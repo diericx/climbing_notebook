@@ -5,6 +5,7 @@
 
 	export let exerciseEvent: ExerciseEvent;
 	export let date: Date;
+	export let disableActionButtons = false;
 
 	$: isMarkedCompleted =
 		exerciseEvent.markedCompletions.find((c) => {
@@ -34,6 +35,7 @@
 			<input
 				type="checkbox"
 				name="isCompleted"
+				disabled={disableActionButtons}
 				checked={isMarkedCompleted}
 				on:change={() => {
 					formForIsMarkedCompleted.requestSubmit();
@@ -65,7 +67,7 @@
 		<div class="pt-1">
 			<button
 				class="btn btn-sm variant-filled-primary bg-green-500 py-0 text-white"
-				disabled={isMarkedCompleted}
+				disabled={isMarkedCompleted || disableActionButtons}
 				on:click={() =>
 					modalStore.trigger({
 						type: 'component',

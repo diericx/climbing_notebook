@@ -1,12 +1,16 @@
-import { error } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
 import { TrainingProgramRepo } from '$lib/trainingProgram';
 import { APIError } from '$lib/errors';
 
-export const load: PageServerLoad = async ({ locals, params }) => {
+export const load: PageServerLoad = async ({ locals, params, url }) => {
   const { user } = await locals.auth.validateUser();
+  if (!user) {
+    throw redirect(302, '/login?redirectTo=' + url.toString())
+  }
+
   const id = Number(params.id);
 
   try {

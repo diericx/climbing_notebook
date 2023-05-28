@@ -3,6 +3,7 @@
 	import { trainingProgramSchema } from '$lib/trainingProgram';
 	import TextField from './fields/TextField.svelte';
 	import Form from './Form.svelte';
+	import Checkbox from './fields/Checkbox.svelte';
 
 	// Form action to execute
 	export let action = '';
@@ -16,6 +17,7 @@
 	<input type="hidden" name="type" value="climbing" />
 
 	<TextField name="name" field="name" {form} />
+	<Checkbox name="isPublic" field="isPublic" {form} />
 
 	<br />
 

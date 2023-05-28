@@ -7,6 +7,7 @@ import type { TrainingProgramComplete } from './prisma';
 
 export const trainingProgramSchema = z.object({
   name: z.string().min(1),
+  isPublic: z.boolean(),
 });
 export type TrainingProgramSchema = typeof trainingProgramSchema;
 
@@ -62,9 +63,116 @@ export class TrainingProgramRepo {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
     if (trainingProgram.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.')
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this object.')
     }
     return trainingProgram
+  }
+
+  async duplicate(id: number, ownerId: string): Promise<TrainingProgram> {
+    const program = await this.getOne(id, ownerId);
+
+    // Create the new program
+    const newProgram = await this.prisma.trainingProgram.create({
+      data: {
+        name: program.name + ' Duplicate',
+        ownerId,
+        days: {
+          create: Array.from(Array(7)).map((_, i) => {
+            return {
+              assignedBy: ownerId,
+              dayOfTheWeek: i,
+              description: '',
+              exercises: {
+                create: program.days[i].exercises.map(e => ({
+                  ...e,
+                  ownerId: undefined,
+                  exerciseGroupId: undefined,
+                  trainingProgramDayId: undefined,
+                  id: undefined,
+                  owner: {
+                    connect: {
+                      id: e.ownerId,
+                    }
+                  },
+                }))
+              },
+            }
+          })
+        },
+      },
+      include: {
+        days: {
+          orderBy: {
+            // Note: ui depends on this being sorted in this way
+            dayOfTheWeek: 'asc',
+          },
+        },
+      }
+    });
+
+    // Create each group individually by looping through the groups of the old program so
+    // we can properly setup the connections to each day.
+    for (const g of program.exerciseGroups) {
+      const newGroup = await this.prisma.exerciseGroup.create({
+        data: {
+          ...g,
+          id: undefined,
+          trainingProgramId: undefined,
+          trainingProgram: {
+            connect: {
+              id: newProgram.id
+            }
+          },
+          ownerId: undefined,
+          owner: {
+            connect: {
+              id: g.ownerId,
+            }
+          },
+          exercises: {
+            create: g.exercises.map(e => ({
+              ...e,
+              ownerId: undefined,
+              exerciseGroupId: undefined,
+              trainingProgramDayId: undefined,
+              id: undefined,
+              owner: {
+                connect: {
+                  id: e.ownerId,
+                }
+              },
+            }))
+          },
+        }
+      })
+
+      // Find each day where the old group was connected by index and connect it
+      // to the same day in the new program.
+      for (const i in program.days) {
+        const day = program.days[i];
+        if (day.exerciseGroups.find(_g => _g.id == g.id) != undefined) {
+          await this.prisma.trainingProgram.update({
+            where: {
+              id: newProgram.id,
+            },
+            data: {
+              days: {
+                update: {
+                  where: {
+                    id: newProgram.days[i].id,
+                  },
+                  data: {
+                    exerciseGroups: {
+                      connect: [{ id: newGroup.id }]
+                    }
+                  }
+                }
+              }
+            }
+          })
+        }
+      }
+    }
   }
 
   async new(data: z.infer<TrainingProgramSchema>, ownerId: string): Promise<TrainingProgram> {
@@ -98,7 +206,58 @@ export class TrainingProgramRepo {
   }
 
   async getOne(id: number, ownerId: string): Promise<TrainingProgramComplete> {
-    return this.getOneAndValidateOwner(id, ownerId)
+    const trainingProgram = await this.prisma.trainingProgram.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        owner: true,
+        exerciseGroups: {
+          include: {
+            exercises: {
+              orderBy: {
+                name: 'asc',
+              },
+            },
+          },
+          orderBy: {
+            name: 'asc',
+          },
+        },
+        days: {
+          include: {
+            exercises: {
+              orderBy: {
+                name: 'asc',
+              },
+            },
+            exerciseGroups: {
+              orderBy: {
+                name: 'asc',
+              },
+              include: {
+                exercises: {
+                  orderBy: {
+                    name: 'asc',
+                  }
+                }
+              }
+            },
+          },
+          orderBy: {
+            // Note: ui depends on this being sorted in this way
+            dayOfTheWeek: 'asc',
+          },
+        }
+      }
+    });
+    if (trainingProgram == null) {
+      throw new APIError('NOT_FOUND', 'Resource not found');
+    }
+    if (trainingProgram.ownerId != ownerId && !trainingProgram.isPublic) {
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this object.')
+    }
+    return trainingProgram;
   }
 
   async update(data: z.infer<TrainingProgramSchema>, id: number, ownerId: string): Promise<TrainingProgram> {

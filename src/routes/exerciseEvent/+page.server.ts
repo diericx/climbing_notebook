@@ -32,6 +32,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   return {
     exerciseEvents,
     profile,
+    user
   };
 };
 

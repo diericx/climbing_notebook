@@ -28,6 +28,7 @@
 	import FormModalCustomQueryCondition from '$lib/components/modals/FormModalCustomQueryCondition.svelte';
 	import FormModalWidget from '$lib/components/modals/FormModalWidget.svelte';
 	import FormModalDataset from '$lib/components/modals/FormModalDataset.svelte';
+	import ModalShareTrainingProgram from '$lib/components/modals/ModalShareTrainingProgram.svelte';
 
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
@@ -57,7 +58,8 @@
 		formModalWidget: { ref: FormModalWidget },
 		formModalDataset: { ref: FormModalDataset },
 		modalCalendarEvent: { ref: ModalCalendarEvent },
-		modalJournalEntry: { ref: ModalJournalEntry }
+		modalJournalEntry: { ref: ModalJournalEntry },
+		modalShareTrainingProgram: { ref: ModalShareTrainingProgram }
 	};
 	function drawerOpen(): void {
 		drawerStore.open({});

@@ -8,6 +8,25 @@ import type { TrainingProgram } from '@prisma/client';
 import { superValidate } from 'sveltekit-superforms/server';
 import { exerciseGroupSchema } from '$lib/exerciseGroup';
 
+export const load: PageServerLoad = async ({ locals, params }) => {
+  const { user } = await locals.auth.validateUser();
+
+  try {
+    const trainingProgramRepo = new TrainingProgramRepo(prisma);
+    const trainingProgram = await trainingProgramRepo.getOne(Number(params.id), user?.userId);
+    if (!trainingProgram.isPublic && !user) {
+      throw error(403, 'Unauthorized')
+    }
+    return { trainingProgram, user }
+  } catch (e) {
+    if (e instanceof APIError) {
+      throw error(401, e.detail)
+    }
+    console.error(e)
+    throw error(500, { message: SERVER_ERROR })
+  }
+}
+
 export const actions: Actions = {
   delete: async ({ locals, request, url }) => {
     const rawFormData = Object.fromEntries((await request.formData()).entries());
@@ -18,6 +37,31 @@ export const actions: Actions = {
     let trainingProgram: TrainingProgram;
     try {
       trainingProgram = await repo.delete(id, user?.userId);
+    } catch (e) {
+      if (e instanceof APIError) {
+        return fail(401, { message: e.detail })
+      }
+      console.error(e)
+      throw error(500, { message: SERVER_ERROR })
+    }
+
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
+
+    return { success: true, trainingProgram };
+  },
+
+  duplicate: async ({ locals, request, url, params }) => {
+    const { user } = await locals.auth.validateUser();
+    if (!user) {
+      throw redirect(302, '/login?redirectTo=' + url.toString())
+    }
+
+    const repo = new TrainingProgramRepo(prisma);
+    let trainingProgram: TrainingProgram;
+    try {
+      trainingProgram = await repo.duplicate(Number(params.id), user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
         return fail(401, { message: e.detail })

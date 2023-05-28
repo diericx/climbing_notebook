@@ -3,11 +3,17 @@
 	import CalExerciseEvent from '$lib/components/WeeklyCalendarExerciseEvent.svelte';
 	import { daysFromToday, getDayWeekStartsMonday } from '$lib/utils';
 	import { onMount } from 'svelte';
+	import type { User } from 'lucia-auth';
 
 	export let trainingProgram: TrainingProgramWithDays;
+	export let shouldScrollIntoView = false;
+	export let disableActionButtons = false;
+	export let user: User | undefined;
 
 	onMount(() => {
-		scrollIntoView();
+		if (shouldScrollIntoView) {
+			scrollIntoView();
+		}
 	});
 
 	const todayDayOfTheWeek = getDayWeekStartsMonday(new Date());
@@ -21,18 +27,32 @@
 			inline: 'center'
 		});
 	}
+	console.log(user);
 </script>
 
 <div class="flex justify-between mb-3 items-end">
 	<div>
-		<span class="text-sm text-gray-400">Your Active Program</span>
 		<h2 class="font-bold">{trainingProgram.name}</h2>
 	</div>
 
-	<div>
-		<a class="btn btn-sm variant-ringed" href={`/trainingProgram/${trainingProgram.id}/edit`}
-			>Edit this program</a
-		>
+	<div class="flex">
+		<div class="mr-2">
+			<form
+				method="POST"
+				action={`/trainingProgram/${trainingProgram.id}?/duplicate&redirectTo=/trainingProgram`}
+			>
+				<button class="btn btn-sm variant-ringed" value="Set Active">
+					Duplicate this program
+				</button>
+			</form>
+		</div>
+		{#if user}
+			<div>
+				<a class="btn btn-sm variant-ringed" href={`/trainingProgram/${trainingProgram.id}/edit`}
+					>Edit this program</a
+				>
+			</div>
+		{/if}
 	</div>
 </div>
 
@@ -60,6 +80,7 @@
 							{#each day.exercises as exerciseEvent}
 								<CalExerciseEvent
 									{exerciseEvent}
+									{disableActionButtons}
 									date={daysFromToday(i - getDayWeekStartsMonday(new Date()))}
 								/>
 							{/each}
@@ -68,6 +89,7 @@
 								<p class="font-bold">{group.name}</p>
 								{#each group.exercises as exerciseEvent}
 									<CalExerciseEvent
+										{disableActionButtons}
 										{exerciseEvent}
 										date={daysFromToday(i - getDayWeekStartsMonday(new Date()))}
 									/>

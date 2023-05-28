@@ -3,13 +3,27 @@
 	import type { TrainingProgramWithDays } from '$lib/prisma';
 	import { confirmDelete } from '$lib/utils';
 	import Icon from '@iconify/svelte';
-	import { modalStore } from '@skeletonlabs/skeleton';
+	import {
+		clipboard,
+		ListBox,
+		ListBoxItem,
+		modalStore,
+		popup,
+		type PopupSettings
+	} from '@skeletonlabs/skeleton';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
 
 	$: profile = data.profile;
 	$: trainingPrograms = data.trainingPrograms as TrainingProgramWithDays[];
+
+	const popupCombobox: PopupSettings = {
+		event: 'focus-click',
+		target: 'popupCombobox',
+		placement: 'bottom',
+		closeQuery: '.listbox-item'
+	};
 </script>
 
 <div>
@@ -40,34 +54,95 @@
 			{#if trainingPrograms.length == 0}
 				<p class="text-gray-400 italic">You have no training programs.</p>
 			{:else}
-				<ul class="divide-y divide-gray-200 border">
+				<ul class="clickable-list divide-y divide-gray-200 border">
 					{#each trainingPrograms as p}
-						<li class="bg-white py-4 px-6">
+						<li class="bg-white pr-6 hover:bg-primary-50">
 							<div class="flex items-center md:space-x-8">
-								<div class="flex-1 min-w-0">
-									<p>{p.name}</p>
-									<p class="text-sm text-gray-400">
-										{profile?.activeTrainingProgramId == p.id ? 'Active' : ''}
-									</p>
-								</div>
+								<a class="w-full hover:bg-transparent" href={`/trainingProgram/${p.id}/edit`}>
+									<div class="flex-1 min-w-0 py-4 pl-6">
+										<p>{p.name}</p>
+										<p class="text-sm text-gray-400">
+											{profile?.activeTrainingProgramId == p.id ? 'Active' : ''}
+										</p>
+									</div>
+								</a>
 								<div class="flex items-center min-w-0 float-right space-x-2">
-									<form method="POST" action={`/profile?/edit`} use:enhance>
-										<input type="hidden" name="activeTrainingProgramId" value={p.id} />
-										<button class="btn btn-sm variant-ringed" value="Set Active">
-											Set Active
+									<div>
+										<button
+											class="btn !bg-transparent justify-between"
+											use:popup={{
+												event: 'focus-click',
+												target: p.id.toString(),
+												placement: 'bottom-end'
+											}}
+										>
+											<Icon icon="fe:elipsis-h" height="18" />
 										</button>
-									</form>
-									<a class="btn btn-sm variant-ringed" href="/trainingProgram/{p.id}/edit">
-										<Icon icon="material-symbols:edit-outline" height="18" />
-										<span> Edit </span>
-									</a>
-									<form method="POST" action={`/trainingProgram/${p.id}?/delete`} use:enhance>
-										<input type="hidden" name="id" value={p.id} />
-										<button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
-											<Icon icon="mdi:trash-outline" height="18" />
-											<span> Delete </span>
-										</button>
-									</form>
+										<div
+											id={p.id.toString()}
+											class="card shadow-xl py-2"
+											data-popup={p.id.toString()}
+										>
+											<nav class="list-nav">
+												<ul>
+													<li>
+														<form method="POST" action={`/profile?/edit`} use:enhance>
+															<input type="hidden" name="activeTrainingProgramId" value={p.id} />
+															<button class="btn btn-sm w-full justify-start" value="Set Active">
+																Set Active
+															</button>
+														</form>
+													</li>
+													<li>
+														<button
+															class="btn btn-sm w-full justify-start"
+															on:click={() =>
+																modalStore.trigger({
+																	type: 'component',
+																	component: 'modalShareTrainingProgram',
+																	meta: {
+																		trainingProgram: p
+																	}
+																})}
+														>
+															<span>Share</span>
+														</button>
+													</li>
+													<li>
+														<a class="btn btn-sm justify-start" href="/trainingProgram/{p.id}/edit">
+															<span> Edit </span>
+														</a>
+													</li>
+													<li>
+														<form
+															method="POST"
+															action={`/trainingProgram/${p.id}?/duplicate&redirectTo=/trainingProgram`}
+														>
+															<button class="btn btn-sm w-full justify-start" value="Set Active">
+																Duplicate
+															</button>
+														</form>
+													</li>
+													<li>
+														<form
+															method="POST"
+															action={`/trainingProgram/${p.id}?/delete`}
+															use:enhance
+														>
+															<input type="hidden" name="id" value={p.id} />
+															<button
+																class="btn btn-sm w-full justify-start"
+																on:click={confirmDelete}
+															>
+																<span> Delete </span>
+															</button>
+														</form>
+													</li>
+												</ul>
+											</nav>
+											<div class="arrow bg-surface-100-800-token" />
+										</div>
+									</div>
 								</div>
 							</div>
 						</li>

@@ -8,8 +8,11 @@ import { SERVER_ERROR } from '$lib/helperTypes';
 import { TrainingProgramRepo, trainingProgramSchema } from '$lib/trainingProgram';
 import { superValidate } from 'sveltekit-superforms/server';
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load: PageServerLoad = async ({ locals, url }) => {
   const { user } = await locals.auth.validateUser();
+  if (!user) {
+    throw redirect(302, '/login?redirectTo=' + url.toString())
+  }
 
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
   let trainingPrograms;

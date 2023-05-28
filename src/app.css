@@ -103,6 +103,13 @@
   .card {
     background-color: white;
   }
+
+  .clickable-list a {
+    color: inherit !important; /* blue colors for links too */
+    text-decoration: inherit !important; /* no underline */
+    /* border-radius: 0; */
+    /* background-color: rgba(0, 0, 0, 0) !important;  */
+  }
 }
 .invalid {
 	color: orangered;

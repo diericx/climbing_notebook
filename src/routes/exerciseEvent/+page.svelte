@@ -12,6 +12,7 @@
 	export let data: PageData;
 	$: activeTrainingProgram = data.profile?.activeTrainingProgram as TrainingProgramComplete;
 	$: exerciseEvents = data.exerciseEvents as ExerciseEvent[];
+	$: user = data.user;
 
 	// Filter out only todays exercise events
 	$: todaysExerciseEvents = exerciseEvents.filter((e) => {
@@ -41,7 +42,8 @@
 				> page to create and set one.
 			</p>
 		{:else}
-			<WeeklyCalendar trainingProgram={activeTrainingProgram} />
+			<span class="text-sm text-gray-400">Your Active Program</span>
+			<WeeklyCalendar {user} trainingProgram={activeTrainingProgram} />
 		{/if}
 	</div>
 </div>

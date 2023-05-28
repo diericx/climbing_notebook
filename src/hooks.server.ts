@@ -10,9 +10,9 @@ export const handle: Handle = async ({ event, resolve }) => {
     event.url.pathname.startsWith('/exerciseEvent') ||
     event.url.pathname.startsWith('/journalEntry') ||
     event.url.pathname.startsWith('/profile') ||
-    event.url.pathname.startsWith('/trainingProgram') ||
     event.url.pathname.startsWith('/query') ||
     event.url.pathname.startsWith('/dashboard')
+    // trainingProgram is handled at the path level
   ) {
     if (!user) {
       return new Response(null, {
