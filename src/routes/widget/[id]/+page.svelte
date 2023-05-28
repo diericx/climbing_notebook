@@ -24,7 +24,7 @@
 					component: 'formModalWidget',
 					meta: {
 						action: `/widget/${widget.id}?/update`,
-						title: 'Add Widget',
+						title: 'Edit Widget',
 						data: widget,
 						showType: false,
 						trainingPrograms
@@ -42,7 +42,9 @@
 	<p><b>Width:</b> {widget.width}</p>
 	<p><b>Order:</b> {widget.order}</p>
 	<p><b>Type:</b> {camelToTitle(widget.type)}</p>
-	<p><b>Training Program:</b> {widget.trainingProgram?.name || 'Active Training Program'}</p>
+	{#if widget.type == 'dailyExerciseCalendar'}
+		<p><b>Training Program:</b> {widget.trainingProgram?.name || 'Active Training Program'}</p>
+	{/if}
 </div>
 
 {#if widget.type == 'chart' || widget.type == 'heatmapCalendar'}

@@ -4,7 +4,7 @@
 	import type { ProfileWithActiveTrainingProgram, WidgetComplete } from '$lib/prisma';
 	import { confirmDelete } from '$lib/utils';
 	import Icon from '@iconify/svelte';
-	import type { CalendarEvent, JournalEntry } from '@prisma/client';
+	import type { CalendarEvent, JournalEntry, TrainingProgram } from '@prisma/client';
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import Calendar from './Calendar.svelte';
 	import Chart from './Chart.svelte';
@@ -16,15 +16,37 @@
 	export let calendarEvents: CalendarEvent[];
 	export let journalEntries: JournalEntry[];
 	export let profile: ProfileWithActiveTrainingProgram;
+	export let trainingPrograms: TrainingProgram[];
 </script>
 
 <div class="card p-4">
 	<div class="w-full flex justify-end mb-4">
 		<div class="font-bold w-full">{widget.name}</div>
-		<a class="btn btn-sm variant-ringed mr-2" href={`/widget/${widget.id}`}>
-			<Icon icon="material-symbols:edit-outline" height="18" />
-			<span>Edit</span>
-		</a>
+		{#if widget.type == 'dailyExerciseCalendar' || widget.type == 'calendar'}
+			<button
+				class="btn btn-sm variant-ringed mr-2"
+				on:click={() =>
+					modalStore.trigger({
+						type: 'component',
+						component: 'formModalWidget',
+						meta: {
+							action: `/widget/${widget.id}?/update`,
+							title: 'Edit Widget',
+							data: widget,
+							showType: false,
+							trainingPrograms
+						}
+					})}
+			>
+				<Icon icon="material-symbols:edit-outline" height="18" />
+				<span>Edit</span>
+			</button>
+		{:else}
+			<a class="btn btn-sm variant-ringed mr-2" href={`/widget/${widget.id}`}>
+				<Icon icon="material-symbols:edit-outline" height="18" />
+				<span>Edit</span>
+			</a>
+		{/if}
 		<form method="POST" action={`/widget/${widget.id}?/delete`} use:enhance>
 			<input type="hidden" name="id" value={widget.id} />
 			<button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
