@@ -116,6 +116,11 @@
     @apply rounded-lg;
     display: inherit;
   }
+
+  .link {
+    @apply text-slate-600;
+    text-decoration: underline;
+  }
 }
 .invalid {
 	color: orangered;

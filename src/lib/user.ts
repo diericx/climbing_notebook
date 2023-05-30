@@ -1,5 +1,16 @@
 import { z } from 'zod';
 
+export const requestPasswordResetSchema = z.object({
+  email: z.string().email(),
+});
+export type RequestPasswordResetSchema = typeof requestPasswordResetSchema;
+
+export const resetPasswordSchema = z.object({
+  password: z.string().min(5, { message: 'Password must be at least 5 characters long' }),
+  token: z.string(),
+});
+export type ResetPasswordSchema = typeof resetPasswordSchema;
+
 export const loginSchema = z.object({
   username: z.string({ required_error: 'Username is required' }).min(1, { message: 'Username is required' }),
   password: z.string(),

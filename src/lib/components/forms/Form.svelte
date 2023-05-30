@@ -8,7 +8,7 @@
 	export let data: any = {};
 	export let id: string;
 	export let onSuccess: (() => void) | undefined = undefined;
-	export let action = '?/newCalendarEvent';
+	export let action = '';
 	export let resetForm = false;
 
 	// Add redirect data

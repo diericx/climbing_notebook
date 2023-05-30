@@ -214,15 +214,16 @@ model AuthUser {
   username  String   @unique
   email     String   @unique
 
-  auth_session    AuthSession[]
-  auth_key        AuthKey[]
-  journalEntry    JournalEntry[]
-  exerciseEvents  ExerciseEvent[]
-  profile         Profile?
-  trainingProgram TrainingProgram[]
-  exerciseGroup   ExerciseGroup[]
-  metric          Metric[]
-  calendarEvent   CalendarEvent[]
+  auth_session      AuthSession[]
+  auth_key          AuthKey[]
+  journalEntry      JournalEntry[]
+  exerciseEvents    ExerciseEvent[]
+  profile           Profile?
+  trainingProgram   TrainingProgram[]
+  exerciseGroup     ExerciseGroup[]
+  metric            Metric[]
+  calendarEvent     CalendarEvent[]
+  AuthPasswordReset AuthPasswordReset[]
 
   @@map("user")
 }
@@ -249,4 +250,13 @@ model AuthKey {
 
   @@index([user_id])
   @@map("auth_key")
+}
+
+model AuthPasswordReset {
+  userId  String   @id @unique @map("user_id")
+  user    AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token   String   @unique @default(cuid())
+  expires DateTime
+
+  @@map("auth_password_reset")
 }

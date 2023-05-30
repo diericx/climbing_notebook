@@ -28,7 +28,6 @@
 			inline: 'center'
 		});
 	}
-	console.log(user);
 </script>
 
 <div class="flex justify-between mb-3 items-end">

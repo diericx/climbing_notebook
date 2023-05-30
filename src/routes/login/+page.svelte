@@ -6,6 +6,9 @@
 <div class="my-4">
 	<h2>Login</h2>
 	<FormLogin action="?/login" />
+	<div class="mt-2">
+		<a class="link" href="/login/requestResetPassword">Reset My Password</a>
+	</div>
 </div>
 
 <hr />
