@@ -2,11 +2,19 @@
 	import { enhance } from '$app/forms';
 	import type { ExerciseEvent } from '@prisma/client';
 	import { modalStore } from '@skeletonlabs/skeleton';
+	import { popup } from '@skeletonlabs/skeleton';
+	import type { PopupSettings } from '@skeletonlabs/skeleton';
 
 	export let exerciseEvent: ExerciseEvent;
 	export let date: Date;
 	export let disableActionButtons = false;
 	export let showMarkedCompleted = true;
+
+	const popupHover: PopupSettings = {
+		event: 'hover',
+		target: 'popupHover',
+		placement: 'top'
+	};
 
 	$: isMarkedCompleted =
 		showMarkedCompleted == true
@@ -36,6 +44,7 @@
 		>
 			<input type="hidden" name="date" value={date} />
 			<input
+				use:popup={popupHover}
 				type="checkbox"
 				name="isCompleted"
 				disabled={disableActionButtons}
@@ -89,4 +98,12 @@
 			</button>
 		</div>
 	</div>
+</div>
+<div class="card p-3" data-popup="popupHover">
+	<p class="text-sm text-gray-500">
+		This button not log any data, it is only to control the completion status.
+		<br />
+		Use the "Complete" button below to log data from this exercise.
+	</p>
+	<div class="arrow bg-surface-100-800-token" />
 </div>
