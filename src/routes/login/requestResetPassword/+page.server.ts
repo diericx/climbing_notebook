@@ -60,7 +60,7 @@ https://climbingnotebook.com/login/resetPassword?token=${token.token}
 
       };
       const sendEmailCommand = createSendEmailCommand(
-        'zacharyholland@gmail.com',
+        form.data.email,
         'noreply@climbingnotebook.com'
       );
       const sesClient = new SESClient({ region: 'us-west-2' });
