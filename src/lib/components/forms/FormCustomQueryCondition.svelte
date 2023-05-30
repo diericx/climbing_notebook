@@ -11,7 +11,7 @@
 	export let onSuccess: (() => void) | undefined = undefined;
 	export let id = crypto.randomUUID();
 	export let showSubmitButton = true;
-	export let table = 'exercise_event';
+	export let query: CustomQuery;
 </script>
 
 <Form
@@ -23,12 +23,12 @@
 	resetForm={true}
 	let:form
 >
-	{#if table == 'exercise_event'}
+	{#if query.table == 'exercise_event'}
 		<SelectField name="column" field="column" {form}>
 			<option value="name">Name</option>
 			<option value="notes"> Notes </option>
 		</SelectField>
-	{:else if table == 'metric'}
+	{:else if query.table == 'metric'}
 		<SelectField name="column" field="column" {form}>
 			<option value="name">Name</option>
 		</SelectField>

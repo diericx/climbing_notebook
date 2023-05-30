@@ -2,7 +2,7 @@
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import FormCustomQueryCondition from '../forms/FormCustomQueryCondition.svelte';
 	import FormModal from './FormModal.svelte';
-	let table = $modalStore[0]?.meta?.table;
+	let query = $modalStore[0]?.meta?.query;
 </script>
 
 <FormModal let:data let:action let:id>
@@ -11,7 +11,7 @@
 			{data}
 			{action}
 			{id}
-			{table}
+			{query}
 			showSubmitButton={false}
 			onSuccess={() => {
 				modalStore.close();

@@ -59,7 +59,8 @@
 					component: 'formModalCustomQueryCondition',
 					meta: {
 						action: `/query/${query.id}?/addCondition`,
-						title: 'Add Condition'
+						title: 'Add Condition',
+						query
 					}
 				})}
 		>
@@ -96,7 +97,8 @@
 										meta: {
 											action: `/query/${query.id}/condition/${condition.id}?/update`,
 											title: 'Edit Condition',
-											data: condition
+											data: condition,
+											query
 										}
 									})}
 							>
