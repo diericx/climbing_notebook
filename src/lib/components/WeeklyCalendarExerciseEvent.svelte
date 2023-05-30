@@ -86,7 +86,12 @@
 						component: 'formModalExerciseEvent',
 						meta: {
 							// remove gropu id and program id so this will be considered an exercise event
-							data: { ...exerciseEvent, exerciseGroupId: null, trainingProgramDayId: null },
+							data: {
+								...exerciseEvent,
+								exerciseGroupId: null,
+								trainingProgramDayId: null,
+								date: new Date()
+							},
 							action: `/exerciseEvent?/new`,
 							title: 'Complete Exercise',
 							exerciseToMarkCompleted: exerciseEvent,
