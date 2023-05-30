@@ -54,12 +54,12 @@
 			{#if trainingPrograms.length == 0}
 				<p class="text-gray-400 italic">You have no training programs.</p>
 			{:else}
-				<ul class="clickable-list divide-y divide-gray-200 border">
+				<ul class="list clickable-list">
 					{#each trainingPrograms as p}
-						<li class="bg-white pr-6 hover:bg-primary-50">
+						<li class="card bg-white pr-6 hover:bg-primary-50">
 							<div class="flex items-center md:space-x-8">
-								<a class="w-full hover:bg-transparent" href={`/trainingProgram/${p.id}/edit`}>
-									<div class="flex-1 min-w-0 py-4 pl-6">
+								<a class="flex-1 hover:bg-transparent" href={`/trainingProgram/${p.id}/edit`}>
+									<div class="flex-1 min-w-0 py-3 pl-6">
 										<p>{p.name}</p>
 										<p class="text-sm text-gray-400">
 											{profile?.activeTrainingProgramId == p.id ? 'Active' : ''}
@@ -67,6 +67,14 @@
 									</div>
 								</a>
 								<div class="flex items-center min-w-0 float-right space-x-2">
+									{#if profile?.activeTrainingProgramId != p.id}
+										<form method="POST" action={`/profile?/edit`} use:enhance>
+											<input type="hidden" name="activeTrainingProgramId" value={p.id} />
+											<button class="btn btn-sm variant-ringed justify-start" value="Set Active">
+												Set Active
+											</button>
+										</form>
+									{/if}
 									<div>
 										<button
 											class="btn !bg-transparent justify-between"
@@ -85,14 +93,6 @@
 										>
 											<nav class="list-nav">
 												<ul>
-													<li>
-														<form method="POST" action={`/profile?/edit`} use:enhance>
-															<input type="hidden" name="activeTrainingProgramId" value={p.id} />
-															<button class="btn btn-sm w-full justify-start" value="Set Active">
-																Set Active
-															</button>
-														</form>
-													</li>
 													<li>
 														<button
 															class="btn btn-sm w-full justify-start"

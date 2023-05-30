@@ -11,9 +11,9 @@
 	export let showActionBtns = true;
 </script>
 
-<ul class="divide-y divide-gray-200 border">
+<ul class="list">
 	{#each exerciseEvents as exerciseEvent}
-		<li class="bg-white py-2 px-2 md:px-4">
+		<li class="card bg-white py-3 px-2 md:px-4 mb-2">
 			<div class="flex items-center md:space-x-3">
 				<div class="mr-2">
 					<Icon icon="healthicons:exercise-weights" width="35" />

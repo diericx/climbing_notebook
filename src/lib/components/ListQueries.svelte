@@ -10,9 +10,9 @@
 {#if queries.length == 0}
 	<span class="italic text-gray-400">No Queries</span>
 {:else}
-	<ul class="divide-y divide-gray-200 border">
+	<ul class="list">
 		{#each queries as query}
-			<li class="bg-white py-2 px-2 md:px-4">
+			<li class="card bg-white py-3 px-2 md:px-4 mb-3">
 				<div class="flex items-center md:space-x-3">
 					<div class="flex-1 min-w-0">
 						<p>{query.name}</p>

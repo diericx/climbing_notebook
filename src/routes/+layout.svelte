@@ -5,8 +5,8 @@
 	// Your selected Skeleton theme:
 	import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
 	// This contains the bulk of Skeletons required styles:
-	import '@skeletonlabs/skeleton/styles/all.css';
-	import '@event-calendar/core/index.css';
+	import '@skeletonlabs/skeleton/styles/skeleton.css';
+	// import '@event-calendar/core/index.css';
 	import 'nprogress/nprogress.css';
 	import './styles.css';
 	import '../app.css';

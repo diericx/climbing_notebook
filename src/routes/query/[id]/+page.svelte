@@ -73,9 +73,9 @@
 {#if query.conditions.length == 0}
 	<p class="italic text-gray-400">No query conditions</p>
 {:else}
-	<ul class="border divide-y">
+	<ul class="list">
 		{#each query.conditions as condition}
-			<li class="bg-white py-4 px-2 md:px-4">
+			<li class="card bg-white py-3 px-2 md:px-4 mb-3">
 				<div class="flex justify-between">
 					<div class="flex items-center">
 						<p>
