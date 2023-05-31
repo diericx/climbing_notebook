@@ -107,7 +107,7 @@
 
 <div style="position: fixed; z-index: 99" class="card p-3" data-popup="popupHover">
 	<p class="text-sm text-gray-500">
-		This button not log any data, it is only to control the completion status.
+		This button not log any data, it only controls the UI.
 		<br />
 		Use the "Complete" button below to log data from this exercise.
 	</p>
