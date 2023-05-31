@@ -60,6 +60,7 @@
 		"chart.js": "^4.3.0",
 		"chartjs-adapter-dayjs-4": "^1.0.4",
 		"dayjs": "^1.11.7",
+		"json-2-csv": "^4.0.0",
 		"lucia-auth": "1.4.0",
 		"mathjs": "^11.8.0",
 		"nprogress": "^0.2.0",

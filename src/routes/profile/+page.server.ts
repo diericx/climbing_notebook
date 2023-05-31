@@ -2,19 +2,37 @@ import { APIError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
 import { ProfileRepo, profileSchema } from '$lib/profile';
-import type { Profile } from '@prisma/client';
 import { redirect, error, fail } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { PageServerLoad } from './$types';
+import { ExerciseEventRepo } from '$lib/exerciseEvent';
+import { JournalEntryRepo } from '$lib/journalEntry';
+import { TrainingProgramRepo } from '$lib/trainingProgram';
+import { MetricRepo } from '$lib/metric';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { user } = await locals.auth.validateUser();
 
-  const repo = new ProfileRepo(prisma);
-  let profile: Profile;
+  const profileRepo = new ProfileRepo(prisma);
+  const exerciseEventRepo = new ExerciseEventRepo(prisma);
+  const journalEntryRepo = new JournalEntryRepo(prisma);
+  const trainingProgramRepo = new TrainingProgramRepo(prisma);
+  const metricsRepo = new MetricRepo(prisma);
   try {
-    profile = await repo.getOne(user?.userId);
+    const profile = await profileRepo.getOne(user?.userId);
+    const exerciseEvents = await exerciseEventRepo.get(user?.userId);
+    const journalEntries = await journalEntryRepo.get(user?.userId);
+    const trainingPrograms = await trainingProgramRepo.get(user?.userId);
+    const metrics = await metricsRepo.get(user?.userId);
+    return {
+      profile,
+      exerciseEvents,
+      journalEntries,
+      trainingPrograms,
+      metrics,
+      user,
+    };
   } catch (e) {
     if (e instanceof APIError) {
       return fail(401, { message: e.detail })
@@ -23,10 +41,6 @@ export const load: PageServerLoad = async ({ locals }) => {
     throw error(500, { message: SERVER_ERROR })
   }
 
-  return {
-    profile,
-    user,
-  };
 };
 
 export const actions: Actions = {
