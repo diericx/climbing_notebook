@@ -90,11 +90,3 @@
 		>Download Metrics Data as CSV</button
 	>
 </div>
-
-<div>
-	<button
-		class="btn variant-filled"
-		on:click={() => downloadAsJson(trainingPrograms, 'trainingPrograms')}
-		>Download Training Programs as JSON</button
-	>
-</div>

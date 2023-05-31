@@ -37,6 +37,29 @@ export class ExerciseEventRepo {
   }
 
   async new(data: z.infer<ExerciseEventSchema>, ownerId: string): Promise<ExerciseEvent> {
+    if (data.exerciseGroupId) {
+      const exerciseGroup = await this.prisma.exerciseGroup.findUnique({
+        where: {
+          id: data.exerciseGroupId,
+        }
+      })
+      if (exerciseGroup == null || exerciseGroup.ownerId != ownerId) {
+        throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.')
+      }
+    }
+    if (data.trainingProgramDayId) {
+      const trainingProgramDay = await this.prisma.trainingProgramDay.findUnique({
+        where: {
+          id: data.trainingProgramDayId
+        },
+        include: {
+          trainingProgram: true
+        }
+      })
+      if (trainingProgramDay == null || trainingProgramDay.trainingProgram.ownerId != ownerId) {
+        throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.')
+      }
+    }
     return await this.prisma.exerciseEvent.create({
       data: {
         ...data,

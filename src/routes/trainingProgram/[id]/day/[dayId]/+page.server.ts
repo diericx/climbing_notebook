@@ -102,16 +102,14 @@ export const actions: Actions = {
     const form = await superValidate(formData, exerciseEventSchema, {
       id: formData.get('_formId')?.toString(),
     });
-    const dayId = Number(params.dayId);
 
     if (!form.valid) {
       return fail(400, { form });
     }
 
-    form.data.trainingProgramDayId = dayId;
-    const repo = new ExerciseEventRepo(prisma);
+    const exerciseEventRepo = new ExerciseEventRepo(prisma);
     try {
-      await repo.new(form.data, user?.userId)
+      await exerciseEventRepo.new(form.data, user?.userId)
     } catch (e) {
       if (e instanceof APIError) {
         return fail(401, { message: e.detail, form })
