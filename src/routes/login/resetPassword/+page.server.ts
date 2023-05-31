@@ -23,7 +23,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 };
 
 export const actions: Actions = {
-  resetPassword: async ({ request, url }) => {
+  resetPassword: async ({ request }) => {
     const formData = await request.formData();
     const form = await superValidate(formData, resetPasswordSchema, {
       id: formData.get('_formId')?.toString(),
@@ -38,7 +38,7 @@ export const actions: Actions = {
     if (!isValid) {
       return message(form, 'Invalid token')
     }
-    if (token == undefined || token.user == undefined) {
+    if (token == undefined) {
       console.error('Token or token user undefined: ', token)
       throw error(500, SERVER_ERROR);
     }

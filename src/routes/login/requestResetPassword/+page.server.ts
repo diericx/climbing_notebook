@@ -5,7 +5,7 @@ import { message, superValidate } from 'sveltekit-superforms/server';
 import { PasswordResetRepo } from '$lib/passwordReset';
 import { prisma } from '$lib/prisma';
 import { APIError } from '$lib/errors';
-import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
+import { createSendEmailCommand, sesClient } from '$lib/aws/ses';
 
 export const actions: Actions = {
   requestResetPassword: async ({ request }) => {
@@ -21,49 +21,14 @@ export const actions: Actions = {
     const passwordResetRepo = new PasswordResetRepo(prisma);
     try {
       const token = await passwordResetRepo.newTokenForUser(form.data.email);
-      const createSendEmailCommand = (toAddress, fromAddress) => {
-        return new SendEmailCommand({
-          Destination: {
-            /* required */
-            ToAddresses: [
-              toAddress,
-              /* more To-email addresses */
-            ],
-          },
-          Message: {
-            /* required */
-            Body: {
-              /* required */
-              Html: {
-                Charset: 'UTF-8',
-                Data: `Click the link below to reset your password.
+      const sendEmailCommand = createSendEmailCommand(
+        form.data.email,
+        `Click the link below to reset your password.
 <br/>
 <br/>
 https://climbingnotebook.com/login/resetPassword?token=${token.token}
-`,
-              },
-              Text: {
-                Charset: 'UTF-8',
-                Data: 'TEXT_FORMAT_BODY',
-              },
-            },
-            Subject: {
-              Charset: 'UTF-8',
-              Data: 'ClimbingNotebook Password Reset',
-            },
-          },
-          Source: fromAddress,
-          ReplyToAddresses: [
-            /* more items */
-          ],
-        });
-
-      };
-      const sendEmailCommand = createSendEmailCommand(
-        form.data.email,
-        'noreply@climbingnotebook.com'
+`
       );
-      const sesClient = new SESClient({ region: 'us-west-2' });
       await sesClient.send(sendEmailCommand);
     } catch (e) {
       if (e instanceof APIError) {
