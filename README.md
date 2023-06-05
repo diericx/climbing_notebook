@@ -1,50 +1,80 @@
 # Climbing Notebook
 
-## Prisma
+## Development
 
-### Development
+### Setting Up Environment
 
-Pushing a new schema for testing
+#### Node
+
+Install packages
+
+```sh
+npm install
 ```
-npx prisma generate
+
+#### Postgres
+
+After your local postgres server is running, create the database
+
+```psql
+CREATE ROLE climbingnotebook;
+CREATE DATABASE cndb_development WITH OWNER=climbingnotebook;
+```
+
+Sync local database
+```sh
+npx prisma db push
+```
+
+## Running locally
+
+Run the node server locally
+```
+npm run dev
+```
+
+## Dev Operations
+
+Pushing a new schema for testing which will also regenerate Prisma but will NOT generate a migration.
+
+```
 npx prisma db push
 ```
 
 Generate a new migration
+
 ```
 npx prisma migrate dev --name <name>
 ```
 
-Connect to local psql server
-```
-psql cndb_development
-```
+### Dev Notes
+
+#### ZOD Schemas
+- nullish values must be set in the forms or they will be parsed as null and thus unset
+  in the database.
 
 ### Production
 
-Apply migration to prod
-```
-DATABASE_URL= npx prisma migrate deploy
-```
-
-## Docker Swarm
+#### Docker Swarm
 
 Below are the dependencies and requirements for running in Docker Swarm
 as well as some tooling for handling it in production.
 
-### Secrets
+#### Required Secrets
 
 - `cn_staging_db_url`
   - A postgres url pointing to the staging db
 -  `cn_prod_db_url`
   - A postgres url pointing to the production db
 
-### Networks
+#### Required Networks
 
 - `traefik`
 - `postgres`
 
-### Running Migrations
+#### Running Migrations
+
+Apply migration
 
 ```
 docker run \
@@ -54,8 +84,3 @@ docker run \
   prisma migrate deploy
 ```
 
-### Notes
-
-#### ZOD Schemas
-- nullish values must be set in the forms or they will be parsed as null and thus unset
-  in the database.
