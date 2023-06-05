@@ -4,7 +4,6 @@ import { APIError } from './errors';
 import type { ExerciseGroupSchema } from './exerciseGroup';
 import type { TrainingProgramComplete } from './prisma';
 
-
 export const trainingProgramSchema = z.object({
   name: z.string().min(1),
   isPublic: z.boolean(),

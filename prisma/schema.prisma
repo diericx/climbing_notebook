@@ -10,6 +10,39 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  gradeSystem String   @map("grade_system")
+  fontGrade   String?  @map("font_grade")
+  huecoGrade  String?  @map("hueco_grade")
+  url         String?
+  updatedAt   DateTime @default(now())
+
+  ownerId   String           @map("owner_id")
+  owner     AuthUser         @relation(fields: [ownerId], references: [id])
+  createdAt DateTime         @default(now()) @map("created_at")
+  sessions  ProjectSession[]
+
+  @@map("project")
+}
+
+model ProjectSession {
+  id    String   @id @default(cuid())
+  notes String?
+  date  DateTime
+  sent  Boolean
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  ownerId   String   @map("owner_id")
+  owner     AuthUser @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+  projectId String   @map("project_id")
+
+  @@map("project_session")
+}
+
 model ExerciseGroup {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
@@ -224,6 +257,8 @@ model AuthUser {
   metric            Metric[]
   calendarEvent     CalendarEvent[]
   AuthPasswordReset AuthPasswordReset[]
+  Project           Project[]
+  ProjectSession    ProjectSession[]
 
   @@map("user")
 }

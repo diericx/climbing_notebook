@@ -29,6 +29,8 @@
 	import FormModalWidget from '$lib/components/modals/FormModalWidget.svelte';
 	import FormModalDataset from '$lib/components/modals/FormModalDataset.svelte';
 	import ModalShareTrainingProgram from '$lib/components/modals/ModalShareTrainingProgram.svelte';
+	import FormModalProject from '$lib/components/modals/FormModalProject.svelte';
+	import FormModalProjectSession from '$lib/components/modals/FormModalProjectSession.svelte';
 
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
@@ -57,6 +59,8 @@
 		formModalCustomQueryCondition: { ref: FormModalCustomQueryCondition },
 		formModalWidget: { ref: FormModalWidget },
 		formModalDataset: { ref: FormModalDataset },
+		formModalProject: { ref: FormModalProject },
+		formModalProjectSession: { ref: FormModalProjectSession },
 		modalCalendarEvent: { ref: ModalCalendarEvent },
 		modalJournalEntry: { ref: ModalJournalEntry },
 		modalShareTrainingProgram: { ref: ModalShareTrainingProgram }
@@ -81,8 +85,9 @@
 		{ title: 'Journal', url: '/journalEntry' },
 		{ title: 'Exercise Log', url: '/exerciseEvent' },
 		{ title: 'Training Programs', url: '/trainingProgram' },
-		{ title: 'Feedback', url: '/feedback' },
-		{ title: 'Queries', url: '/query' }
+		{ title: 'Queries', url: '/query' },
+		{ title: 'Projects', url: '/project' },
+		{ title: 'Feedback', url: '/feedback' }
 	];
 </script>
 
@@ -162,7 +167,7 @@
 	</svelte:fragment>
 
 	<div class="container mx-auto px-3">
-		<main class="pt-8">
+		<main class="pt-8 pb-10">
 			<slot />
 		</main>
 	</div>
