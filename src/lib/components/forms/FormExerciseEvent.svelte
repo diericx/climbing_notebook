@@ -20,12 +20,6 @@
 </script>
 
 <Form schema={exerciseEventSchema} bind:data {action} {id} {onSuccess} let:form>
-	{#if data?.exerciseGroupId}
-		<input type="hidden" name="exerciseGroupId" value={data?.exerciseGroupId} />
-	{/if}
-	{#if data?.trainingProgramDayId}
-		<input type="hidden" name="trainingProgramDayId" value={data?.trainingProgramDayId} />
-	{/if}
 	{#if exerciseToMarkCompleted != undefined}
 		<input type="hidden" name="exerciseToMarkCompletedId" value={exerciseToMarkCompleted.id} />
 	{/if}

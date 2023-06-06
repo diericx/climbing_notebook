@@ -3,7 +3,7 @@ import type { Metric, PrismaClient } from '@prisma/client';
 export class MetricRepo {
   constructor(private readonly prisma: PrismaClient) { }
 
-  async get(ownerId: string, dateMin?: Date | undefined, dateMax?: Date | undefined): Promise<ExerciseEvent[]> {
+  async get(ownerId: string, dateMin?: Date | undefined, dateMax?: Date | undefined) {
     // Fetch all
     return await this.prisma.metric.findMany({
       where: {

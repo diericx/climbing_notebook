@@ -10,7 +10,7 @@ export const actions: Actions = {
   delete: async ({ locals, url, params }) => {
     const { user } = await locals.auth.validateUser();
     const widgetId = params.id;
-    const { datasetId } = params;
+    const datasetId = params.datasetId;
 
     const repo = new WidgetRepo(prisma);
     try {

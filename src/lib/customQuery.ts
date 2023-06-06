@@ -23,7 +23,7 @@ export type CustomQueryResults = {
 
 export class CustomQueryRepo {
   constructor(private readonly prisma: PrismaClient) { }
-  async new(data: z.infer<CustomQuerySchema>, ownerId: string): Promise<CustomQuery> {
+  async new(data: z.infer<CustomQuerySchema>, ownerId: string) {
     return await this.prisma.customQuery.create({
       data: {
         ...data,
@@ -60,7 +60,7 @@ export class CustomQueryRepo {
     }
     return await this.prisma[query.table].findMany(prismaQuery);
   }
-  async get(ownerId: string): Promise<CustomQuery[]> {
+  async get(ownerId: string) {
     return await this.prisma.customQuery.findMany({
       where: {
         ownerId: ownerId,
@@ -90,7 +90,7 @@ export class CustomQueryRepo {
     return query;
   }
 
-  async update(data: z.infer<CustomQuerySchema>, id: string, ownerId: string): Promise<CustomQuery> {
+  async update(data: z.infer<CustomQuerySchema>, id: string, ownerId: string) {
     await this.getOneAndValidateOwner(id, ownerId);
 
     return await this.prisma.customQuery.update({
@@ -103,7 +103,7 @@ export class CustomQueryRepo {
     });
   }
 
-  async delete(id: string, ownerId: string): Promise<CustomQuery> {
+  async delete(id: string, ownerId: string) {
     await this.getOneAndValidateOwner(id, ownerId);
 
     return await this.prisma.customQuery.delete({
@@ -113,7 +113,7 @@ export class CustomQueryRepo {
     });
   }
 
-  async addCondition(data: z.infer<CustomQueryConditionSchema>, id: string, ownerId: string): Promise<CustomQuery> {
+  async addCondition(data: z.infer<CustomQueryConditionSchema>, id: string, ownerId: string) {
     await this.getOneAndValidateOwner(id, ownerId)
     return await this.prisma.customQuery.update({
       data: {
@@ -133,7 +133,7 @@ export class CustomQueryRepo {
     }) as CustomQuery;
   }
 
-  async deleteCondition(queryId: string, conditionId: string, ownerId: string): Promise<CustomQuery> {
+  async deleteCondition(queryId: string, conditionId: string, ownerId: string) {
     await this.getOneAndValidateOwner(queryId, ownerId)
     return await this.prisma.customQuery.update({
       data: {
@@ -149,7 +149,7 @@ export class CustomQueryRepo {
     }) as CustomQuery;
   }
 
-  async updateCondition(data: z.infer<CustomQueryConditionSchema>, queryId: string, conditionId: string, ownerId: string): Promise<CustomQuery> {
+  async updateCondition(data: z.infer<CustomQueryConditionSchema>, queryId: string, conditionId: string, ownerId: string) {
     await this.getOneAndValidateOwner(queryId, ownerId)
     return await this.prisma.customQuery.update({
       data: {

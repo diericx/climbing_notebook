@@ -22,7 +22,7 @@ export type DatasetSchema = typeof datasetSchema;
 
 export class WidgetRepo {
   constructor(private readonly prisma: PrismaClient) { }
-  async new(data: z.infer<WidgetSchema>, ownerId: string): Promise<Widget> {
+  async new(data: z.infer<WidgetSchema>, ownerId: string) {
     return await this.prisma.widget.create({
       data: {
         ...data,
@@ -121,7 +121,7 @@ export class WidgetRepo {
     return query;
   }
 
-  async update(data: z.infer<WidgetSchema>, id: string, ownerId: string): Promise<Widget> {
+  async update(data: z.infer<WidgetSchema>, id: string, ownerId: string) {
     await this.getOneAndValidateOwner(id, ownerId);
 
     return await this.prisma.widget.update({
@@ -134,7 +134,7 @@ export class WidgetRepo {
     });
   }
 
-  async delete(id: string, ownerId: string): Promise<Widget> {
+  async delete(id: string, ownerId: string) {
     await this.getOneAndValidateOwner(id, ownerId);
 
     return await this.prisma.widget.delete({
@@ -144,7 +144,7 @@ export class WidgetRepo {
     });
   }
 
-  async addDataset(data: z.infer<DatasetSchema>, id: string, ownerId: string): Promise<Widget> {
+  async addDataset(data: z.infer<DatasetSchema>, id: string, ownerId: string) {
     await this.getOneAndValidateOwner(id, ownerId);
 
     return await this.prisma.widget.update({
@@ -162,7 +162,7 @@ export class WidgetRepo {
     });
   }
 
-  async updateDataset(data: z.infer<DatasetSchema>, widgetId: string, datasetId: string, ownerId: string): Promise<Widget> {
+  async updateDataset(data: z.infer<DatasetSchema>, widgetId: string, datasetId: string, ownerId: string) {
     await this.getOneAndValidateOwner(widgetId, ownerId);
 
     return await this.prisma.widget.update({
@@ -182,7 +182,7 @@ export class WidgetRepo {
     });
   }
 
-  async deleteDataset(widgetId: string, datasetId: string, ownerId: string): Promise<Widget> {
+  async deleteDataset(widgetId: string, datasetId: string, ownerId: string) {
     await this.getOneAndValidateOwner(widgetId, ownerId);
 
     return await this.prisma.widget.update({

@@ -42,7 +42,6 @@
 								class="inline"
 								use:enhance
 							>
-								<input type="hidden" name="id" value={item.id} />
 								<button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
 									<Icon icon="mdi:trash-outline" height="18" />
 									Delete

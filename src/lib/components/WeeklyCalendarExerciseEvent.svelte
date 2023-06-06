@@ -85,7 +85,7 @@
 						type: 'component',
 						component: 'formModalExerciseEvent',
 						meta: {
-							// remove gropu id and program id so this will be considered an exercise event
+							// remove group id and program id so this will be considered an exercise event
 							data: {
 								...exerciseEvent,
 								exerciseGroupId: null,

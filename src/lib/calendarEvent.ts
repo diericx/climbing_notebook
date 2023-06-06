@@ -16,7 +16,7 @@ export type CalendarEventPartialSchema = typeof calendarEventPartialSchema;
 export class CalendarEventRepo {
   constructor(private readonly prisma: PrismaClient) { }
 
-  async getOneAndValidateOwner(id: number, ownerId: string): Promise<CalendarEvent> {
+  async getOneAndValidateOwner(id: number, ownerId: string) {
     const e = await this.prisma.calendarEvent.findUnique({
       where: {
         id: Number(id),
@@ -31,7 +31,7 @@ export class CalendarEventRepo {
     return e
   }
 
-  async new(data: z.infer<CalendarEventSchema>, ownerId: string): Promise<CalendarEvent> {
+  async new(data: z.infer<CalendarEventSchema>, ownerId: string) {
     return await this.prisma.calendarEvent.create({
       data: {
         ...data,
@@ -41,7 +41,7 @@ export class CalendarEventRepo {
     });
   }
 
-  async get(ownerId: string): Promise<CalendarEvent[]> {
+  async get(ownerId: string) {
     // Fetch all
     return await this.prisma.calendarEvent.findMany({
       where: {
@@ -53,11 +53,11 @@ export class CalendarEventRepo {
     });
   }
 
-  async getOne(id: number, ownerId: string): Promise<CalendarEvent> {
+  async getOne(id: number, ownerId: string) {
     return this.getOneAndValidateOwner(id, ownerId)
   }
 
-  async update(data: z.infer<CalendarEventPartialSchema>, id: number, ownerId: string): Promise<CalendarEvent> {
+  async update(data: z.infer<CalendarEventPartialSchema>, id: number, ownerId: string) {
     await this.getOneAndValidateOwner(id, ownerId);
 
     return await this.prisma.calendarEvent.update({
@@ -68,7 +68,7 @@ export class CalendarEventRepo {
     });
   }
 
-  async delete(id: number, ownerId: string): Promise<CalendarEvent> {
+  async delete(id: number, ownerId: string) {
     await this.getOneAndValidateOwner(id, ownerId);
 
     return await this.prisma.calendarEvent.delete({

@@ -28,10 +28,9 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 }
 
 export const actions: Actions = {
-  delete: async ({ locals, request, url }) => {
-    const rawFormData = Object.fromEntries((await request.formData()).entries());
+  delete: async ({ locals, params, url }) => {
     const { user } = await locals.auth.validateUser();
-    const id = Number(rawFormData.id);
+    const id = Number(params.id);
 
     const repo = new TrainingProgramRepo(prisma);
     let trainingProgram: TrainingProgram;
@@ -52,7 +51,7 @@ export const actions: Actions = {
     return { success: true, trainingProgram };
   },
 
-  duplicate: async ({ locals, request, url, params }) => {
+  duplicate: async ({ locals, url, params }) => {
     const { user } = await locals.auth.validateUser();
     if (!user) {
       throw redirect(302, '/login?redirectTo=' + url.toString())
