@@ -8,7 +8,7 @@
 	$: queries = data.queries;
 </script>
 
-<div class="flex justify-between">
+<div class="flex justify-between mb-4">
 	<div>
 		<h1>Queries</h1>
 	</div>
@@ -31,8 +31,6 @@
 		</button>
 	</div>
 </div>
-
-<hr />
 
 <div>
 	<ListQueries {queries} />

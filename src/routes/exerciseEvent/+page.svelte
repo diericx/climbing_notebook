@@ -34,23 +34,23 @@
 </script>
 
 <div class="pb-6">
+	<h2>Active Training Program</h2>
 	<div>
 		{#if !activeTrainingProgram}
 			<p class="text-gray-400">
-				You don't have an active training program! Go to the <a href="/trainingProgram"
+				You don't have an active training program! Go to the <a class="link" href="/trainingProgram"
 					>Training Programs</a
 				> page to create and set one.
 			</p>
 		{:else}
-			<span class="text-sm text-gray-400">Your Active Program</span>
-			<WeeklyCalendar {user} trainingProgram={activeTrainingProgram} />
+			<WeeklyCalendar {user} trainingProgram={activeTrainingProgram} showDuplicateBtn={false} />
 		{/if}
 	</div>
 </div>
 
 <div class="pt-8">
 	<div class="flex justify-between">
-		<h4>Today</h4>
+		<h2>Today</h2>
 		<button
 			class="btn btn-sm variant-filled mb-2"
 			on:click={() =>
@@ -71,6 +71,6 @@
 </div>
 
 <div class="pt-8">
-	<h4>History</h4>
+	<h2>History</h2>
 	<ListExerciseEvent exerciseEvents={pastExerciseEvents} />
 </div>

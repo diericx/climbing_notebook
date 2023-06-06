@@ -31,6 +31,9 @@
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+	{#if projects.length == 0}
+		<p class="text-gray-400 italic">You have no projects yet</p>
+	{/if}
 	{#each [...unsentProjects, ...sentProjects] as project}
 		{@const sent = project.sessions.find((s) => s.sent)}
 		<div class="block card card-hover {sent ? 'bg-green-50' : 'bg-white'}">

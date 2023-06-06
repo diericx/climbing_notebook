@@ -26,7 +26,7 @@
 
 	<SelectField name="customQueryId" field="customQueryId" label="Query" {form}>
 		<div slot="description">
-			Go to the <a href="/query">Queries</a> page to craft custom queries.
+			Go to the <a class="link" href="/query">Queries</a> page to craft custom queries.
 		</div>
 		{#each customQueries as query}
 			<option value={query.id}>{query.name}</option>

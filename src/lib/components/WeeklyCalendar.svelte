@@ -9,6 +9,7 @@
 	export let shouldScrollIntoView = false;
 	export let disableActionButtons = false;
 	export let showMarkedCompleted = true;
+	export let showDuplicateBtn = false;
 	export let user: User | undefined;
 
 	onMount(() => {
@@ -36,16 +37,18 @@
 	</div>
 
 	<div class="flex">
-		<div class="mr-2">
-			<form
-				method="POST"
-				action={`/trainingProgram/${trainingProgram.id}?/duplicate&redirectTo=/trainingProgram`}
-			>
-				<button class="btn btn-sm variant-ringed" value="Set Active">
-					Duplicate this program
-				</button>
-			</form>
-		</div>
+		{#if showDuplicateBtn}
+			<div class="mr-2">
+				<form
+					method="POST"
+					action={`/trainingProgram/${trainingProgram.id}?/duplicate&redirectTo=/trainingProgram`}
+				>
+					<button class="btn btn-sm variant-ringed" value="Set Active">
+						Duplicate this program
+					</button>
+				</form>
+			</div>
+		{/if}
 		{#if user}
 			<div>
 				<a class="btn btn-sm variant-ringed" href={`/trainingProgram/${trainingProgram.id}/edit`}
