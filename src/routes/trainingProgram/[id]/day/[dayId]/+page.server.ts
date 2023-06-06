@@ -99,6 +99,7 @@ export const actions: Actions = {
   newExerciseEvent: async ({ locals, request, url, params }) => {
     const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
+    const dayId = params.dayId;
     const form = await superValidate(formData, exerciseEventSchema, {
       id: formData.get('_formId')?.toString(),
     });
@@ -107,6 +108,7 @@ export const actions: Actions = {
       return fail(400, { form });
     }
 
+    form.data.trainingProgramDayId = Number(dayId);
     const exerciseEventRepo = new ExerciseEventRepo(prisma);
     try {
       await exerciseEventRepo.new(form.data, user?.userId)
