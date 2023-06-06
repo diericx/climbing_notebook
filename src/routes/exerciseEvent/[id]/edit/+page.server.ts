@@ -7,10 +7,9 @@ import { prisma } from '$lib/prisma';
 import { superValidate } from 'sveltekit-superforms/server';
 
 export const actions: Actions = {
-  deleteExerciseEvent: async ({ locals, params, request, url }) => {
+  deleteExerciseEvent: async ({ locals, params, url }) => {
     const { user } = await locals.auth.validateUser();
-    const rawFormData = Object.fromEntries((await request.formData()).entries());
-    const id = Number(params.id) || Number(rawFormData.id)
+    const id = Number(params.id);
 
     const repo = new ExerciseEventRepo(prisma);
     try {
