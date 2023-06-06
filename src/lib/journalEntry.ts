@@ -12,7 +12,7 @@ export type JournalEntrySchema = typeof journalEntrySchema;
 
 export class JournalEntryRepo {
   constructor(private readonly prisma: PrismaClient) { }
-  async new(data: z.infer<JournalEntrySchema>, ownerId: string): Promise<JournalEntry> {
+  async new(data: z.infer<JournalEntrySchema>, ownerId: string) {
     const minDate = new Date(data.date.toISOString().split('T')[0]);
     const maxDate = new Date(data.date.toISOString().split('T')[0]);
     maxDate.setDate(maxDate.getDate() + 1);
@@ -66,7 +66,7 @@ export class JournalEntryRepo {
     return journalEntry;
   }
 
-  async get(ownerId: string): Promise<JournalEntry[]> {
+  async get(ownerId: string) {
     return await this.prisma.journalEntry.findMany({
       where: {
         ownerId: ownerId,
@@ -77,7 +77,7 @@ export class JournalEntryRepo {
     }) as JournalEntry[];
   }
 
-  async getOne(id: number, ownerId: string): Promise<JournalEntry> {
+  async getOne(id: number, ownerId: string) {
     const journalEntry = await this.prisma.journalEntry.findUnique({
       where: {
         id
@@ -93,7 +93,7 @@ export class JournalEntryRepo {
     return journalEntry;
   }
 
-  async update(data: z.infer<JournalEntrySchema>, id: number, ownerId: string): Promise<JournalEntry> {
+  async update(data: z.infer<JournalEntrySchema>, id: number, ownerId: string) {
     const journalEntry = await this.prisma.journalEntry.findUnique({
       where: {
         id
@@ -143,7 +143,7 @@ export class JournalEntryRepo {
     return journalUpdateResult;
   }
 
-  async delete(id: number, ownerId: string): Promise<JournalEntry> {
+  async delete(id: number, ownerId: string) {
     const journalEntry = await this.prisma.journalEntry.findUnique({
       where: {
         id

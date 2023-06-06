@@ -12,7 +12,7 @@ export type ProfileSchema = typeof profileSchema;
 export class ProfileRepo {
   constructor(private readonly prisma: PrismaClient) { }
 
-  async getOneAndValidateOwner(ownerId: string): Promise<ProfileWithActiveTrainingProgram> {
+  async getOneAndValidateOwner(ownerId: string) {
     // Fetch
     const profile = await this.prisma.profile.findUnique({
       where: {
@@ -56,11 +56,11 @@ export class ProfileRepo {
     return profile
   }
 
-  async getOne(ownerId: string): Promise<ProfileWithActiveTrainingProgram> {
+  async getOne(ownerId: string) {
     return this.getOneAndValidateOwner(ownerId)
   }
 
-  async update(data: z.infer<ProfileSchema>, ownerId: string): Promise<ProfileWithActiveTrainingProgram> {
+  async update(data: z.infer<ProfileSchema>, ownerId: string) {
     await this.getOneAndValidateOwner(ownerId);
 
     return await this.prisma.profile.update({

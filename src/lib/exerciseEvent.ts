@@ -21,7 +21,7 @@ export type ExerciseEventSchema = typeof exerciseEventSchema;
 export class ExerciseEventRepo {
   constructor(private readonly prisma: PrismaClient) { }
 
-  async getOneAndValidateOwner(id: number, ownerId: string): Promise<ExerciseEvent> {
+  async getOneAndValidateOwner(id: number, ownerId: string) {
     const exerciseEvent = await this.prisma.exerciseEvent.findUnique({
       where: {
         id: Number(id),
@@ -36,7 +36,7 @@ export class ExerciseEventRepo {
     return exerciseEvent
   }
 
-  async new(data: z.infer<ExerciseEventSchema>, ownerId: string): Promise<ExerciseEvent> {
+  async new(data: z.infer<ExerciseEventSchema>, ownerId: string) {
     if (data.exerciseGroupId) {
       const exerciseGroup = await this.prisma.exerciseGroup.findUnique({
         where: {
@@ -69,7 +69,7 @@ export class ExerciseEventRepo {
     }) as ExerciseEvent;
   }
 
-  async get(ownerId: string, dateMin?: Date | undefined, dateMax?: Date | undefined): Promise<ExerciseEvent[]> {
+  async get(ownerId: string, dateMin?: Date | undefined, dateMax?: Date | undefined) {
     // Fetch all
     return await this.prisma.exerciseEvent.findMany({
       where: {
@@ -87,11 +87,11 @@ export class ExerciseEventRepo {
     }) as ExerciseEvent[];
   }
 
-  async getOne(id: number, ownerId: string): Promise<ExerciseEvent> {
+  async getOne(id: number, ownerId: string) {
     return this.getOneAndValidateOwner(id, ownerId)
   }
 
-  async update(data: z.infer<ExerciseEventSchema>, id: number, ownerId: string): Promise<ExerciseEvent> {
+  async update(data: z.infer<ExerciseEventSchema>, id: number, ownerId: string) {
     await this.getOneAndValidateOwner(id, ownerId);
 
     return await this.prisma.exerciseEvent.update({
@@ -104,7 +104,7 @@ export class ExerciseEventRepo {
     });
   }
 
-  async delete(id: number, ownerId: string): Promise<ExerciseEvent> {
+  async delete(id: number, ownerId: string) {
     await this.getOneAndValidateOwner(id, ownerId);
 
     return await this.prisma.exerciseEvent.delete({

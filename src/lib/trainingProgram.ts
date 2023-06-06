@@ -13,7 +13,7 @@ export type TrainingProgramSchema = typeof trainingProgramSchema;
 export class TrainingProgramRepo {
   constructor(private readonly prisma: PrismaClient) { }
 
-  async getOneAndValidateOwner(id: number, ownerId: string): Promise<TrainingProgramComplete> {
+  async getOneAndValidateOwner(id: number, ownerId: string) {
     const trainingProgram = await this.prisma.trainingProgram.findUnique({
       where: {
         id,
@@ -67,7 +67,7 @@ export class TrainingProgramRepo {
     return trainingProgram
   }
 
-  async duplicate(id: number, ownerId: string): Promise<TrainingProgram> {
+  async duplicate(id: number, ownerId: string) {
     const program = await this.getOne(id, ownerId);
 
     // Create the new program
@@ -174,7 +174,7 @@ export class TrainingProgramRepo {
     }
   }
 
-  async new(data: z.infer<TrainingProgramSchema>, ownerId: string): Promise<TrainingProgram> {
+  async new(data: z.infer<TrainingProgramSchema>, ownerId: string) {
     return await this.prisma.trainingProgram.create({
       data: {
         name: data.name,
@@ -192,7 +192,7 @@ export class TrainingProgramRepo {
     }) as TrainingProgram;
   }
 
-  async get(ownerId: string): Promise<TrainingProgram[]> {
+  async get(ownerId: string) {
     // Fetch all
     return await this.prisma.trainingProgram.findMany({
       where: {
@@ -204,7 +204,7 @@ export class TrainingProgramRepo {
     }) as TrainingProgram[];
   }
 
-  async getOne(id: number, ownerId: string): Promise<TrainingProgramComplete> {
+  async getOne(id: number, ownerId: string) {
     const trainingProgram = await this.prisma.trainingProgram.findUnique({
       where: {
         id,
@@ -259,7 +259,7 @@ export class TrainingProgramRepo {
     return trainingProgram;
   }
 
-  async update(data: z.infer<TrainingProgramSchema>, id: number, ownerId: string): Promise<TrainingProgram> {
+  async update(data: z.infer<TrainingProgramSchema>, id: number, ownerId: string) {
     // Get current training program
     const trainingProgram = await this.prisma.trainingProgram.findUnique({
       where: {
@@ -287,7 +287,7 @@ export class TrainingProgramRepo {
     });
   }
 
-  async delete(id: number, ownerId: string): Promise<TrainingProgram> {
+  async delete(id: number, ownerId: string) {
     await this.getOneAndValidateOwner(id, ownerId);
 
     return await this.prisma.trainingProgram.delete({
@@ -297,7 +297,7 @@ export class TrainingProgramRepo {
     })
   }
 
-  async addExerciseGroup(exerciseGroup: z.infer<ExerciseGroupSchema>, id: number, ownerId: string): Promise<TrainingProgram> {
+  async addExerciseGroup(exerciseGroup: z.infer<ExerciseGroupSchema>, id: number, ownerId: string) {
     await this.getOneAndValidateOwner(id, ownerId);
     return await this.prisma.trainingProgram.update({
       where: {
@@ -319,7 +319,7 @@ export class TrainingProgramRepo {
     })
   }
 
-  async editExerciseGroup(exerciseGroup: z.infer<ExerciseGroupSchema>, trainingProgramId: number, exerciseGroupId: number, ownerId: string): Promise<TrainingProgram> {
+  async editExerciseGroup(exerciseGroup: z.infer<ExerciseGroupSchema>, trainingProgramId: number, exerciseGroupId: number, ownerId: string) {
     await this.getOneAndValidateOwner(trainingProgramId, ownerId);
     return await this.prisma.trainingProgram.update({
       where: {
@@ -340,7 +340,7 @@ export class TrainingProgramRepo {
     })
   }
 
-  async deleteExerciseGroup(id: number, ownerId: string, exerciseGroupId: number): Promise<TrainingProgram> {
+  async deleteExerciseGroup(id: number, ownerId: string, exerciseGroupId: number) {
     await this.getOneAndValidateOwner(id, ownerId);
     return await this.prisma.trainingProgram.update({
       where: {
@@ -356,7 +356,7 @@ export class TrainingProgramRepo {
     })
   }
 
-  async connectExerciseGroupToDay(trainingProgramId: number, groupId: number, trainingProgramDayId: number, ownerId: string): Promise<TrainingProgram> {
+  async connectExerciseGroupToDay(trainingProgramId: number, groupId: number, trainingProgramDayId: number, ownerId: string) {
     await this.getOneAndValidateOwner(trainingProgramId, ownerId);
     return await this.prisma.trainingProgram.update({
       where: {
@@ -379,7 +379,7 @@ export class TrainingProgramRepo {
     })
   }
 
-  async disconnectExerciseGroupFromDay(trainingProgramId: number, groupId: number, trainingProgramDayId: number, ownerId: string): Promise<TrainingProgram> {
+  async disconnectExerciseGroupFromDay(trainingProgramId: number, groupId: number, trainingProgramDayId: number, ownerId: string) {
     await this.getOneAndValidateOwner(trainingProgramId, ownerId);
     return await this.prisma.trainingProgram.update({
       where: {
@@ -402,7 +402,7 @@ export class TrainingProgramRepo {
     })
   }
 
-  async editTrainingProgramDay(data: z.infer<TrainingProgramSchema>, trainingProgramId: number, trainingProgramDayId: number, ownerId: string): Promise<TrainingProgram> {
+  async editTrainingProgramDay(data: z.infer<TrainingProgramSchema>, trainingProgramId: number, trainingProgramDayId: number, ownerId: string) {
     await this.getOneAndValidateOwner(trainingProgramId, ownerId);
     return await this.prisma.trainingProgram.update({
       where: {
