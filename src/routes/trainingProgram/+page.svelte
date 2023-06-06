@@ -56,7 +56,11 @@
 				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 					{#each trainingPrograms as p}
 						<div class="block card card-hover">
-							<a class="flex-1" href={`/trainingProgram/${p.id}`}>
+							<a
+								style="height: 100%;"
+								class="flex flex-col justify-between"
+								href={`/trainingProgram/${p.id}`}
+							>
 								<header class="card-header">
 									<div class="flex justify-between">
 										<h2>
@@ -93,20 +97,19 @@
 									</p>
 								</section>
 								<footer class="card-footer">
-									{#if profile?.activeTrainingProgramId != p.id}
-										<form method="POST" action={`/profile?/edit`} use:enhance>
-											<input type="hidden" name="activeTrainingProgramId" value={p.id} />
-											<button
-												class="btn btn-sm variant-ringed justify-start"
-												value="Activate"
-												on:click={(e) => {
-													e.stopPropagation();
-												}}
-											>
-												Activate
-											</button>
-										</form>
-									{/if}
+									<form method="POST" action={`/profile?/edit`} use:enhance>
+										<input type="hidden" name="activeTrainingProgramId" value={p.id} />
+										<button
+											class="btn btn-sm variant-ringed justify-start"
+											value="Activate"
+											disabled={profile?.activeTrainingProgramId == p.id}
+											on:click={(e) => {
+												e.stopPropagation();
+											}}
+										>
+											Activate
+										</button>
+									</form>
 								</footer>
 							</a>
 						</div>
