@@ -66,20 +66,6 @@
 										</h2>
 
 										<div class="flex">
-											{#if profile?.activeTrainingProgramId != p.id}
-												<form method="POST" action={`/profile?/edit`} use:enhance>
-													<input type="hidden" name="activeTrainingProgramId" value={p.id} />
-													<button
-														class="btn btn-sm variant-ringed justify-start"
-														value="Set Active"
-														on:click={(e) => {
-															e.stopPropagation();
-														}}
-													>
-														Set Active
-													</button>
-												</form>
-											{/if}
 											<div>
 												<button
 													class="btn !bg-transparent justify-between"
@@ -106,6 +92,22 @@
 										{p.isPublic ? 'Public' : 'Private'}
 									</p>
 								</section>
+								<footer class="card-footer">
+									{#if profile?.activeTrainingProgramId != p.id}
+										<form method="POST" action={`/profile?/edit`} use:enhance>
+											<input type="hidden" name="activeTrainingProgramId" value={p.id} />
+											<button
+												class="btn btn-sm variant-ringed justify-start"
+												value="Activate"
+												on:click={(e) => {
+													e.stopPropagation();
+												}}
+											>
+												Activate
+											</button>
+										</form>
+									{/if}
+								</footer>
 							</a>
 						</div>
 						<div id={p.id.toString()} class="card shadow-xl py-2" data-popup={p.id.toString()}>
@@ -136,9 +138,7 @@
 											method="POST"
 											action={`/trainingProgram/${p.id}?/duplicate&redirectTo=/trainingProgram`}
 										>
-											<button class="btn btn-sm w-full justify-start" value="Set Active">
-												Duplicate
-											</button>
+											<button class="btn btn-sm w-full justify-start"> Duplicate </button>
 										</form>
 									</li>
 									<li>
