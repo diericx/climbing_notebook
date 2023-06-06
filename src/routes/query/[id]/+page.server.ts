@@ -40,6 +40,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
     throw error(500, { message: SERVER_ERROR })
   }
 };
+
 export const actions: Actions = {
   update: async ({ request, locals, params, url }) => {
     const formData = await request.formData();

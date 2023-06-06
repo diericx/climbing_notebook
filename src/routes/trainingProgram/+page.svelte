@@ -143,7 +143,6 @@
 									</li>
 									<li>
 										<form method="POST" action={`/trainingProgram/${p.id}?/delete`} use:enhance>
-											<input type="hidden" name="id" value={p.id} />
 											<button class="btn btn-sm w-full justify-start" on:click={confirmDelete}>
 												<span> Delete </span>
 											</button>
