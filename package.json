@@ -11,7 +11,8 @@
 		"test:unit": "vitest",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
-		"prisma-generate": "prisma generate"
+		"prisma-generate": "prisma generate",
+		"ts-script-runner": "npx ts-node --esm"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",

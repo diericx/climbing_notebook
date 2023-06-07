@@ -58,6 +58,28 @@ model ExerciseGroup {
   @@map("exercise_group")
 }
 
+model Exercise {
+  id                 String   @id @default(cuid())
+  name               String   @unique
+  type               String[]
+  difficulty         String?
+  videoUrl           String?
+  muscleGroup        String?  @map("muscle_groups")
+  primaryMoverMuscle String?  @map("primary_mover_muscle")
+  secondaryMuscle    String?  @map("secondary_muscle")
+  tertiaryMuscle     String?  @map("tertiary_muscle")
+  primaryEquipment   String?  @map("primaryEquipment")
+  posture            String?  @map("posture")
+
+  fieldsToShow String[] @map("fields_to_show")
+
+  createdAt           DateTime @default(now()) @map("created_at")
+  createdBy           AuthUser @relation(fields: [createdByAuthUserId], references: [id])
+  createdByAuthUserId String   @map("created_by_auth_user_id")
+
+  @@map("exercise")
+}
+
 model ExerciseEvent {
   id         Int       @id @default(autoincrement())
   createdAt  DateTime  @default(now()) @map("created_at")
@@ -259,6 +281,7 @@ model AuthUser {
   AuthPasswordReset AuthPasswordReset[]
   Project           Project[]
   ProjectSession    ProjectSession[]
+  Exercise          Exercise[]
 
   @@map("user")
 }
