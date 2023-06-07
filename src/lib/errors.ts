@@ -7,5 +7,5 @@ export class APIError extends Error {
     this.message = errorMsg;
   };
 }
-export type ErrorMessage = 'UNKNOWN' | 'UNIQUENESS_COLLISION' | 'NOT_FOUND' | 'INVALID_PERMISSIONS' | 'INVALID_INPUT';
+export type ErrorMessage = 'UNKNOWN' | 'UNIQUENESS_COLLISION' | 'NOT_FOUND' | 'INVALID_PERMISSIONS' | 'INVALID_INPUT' | 'INVALID_ACTION';
 export { };

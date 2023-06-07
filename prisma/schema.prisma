@@ -59,23 +59,23 @@ model ExerciseGroup {
 }
 
 model Exercise {
-  id                 String   @id @default(cuid())
-  name               String   @unique
-  type               String[]
-  difficulty         String?
-  videoUrl           String?
-  muscleGroup        String?  @map("muscle_groups")
-  primaryMoverMuscle String?  @map("primary_mover_muscle")
-  secondaryMuscle    String?  @map("secondary_muscle")
-  tertiaryMuscle     String?  @map("tertiary_muscle")
-  primaryEquipment   String?  @map("primaryEquipment")
-  posture            String?  @map("posture")
+  id               String   @id @default(cuid())
+  name             String   @unique
+  type             String[]
+  difficulty       String?
+  videoUrl         String?
+  muscleGroup      String?  @map("muscle_group")
+  primeMoverMuscle String?  @map("prime_mover_muscle")
+  secondaryMuscle  String?  @map("secondary_muscle")
+  tertiaryMuscle   String?  @map("tertiary_muscle")
+  primaryEquipment String?  @map("primary_equipment")
+  posture          String?  @map("posture")
+  fieldsToShow     String[] @map("fields_to_show")
 
-  fieldsToShow String[] @map("fields_to_show")
-
-  createdAt           DateTime @default(now()) @map("created_at")
-  createdBy           AuthUser @relation(fields: [createdByAuthUserId], references: [id])
-  createdByAuthUserId String   @map("created_by_auth_user_id")
+  createdAt           DateTime        @default(now()) @map("created_at")
+  createdBy           AuthUser        @relation(fields: [createdByAuthUserId], references: [id])
+  createdByAuthUserId String          @map("created_by_auth_user_id")
+  ExerciseEvent       ExerciseEvent[]
 
   @@map("exercise")
 }
@@ -92,6 +92,7 @@ model ExerciseEvent {
   minutes    Int       @default(0)
   difficulty Int?
   notes      String?
+  exercise   Exercise? @relation(fields: [exerciseId], references: [id])
   ownerId    String    @map("owner_id")
   owner      AuthUser  @relation(fields: [ownerId], references: [id])
 
@@ -101,6 +102,7 @@ model ExerciseEvent {
   exerciseGroupId      Int?
   trainingProgramDay   TrainingProgramDay? @relation(fields: [trainingProgramDayId], references: [id], onDelete: Cascade)
   trainingProgramDayId Int?
+  exerciseId           String?             @map("exercise_id")
 
   @@map("exercise_event")
 }

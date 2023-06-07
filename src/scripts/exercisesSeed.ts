@@ -19,14 +19,14 @@ for (const newExercise of exercises) {
     data: {
       name: newExercise['Exercise'],
       type: 'strength',
-      difficulty: newExercise['Difficulty Level'] || null,
+      difficulty: newExercise['Difficulty Level']?.toString().toLowerCase() || null,
       videoUrl: newExercise['In Depth YouTube Technique'] || newExercise['Short YouTube Demonstration'] || null,
-      muscleGroup: newExercise['Muscle Group'] || null,
-      primaryMoverMuscle: newExercise['Prime Mover Muscle'],
-      secondaryMuscle: newExercise['Secondary Muscle'] || null,
-      tertiaryMuscle: newExercise['Tertiary Muscle'] || null,
-      primaryEquipment: newExercise['Primary Equipment'] || null,
-      posture: newExercise['Posture'] || null,
+      muscleGroup: newExercise['Muscle Group']?.toString().toLowerCase() || null,
+      primeMoverMuscle: newExercise['Prime Mover Muscle']?.toString().toLowerCase(),
+      secondaryMuscle: newExercise['Secondary Muscle']?.toString().toLowerCase() || null,
+      tertiaryMuscle: newExercise['Tertiary Muscle'].toString().toLowerCase() || null,
+      primaryEquipment: newExercise['Primary Equipment'].toString().toLowerCase() || null,
+      posture: newExercise['Posture'].toString().toLowerCase() || null,
       fieldsToShow: ['sets', 'reps', 'minutes', 'seconds', 'weight'],
       createdBy: {
         connect: {
