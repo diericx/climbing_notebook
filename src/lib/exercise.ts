@@ -1,21 +1,22 @@
 import type { Exercise, PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
-import { equipment, muscleGroups, muscles, posture } from './utils'
+import { difficulties, equipments, exerciseEventFieldsToShow, exerciseTypes, muscleGroups, muscles, postures } from './utils'
 
 export const exerciseSchema = z.object({
   name: z.string().min(1),
-  type: z.enum(['climbing', 'strength']),
-  difficulty: z.enum(['novice', 'beginner', 'intermediate', 'advanced']),
+  type: z.enum(exerciseTypes),
+  difficulty: z.enum(difficulties).nullish(),
   videoUrl: z.string().nullish(),
-  muscleGroup: z.enum(muscleGroups),
-  primeMoverMuscle: z.enum(muscles),
-  secondaryMuscle: z.enum(muscles),
-  tertiaryMuscle: z.enum(muscles),
-  primaryEquipment: z.enum(equipment),
-  posture: z.enum(posture),
-  fieldsToShow: z.enum(['sets', 'reps', 'weight', 'minutes', 'seconds'])
-
+  muscleGroup: z.enum(muscleGroups).nullish().default(null),
+  primeMoverMuscle: z.enum(muscles).nullish().default(null),
+  secondaryMuscle: z.enum(muscles).nullish().default(null),
+  tertiaryMuscle: z.enum(muscles).nullish().default(null),
+  primaryEquipment: z.enum(equipments).nullish().default(null),
+  posture: z.enum(postures).nullish().default(null),
+  fieldsToShow: z.array(z.enum(exerciseEventFieldsToShow)).refine((val) => val.length > 0, {
+    message: 'At least one field is required',
+  })
 });
 export type ExerciseSchema = typeof exerciseSchema;
 

@@ -61,7 +61,7 @@ model ExerciseGroup {
 model Exercise {
   id               String   @id @default(cuid())
   name             String   @unique
-  type             String[]
+  type             String
   difficulty       String?
   videoUrl         String?
   muscleGroup      String?  @map("muscle_group")

@@ -8,11 +8,11 @@
 	let action = $modalStore[0]?.meta?.action;
 </script>
 
-<div class="card w-modal">
+<div style="max-height: 90vh" class="card w-modal">
 	<header class="card-header">
 		<h2 class="font-bold">{title}</h2>
 	</header>
-	<section class="p-4">
+	<section style="height: auto" class="p-4 overflow-scroll">
 		<slot name="content" {action} {data} {id} />
 	</section>
 	<footer class="card-footer float-right space-x-4">
