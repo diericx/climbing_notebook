@@ -5,10 +5,11 @@
 	import DateField from './fields/DateField.svelte';
 	import TextField from './fields/TextField.svelte';
 	import { calendarEventSchema } from '$lib/calendarEvent';
+	import { v4 as uuidv4 } from 'uuid';
 
 	export let data: CalendarEvent | undefined = undefined;
 	export let action = '';
-	export let id = crypto.randomUUID();
+	export let id = uuidv4;
 	export let showSubmitButton = true;
 	export let onSuccess: (() => void) | undefined = undefined;
 </script>

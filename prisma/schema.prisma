@@ -81,21 +81,20 @@ model Exercise {
 }
 
 model ExerciseEvent {
-  id         Int       @id @default(autoincrement())
-  createdAt  DateTime  @default(now()) @map("created_at")
-  date       DateTime?
-  name       String
-  sets       Int       @default(0)
-  reps       Int       @default(0)
-  weight     Float     @default(0)
-  seconds    Int       @default(0)
-  minutes    Int       @default(0)
-  difficulty Int?
-  notes      String?
-  exercise   Exercise? @relation(fields: [exerciseId], references: [id])
-  ownerId    String    @map("owner_id")
-  owner      AuthUser  @relation(fields: [ownerId], references: [id])
-
+  id                   Int                 @id @default(autoincrement())
+  createdAt            DateTime            @default(now()) @map("created_at")
+  date                 DateTime?
+  name                 String
+  sets                 Int                 @default(0)
+  reps                 Int                 @default(0)
+  weight               Float               @default(0)
+  seconds              Int                 @default(0)
+  minutes              Int                 @default(0)
+  difficulty           Int?
+  notes                String?
+  exercise             Exercise?           @relation(fields: [exerciseId], references: [id])
+  ownerId              String              @map("owner_id")
+  owner                AuthUser            @relation(fields: [ownerId], references: [id])
   // A list of dates that this exercise has been marked completed for
   markedCompletions    DateTime[]
   exerciseGroup        ExerciseGroup?      @relation(fields: [exerciseGroupId], references: [id], onDelete: Cascade)

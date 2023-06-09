@@ -4,12 +4,13 @@
 	import TextArea from './fields/TextArea.svelte';
 	import type { JournalEntry } from '@prisma/client';
 	import Form from './Form.svelte';
+	import { v4 as uuidv4 } from 'uuid';
 
 	// Form action to execute
 	export let action = '/journalEntry?/new';
 	export let data: JournalEntry | undefined = undefined;
 	export let onSuccess: (() => void) | undefined = undefined;
-	export let id = crypto.randomUUID();
+	export let id = uuidv4();
 </script>
 
 <Form schema={journalEntrySchema} {data} {action} {id} {onSuccess} resetForm={true} let:form>

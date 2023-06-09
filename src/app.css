@@ -39,6 +39,9 @@
   input[type=number] {
     @apply basic-input
   }
+  input[type=search] {
+    @apply basic-input
+  }
   input::placeholder {
     @apply text-gray-400;
   }

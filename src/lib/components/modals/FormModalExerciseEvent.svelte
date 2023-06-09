@@ -7,11 +7,13 @@
 	let dateToMarkCompleted = $modalStore[0]?.meta?.dateToMarkCompleted;
 	let showDifficulty = $modalStore[0]?.meta?.showDifficulty;
 	let showDate = $modalStore[0]?.meta?.showDate;
+	let exercises = $modalStore[0]?.meta?.exercises;
 </script>
 
 <FormModal let:data let:action let:id>
 	<span slot="content">
 		<FormExerciseEvent
+			{exercises}
 			{data}
 			{action}
 			{id}

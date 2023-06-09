@@ -13,6 +13,7 @@
 	$: activeTrainingProgram = data.profile?.activeTrainingProgram as TrainingProgramComplete;
 	$: exerciseEvents = data.exerciseEvents as ExerciseEvent[];
 	$: user = data.user;
+	$: exercises = data.exercises;
 
 	// Filter out only todays exercise events
 	$: todaysExerciseEvents = exerciseEvents.filter((e) => {
@@ -59,7 +60,8 @@
 					component: 'formModalExerciseEvent',
 					meta: {
 						action: `/exerciseEvent?/new`,
-						title: 'New Exercise Event'
+						title: 'New Exercise Event',
+						exercises
 					}
 				})}
 		>

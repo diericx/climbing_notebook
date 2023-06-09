@@ -14,11 +14,12 @@
 	} from '$lib/utils';
 	import SelectField from './fields/SelectField.svelte';
 	import MultipleSelectField from './fields/MultipleSelectField.svelte';
+	import { v4 as uuidv4 } from 'uuid';
 
 	export let data: Exercise | undefined = undefined;
 	export let action = '';
 
-	export let id = crypto.randomUUID();
+	export let id = uuidv4();
 	export let showSubmitButton = true;
 	export let onSuccess: (() => void) | undefined = undefined;
 </script>

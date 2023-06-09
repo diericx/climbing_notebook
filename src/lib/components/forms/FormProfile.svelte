@@ -3,12 +3,13 @@
 	import type { Profile } from '@prisma/client';
 	import Form from './Form.svelte';
 	import TextArea from './fields/TextArea.svelte';
+	import { v4 as uuidv4 } from 'uuid';
 
 	// Form action to execute
 	export let action = '';
 	export let data: Profile | undefined = undefined;
 	export let onSuccess: (() => Promise<void>) | undefined = undefined;
-	export let id = crypto.randomUUID();
+	export let id = uuidv4();
 </script>
 
 <Form schema={profileSchema} {data} {action} {id} {onSuccess} let:form>

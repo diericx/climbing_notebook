@@ -1,4 +1,4 @@
-import type { Exercise, PrismaClient } from '@prisma/client';
+import type { Prisma, PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
 import { difficulties, equipments, exerciseEventFieldsToShow, exerciseTypes, muscleGroups, muscles, postures } from './utils'
@@ -37,7 +37,7 @@ export class ExerciseRepo {
     });
   }
 
-  async get() {
+  async get(select?: Prisma.ExerciseSelect) {
     // Fetch all
     return await this.prisma.exercise.findMany({
       orderBy: {
@@ -45,13 +45,21 @@ export class ExerciseRepo {
           _count: 'desc'
         }
       },
-      include: {
+      include: select ? undefined : {
         _count: {
           select: {
-            exerciseEvents: true
+            exerciseEvents: true,
           }
         }
-      }
+      },
+      select: select ? select : undefined,
+      // {
+      //   _count: {
+      //     select: {
+      //       exerciseEvents: true,
+      //     }
+      //   }
+      // },
     });
   }
 
