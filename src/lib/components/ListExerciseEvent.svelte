@@ -4,8 +4,10 @@
 	import Icon from '@iconify/svelte';
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import type { ExerciseEventComplete } from '$lib/prisma';
+	import type { Exercise } from '@prisma/client';
 
 	export let exerciseEvents: ExerciseEventComplete[];
+	export let exercises: Exercise[];
 	export let showDate = true;
 	export let showDifficulty = true;
 	export let showActionBtns = true;
@@ -55,7 +57,8 @@
 											action: `/exerciseEvent/${exerciseEvent.id}?/edit`,
 											title: 'Edit Exercise Event',
 											showDate,
-											showDifficulty
+											showDifficulty,
+											exercises
 										}
 									})}
 							>

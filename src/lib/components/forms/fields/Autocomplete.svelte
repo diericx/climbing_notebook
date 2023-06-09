@@ -6,6 +6,7 @@
 	import type { SuperForm } from 'sveltekit-superforms/client';
 	import { formFieldProxy } from 'sveltekit-superforms/client';
 	import type { z, AnyZodObject } from 'zod';
+	import { onMount } from 'svelte';
 
 	type T = $$Generic<AnyZodObject>;
 
@@ -28,6 +29,11 @@
 		searchValue = event.detail.label;
 		value.set(event.detail.value);
 	}
+
+	// The incomming value is an id, so on mount we find the cooresponding option and set the label
+	onMount(() => {
+		searchValue = options.find((o) => o.value == $value)?.label || '';
+	});
 </script>
 
 <label>
