@@ -1,9 +1,7 @@
-import { APIError } from '$lib/errors';
-import { ExerciseRepo, exerciseSchema } from '$lib/exercise';
+import { ExerciseRepo } from '$lib/exercise';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
-import { error, fail, redirect, type Actions } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms/server';
+import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {

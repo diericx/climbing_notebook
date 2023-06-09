@@ -75,7 +75,7 @@ model Exercise {
   createdAt           DateTime        @default(now()) @map("created_at")
   createdBy           AuthUser        @relation(fields: [createdByAuthUserId], references: [id])
   createdByAuthUserId String          @map("created_by_auth_user_id")
-  ExerciseEvent       ExerciseEvent[]
+  exerciseEvents      ExerciseEvent[]
 
   @@map("exercise")
 }

@@ -33,17 +33,26 @@ export class ExerciseRepo {
           }
         },
         createdAt: new Date(),
-      }
-    }) as Exercise;
+      },
+    });
   }
 
   async get() {
     // Fetch all
     return await this.prisma.exercise.findMany({
       orderBy: {
-        name: 'desc',
+        exerciseEvents: {
+          _count: 'desc'
+        }
       },
-    }) as Exercise[];
+      include: {
+        _count: {
+          select: {
+            exerciseEvents: true
+          }
+        }
+      }
+    });
   }
 
   async getOne(id: string) {

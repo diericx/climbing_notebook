@@ -2,12 +2,13 @@
 	import { enhance } from '$app/forms';
 	import { confirmDelete } from '$lib/utils';
 	import Icon from '@iconify/svelte';
-	import { modalStore } from '@skeletonlabs/skeleton';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
 	$: exercises = data.exercises;
 	$: user = data.user;
+
+	let searchText = '';
 </script>
 
 <div class="flex justify-between mb-4">
@@ -22,12 +23,21 @@
 	</div>
 </div>
 
+<label class="label">
+	<input class="w-full" type="text" placeholder="Search" bind:value={searchText} />
+</label>
+
 <ul class="list">
-	{#each exercises as exercise}
+	{#each exercises.filter((e) => e.name
+			.toLowerCase()
+			.includes(searchText.toLowerCase())) as exercise}
 		<li class="card bg-white py-3 px-2 md:px-4 mb-2">
 			<div class="flex items-center md:space-x-3">
 				<div class="flex-1 min-w-0">
 					<p>{exercise.name}</p>
+					<p class="text-gray-400">
+						Used {exercise._count.exerciseEvents} times
+					</p>
 				</div>
 				<div class="flex min-w-0 float-right space-x-2">
 					<slot name="buttons" {exercise}>
