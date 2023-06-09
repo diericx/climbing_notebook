@@ -5,7 +5,7 @@ import { isDateInTheSameWeekAsToday } from './utils'
 
 export const exerciseEventSchema = z.object({
   date: z.date().default(new Date()).nullish(),
-  name: z.string().min(1).default(''),
+  name: z.string().nullish().default(''),
   sets: z.number().default(0),
   reps: z.number().default(0),
   weight: z.number().default(0),
@@ -15,6 +15,7 @@ export const exerciseEventSchema = z.object({
   notes: z.string().nullish(),
   trainingProgramDayId: z.number().nullish(),
   exerciseGroupId: z.number().nullish(),
+  exerciseId: z.string().min(1, { message: 'Exercise is required' }),
 });
 export type ExerciseEventSchema = typeof exerciseEventSchema;
 
@@ -66,7 +67,7 @@ export class ExerciseEventRepo {
         ownerId,
         createdAt: new Date(),
       }
-    }) as ExerciseEvent;
+    });
   }
 
   async get(ownerId: string, dateMin?: Date | undefined, dateMax?: Date | undefined) {
@@ -84,7 +85,10 @@ export class ExerciseEventRepo {
       orderBy: {
         date: 'desc',
       },
-    }) as ExerciseEvent[];
+      include: {
+        exercise: true,
+      }
+    });
   }
 
   async getOne(id: number, ownerId: string) {

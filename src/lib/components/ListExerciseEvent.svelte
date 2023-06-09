@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { ExerciseEvent } from '@prisma/client';
 	import { enhance } from '$app/forms';
 	import { confirmDelete } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { modalStore } from '@skeletonlabs/skeleton';
+	import type { ExerciseEventComplete } from '$lib/prisma';
 
-	export let exerciseEvents: ExerciseEvent[];
+	export let exerciseEvents: ExerciseEventComplete[];
 	export let showDate = true;
 	export let showDifficulty = true;
 	export let showActionBtns = true;
@@ -25,7 +25,7 @@
 				{/if}
 
 				<div class="flex-1 min-w-0">
-					<p>{exerciseEvent.name}</p>
+					<p>{exerciseEvent.exercise?.name || exerciseEvent.name}</p>
 					<p class="text-sm text-gray-400">
 						{#if showDate}
 							<span class="md:hidden">

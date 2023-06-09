@@ -84,7 +84,7 @@ model ExerciseEvent {
   id                   Int                 @id @default(autoincrement())
   createdAt            DateTime            @default(now()) @map("created_at")
   date                 DateTime?
-  name                 String
+  name                 String?
   sets                 Int                 @default(0)
   reps                 Int                 @default(0)
   weight               Float               @default(0)
