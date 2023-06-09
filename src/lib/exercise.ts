@@ -59,11 +59,6 @@ export class ExerciseRepo {
   }
 
   async update(data: z.infer<ExerciseSchema>, id: string, userId: string) {
-    const exercise = await this.getOne(id);
-    if (exercise.createdByAuthUserId != userId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.')
-    }
-
     return await this.prisma.exercise.update({
       data: {
         ...data

@@ -7,6 +7,7 @@
 
 	export let data: PageData;
 	$: exercises = data.exercises;
+	$: user = data.user;
 </script>
 
 <div class="flex justify-between mb-4">
@@ -14,21 +15,10 @@
 		<h1>Exercises</h1>
 	</div>
 	<div>
-		<button
-			class="btn btn-sm variant-filled mb-2"
-			on:click={() =>
-				modalStore.trigger({
-					type: 'component',
-					component: 'formModalExercise',
-					meta: {
-						action: `/exercise?/new`,
-						title: 'New Exercise'
-					}
-				})}
-		>
+		<a class="btn btn-sm variant-filled mb-2" href="/exercise/new">
 			<Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
 			<span>New Exercise</span>
-		</button>
+		</a>
 	</div>
 </div>
 
@@ -41,33 +31,23 @@
 				</div>
 				<div class="flex min-w-0 float-right space-x-2">
 					<slot name="buttons" {exercise}>
-						<button
-							class="btn btn-sm variant-ringed"
-							on:click={() =>
-								modalStore.trigger({
-									type: 'component',
-									component: 'formModalExercise',
-									meta: {
-										data: exercise,
-										action: `/exercise/${exercise.id}?/edit`,
-										title: 'Edit Exercise'
-									}
-								})}
-						>
+						<a class="btn btn-sm variant-ringed" href={`/exercise/${exercise.id}/edit`}>
 							<Icon icon="material-symbols:edit-outline" height="18" />
 							<span>Edit</span>
-						</button>
-						<form
-							class="inline"
-							use:enhance
-							method="POST"
-							action={`/exercise/${exercise.id}?/delete`}
-						>
-							<button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
-								<Icon icon="mdi:trash-outline" height="18" />
-								<span class="ml-1 mr-1"> Delete </span>
-							</button>
-						</form>
+						</a>
+						{#if user.userId == exercise.createdByAuthUserId}
+							<form
+								class="inline"
+								use:enhance
+								method="POST"
+								action={`/exercise/${exercise.id}?/delete`}
+							>
+								<button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
+									<Icon icon="mdi:trash-outline" height="18" />
+									<span class="ml-1 mr-1"> Delete </span>
+								</button>
+							</form>
+						{/if}
 					</slot>
 				</div>
 			</div>
