@@ -23,9 +23,15 @@
 	const exerciseOptions = exercises.map((e) => ({ label: e.name, value: e.id }));
 </script>
 
-<Form schema={exerciseEventSchema} bind:data {action} {id} {onSuccess} let:form>
+<Form schema={exerciseEventSchema} bind:data {action} {id} {onSuccess} let:form let:formData>
+	{#if showDate}
+		<DateField name="date" field="date" {form} />
+	{/if}
+
 	<Autocomplete name="exerciseId" field="exerciseId" options={exerciseOptions} {form} />
-	<a href="/exercise/new" class="link" target="_blank">Don't see your exercise? Add it here.</a>
+	<div class="mb-3">
+		<a href="/exercise/new" class="link" target="_blank">Don't see your exercise? Add it here.</a>
+	</div>
 
 	{#if exerciseToMarkCompleted != undefined}
 		<input type="hidden" name="exerciseToMarkCompletedId" value={exerciseToMarkCompleted.id} />
@@ -34,26 +40,44 @@
 		<input type="hidden" name="dateToMarkCompleted" value={dateToMarkCompleted.toString()} />
 	{/if}
 
-	{#if showDate}
-		<DateField name="date" field="date" {form} />
-	{/if}
+	{#if formData.exerciseId}
+		{@const exercise = exercises.find((e) => e.id == formData.exerciseId)}
+		{#if exercise != undefined}
+			<div class="flex flex-wrap gap-2">
+				{#if exercise.fieldsToShow.find((f) => f == 'sets')}
+					<NumberField class="w-20" name="sets" field="sets" {form} />
+				{/if}
+				{#if exercise.fieldsToShow.find((f) => f == 'reps')}
+					<NumberField class="w-20" name="reps" field="reps" {form} />
+				{/if}
 
-	<div class="flex flex-wrap gap-2">
-		<NumberField class="w-20" name="sets" field="sets" {form} />
-		<NumberField class="w-20" name="reps" field="reps" {form} />
+				<div class="w-full md:hidden" />
+				{#if exercise.fieldsToShow.find((f) => f == 'minutes')}
+					<NumberField class="w-20" name="minutes" field="minutes" {form} />
+				{/if}
+				{#if exercise.fieldsToShow.find((f) => f == 'seconds')}
+					<NumberField class="w-20" name="seconds" field="seconds" {form} />
+				{/if}
 
-		<div class="w-full md:hidden" />
-		<NumberField class="w-20" name="minutes" field="minutes" {form} />
-		<NumberField class="w-20" name="seconds" field="seconds" {form} />
+				<div class="w-full md:hidden" />
 
-		<div class="w-full md:hidden" />
+				{#if exercise.fieldsToShow.find((f) => f == 'weight')}
+					<NumberField class="w-20" name="weight" field="weight" step={'0.1'} {form} />
+				{/if}
 
-		<NumberField class="w-20" name="weight" field="weight" step={'0.1'} {form} />
-
-		{#if showDifficulty}
-			<NumberField class="w-20" name="difficulty" field="difficulty" {form} />
+				{#if showDifficulty}
+					<NumberField class="w-20" name="difficulty" field="difficulty" {form} />
+				{/if}
+			</div>
+			<div class="mb-4">
+				<a href={`/exercise/${exercise.id}/edit`} class="link" target="_blank"
+					>Don't see the correct fields for your exercise? Edit them here.</a
+				>
+			</div>
+		{:else}
+			Something went wrong, please contact someone on the feedback page.
 		{/if}
-	</div>
+	{/if}
 
 	<TextArea class="w-full" name="notes" field="notes" {form} />
 
