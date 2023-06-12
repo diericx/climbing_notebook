@@ -22,7 +22,7 @@ export type ExerciseEventSchema = typeof exerciseEventSchema;
 export class ExerciseEventRepo {
   constructor(private readonly prisma: PrismaClient) { }
 
-  async getOneAndValidateOwner(id: number, ownerId: string) {
+  async getOneAndValidateOwner(id: number, ownerId: string, isAdmin = false) {
     const exerciseEvent = await this.prisma.exerciseEvent.findUnique({
       where: {
         id: Number(id),
@@ -31,7 +31,7 @@ export class ExerciseEventRepo {
     if (exerciseEvent == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
-    if (exerciseEvent.ownerId != ownerId) {
+    if (exerciseEvent.ownerId != ownerId && isAdmin != true) {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.')
     }
     return exerciseEvent
@@ -105,8 +105,8 @@ export class ExerciseEventRepo {
     })
   }
 
-  async update(data: z.infer<ExerciseEventSchema>, id: number, ownerId: string) {
-    await this.getOneAndValidateOwner(id, ownerId);
+  async update(data: z.infer<ExerciseEventSchema>, id: number, ownerId: string, isAdmin = false) {
+    await this.getOneAndValidateOwner(id, ownerId, isAdmin);
 
     return await this.prisma.exerciseEvent.update({
       data: {

@@ -18,7 +18,7 @@
 		debug={true}
 		{exercises}
 		data={exerciseEvent}
-		action={`/exerciseEvent/${exerciseEvent.id}?/edit`}
+		action={`/admin/exerciseMigration/exerciseEvent/${exerciseEvent.id}?/edit`}
 		id={exerciseEvent.id}
 		showDifficulty={false}
 		showDate={true}
