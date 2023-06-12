@@ -2,7 +2,7 @@ version: "3.9"
 services:
 
   svelte-prod:
-    image: 279721711046.dkr.ecr.us-west-2.amazonaws.com/climbingnotebook:sha-f501f0c
+    image: 279721711046.dkr.ecr.us-west-2.amazonaws.com/climbingnotebook:sha-e08860c
     networks:
       - traefik
       - postgres
