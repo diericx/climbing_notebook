@@ -25,6 +25,7 @@
 
 <Form schema={exerciseEventSchema} bind:data {action} {id} {onSuccess} let:form>
 	<Autocomplete name="exerciseId" field="exerciseId" options={exerciseOptions} {form} />
+	<a href="/exercise/new" class="link" target="_blank">Don't see your exercise? Add it here.</a>
 
 	{#if exerciseToMarkCompleted != undefined}
 		<input type="hidden" name="exerciseToMarkCompletedId" value={exerciseToMarkCompleted.id} />

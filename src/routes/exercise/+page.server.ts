@@ -2,8 +2,9 @@ import { APIError } from '$lib/errors';
 import { ExerciseRepo, exerciseSchema } from '$lib/exercise';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
+import { Prisma } from '@prisma/client';
 import { error, fail, redirect, type Actions } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms/server';
+import { setError, superValidate } from 'sveltekit-superforms/server';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -38,7 +39,12 @@ export const actions: Actions = {
       await repo.new(form.data, user?.userId)
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form })
+        return setError(form, null, 'An exercise with that name already exists')
+      }
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError && e.code == 'P2002'
+      ) {
+        return setError(form, 'name', 'An exercise with that name already exists')
       }
       console.error(e)
       throw error(500, { message: SERVER_ERROR })
@@ -47,7 +53,6 @@ export const actions: Actions = {
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
     }
-
-    return { form };
+    throw redirect(303, '/exercise');
   }
 }
