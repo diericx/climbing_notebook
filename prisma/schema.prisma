@@ -2,7 +2,9 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+  extensions      = [citext]
 }
 
 datasource db {
@@ -267,7 +269,7 @@ model Dataset {
 model AuthUser {
   id        String   @id @unique
   createdAt DateTime @default(now()) @map("created_at")
-  username  String   @unique
+  username  String   @unique @db.Citext
   email     String   @unique
 
   auth_session      AuthSession[]
@@ -300,7 +302,7 @@ model AuthSession {
 }
 
 model AuthKey {
-  id              String   @id @unique
+  id              String   @id @unique @db.Citext
   hashed_password String?
   user_id         String
   primary_key     Boolean
