@@ -214,6 +214,13 @@ export class TrainingProgramRepo {
         exerciseGroups: {
           include: {
             exercises: {
+              include: {
+                exercise: {
+                  select: {
+                    name: true,
+                  }
+                }
+              },
               orderBy: {
                 name: 'asc',
               },
@@ -226,6 +233,13 @@ export class TrainingProgramRepo {
         days: {
           include: {
             exercises: {
+              include: {
+                exercise: {
+                  select: {
+                    name: true,
+                  }
+                }
+              },
               orderBy: {
                 name: 'asc',
               },

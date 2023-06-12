@@ -10,6 +10,7 @@
 	export let data: PageData;
 	let scrollY: number;
 	$: trainingProgram = data.trainingProgram;
+	$: exercises = data.exercises;
 
 	let daysOfTheWeek = [
 		'Monday',
@@ -146,7 +147,8 @@
 										action: `/trainingProgram/${trainingProgram.id}/group/${group.id}?/newExerciseEvent`,
 										title: 'Add Exercise',
 										showDate: false,
-										showDifficulty: false
+										showDifficulty: false,
+										exercises
 									}
 								})}
 						>
@@ -155,7 +157,7 @@
 						</button>
 					</div>
 
-					<ListExerciseEvent exerciseEvents={group.exercises} showDate={false} />
+					<ListExerciseEvent {exercises} exerciseEvents={group.exercises} showDate={false} />
 				</div>
 			</div>
 		{/each}
@@ -254,7 +256,8 @@
 									action: `/trainingProgram/${trainingProgram.id}/day/${day.id}?/newExerciseEvent`,
 									title: 'Add Exercise',
 									showDate: false,
-									showDifficulty: false
+									showDifficulty: false,
+									exercises
 								}
 							})}
 					>
@@ -262,7 +265,7 @@
 						<span>Add Exercise</span>
 					</button>
 				</div>
-				<ListExerciseEvent exerciseEvents={day.exercises} showDate={false} />
+				<ListExerciseEvent {exercises} exerciseEvents={day.exercises} showDate={false} />
 			</div>
 		{/each}
 	</div>

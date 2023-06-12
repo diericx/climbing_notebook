@@ -39,27 +39,29 @@ export class ExerciseRepo {
 
   async get(select?: Prisma.ExerciseSelect) {
     // Fetch all
+    if (select) {
+      return await this.prisma.exercise.findMany({
+        orderBy: {
+          exerciseEvents: {
+            _count: 'desc'
+          }
+        },
+        select: select,
+      });
+    }
     return await this.prisma.exercise.findMany({
       orderBy: {
         exerciseEvents: {
           _count: 'desc'
         }
       },
-      include: select ? undefined : {
+      include: {
         _count: {
           select: {
             exerciseEvents: true,
           }
         }
       },
-      select: select ? select : undefined,
-      // {
-      //   _count: {
-      //     select: {
-      //       exerciseEvents: true,
-      //     }
-      //   }
-      // },
     });
   }
 
