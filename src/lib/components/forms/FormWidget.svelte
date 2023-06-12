@@ -5,12 +5,13 @@
 	import { widgetSchema } from '$lib/widget';
 	import NumberField from './fields/NumberField.svelte';
 	import TextField from './fields/TextField.svelte';
+	import { v4 as uuidv4 } from 'uuid';
 
 	// Form action to execute
 	export let action = '';
 	export let data: CustomQuery | undefined = undefined;
 	export let onSuccess: (() => void) | undefined = undefined;
-	export let id = crypto.randomUUID();
+	export let id = uuidv4();
 	export let showSubmitButton = true;
 	export let showType = true;
 	export let showOrder = true;

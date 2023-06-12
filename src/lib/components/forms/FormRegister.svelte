@@ -3,11 +3,12 @@
 	import PasswordField from './fields/PasswordField.svelte';
 	import TextField from './fields/TextField.svelte';
 	import Form from './Form.svelte';
+	import { v4 as uuidv4 } from 'uuid';
 
 	// Form action to execute
 	export let action = '';
 	export let onSuccess: (() => Promise<void>) | undefined = undefined;
-	export let id = crypto.randomUUID();
+	export let id = uuidv4();
 </script>
 
 <Form schema={loginSchema} {action} {id} {onSuccess} let:form>

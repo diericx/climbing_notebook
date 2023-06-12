@@ -1,39 +1,43 @@
 import type { Actions } from './$types';
 import type { PageServerLoad } from './$types';
-import { prisma, type ProfileWithActiveTrainingProgram } from '$lib/prisma';
+import { prisma } from '$lib/prisma';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { APIError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
 import { ProfileRepo } from '$lib/profile';
 import { superValidate } from 'sveltekit-superforms/server';
+import { ExerciseRepo } from '$lib/exercise';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { user } = await locals.auth.validateUser();
   const exerciseEventsRepo = new ExerciseEventRepo(prisma);
-  let exerciseEvents;
-  try {
-    exerciseEvents = await exerciseEventsRepo.get(user?.userId);
-  } catch (e) {
-    console.error(e)
-    throw error(500, { message: SERVER_ERROR })
-  }
-
-  // Get the user's profile
+  const exerciseRepo = new ExerciseRepo(prisma);
   const profileRepo = new ProfileRepo(prisma);
-  let profile: ProfileWithActiveTrainingProgram;
   try {
-    profile = await profileRepo.getOne(user?.userId);
+    const exerciseEvents = await exerciseEventsRepo.get(user?.userId);
+    const profile = await profileRepo.getOne(user?.userId);
+    const exercises = await exerciseRepo.get({
+      _count: {
+        select: {
+          exerciseEvents: true,
+        }
+      },
+      id: true,
+      name: true,
+      fieldsToShow: true,
+    });
+
+    return {
+      exercises,
+      exerciseEvents,
+      profile,
+      user
+    };
   } catch (e) {
     console.error(e)
     throw error(500, { message: SERVER_ERROR })
   }
-
-  return {
-    exerciseEvents,
-    profile,
-    user
-  };
 };
 
 

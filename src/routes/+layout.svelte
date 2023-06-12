@@ -31,6 +31,7 @@
 	import ModalShareTrainingProgram from '$lib/components/modals/ModalShareTrainingProgram.svelte';
 	import FormModalProject from '$lib/components/modals/FormModalProject.svelte';
 	import FormModalProjectSession from '$lib/components/modals/FormModalProjectSession.svelte';
+	import FormModalExercise from '$lib/components/modals/FormModalExercise.svelte';
 
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
@@ -61,6 +62,7 @@
 		formModalDataset: { ref: FormModalDataset },
 		formModalProject: { ref: FormModalProject },
 		formModalProjectSession: { ref: FormModalProjectSession },
+		formModalExercise: { ref: FormModalExercise },
 		modalCalendarEvent: { ref: ModalCalendarEvent },
 		modalJournalEntry: { ref: ModalJournalEntry },
 		modalShareTrainingProgram: { ref: ModalShareTrainingProgram }

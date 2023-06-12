@@ -12,7 +12,8 @@ export const handle: Handle = async ({ event, resolve }) => {
     event.url.pathname.startsWith('/profile') ||
     event.url.pathname.startsWith('/query') ||
     event.url.pathname.startsWith('/dashboard') ||
-    event.url.pathname.startsWith('/project')
+    event.url.pathname.startsWith('/project') ||
+    event.url.pathname.startsWith('/exercise')
     // trainingProgram is handled at the path level
   ) {
     if (!user) {
@@ -20,6 +21,19 @@ export const handle: Handle = async ({ event, resolve }) => {
         status: 302,
         headers: {
           location: '/login?redirectTo=' + event.url
+        }
+      })
+    }
+  }
+
+  if (
+    event.url.pathname.startsWith('/admin')
+  ) {
+    if (!user && user.userId != '1') {
+      return new Response(null, {
+        status: 302,
+        headers: {
+          location: '/'
         }
       })
     }

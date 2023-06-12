@@ -5,12 +5,13 @@
 	import SelectField from './fields/SelectField.svelte';
 	import { datasetSchema } from '$lib/widget';
 	import ColorField from './fields/ColorField.svelte';
+	import { v4 as uuidv4 } from 'uuid';
 
 	// Form action to execute
 	export let action = '';
 	export let data: Dataset | undefined = undefined;
 	export let onSuccess: (() => void) | undefined = undefined;
-	export let id = crypto.randomUUID();
+	export let id = uuidv4();
 	export let customQueries: CustomQuery[];
 	export let showSubmitButton = true;
 	export let showColor = true;

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 
-	import type { ExerciseEvent } from '@prisma/client';
 	import type { TrainingProgramComplete } from '$lib/prisma';
 	import { isDateInTheSameDayAsToday } from '$lib/utils';
 	import ListExerciseEvent from '$lib/components/ListExerciseEvent.svelte';
@@ -11,8 +10,9 @@
 
 	export let data: PageData;
 	$: activeTrainingProgram = data.profile?.activeTrainingProgram as TrainingProgramComplete;
-	$: exerciseEvents = data.exerciseEvents as ExerciseEvent[];
+	$: exerciseEvents = data.exerciseEvents;
 	$: user = data.user;
+	$: exercises = data.exercises;
 
 	// Filter out only todays exercise events
 	$: todaysExerciseEvents = exerciseEvents.filter((e) => {
@@ -20,7 +20,7 @@
 			return false;
 		}
 		return isDateInTheSameDayAsToday(e.date);
-	}) as ExerciseEvent[];
+	});
 
 	// Filter out only exercise events that aren't today
 	$: pastExerciseEvents = exerciseEvents.filter((e) => {
@@ -30,7 +30,7 @@
 		const [todayStr] = new Date().toISOString().split('T');
 		const [eDateStr] = e.date.toISOString().split('T');
 		return eDateStr != todayStr;
-	}) as ExerciseEvent[];
+	});
 </script>
 
 <div class="pb-6">
@@ -59,7 +59,8 @@
 					component: 'formModalExerciseEvent',
 					meta: {
 						action: `/exerciseEvent?/new`,
-						title: 'New Exercise Event'
+						title: 'New Exercise Event',
+						exercises
 					}
 				})}
 		>
@@ -67,10 +68,10 @@
 			<span>New Exercise Event</span>
 		</button>
 	</div>
-	<ListExerciseEvent exerciseEvents={todaysExerciseEvents} />
+	<ListExerciseEvent {exercises} exerciseEvents={todaysExerciseEvents} />
 </div>
 
 <div class="pt-8">
 	<h2>History</h2>
-	<ListExerciseEvent exerciseEvents={pastExerciseEvents} />
+	<ListExerciseEvent {exercises} exerciseEvents={pastExerciseEvents} />
 </div>

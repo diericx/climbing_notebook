@@ -60,27 +60,50 @@ model ExerciseGroup {
   @@map("exercise_group")
 }
 
-model ExerciseEvent {
-  id         Int       @id @default(autoincrement())
-  createdAt  DateTime  @default(now()) @map("created_at")
-  date       DateTime?
-  name       String
-  sets       Int       @default(0)
-  reps       Int       @default(0)
-  weight     Float     @default(0)
-  seconds    Int       @default(0)
-  minutes    Int       @default(0)
-  difficulty Int?
-  notes      String?
-  ownerId    String    @map("owner_id")
-  owner      AuthUser  @relation(fields: [ownerId], references: [id])
+model Exercise {
+  id               String   @id @default(cuid())
+  name             String   @unique
+  type             String
+  difficulty       String?
+  videoUrl         String?
+  muscleGroup      String?  @map("muscle_group")
+  primeMoverMuscle String?  @map("prime_mover_muscle")
+  secondaryMuscle  String?  @map("secondary_muscle")
+  tertiaryMuscle   String?  @map("tertiary_muscle")
+  primaryEquipment String?  @map("primary_equipment")
+  posture          String?  @map("posture")
+  fieldsToShow     String[] @map("fields_to_show")
 
+  createdAt           DateTime        @default(now()) @map("created_at")
+  createdBy           AuthUser        @relation(fields: [createdByAuthUserId], references: [id])
+  createdByAuthUserId String          @map("created_by_auth_user_id")
+  exerciseEvents      ExerciseEvent[]
+
+  @@map("exercise")
+}
+
+model ExerciseEvent {
+  id                   Int                 @id @default(autoincrement())
+  createdAt            DateTime            @default(now()) @map("created_at")
+  date                 DateTime?
+  name                 String?
+  sets                 Int                 @default(0)
+  reps                 Int                 @default(0)
+  weight               Float               @default(0)
+  seconds              Int                 @default(0)
+  minutes              Int                 @default(0)
+  difficulty           Int?
+  notes                String?
+  exercise             Exercise?           @relation(fields: [exerciseId], references: [id])
+  ownerId              String              @map("owner_id")
+  owner                AuthUser            @relation(fields: [ownerId], references: [id])
   // A list of dates that this exercise has been marked completed for
   markedCompletions    DateTime[]
   exerciseGroup        ExerciseGroup?      @relation(fields: [exerciseGroupId], references: [id], onDelete: Cascade)
   exerciseGroupId      Int?
   trainingProgramDay   TrainingProgramDay? @relation(fields: [trainingProgramDayId], references: [id], onDelete: Cascade)
   trainingProgramDayId Int?
+  exerciseId           String?             @map("exercise_id")
 
   @@map("exercise_event")
 }
@@ -261,6 +284,7 @@ model AuthUser {
   AuthPasswordReset AuthPasswordReset[]
   Project           Project[]
   ProjectSession    ProjectSession[]
+  Exercise          Exercise[]
 
   @@map("user")
 }

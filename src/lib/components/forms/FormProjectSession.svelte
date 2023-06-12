@@ -1,17 +1,17 @@
 <script lang="ts">
 	import { journalEntrySchema } from '$lib/journalEntry';
-	import { fontGrades, gradeSystems, huecoGrades } from '$lib/utils';
 	import type { Project } from '@prisma/client';
 	import Checkbox from './fields/Checkbox.svelte';
 	import DateField from './fields/DateField.svelte';
 	import TextArea from './fields/TextArea.svelte';
 	import Form from './Form.svelte';
+	import { v4 as uuidv4 } from 'uuid';
 
 	// Form action to execute
 	export let action = '';
 	export let data: Project | undefined = undefined;
 	export let onSuccess: (() => void) | undefined = undefined;
-	export let id = crypto.randomUUID();
+	export let id = uuidv4();
 	export let showSubmitButton = true;
 </script>
 
