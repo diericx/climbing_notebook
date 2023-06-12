@@ -3,6 +3,7 @@
 	import { assignDefined } from '$lib/utils';
 	import { defaultData, superForm } from 'sveltekit-superforms/client';
 	import type { z, ZodRawShape } from 'zod';
+	import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
 
 	export let schema: z.ZodObject<ZodRawShape>;
 	export let data: any = {};
@@ -10,6 +11,7 @@
 	export let onSuccess: (() => void) | undefined = undefined;
 	export let action = '';
 	export let resetForm = false;
+	export let debug = false;
 
 	// Add redirect data
 	if ($page.url.searchParams.has('redirectTo')) {
@@ -40,3 +42,6 @@
 	<input type="hidden" name="_formId" value={id} />
 	<slot form={newSuperForm} formData={$form} />
 </form>
+{#if debug}
+	<SuperDebug data={$form} />
+{/if}

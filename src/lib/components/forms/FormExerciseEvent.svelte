@@ -19,11 +19,21 @@
 	export let id = uuidv4();
 	export let showSubmitButton = true;
 	export let onSuccess: (() => void) | undefined = undefined;
+	export let debug = false;
 
 	const exerciseOptions = exercises.map((e) => ({ label: e.name, value: e.id }));
 </script>
 
-<Form schema={exerciseEventSchema} bind:data {action} {id} {onSuccess} let:form let:formData>
+<Form
+	schema={exerciseEventSchema}
+	bind:data
+	{action}
+	{id}
+	{onSuccess}
+	{debug}
+	let:form
+	let:formData
+>
 	{#if showDate}
 		<DateField name="date" field="date" {form} />
 	{/if}
