@@ -36,6 +36,7 @@
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	export let data: PageData;
+	$: countOfExercisesThatNeedMigration = data.countOfExercisesThatNeedMigration;
 
 	NProgress.configure({
 		minimum: 0.16
@@ -166,6 +167,13 @@
 				{/if}
 			</svelte:fragment>
 		</AppBar>
+		{#if countOfExercisesThatNeedMigration > 0}
+			<div class="bg-green-300 w-full text-center py-2 px-8 text-opacity-30">
+				A new exercise system has been implemented. Please edit your exercises to migrate.
+				<br />
+				<a class="link" href="/post/exerciseMigration">Click here to learn more</a>
+			</div>
+		{/if}
 	</svelte:fragment>
 
 	<div class="container mx-auto px-3">

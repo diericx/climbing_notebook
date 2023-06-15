@@ -114,7 +114,8 @@ export class ExerciseEventRepo {
         where: {
           name: {
             equals: original.name,
-          }
+          },
+          ownerId,
         },
         data: {
           exerciseId: data.exerciseId
@@ -175,6 +176,17 @@ export class ExerciseEventRepo {
       where: {
         id: Number(id),
       },
+    })
+  }
+
+  async getCountOfExercisesThatNeedMigration(ownerId: string) {
+    return this.prisma.exerciseEvent.count({
+      where: {
+        exercise: {
+          is: null
+        },
+        ownerId,
+      }
     })
   }
 }
