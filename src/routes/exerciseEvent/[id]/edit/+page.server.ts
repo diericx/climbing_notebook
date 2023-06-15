@@ -37,7 +37,6 @@ export const actions: Actions = {
       id: formData.get('_formId')?.toString(),
     });
 
-
     if (!form.valid) {
       return fail(400, { form });
     }

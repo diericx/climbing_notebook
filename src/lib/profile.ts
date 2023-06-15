@@ -26,6 +26,13 @@ export class ProfileRepo {
                 exercises: {
                   orderBy: {
                     name: 'desc'
+                  },
+                  include: {
+                    exercise: {
+                      select: {
+                        name: true,
+                      }
+                    },
                   }
                 },
                 exerciseGroups: {
@@ -33,6 +40,13 @@ export class ProfileRepo {
                     exercises: {
                       orderBy: {
                         name: 'desc'
+                      },
+                      include: {
+                        exercise: {
+                          select: {
+                            name: true,
+                          }
+                        },
                       }
                     },
                   },

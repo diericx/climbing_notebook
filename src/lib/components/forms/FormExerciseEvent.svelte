@@ -34,6 +34,15 @@
 	let:form
 	let:formData
 >
+	{#if data?.exerciseId == null}
+		<label>
+			<span class="font-bold">Apply migration to all exercises with the same name</span>
+			<br />
+			<input type="checkbox" name="shouldApplyMigrationToAll" />
+		</label>
+		<br />
+	{/if}
+
 	{#if showDate}
 		<DateField name="date" field="date" {form} />
 	{/if}

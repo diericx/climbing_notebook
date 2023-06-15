@@ -28,6 +28,9 @@
 
 				<div class="flex-1 min-w-0">
 					<p>{exerciseEvent.exercise?.name || exerciseEvent.name}</p>
+					{#if exerciseEvent.exerciseId == null}
+						<p class="text-red-400">Edit to migrate</p>
+					{/if}
 					<p class="text-sm text-gray-400">
 						{#if showDate}
 							<span class="md:hidden">

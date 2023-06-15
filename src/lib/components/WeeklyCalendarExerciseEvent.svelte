@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { ExerciseEvent } from '@prisma/client';
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import { popup } from '@skeletonlabs/skeleton';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
+	import type { ExerciseEventComplete } from '$lib/prisma';
 
-	export let exerciseEvent: ExerciseEvent;
+	export let exerciseEvent: ExerciseEventComplete;
 	export let date: Date;
 	export let disableActionButtons = false;
 	export let showMarkedCompleted = true;
@@ -26,6 +26,7 @@
 			: false;
 
 	let formForIsMarkedCompleted: HTMLElement;
+	let isLegacy = exerciseEvent.exerciseId == null;
 </script>
 
 <div
@@ -58,7 +59,7 @@
 				class="w-4 h-4 mr-2 rounded-full border-gray-400 text-green-600 disabled:text-green-300 focus:ring-red-200"
 			/>
 		</form>
-		{exerciseEvent.name}
+		{exerciseEvent.exercise?.name || exerciseEvent.name}
 	</div>
 	<div class="mt-1 text-sm text-gray-500">
 		<div>
@@ -75,11 +76,14 @@
 		{#if exerciseEvent.notes}
 			<div>{exerciseEvent.notes}</div>
 		{/if}
+		{#if isLegacy}
+			<p class="text-red-400">Exercise needs to be edited/migrated before it can be used.</p>
+		{/if}
 
 		<div class="pt-1">
 			<button
 				class="btn btn-sm variant-filled-primary bg-green-500 py-0 text-white"
-				disabled={isMarkedCompleted || disableActionButtons}
+				disabled={isMarkedCompleted || disableActionButtons || isLegacy}
 				on:click={() =>
 					modalStore.trigger({
 						type: 'component',

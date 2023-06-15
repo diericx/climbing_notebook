@@ -189,7 +189,7 @@ export class TrainingProgramRepo {
           })
         }
       }
-    }) as TrainingProgram;
+    });
   }
 
   async get(ownerId: string) {
@@ -201,7 +201,46 @@ export class TrainingProgramRepo {
       orderBy: {
         createdAt: 'desc',
       },
-    }) as TrainingProgram[];
+      include: {
+        exerciseGroups: {
+          include: {
+            exercises: {
+              orderBy: {
+                name: 'asc',
+              },
+            },
+          },
+          orderBy: {
+            name: 'asc',
+          },
+        },
+        days: {
+          include: {
+            exercises: {
+              orderBy: {
+                name: 'asc',
+              },
+            },
+            exerciseGroups: {
+              orderBy: {
+                name: 'asc',
+              },
+              include: {
+                exercises: {
+                  orderBy: {
+                    name: 'asc',
+                  }
+                }
+              }
+            },
+          },
+          orderBy: {
+            // Note: ui depends on this being sorted in this way
+            dayOfTheWeek: 'asc',
+          },
+        }
+      }
+    });
   }
 
   async getOne(id: number, ownerId: string) {
@@ -250,6 +289,13 @@ export class TrainingProgramRepo {
               },
               include: {
                 exercises: {
+                  include: {
+                    exercise: {
+                      select: {
+                        name: true,
+                      }
+                    }
+                  },
                   orderBy: {
                     name: 'asc',
                   }
@@ -436,4 +482,13 @@ export class TrainingProgramRepo {
       }
     })
   }
+}
+
+export function doesTrainingProgramHaveLegacyExercises(p: TrainingProgramComplete) {
+  for (const d of p.days) {
+    if (d.exercises.find(e => e.exerciseId == null) || d.exerciseGroups.find(g => g.exercises.find(e => e.exerciseId == null))) {
+      return true
+    }
+  }
+  return false
 }

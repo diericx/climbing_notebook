@@ -105,8 +105,22 @@ export class ExerciseEventRepo {
     })
   }
 
-  async update(data: z.infer<ExerciseEventSchema>, id: number, ownerId: string, isAdmin = false) {
-    await this.getOneAndValidateOwner(id, ownerId, isAdmin);
+  async update(data: z.infer<ExerciseEventSchema>, id: number, ownerId: string, shouldApplyMigrationToAll = false, isAdmin = false) {
+    const original = await this.getOneAndValidateOwner(id, ownerId, isAdmin);
+
+    // Propogate this migration to all other exercises with the same name
+    if (original.exerciseId == null && shouldApplyMigrationToAll) {
+      await this.prisma.exerciseEvent.updateMany({
+        where: {
+          name: {
+            equals: original.name,
+          }
+        },
+        data: {
+          exerciseId: data.exerciseId
+        }
+      })
+    }
 
     return await this.prisma.exerciseEvent.update({
       data: {

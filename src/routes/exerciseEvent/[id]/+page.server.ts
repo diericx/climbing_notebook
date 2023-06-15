@@ -37,7 +37,7 @@ export const actions: Actions = {
     const form = await superValidate(formData, exerciseEventSchema, {
       id: formData.get('_formId')?.toString(),
     });
-
+    const shouldApplyMigrationToAll = formData.get('shouldApplyMigrationToAll')?.toString() == 'on';
 
     if (!form.valid) {
       return fail(400, { form });
@@ -45,7 +45,7 @@ export const actions: Actions = {
 
     const repo = new ExerciseEventRepo(prisma);
     try {
-      await repo.update(form.data, id, user?.userId);
+      await repo.update(form.data, id, user?.userId, shouldApplyMigrationToAll);
     } catch (e) {
       if (e instanceof APIError) {
         return fail(401, { message: e.detail, form })

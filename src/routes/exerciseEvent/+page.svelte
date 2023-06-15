@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 
-	import type { TrainingProgramComplete } from '$lib/prisma';
 	import { isDateInTheSameDayAsToday } from '$lib/utils';
 	import ListExerciseEvent from '$lib/components/ListExerciseEvent.svelte';
 	import WeeklyCalendar from '$lib/components/WeeklyCalendar.svelte';
@@ -9,7 +8,7 @@
 	import { modalStore } from '@skeletonlabs/skeleton';
 
 	export let data: PageData;
-	$: activeTrainingProgram = data.profile?.activeTrainingProgram as TrainingProgramComplete;
+	$: activeTrainingProgram = data.profile?.activeTrainingProgram;
 	$: exerciseEvents = data.exerciseEvents;
 	$: user = data.user;
 	$: exercises = data.exercises;

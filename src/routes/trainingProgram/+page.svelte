@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { TrainingProgramWithDays } from '$lib/prisma';
+	import { doesTrainingProgramHaveLegacyExercises } from '$lib/trainingProgram';
 	import { confirmDelete } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import {
@@ -95,6 +96,11 @@
 										<br />
 										{p.isPublic ? 'Public' : 'Private'}
 									</p>
+									{#if doesTrainingProgramHaveLegacyExercises(p)}
+										<p class="text-red-500">
+											Contains legacy exercises. Edit the exercises in this program to migrate.
+										</p>
+									{/if}
 								</section>
 								<footer class="card-footer">
 									<form method="POST" action={`/profile?/edit`} use:enhance>
