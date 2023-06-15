@@ -90,7 +90,7 @@ export class TrainingProgramRepo {
                   id: undefined,
                   owner: {
                     connect: {
-                      id: e.ownerId,
+                      id: ownerId,
                     }
                   },
                 }))
@@ -125,7 +125,7 @@ export class TrainingProgramRepo {
           ownerId: undefined,
           owner: {
             connect: {
-              id: g.ownerId,
+              id: ownerId,
             }
           },
           exercises: {
@@ -137,7 +137,7 @@ export class TrainingProgramRepo {
               id: undefined,
               owner: {
                 connect: {
-                  id: e.ownerId,
+                  id: ownerId,
                 }
               },
             }))
