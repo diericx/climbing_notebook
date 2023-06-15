@@ -6,7 +6,7 @@ export const muscles: readonly [string, ...string[]] = ['adductor magnus', 'ante
 export const muscleGroups: readonly [string, ...string[]] = ['abdominals', 'adductors', 'back', 'biceps', 'calves', 'chest', 'forearms', 'glutes', 'hamstrings', 'quadriceps', 'shoulders', 'trapezius', 'triceps'];
 export const equipments: readonly [string, ...string[]] = ['ab wheel', 'barbell', 'battle ropes', 'bodyweight', 'cable', 'dumbbell', 'ez bar', 'gymnastic rings', 'kettlebell', 'landmine', 'medicine ball', 'miniband', 'parallette bars', 'resistance band', 'slam ball', 'sliders', 'stability ball', 'superband', 'suspension trainer', 'weight plate'];
 export const postures: readonly [string, ...string[]] = ['90/90 seated', 'bent over standing', 'bridge', 'half knee hover', 'half kneeling', 'hanging', 'inverted', 'knee hover quadruped', 'knee over toes split stance standing', 'kneeling', 'l sit', 'march', 'prone', 'quadruped', 'seated', 'seated floor', 'shin box seated', 'side lying', 'side plank', 'single leg bridge', 'single leg standing', 'single leg standing bent knee', 'single leg supported', 'split stance standing', 'staggered stance standing', 'standing', 'supine', 'tall kneeling', 'toe balance standing', 'v sit seated', 'walking', 'wall sit'];
-export const exerciseTypes: readonly [string, ...string[]] = ['climbing', 'strength', 'stretch'];
+export const exerciseTypes: readonly [string, ...string[]] = ['climbing', 'strength', 'stretch', 'cardio'];
 export const difficulties: readonly [string, ...string[]] = ['novice', 'beginner', 'intermediate', 'advanced'];
 export const exerciseEventFieldsToShow: readonly [string, ...string[]] = ['sets', 'reps', 'weight', 'minutes', 'seconds'];
 
