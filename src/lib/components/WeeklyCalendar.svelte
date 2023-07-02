@@ -4,6 +4,7 @@
 	import { daysFromToday, getDayWeekStartsMonday } from '$lib/utils';
 	import { onMount } from 'svelte';
 	import type { User } from 'lucia-auth';
+	import type { Exercise } from '@prisma/client';
 
 	export let trainingProgram: TrainingProgramWithDays;
 	export let shouldScrollIntoView = false;
@@ -11,6 +12,7 @@
 	export let showMarkedCompleted = true;
 	export let showDuplicateBtn = false;
 	export let user: User | undefined;
+	export let exercises: Exercise[];
 
 	onMount(() => {
 		if (shouldScrollIntoView) {
@@ -83,6 +85,7 @@
 							{#each day.exercises as exerciseEvent}
 								<CalExerciseEvent
 									{exerciseEvent}
+									{exercises}
 									{disableActionButtons}
 									{showMarkedCompleted}
 									date={daysFromToday(i - getDayWeekStartsMonday(new Date()))}
@@ -95,6 +98,7 @@
 									<CalExerciseEvent
 										{disableActionButtons}
 										{exerciseEvent}
+										{exercises}
 										{showMarkedCompleted}
 										date={daysFromToday(i - getDayWeekStartsMonday(new Date()))}
 									/>

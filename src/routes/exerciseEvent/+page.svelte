@@ -42,7 +42,12 @@
 				> page to create and set one.
 			</p>
 		{:else}
-			<WeeklyCalendar {user} trainingProgram={activeTrainingProgram} showDuplicateBtn={false} />
+			<WeeklyCalendar
+				{exercises}
+				{user}
+				trainingProgram={activeTrainingProgram}
+				showDuplicateBtn={false}
+			/>
 		{/if}
 	</div>
 </div>

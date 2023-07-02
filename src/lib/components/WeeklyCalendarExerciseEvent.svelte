@@ -4,8 +4,10 @@
 	import { popup } from '@skeletonlabs/skeleton';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
 	import type { ExerciseEventComplete } from '$lib/prisma';
+	import type { Exercise } from '@prisma/client';
 
 	export let exerciseEvent: ExerciseEventComplete;
+	export let exercises: Exercise[];
 	export let date: Date;
 	export let disableActionButtons = false;
 	export let showMarkedCompleted = true;
@@ -96,6 +98,7 @@
 								trainingProgramDayId: null,
 								date: new Date()
 							},
+							exercises,
 							action: `/exerciseEvent?/new`,
 							title: 'Complete Exercise',
 							exerciseToMarkCompleted: exerciseEvent,
