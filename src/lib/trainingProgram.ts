@@ -87,7 +87,13 @@ export class TrainingProgramRepo {
                   ownerId: undefined,
                   exerciseGroupId: undefined,
                   trainingProgramDayId: undefined,
+                  exerciseId: undefined,
                   id: undefined,
+                  exercise: {
+                    connect: {
+                      id: e.exerciseId,
+                    }
+                  },
                   owner: {
                     connect: {
                       id: ownerId,
@@ -134,7 +140,13 @@ export class TrainingProgramRepo {
               ownerId: undefined,
               exerciseGroupId: undefined,
               trainingProgramDayId: undefined,
+              exerciseId: undefined,
               id: undefined,
+              exercise: {
+                connect: {
+                  id: e.exerciseId,
+                }
+              },
               owner: {
                 connect: {
                   id: ownerId,
