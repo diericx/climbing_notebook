@@ -6,12 +6,13 @@ services:
     networks:
       - traefik
       - postgres
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.svelte.rule=Host(`climbingnotebook.com`)"
-      - "traefik.http.routers.svelte.entrypoints=websecure"
-      - "traefik.http.routers.svelte.tls.certresolver=letsencrypt"
-      - "traefik.http.services.svelte.loadbalancer.server.port=3000"
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.svelte.rule=Host(`climbingnotebook.com`)"
+        - "traefik.http.routers.svelte.entrypoints=websecure"
+        - "traefik.http.routers.svelte.tls.certresolver=letsencrypt"
+        - "traefik.http.services.svelte.loadbalancer.server.port=3000"
     secrets:
       - source: cn_prod_db_url
         target: db_url
@@ -27,12 +28,13 @@ services:
     networks:
       - traefik
       - postgres
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.svelte-staging.rule=Host(`staging.climbingnotebook.com`)"
-      - "traefik.http.routers.svelte-staging.entrypoints=websecure"
-      - "traefik.http.routers.svelte-staging.tls.certresolver=letsencrypt"
-      - "traefik.http.services.svelte-staging.loadbalancer.server.port=3000"
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.svelte-staging.rule=Host(`staging.climbingnotebook.com`)"
+        - "traefik.http.routers.svelte-staging.entrypoints=websecure"
+        - "traefik.http.routers.svelte-staging.tls.certresolver=letsencrypt"
+        - "traefik.http.services.svelte-staging.loadbalancer.server.port=3000"
     secrets:
       - source: cn_staging_db_url
         target: db_url
