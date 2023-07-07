@@ -64,6 +64,7 @@
 					meta: {
 						action: `/exerciseEvent?/new`,
 						title: 'New Exercise Event',
+						showMigrationOption: false,
 						exercises
 					}
 				})}

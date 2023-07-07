@@ -1,18 +1,17 @@
 <script lang="ts">
 	import { camelToTitle } from '$lib/utils';
-	import { Autocomplete, popup, type PopupSettings } from '@skeletonlabs/skeleton';
+	import { popup, type PopupSettings } from '@skeletonlabs/skeleton';
 	import type { AutocompleteOption } from '@skeletonlabs/skeleton';
 	import type { FieldPath, UnwrapEffects } from 'sveltekit-superforms';
 	import type { SuperForm } from 'sveltekit-superforms/client';
 	import { formFieldProxy } from 'sveltekit-superforms/client';
 	import type { z, AnyZodObject } from 'zod';
-	import { onMount } from 'svelte';
+	import Autocomplete from './skeleton/Autocomplete.svelte';
 
 	type T = $$Generic<AnyZodObject>;
 
 	export let form: SuperForm<UnwrapEffects<T>, unknown>;
 	export let field: keyof z.infer<T> | FieldPath<z.infer<T>>;
-	export let placeholder = '';
 	export let label: string | undefined = undefined;
 	export let options: AutocompleteOption[];
 
@@ -28,19 +27,19 @@
 	function onSelection(event: any): void {
 		searchValue = event.detail.label;
 		value.set(event.detail.value);
+		searchValue = '';
 	}
-
-	// The incomming value is an id, so on mount we find the cooresponding option and set the label
-	onMount(() => {
-		searchValue = options.find((o) => o.value == $value)?.label || '';
-	});
 </script>
 
 <label>
-	<span class="font-bold">Exercise</span>
+	<span class="font-bold">{label || camelToTitle(String(path))}</span>
 	<br />
+	{#if $errors}
+		<div class="invalid">{$errors}</div>
+	{/if}
+	<slot name="pre" />
 	<input
-		class="autocomplete"
+		class="autocomplete w-full"
 		type="search"
 		bind:value={searchValue}
 		data-invalid={$errors}
@@ -58,9 +57,6 @@
 >
 	<Autocomplete bind:input={searchValue} {options} on:selection={onSelection} />
 </div>
-{#if $errors}
-	<div class="invalid">{$errors}</div>
-{/if}
 
 <style lang="scss">
 	.invalid {

@@ -108,3 +108,19 @@ export function camelToTitle(source: string): string {
         const result = source.replace(/([A-Z])/g, ' $1');
         return result.charAt(0).toUpperCase() + result.slice(1);
 }
+
+export function boldQuery(str: string, queries: string[]) {
+        let result = str;
+        for (const query of queries) {
+                const n = result.toUpperCase();
+                const q = query.toUpperCase();
+                const x = n.indexOf(q);
+                if (!q || x === -1) {
+                        continue;
+                }
+                const l = q.length;
+                const newResult = result.substring(0, x) + '<b>' + result.substring(x, x + l) + '</b>' + result.substring(x + l);
+                result = newResult;
+        }
+        return result;
+}

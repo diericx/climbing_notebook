@@ -7,8 +7,9 @@
 	import Form from './Form.svelte';
 	import { v4 as uuidv4 } from 'uuid';
 	import Autocomplete from './fields/Autocomplete.svelte';
+	import type { ExerciseEventComplete } from '$lib/prisma';
 
-	export let data: ExerciseEvent | undefined;
+	export let data: ExerciseEventComplete | undefined;
 	export let action = '';
 	export let exercises: Exercise[];
 
@@ -20,8 +21,13 @@
 	export let showSubmitButton = true;
 	export let onSuccess: (() => void) | undefined = undefined;
 	export let debug = false;
+	export let showMigrationOption = true;
 
-	const exerciseOptions = exercises.map((e) => ({ label: e.name, value: e.id }));
+	const exerciseOptions = exercises.map((e) => ({
+		label: e.name,
+		value: e.id,
+		meta: { _count: { ...e._count } }
+	}));
 </script>
 
 <Form
@@ -34,7 +40,7 @@
 	let:form
 	let:formData
 >
-	{#if data?.exerciseId == null}
+	{#if showMigrationOption && !data?.exerciseId}
 		<label>
 			<span class="font-bold">Apply migration to all exercises with the same name</span>
 			<br />
@@ -47,9 +53,32 @@
 		<DateField name="date" field="date" {form} />
 	{/if}
 
-	<Autocomplete name="exerciseId" field="exerciseId" options={exerciseOptions} {form} />
-	<div class="mb-3">
-		<a href="/exercise/new" class="link" target="_blank">Don't see your exercise? Add it here.</a>
+	<div class="w-full sm:w-64">
+		<Autocomplete
+			name="exerciseId"
+			field="exerciseId"
+			options={exerciseOptions}
+			{form}
+			label="Exercise"
+		>
+			<div slot="pre">
+				{#if formData.exerciseId}
+					<div class="card px-4 py-2">
+						<span class="text-black">
+							{exercises.find((e) => e.id == formData.exerciseId)?.name}
+						</span>
+						<br />
+					</div>
+				{:else}
+					<div class="card px-4 py-2 bg-gray-50">No Exercise</div>
+				{/if}
+			</div>
+		</Autocomplete>
+		<div class="mb-3">
+			<a href="/exercise/new" class="link" target="_blank"
+				>Don't see your exercise? <br /> Click here to add it.</a
+			>
+		</div>
 	</div>
 
 	{#if exerciseToMarkCompleted != undefined}
@@ -90,7 +119,7 @@
 			</div>
 			<div class="mb-4">
 				<a href={`/exercise/${exercise.id}/edit`} class="link" target="_blank"
-					>Don't see the correct fields for your exercise? Edit them here.</a
+					>Don't see the correct fields for your exercise? <br /> Edit them here.</a
 				>
 			</div>
 		{:else}

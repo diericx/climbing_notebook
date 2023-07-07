@@ -148,6 +148,7 @@
 										title: 'Add Exercise',
 										showDate: false,
 										showDifficulty: false,
+										showMigrationOption: false,
 										exercises
 									}
 								})}
@@ -257,6 +258,7 @@
 									title: 'Add Exercise',
 									showDate: false,
 									showDifficulty: false,
+									showMigrationOption: false,
 									exercises
 								}
 							})}

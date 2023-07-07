@@ -5,6 +5,7 @@
 
 	// Types
 	import type { AutocompleteOption } from '@skeletonlabs/skeleton';
+	import { boldQuery } from '$lib/utils';
 
 	// Event Dispatcher
 	type AutocompleteEvent = {
@@ -89,20 +90,33 @@
 	function filterOptions(): AutocompleteOption[] {
 		// Create a local copy of options
 		let _options = [...listedOptions];
-		// Filter options
-		_options = _options.filter((option: AutocompleteOption) => {
-			// Format the input search value
-			const inputFormatted = String(input).toLowerCase().trim();
-			// Format the option
-			let optionFormatted = JSON.stringify([
-				option.label,
-				option.value,
-				option.keywords
-			]).toLowerCase();
-			// Check Match
-			if (optionFormatted.includes(inputFormatted)) return option;
+
+		// Exercises where the name includes every word from the search string
+		let optionsAllWordsMatch = _options.filter((o) => {
+			for (const w of inputWords) {
+				if (!o.label.toLowerCase().includes(w.toLowerCase())) {
+					return false;
+				}
+			}
+			return true;
 		});
-		return _options;
+
+		// // Filter options
+		// _options = _options.filter((option: AutocompleteOption) => {
+		// 	// Format the input search value
+		// 	const inputFormatted = String(input).toLowerCase().trim();
+		// 	// Format the option
+		// 	let optionFormatted = JSON.stringify([
+		// 		option.label,
+		// 		option.value,
+		// 		option.keywords
+		// 	]).toLowerCase();
+		// 	// Check Match
+		// 	if (optionFormatted.includes(inputFormatted)) return option;
+		// });
+		// return _options;
+
+		return optionsAllWordsMatch;
 	}
 
 	function onSelection(option: AutocompleteOption) {
@@ -122,6 +136,7 @@
 	$: classesItem = `${regionItem}`;
 	$: classesButton = `${regionButton}`;
 	$: classesEmpty = `${regionEmpty}`;
+	$: inputWords = String(input).split(' ');
 </script>
 
 <!-- animate:flip={{ duration }} transition:slide|local={{ duration }} -->
@@ -132,13 +147,21 @@
 				{#each optionsFiltered.slice(0, sliceLimit) as option (option)}
 					<li class="autocomplete-item {classesItem}">
 						<button
-							class="autocomplete-button {classesButton}"
+							class="autocomplete-button {classesButton} my-2"
 							type="button"
 							on:click={() => onSelection(option)}
 							on:click
 							on:keypress
 						>
-							{@html option.label}
+							<span class="text-left">
+								<span>
+									{@html boldQuery(option.label, inputWords)}
+								</span>
+								<br />
+								<span class="text-gray-400">
+									Used {option.meta._count.exerciseEvents} times
+								</span>
+							</span>
 						</button>
 					</li>
 				{/each}

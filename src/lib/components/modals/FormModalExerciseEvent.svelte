@@ -8,6 +8,7 @@
 	let showDifficulty = $modalStore[0]?.meta?.showDifficulty;
 	let showDate = $modalStore[0]?.meta?.showDate;
 	let exercises = $modalStore[0]?.meta?.exercises;
+	let showMigrationOption = $modalStore[0]?.meta?.showMigrationOption;
 </script>
 
 <FormModal let:data let:action let:id>
@@ -21,6 +22,7 @@
 			{dateToMarkCompleted}
 			{showDifficulty}
 			{showDate}
+			{showMigrationOption}
 			showSubmitButton={false}
 			onSuccess={() => {
 				modalStore.close();
