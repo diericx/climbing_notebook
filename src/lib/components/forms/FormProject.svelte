@@ -6,6 +6,8 @@
 	import TextField from './fields/TextField.svelte';
 	import Form from './Form.svelte';
 	import { v4 as uuidv4 } from 'uuid';
+	import { FileDropzone } from '@skeletonlabs/skeleton';
+	import Icon from '@iconify/svelte';
 
 	// Form action to execute
 	export let action = '/project?/new';
@@ -13,6 +15,8 @@
 	export let onSuccess: (() => void) | undefined = undefined;
 	export let id = uuidv4();
 	export let showSubmitButton = true;
+
+	let files: FileList;
 </script>
 
 <Form
@@ -24,6 +28,7 @@
 	resetForm={true}
 	let:form
 	let:formData
+	let:errors
 >
 	<input type="hidden" name="_formId" value={id} />
 	<TextField name="name" field="name" {form} placeholder={'Alphane'} />
@@ -46,6 +51,34 @@
 		</SelectField>
 	{/if}
 	<TextField name="url" field="url" {form} />
+
+	<label for="file" class="font-bold"> Image </label>
+	{#if errors.file}<span class="invalid">{errors.file}</span>{/if}
+	<FileDropzone name="file" bind:files>
+		<svelte:fragment slot="lead">
+			{#if !files || files.length == 0}
+				<div class="flex justify-center">
+					<Icon icon="mingcute:file-upload-fill" height="50" />
+				</div>
+			{:else}
+				<div class="flex justify-center">
+					<Icon icon="bi:image" height="50" />
+				</div>
+			{/if}
+		</svelte:fragment>
+		<svelte:fragment slot="message">
+			{#if !files || files.length == 0}
+				<b>Upload an image </b> or drag and drop
+			{:else}
+				{files[0].name}
+			{/if}
+		</svelte:fragment>
+		<svelte:fragment slot="meta">
+			{#if !files || files.length == 0}
+				JPG and PNG allowed
+			{/if}</svelte:fragment
+		>
+	</FileDropzone>
 
 	{#if showSubmitButton}
 		<button class="btn btn-primary btn-sm variant-filled">Submit</button>

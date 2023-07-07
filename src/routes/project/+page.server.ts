@@ -3,7 +3,9 @@ import { error, fail, redirect } from '@sveltejs/kit';
 import { prisma } from '$lib/prisma';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { ProjectRepo, projectSchema } from '$lib/project';
-import { superValidate } from 'sveltekit-superforms/server';
+import { setError, superValidate } from 'sveltekit-superforms/server';
+import { writeFileSync } from 'fs';
+import { uploadFile } from '$lib/aws/s3';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { user } = await locals.auth.validateUser();
@@ -35,7 +37,20 @@ export const actions: Actions = {
 
     const repo = new ProjectRepo(prisma);
     try {
-      await repo.new(form.data, user?.userId)
+      const newProject = await repo.new(form.data, user?.userId)
+
+      const file = formData.get('file');
+      if (file instanceof File) {
+        // File type restriction
+        if (file.type != 'image/jpeg' && file.type != 'image/png') {
+          return setError(form, 'file', 'File type not supported.');
+        }
+        // Max file size of 5MB
+        if (file.size > 1024 * 1024 * 5) {
+          return setError(form, 'file', 'File exceeds maximum file size (5MB)');
+        }
+        await uploadFile(`project/${newProject.id}/images/${file.name}`, file)
+      }
     } catch (e) {
       console.error(e)
       throw error(500, { message: SERVER_ERROR })

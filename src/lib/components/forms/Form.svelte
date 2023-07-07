@@ -32,6 +32,7 @@
 		}
 	});
 	const form = newSuperForm.form;
+	const errors = newSuperForm.errors;
 	const { enhance, message } = newSuperForm;
 </script>
 
@@ -40,7 +41,7 @@
 {/if}
 <form method="POST" {action} use:enhance {id} class="form">
 	<input type="hidden" name="_formId" value={id} />
-	<slot form={newSuperForm} formData={$form} />
+	<slot form={newSuperForm} formData={$form} errors={$errors} />
 </form>
 {#if debug}
 	<SuperDebug data={$form} />

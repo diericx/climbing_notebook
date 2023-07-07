@@ -9,6 +9,7 @@ export const projectSchema = z.object({
   huecoGrade: z.enum(huecoGrades).nullish(),
   gradeSystem: z.enum(gradeSystems),
   url: z.string().nullish(),
+  file: z.any()
 });
 export type ProjectSchema = typeof projectSchema;
 
