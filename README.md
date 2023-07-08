@@ -22,9 +22,14 @@ CREATE DATABASE cndb_development WITH OWNER=climbingnotebook;
 ```
 
 Sync local database
+
 ```sh
 npx prisma db push
 ```
+
+#### AWS
+
+There are some features that require AWS access keys, namely ECS and S3 for password reset emails and image storage.
 
 ## Running locally
 

@@ -6,6 +6,7 @@ import { ProjectRepo, projectSchema } from '$lib/project';
 import { setError, superValidate } from 'sveltekit-superforms/server';
 import { writeFileSync } from 'fs';
 import { uploadFile } from '$lib/aws/s3';
+import { v4 as uuidv4 } from 'uuid';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { user } = await locals.auth.validateUser();
@@ -49,8 +50,13 @@ export const actions: Actions = {
         if (file.size > 1024 * 1024 * 5) {
           return setError(form, 'file', 'File exceeds maximum file size (5MB)');
         }
-        await uploadFile(`project/${newProject.id}/images/${file.name}`, file)
+        // Upload file
+        const key = `project/${newProject.id}/images/${uuidv4()}.${file.name.split('.').pop()}`
+        await uploadFile(key, file)
+        // Update project with file key
+        await repo.update({ ...newProject, imageS3ObjectKey: key }, newProject.id, user?.userId)
       }
+
     } catch (e) {
       console.error(e)
       throw error(500, { message: SERVER_ERROR })
