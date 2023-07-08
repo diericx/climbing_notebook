@@ -4,6 +4,7 @@
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import { enhance } from '$app/forms';
 	import { confirmDelete } from '$lib/utils';
+	import Image from '$lib/components/Image.svelte';
 	export let data: PageData;
 
 	$: s3ObjectUrls = data.s3ObjectUrls;
@@ -41,7 +42,9 @@
 		{project.gradeSystem == 'hueco' ? project.huecoGrade : ''}
 	</p>
 	{#if project.imageS3ObjectKey}
-		<img src={s3ObjectUrls[project.imageS3ObjectKey]} />
+		<Image src={s3ObjectUrls[project.imageS3ObjectKey]}>
+			<div class="placeholder" />
+		</Image>
 	{/if}
 </div>
 
