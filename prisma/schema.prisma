@@ -152,7 +152,7 @@ model Metric {
   createdAt      DateTime     @default(now()) @map("created_at")
   date           DateTime
   name           String
-  value          Int
+  value          Float
   journalEntry   JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   journalEntryId Int
 

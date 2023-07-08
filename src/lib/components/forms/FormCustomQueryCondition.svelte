@@ -13,6 +13,7 @@
 	export let id = uuidv4();
 	export let showSubmitButton = true;
 	export let query: CustomQuery;
+	console.log(query);
 </script>
 
 <Form
@@ -24,7 +25,7 @@
 	resetForm={true}
 	let:form
 >
-	{#if query.table == 'exercise_event'}
+	{#if query.table == 'exerciseEvent'}
 		<SelectField name="column" field="column" {form}>
 			<option value="name">Name</option>
 			<option value="notes"> Notes </option>

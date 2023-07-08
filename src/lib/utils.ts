@@ -26,7 +26,7 @@ export function toNum(val: any, def: any): any {
 }
 
 export function matchMetricsInString(s: string) {
-        return s.match(/^(\w+):\s*(?:([0-9]*))\s*$/gm) || []
+        return s.match(/^(\w+):\s*([+-]?(\d*\.)?\d+)\s*$/gm) || []
 }
 
 export function parseMetricStrings(s: string[]) {
