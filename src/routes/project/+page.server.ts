@@ -7,6 +7,7 @@ import { setError, superValidate } from 'sveltekit-superforms/server';
 import { writeFileSync } from 'fs';
 import { uploadFile } from '$lib/aws/s3';
 import { v4 as uuidv4 } from 'uuid';
+import sharp from 'sharp';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { user } = await locals.auth.validateUser();
@@ -42,6 +43,8 @@ export const actions: Actions = {
 
       const file = formData.get('file');
       if (file instanceof File) {
+        const image = sharp(Buffer.from(await file.arrayBuffer()));
+        const imageMetadata = await image.metadata();
         // File type restriction
         if (file.type != 'image/jpeg' && file.type != 'image/png') {
           return setError(form, 'file', 'File type not supported.');
@@ -52,7 +55,7 @@ export const actions: Actions = {
         }
         // Upload file
         const key = `project/${newProject.id}/images/${uuidv4()}.${file.name.split('.').pop()}`
-        await uploadFile(key, file)
+        await uploadFile(key, file, { width: imageMetadata.width?.toString() || '0', height: imageMetadata.height?.toString() || '0' })
         // Update project with file key
         await repo.update({ ...newProject, imageS3ObjectKey: key }, newProject.id, user?.userId)
       }

@@ -8,6 +8,7 @@
 	export let data: PageData;
 
 	$: s3ObjectUrls = data.s3ObjectUrls;
+	$: s3ObjectMetadatas = data.s3ObjectMetadatas;
 	$: project = data.project;
 </script>
 
@@ -42,9 +43,12 @@
 		{project.gradeSystem == 'hueco' ? project.huecoGrade : ''}
 	</p>
 	{#if project.imageS3ObjectKey}
-		<Image src={s3ObjectUrls[project.imageS3ObjectKey]}>
-			<div class="placeholder" />
-		</Image>
+		<Image
+			src={s3ObjectUrls[project.imageS3ObjectKey]}
+			width={s3ObjectMetadatas[project.imageS3ObjectKey]?.width || '0'}
+			height={s3ObjectMetadatas[project.imageS3ObjectKey]?.height || '0'}
+			class={'max-h-96'}
+		/>
 	{/if}
 </div>
 

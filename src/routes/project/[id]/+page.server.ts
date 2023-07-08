@@ -5,8 +5,9 @@ import { SERVER_ERROR } from '$lib/helperTypes';
 import { ProjectRepo, projectSchema } from '$lib/project';
 import { setError, superValidate } from 'sveltekit-superforms/server';
 import { APIError } from '$lib/errors';
-import { deleteFile, getPresignedUrl, uploadFile } from '$lib/aws/s3';
+import { deleteFile, getMetadata, getPresignedUrl, uploadFile } from '$lib/aws/s3';
 import { v4 as uuidv4 } from 'uuid';
+import sharp from 'sharp';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
   const { user } = await locals.auth.validateUser();
@@ -19,10 +20,15 @@ export const load: PageServerLoad = async ({ locals, params }) => {
     if (project.imageS3ObjectKey) {
       s3ObjectUrls[project.imageS3ObjectKey] = await getPresignedUrl(project.imageS3ObjectKey)
     }
+    const s3ObjectMetadatas: { [key: string]: Record<string, string> | undefined } = {};
+    if (project.imageS3ObjectKey) {
+      s3ObjectMetadatas[project.imageS3ObjectKey] = await getMetadata(project.imageS3ObjectKey)
+    }
 
     return {
       project,
-      s3ObjectUrls
+      s3ObjectUrls,
+      s3ObjectMetadatas
     };
   } catch (e) {
     console.error(e)
@@ -72,6 +78,8 @@ export const actions: Actions = {
 
       const file = formData.get('file');
       if (file instanceof File && file.size > 0) {
+        const image = sharp(Buffer.from(await file.arrayBuffer()));
+        const imageMetadata = await image.metadata();
         // File type restriction
         if (file.type != 'image/jpeg' && file.type != 'image/png') {
           return setError(form, 'file', 'File type not supported.');
@@ -86,7 +94,7 @@ export const actions: Actions = {
         }
         // Upload file
         const key = `project/${project.id}/images/${uuidv4()}.${file.name.split('.').pop()}`
-        await uploadFile(key, file)
+        await uploadFile(key, file, { width: imageMetadata.width?.toString() || '0', height: imageMetadata.height?.toString() || '0' })
         // Update the form data with the new file
         form.data.imageS3ObjectKey = key;
       }
