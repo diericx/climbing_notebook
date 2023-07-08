@@ -6,6 +6,7 @@
 	import { confirmDelete } from '$lib/utils';
 	export let data: PageData;
 
+	$: s3ObjectUrls = data.s3ObjectUrls;
 	$: project = data.project;
 </script>
 
@@ -22,7 +23,7 @@
 						type: 'component',
 						component: 'formModalProject',
 						meta: {
-							action: `/project/${project.id}/?/edit`,
+							action: `/project/${project.id}?/edit`,
 							title: 'Edit Project',
 							data: project
 						}
@@ -39,6 +40,9 @@
 		{project.gradeSystem == 'font' ? project.fontGrade : ''}
 		{project.gradeSystem == 'hueco' ? project.huecoGrade : ''}
 	</p>
+	{#if project.imageS3ObjectKey}
+		<img src={s3ObjectUrls[project.imageS3ObjectKey]} />
+	{/if}
 </div>
 
 <div class="flex justify-between">

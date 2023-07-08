@@ -13,7 +13,6 @@
 	export let id = uuidv4();
 	export let showSubmitButton = true;
 	export let query: CustomQuery;
-	console.log(query);
 </script>
 
 <Form

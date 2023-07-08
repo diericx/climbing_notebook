@@ -44,6 +44,7 @@
 	"dependencies": {
 		"@aws-sdk/client-s3": "^3.367.0",
 		"@aws-sdk/client-ses": "^3.341.0",
+		"@aws-sdk/s3-request-presigner": "^3.367.0",
 		"@event-calendar/core": "^0.18.1",
 		"@event-calendar/day-grid": "^0.18.1",
 		"@event-calendar/interaction": "^0.18.1",
