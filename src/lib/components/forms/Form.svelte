@@ -13,6 +13,10 @@
 	export let resetForm = false;
 	export let debug = false;
 
+	// Two way bindings meant to send this info up stream
+	export let submitting: boolean;
+	export let delayed: boolean;
+
 	// Add redirect data
 	if ($page.url.searchParams.has('redirectTo')) {
 		action += '&redirectTo=' + $page.url.searchParams.get('redirectTo');
@@ -25,15 +29,28 @@
 		invalidateAll: true,
 		id,
 		dataType: 'json',
+		multipleSubmits: 'prevent',
+		delayMs: 300,
+		timeoutMs: 10000,
 		onResult({ result }) {
 			if ((result.type == 'success' || result.type == 'redirect') && onSuccess != undefined) {
 				onSuccess();
 			}
 		}
 	});
-	const form = newSuperForm.form;
-	const errors = newSuperForm.errors;
-	const { enhance, message } = newSuperForm;
+	const {
+		form,
+		errors,
+		enhance,
+		message,
+		submitting: _submitting,
+		delayed: _delayed
+	} = newSuperForm;
+
+	$: {
+		submitting = $_submitting;
+		delayed = $_delayed;
+	}
 </script>
 
 {#if $message}
@@ -41,7 +58,7 @@
 {/if}
 <form method="POST" {action} use:enhance {id} class="form">
 	<input type="hidden" name="_formId" value={id} />
-	<slot form={newSuperForm} formData={$form} errors={$errors} />
+	<slot form={newSuperForm} formData={$form} errors={$errors} {submitting} {delayed} />
 </form>
 {#if debug}
 	<SuperDebug data={$form} />

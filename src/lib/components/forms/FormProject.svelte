@@ -8,6 +8,7 @@
 	import { v4 as uuidv4 } from 'uuid';
 	import { FileDropzone } from '@skeletonlabs/skeleton';
 	import Icon from '@iconify/svelte';
+	import { get } from 'svelte/store';
 
 	// Form action to execute
 	export let action = '/project?/new';
@@ -15,6 +16,10 @@
 	export let onSuccess: (() => void) | undefined = undefined;
 	export let id = uuidv4();
 	export let showSubmitButton = true;
+
+	// These are two way bindings from form values so the Modals can access
+	export let submitting: boolean;
+	export let delayed: boolean;
 
 	let files: FileList;
 </script>
@@ -25,6 +30,8 @@
 	{action}
 	{id}
 	{onSuccess}
+	bind:submitting
+	bind:delayed
 	resetForm={true}
 	let:form
 	let:formData
@@ -81,6 +88,6 @@
 	</FileDropzone>
 
 	{#if showSubmitButton}
-		<button class="btn btn-primary btn-sm variant-filled">Submit</button>
+		<button class="btn btn-primary btn-sm variant-filled"> Submit </button>
 	{/if}
 </Form>
