@@ -13,13 +13,14 @@ datasource db {
 }
 
 model Project {
-  id          String   @id @default(cuid())
-  name        String
-  gradeSystem String   @map("grade_system")
-  fontGrade   String?  @map("font_grade")
-  huecoGrade  String?  @map("hueco_grade")
-  url         String?
-  updatedAt   DateTime @default(now())
+  id               String   @id @default(cuid())
+  name             String
+  gradeSystem      String   @map("grade_system")
+  fontGrade        String?  @map("font_grade")
+  huecoGrade       String?  @map("hueco_grade")
+  url              String?
+  updatedAt        DateTime @default(now())
+  imageS3ObjectKey String?  @map("image_s3_object_key")
 
   ownerId   String           @map("owner_id")
   owner     AuthUser         @relation(fields: [ownerId], references: [id])
@@ -62,7 +63,9 @@ model ExerciseGroup {
 
 model Exercise {
   id               String   @id @default(cuid())
-  name             String   @unique
+  // name has a unique constraint performed manually
+  // See migration 20230609114101_add_exercise_resource
+  name             String
   type             String
   difficulty       String?
   videoUrl         String?
