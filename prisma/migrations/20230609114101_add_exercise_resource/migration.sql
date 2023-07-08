@@ -23,7 +23,7 @@ CREATE TABLE "exercise" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "exercise_name_key" ON "exercise"(LOWER("name"));
+CREATE UNIQUE INDEX exercise_name_key ON public.exercise USING btree (lower(name))
 
 -- AddForeignKey
 ALTER TABLE "exercise" ADD CONSTRAINT "exercise_created_by_auth_user_id_fkey" FOREIGN KEY ("created_by_auth_user_id") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
