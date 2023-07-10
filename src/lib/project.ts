@@ -15,10 +15,10 @@ export type ProjectSchema = typeof projectSchema;
 
 export const projectPartialSchema = z.object({
   name: z.string().min(1).optional(),
-  fontGrade: z.enum(fontGrades).optional(),
-  huecoGrade: z.enum(huecoGrades).optional(),
+  fontGrade: z.enum(fontGrades).nullish(),
+  huecoGrade: z.enum(huecoGrades).nullish(),
   gradeSystem: z.enum(gradeSystems).optional(),
-  url: z.string().nullish().optional(),
+  url: z.string().optional(),
   imageS3ObjectKey: z.string().optional()
 });
 export type ProjectPartialSchema = typeof projectPartialSchema;
