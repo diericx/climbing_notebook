@@ -15,4 +15,4 @@ jobs:
       - uses: actionsx/prettier@v2
         with:
           # prettier CLI arguments.
-          args: --check .
+          args: --plugin=prettier-plugin-svelte  --check .
