@@ -6,13 +6,13 @@ const exercises = require('./exercises_seed.json');
 for (const newExercise of exercises) {
   const foundExercise = await prisma.exercise.findUnique({
     where: {
-      name: newExercise['Exercise']
-    }
+      name: newExercise['Exercise'],
+    },
   });
 
   // Don't create dupes
   if (foundExercise != null) {
-    continue
+    continue;
   }
 
   await prisma.exercise.create({
@@ -20,7 +20,10 @@ for (const newExercise of exercises) {
       name: newExercise['Exercise'],
       type: 'strength',
       difficulty: newExercise['Difficulty Level']?.toString().toLowerCase() || null,
-      videoUrl: newExercise['In Depth YouTube Technique'] || newExercise['Short YouTube Demonstration'] || null,
+      videoUrl:
+        newExercise['In Depth YouTube Technique'] ||
+        newExercise['Short YouTube Demonstration'] ||
+        null,
       muscleGroup: newExercise['Muscle Group']?.toString().toLowerCase() || null,
       primeMoverMuscle: newExercise['Prime Mover Muscle']?.toString().toLowerCase(),
       secondaryMuscle: newExercise['Secondary Muscle']?.toString().toLowerCase() || null,
@@ -30,10 +33,9 @@ for (const newExercise of exercises) {
       fieldsToShow: ['sets', 'reps', 'minutes', 'seconds', 'weight'],
       createdBy: {
         connect: {
-          id: '1'
-        }
-      }
-    }
-  })
-
+          id: '1',
+        },
+      },
+    },
+  });
 }

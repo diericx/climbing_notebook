@@ -18,29 +18,29 @@
   .basic-input {
     @apply my-2 shadow appearance-none border border-gray-300 rounded py-2 px-3 text-gray-700 leading-tight;
   }
-  input[type=text] {
-    @apply basic-input
+  input[type='text'] {
+    @apply basic-input;
   }
-  input[type=username] {
-    @apply basic-input
+  input[type='username'] {
+    @apply basic-input;
   }
-  input[type=email] {
-    @apply basic-input
+  input[type='email'] {
+    @apply basic-input;
   }
-  input[type=password] {
-    @apply basic-input
+  input[type='password'] {
+    @apply basic-input;
   }
-  .input[type=text]:focus {
-   @apply shadow;
+  .input[type='text']:focus {
+    @apply shadow;
   }
-  input[type=date] {
-    @apply basic-input
+  input[type='date'] {
+    @apply basic-input;
   }
-  input[type=number] {
-    @apply basic-input
+  input[type='number'] {
+    @apply basic-input;
   }
-  input[type=search] {
-    @apply basic-input
+  input[type='search'] {
+    @apply basic-input;
   }
   input::placeholder {
     @apply text-gray-400;
@@ -55,52 +55,51 @@
     @apply text-gray-400;
   }
   .textarea:focus {
-   @apply shadow;
+    @apply shadow;
   }
 
   select:focus {
     @apply outline-none bg-white;
   }
-  
+
   label {
-    @apply text-gray-400
+    @apply text-gray-400;
   }
   label .description {
-
-      @apply text-gray-300
+    @apply text-gray-300;
   }
 
   table {
-    @apply w-full table-auto text-left text-gray-400 shadow
+    @apply w-full table-auto text-left text-gray-400 shadow;
   }
   tbody {
-    @apply divide-y text-gray-600 border-b
+    @apply divide-y text-gray-600 border-b;
   }
   thead {
-    @apply bg-slate-50
+    @apply bg-slate-50;
   }
   th {
-    @apply bg-gray-800 text-gray-200 px-6 py-1
+    @apply bg-gray-800 text-gray-200 px-6 py-1;
   }
   tr {
-    @apply bg-white border-r border-l
+    @apply bg-white border-r border-l;
   }
   td {
-    @apply px-6 py-1
+    @apply px-6 py-1;
   }
   hr {
-    @apply pb-2
+    @apply pb-2;
   }
 
   .server-message {
-    @apply w-full rounded py-2 pl-3 mt-3
+    @apply w-full rounded py-2 pl-3 mt-3;
   }
   .success {
-    @apply bg-green-300 text-white
+    @apply bg-green-300 text-white;
   }
 
   .error {
-    @apply bg-red-300 text-white
+    @apply bg-red-300 text-white;
   }
 
   .card {
@@ -126,10 +125,11 @@
   }
 
   .loading {
-    background: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor"%3E%3Canimate attributeName="r" begin="0" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(45 12 12)"%3E%3Canimate attributeName="r" begin="0.125s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(90 12 12)"%3E%3Canimate attributeName="r" begin="0.25s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(135 12 12)"%3E%3Canimate attributeName="r" begin="0.375s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(180 12 12)"%3E%3Canimate attributeName="r" begin="0.5s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(225 12 12)"%3E%3Canimate attributeName="r" begin="0.625s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(270 12 12)"%3E%3Canimate attributeName="r" begin="0.75s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(315 12 12)"%3E%3Canimate attributeName="r" begin="0.875s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3C%2Fsvg%3E') center center no-repeat;
+    background: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor"%3E%3Canimate attributeName="r" begin="0" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(45 12 12)"%3E%3Canimate attributeName="r" begin="0.125s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(90 12 12)"%3E%3Canimate attributeName="r" begin="0.25s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(135 12 12)"%3E%3Canimate attributeName="r" begin="0.375s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(180 12 12)"%3E%3Canimate attributeName="r" begin="0.5s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(225 12 12)"%3E%3Canimate attributeName="r" begin="0.625s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(270 12 12)"%3E%3Canimate attributeName="r" begin="0.75s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(315 12 12)"%3E%3Canimate attributeName="r" begin="0.875s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3C%2Fsvg%3E')
+      center center no-repeat;
     background-size: 50px 50px;
   }
 }
 .invalid {
-	color: orangered;
+  color: orangered;
 }

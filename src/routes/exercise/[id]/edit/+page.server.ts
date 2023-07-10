@@ -9,10 +9,10 @@ export const load: PageServerLoad = async ({ params }) => {
   try {
     const exercise = await exerciseRepo.getOne(params.id);
     return {
-      exercise
+      exercise,
     };
   } catch (e) {
-    console.error(e)
-    throw error(500, { message: SERVER_ERROR })
+    console.error(e);
+    throw error(500, { message: SERVER_ERROR });
   }
 };

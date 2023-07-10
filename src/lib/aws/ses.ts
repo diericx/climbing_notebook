@@ -1,12 +1,14 @@
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 const sesClient = new SESClient({ region: 'us-west-2' });
 
-const createSendEmailCommand = (toAddress: string, htmlBodyData: string, fromAddress = 'noreply@climbingnotebook.com') => {
+const createSendEmailCommand = (
+  toAddress: string,
+  htmlBodyData: string,
+  fromAddress = 'noreply@climbingnotebook.com'
+) => {
   return new SendEmailCommand({
     Destination: {
-      ToAddresses: [
-        toAddress,
-      ],
+      ToAddresses: [toAddress],
     },
     Message: {
       Body: {
@@ -22,7 +24,6 @@ const createSendEmailCommand = (toAddress: string, htmlBodyData: string, fromAdd
     },
     Source: fromAddress,
   });
-
 };
 
 export { sesClient, createSendEmailCommand };

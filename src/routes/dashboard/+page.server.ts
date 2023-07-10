@@ -28,8 +28,8 @@ export const load: PageServerLoad = async ({ locals }) => {
   try {
     const profile = await profileRepo.getOne(user?.userId);
     // Get exercise events in the past month for the charts
-    const dateMin = new Date()
-    dateMin.setDate(dateMin.getDate() - 31)
+    const dateMin = new Date();
+    dateMin.setDate(dateMin.getDate() - 31);
     const exerciseEvents = await exerciseEventRepo.get(user?.userId, dateMin, new Date());
     // Get metris in the past month for the charts
     const metrics = await metricRepo.get(user?.userId, dateMin, new Date());
@@ -45,7 +45,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       if (w.type == 'chart' || w.type == 'heatmapCalendar') {
         for (const dataset of w.datasets) {
           // Don't run the same queries multiple times
-          if (customQueryResults.find(r => r.customQueryId == dataset.customQueryId)) {
+          if (customQueryResults.find((r) => r.customQueryId == dataset.customQueryId)) {
             continue;
           }
 
@@ -53,17 +53,27 @@ export const load: PageServerLoad = async ({ locals }) => {
           customQueryResults.push({
             customQueryId: dataset.customQueryId,
             data,
-          })
+          });
         }
       }
     }
 
-    return { user, profile, exerciseEvents, metrics, journalEntries, calendarEvents, widgets, customQueryResults, trainingPrograms }
+    return {
+      user,
+      profile,
+      exerciseEvents,
+      metrics,
+      journalEntries,
+      calendarEvents,
+      widgets,
+      customQueryResults,
+      trainingPrograms,
+    };
   } catch (e) {
     if (e instanceof APIError) {
-      throw error(401, { message: e.detail })
+      throw error(401, { message: e.detail });
     }
-    console.error(e)
-    throw error(500, { message: SERVER_ERROR })
+    console.error(e);
+    throw error(500, { message: SERVER_ERROR });
   }
-}
+};

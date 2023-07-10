@@ -1,11 +1,11 @@
 import type { Metric, PrismaClient } from '@prisma/client';
 
 export class MetricRepo {
-  constructor(private readonly prisma: PrismaClient) { }
+  constructor(private readonly prisma: PrismaClient) {}
 
   async get(ownerId: string, dateMin?: Date | undefined, dateMax?: Date | undefined) {
     // Fetch all
-    return await this.prisma.metric.findMany({
+    return (await this.prisma.metric.findMany({
       where: {
         ownerId: ownerId,
         date: {
@@ -16,7 +16,6 @@ export class MetricRepo {
       orderBy: {
         date: 'desc',
       },
-    }) as Metric[];
+    })) as Metric[];
   }
-
 }

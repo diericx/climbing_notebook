@@ -14,11 +14,11 @@ export const load: PageServerLoad = async ({ locals }) => {
     const exercises = await exerciseRepo.get();
     return {
       exercises,
-      user
+      user,
     };
   } catch (e) {
-    console.error(e)
-    throw error(500, { message: SERVER_ERROR })
+    console.error(e);
+    throw error(500, { message: SERVER_ERROR });
   }
 };
 
@@ -36,23 +36,21 @@ export const actions: Actions = {
 
     const repo = new ExerciseRepo(prisma);
     try {
-      await repo.new(form.data, user?.userId)
+      await repo.new(form.data, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return setError(form, null, 'An exercise with that name already exists')
+        return setError(form, null, 'An exercise with that name already exists');
       }
-      if (
-        e instanceof Prisma.PrismaClientKnownRequestError && e.code == 'P2002'
-      ) {
-        return setError(form, 'name', 'An exercise with that name already exists')
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code == 'P2002') {
+        return setError(form, 'name', 'An exercise with that name already exists');
       }
-      console.error(e)
-      throw error(500, { message: SERVER_ERROR })
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR });
     }
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
     }
     throw redirect(303, '/exercise');
-  }
-}
+  },
+};

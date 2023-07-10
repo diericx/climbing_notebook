@@ -15,17 +15,17 @@ export const load: PageServerLoad = async ({ locals, params }) => {
     const trainingProgramRepo = new TrainingProgramRepo(prisma);
     const trainingProgram = await trainingProgramRepo.getOne(Number(params.id), user?.userId);
     if (!trainingProgram.isPublic && !user) {
-      throw error(403, 'Unauthorized')
+      throw error(403, 'Unauthorized');
     }
-    return { trainingProgram, user }
+    return { trainingProgram, user };
   } catch (e) {
     if (e instanceof APIError) {
-      throw error(401, e.detail)
+      throw error(401, e.detail);
     }
-    console.error(e)
-    throw error(500, { message: SERVER_ERROR })
+    console.error(e);
+    throw error(500, { message: SERVER_ERROR });
   }
-}
+};
 
 export const actions: Actions = {
   delete: async ({ locals, params, url }) => {
@@ -38,10 +38,10 @@ export const actions: Actions = {
       trainingProgram = await repo.delete(id, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail })
+        return fail(401, { message: e.detail });
       }
-      console.error(e)
-      throw error(500, { message: SERVER_ERROR })
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR });
     }
 
     if (url.searchParams.has('redirectTo')) {
@@ -54,7 +54,7 @@ export const actions: Actions = {
   duplicate: async ({ locals, url, params }) => {
     const { user } = await locals.auth.validateUser();
     if (!user) {
-      throw redirect(302, '/login?redirectTo=' + url.toString())
+      throw redirect(302, '/login?redirectTo=' + url.toString());
     }
 
     const repo = new TrainingProgramRepo(prisma);
@@ -63,10 +63,10 @@ export const actions: Actions = {
       trainingProgram = await repo.duplicate(Number(params.id), user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail })
+        return fail(401, { message: e.detail });
       }
-      console.error(e)
-      throw error(500, { message: SERVER_ERROR })
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR });
     }
 
     if (url.searchParams.has('redirectTo')) {
@@ -93,10 +93,10 @@ export const actions: Actions = {
       await repo.update(form.data, id, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form })
+        return fail(401, { message: e.detail, form });
       }
-      console.error(e)
-      throw error(500, { message: SERVER_ERROR })
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR });
     }
 
     if (url.searchParams.has('redirectTo')) {
@@ -123,10 +123,10 @@ export const actions: Actions = {
       await repo.addExerciseGroup(form.data, id, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form })
+        return fail(401, { message: e.detail, form });
       }
-      console.error(e)
-      throw error(500, { message: SERVER_ERROR })
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR });
     }
 
     if (url.searchParams.has('redirectTo')) {
@@ -147,10 +147,10 @@ export const actions: Actions = {
       await repo.deleteExerciseGroup(id, user?.userId, exerciseGroupId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, trainingProgramFormData: rawFormData })
+        return fail(401, { message: e.detail, trainingProgramFormData: rawFormData });
       }
-      console.error(e)
-      throw error(500, { message: SERVER_ERROR })
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR });
     }
 
     if (url.searchParams.has('redirectTo')) {
@@ -159,4 +159,4 @@ export const actions: Actions = {
 
     return { success: true };
   },
-}
+};

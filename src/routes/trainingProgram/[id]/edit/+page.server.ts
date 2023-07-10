@@ -9,7 +9,7 @@ import { ExerciseRepo } from '$lib/exercise';
 export const load: PageServerLoad = async ({ locals, params, url }) => {
   const { user } = await locals.auth.validateUser();
   if (!user) {
-    throw redirect(302, '/login?redirectTo=' + url.toString())
+    throw redirect(302, '/login?redirectTo=' + url.toString());
   }
 
   const id = Number(params.id);
@@ -22,7 +22,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
       _count: {
         select: {
           exerciseEvents: true,
-        }
+        },
       },
       id: true,
       name: true,
@@ -36,11 +36,10 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   } catch (e) {
     if (e instanceof APIError) {
       throw error(404, {
-        message: 'Not found'
+        message: 'Not found',
       });
     }
-    console.error(e)
-    throw error(500, { message: SERVER_ERROR })
+    console.error(e);
+    throw error(500, { message: SERVER_ERROR });
   }
-
 };

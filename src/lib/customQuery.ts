@@ -17,32 +17,32 @@ export const customQueryConditionSchema = z.object({
 export type CustomQueryConditionSchema = typeof customQueryConditionSchema;
 
 export type CustomQueryResults = {
-  customQueryId: string,
-  data: ExerciseEvent[] | Metric[],
-}
+  customQueryId: string;
+  data: ExerciseEvent[] | Metric[];
+};
 
 export class CustomQueryRepo {
-  constructor(private readonly prisma: PrismaClient) { }
+  constructor(private readonly prisma: PrismaClient) {}
   async new(data: z.infer<CustomQuerySchema>, ownerId: string) {
-    return await this.prisma.customQuery.create({
+    return (await this.prisma.customQuery.create({
       data: {
         ...data,
         ownerId: ownerId,
         createdAt: new Date(),
       },
-    }) as CustomQuery;
+    })) as CustomQuery;
   }
 
   async runCustomQuery(id: string, ownerId: string) {
-    const query = await this.getOneAndValidateOwner(id, ownerId)
+    const query = await this.getOneAndValidateOwner(id, ownerId);
     const prismaQuery = { where: { ownerId }, orderBy: { date: 'asc' } };
-    prismaQuery.where[query.operator] = query.conditions.map(c => {
+    prismaQuery.where[query.operator] = query.conditions.map((c) => {
       const prismaCondition = {};
-      prismaCondition[c.column] = {}
+      prismaCondition[c.column] = {};
       prismaCondition[c.column][c.condition] = c.value;
       prismaCondition[c.column]['mode'] = 'insensitive';
       return prismaCondition;
-    })
+    });
 
     // Filter out exercise events in programs in an admittedly confusing double negative way
     if (query.table == 'exerciseEvent') {
@@ -55,36 +55,37 @@ export class CustomQueryRepo {
         {
           exerciseGroupId: {
             not: null,
-          }
-        }]
+          },
+        },
+      ];
     }
     return await this.prisma[query.table].findMany(prismaQuery);
   }
   async get(ownerId: string) {
-    return await this.prisma.customQuery.findMany({
+    return (await this.prisma.customQuery.findMany({
       where: {
         ownerId: ownerId,
       },
       orderBy: {
         name: 'asc',
       },
-    }) as CustomQuery[];
+    })) as CustomQuery[];
   }
 
   async getOneAndValidateOwner(id: string, ownerId: string) {
     const query = await this.prisma.customQuery.findUnique({
       where: {
-        id
+        id,
       },
       include: {
-        conditions: true
-      }
+        conditions: true,
+      },
     });
     if (query == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
     if (query.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.')
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
     }
 
     return query;
@@ -108,14 +109,14 @@ export class CustomQueryRepo {
 
     return await this.prisma.customQuery.delete({
       where: {
-        id
-      }
+        id,
+      },
     });
   }
 
   async addCondition(data: z.infer<CustomQueryConditionSchema>, id: string, ownerId: string) {
-    await this.getOneAndValidateOwner(id, ownerId)
-    return await this.prisma.customQuery.update({
+    await this.getOneAndValidateOwner(id, ownerId);
+    return (await this.prisma.customQuery.update({
       data: {
         conditions: {
           create: [
@@ -123,35 +124,40 @@ export class CustomQueryRepo {
               ...data,
               ownerId: ownerId,
               createdAt: new Date(),
-            }
-          ]
-        }
+            },
+          ],
+        },
       },
       where: {
         id,
-      }
-    }) as CustomQuery;
+      },
+    })) as CustomQuery;
   }
 
   async deleteCondition(queryId: string, conditionId: string, ownerId: string) {
-    await this.getOneAndValidateOwner(queryId, ownerId)
-    return await this.prisma.customQuery.update({
+    await this.getOneAndValidateOwner(queryId, ownerId);
+    return (await this.prisma.customQuery.update({
       data: {
         conditions: {
           delete: {
             id: conditionId,
-          }
-        }
+          },
+        },
       },
       where: {
         id: queryId,
-      }
-    }) as CustomQuery;
+      },
+    })) as CustomQuery;
   }
 
-  async updateCondition(data: z.infer<CustomQueryConditionSchema>, queryId: string, conditionId: string, ownerId: string) {
-    await this.getOneAndValidateOwner(queryId, ownerId)
-    return await this.prisma.customQuery.update({
+  async updateCondition(
+    data: z.infer<CustomQueryConditionSchema>,
+    queryId: string,
+    conditionId: string,
+    ownerId: string
+  ) {
+    await this.getOneAndValidateOwner(queryId, ownerId);
+    return (await this.prisma.customQuery.update({
       data: {
         conditions: {
           update: {
@@ -159,12 +165,12 @@ export class CustomQueryRepo {
               id: conditionId,
             },
             data,
-          }
-        }
+          },
+        },
       },
       where: {
         id: queryId,
-      }
-    }) as CustomQuery;
+      },
+    })) as CustomQuery;
   }
 }

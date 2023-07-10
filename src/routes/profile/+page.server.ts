@@ -35,12 +35,11 @@ export const load: PageServerLoad = async ({ locals }) => {
     };
   } catch (e) {
     if (e instanceof APIError) {
-      return fail(401, { message: e.detail })
+      return fail(401, { message: e.detail });
     }
-    console.error(e)
-    throw error(500, { message: SERVER_ERROR })
+    console.error(e);
+    throw error(500, { message: SERVER_ERROR });
   }
-
 };
 
 export const actions: Actions = {
@@ -60,10 +59,10 @@ export const actions: Actions = {
       await repo.update(form.data, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form })
+        return fail(401, { message: e.detail, form });
       }
-      console.error(e)
-      throw error(500, { message: SERVER_ERROR })
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR });
     }
 
     if (url.searchParams.has('redirectTo')) {
@@ -71,5 +70,5 @@ export const actions: Actions = {
     }
 
     return { form };
-  }
-}
+  },
+};

@@ -7,7 +7,7 @@ export const calendarEventSchema = z.object({
   dateEnd: z.date().default(new Date()),
   title: z.string().min(1).default(''),
   content: z.string().nullish(),
-  color: z.string().default('green')
+  color: z.string().default('green'),
 });
 export const calendarEventPartialSchema = calendarEventSchema.partial();
 export type CalendarEventSchema = typeof calendarEventSchema;
@@ -19,8 +19,8 @@ export class CalendarEventRepo {
   async getOneAndValidateOwner(id: number, ownerId: string) {
     const e = await this.prisma.calendarEvent.findUnique({
       where: {
-        id: Number(id)
-      }
+        id: Number(id),
+      },
     });
     if (e == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
@@ -36,8 +36,8 @@ export class CalendarEventRepo {
       data: {
         ...data,
         ownerId,
-        createdAt: new Date()
-      }
+        createdAt: new Date(),
+      },
     });
   }
 
@@ -45,11 +45,11 @@ export class CalendarEventRepo {
     // Fetch all
     return await this.prisma.calendarEvent.findMany({
       where: {
-        ownerId: ownerId
+        ownerId: ownerId,
       },
       orderBy: {
-        dateStart: 'desc'
-      }
+        dateStart: 'desc',
+      },
     });
   }
 
@@ -63,8 +63,8 @@ export class CalendarEventRepo {
     return await this.prisma.calendarEvent.update({
       data,
       where: {
-        id: Number(id)
-      }
+        id: Number(id),
+      },
     });
   }
 
@@ -73,8 +73,8 @@ export class CalendarEventRepo {
 
     return await this.prisma.calendarEvent.delete({
       where: {
-        id: Number(id)
-      }
+        id: Number(id),
+      },
     });
   }
 }

@@ -1,7 +1,7 @@
 import type { ExerciseEvent, PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
-import { isDateInTheSameWeekAsToday } from './utils'
+import { isDateInTheSameWeekAsToday } from './utils';
 
 export const exerciseEventSchema = z.object({
   date: z.date().default(new Date()).nullish(),
@@ -20,21 +20,21 @@ export const exerciseEventSchema = z.object({
 export type ExerciseEventSchema = typeof exerciseEventSchema;
 
 export class ExerciseEventRepo {
-  constructor(private readonly prisma: PrismaClient) { }
+  constructor(private readonly prisma: PrismaClient) {}
 
   async getOneAndValidateOwner(id: number, ownerId: string, isAdmin = false) {
     const exerciseEvent = await this.prisma.exerciseEvent.findUnique({
       where: {
         id: Number(id),
-      }
+      },
     });
     if (exerciseEvent == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
     if (exerciseEvent.ownerId != ownerId && isAdmin != true) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.')
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
     }
-    return exerciseEvent
+    return exerciseEvent;
   }
 
   async new(data: z.infer<ExerciseEventSchema>, ownerId: string) {
@@ -42,23 +42,29 @@ export class ExerciseEventRepo {
       const exerciseGroup = await this.prisma.exerciseGroup.findUnique({
         where: {
           id: data.exerciseGroupId,
-        }
-      })
+        },
+      });
       if (exerciseGroup == null || exerciseGroup.ownerId != ownerId) {
-        throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.')
+        throw new APIError(
+          'INVALID_PERMISSIONS',
+          'You do not have permission to edit this object.'
+        );
       }
     }
     if (data.trainingProgramDayId) {
       const trainingProgramDay = await this.prisma.trainingProgramDay.findUnique({
         where: {
-          id: data.trainingProgramDayId
+          id: data.trainingProgramDayId,
         },
         include: {
-          trainingProgram: true
-        }
-      })
+          trainingProgram: true,
+        },
+      });
       if (trainingProgramDay == null || trainingProgramDay.trainingProgram.ownerId != ownerId) {
-        throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.')
+        throw new APIError(
+          'INVALID_PERMISSIONS',
+          'You do not have permission to edit this object.'
+        );
       }
     }
     return await this.prisma.exerciseEvent.create({
@@ -66,7 +72,7 @@ export class ExerciseEventRepo {
         ...data,
         ownerId,
         createdAt: new Date(),
-      }
+      },
     });
   }
 
@@ -87,25 +93,31 @@ export class ExerciseEventRepo {
       },
       include: {
         exercise: true,
-      }
+      },
     });
   }
 
   async getOne(id: number, ownerId: string) {
-    return this.getOneAndValidateOwner(id, ownerId)
+    return this.getOneAndValidateOwner(id, ownerId);
   }
 
   async getOneThatNeedsExerciseMigration() {
     return this.prisma.exerciseEvent.findFirst({
       where: {
         exercise: {
-          is: null
-        }
-      }
-    })
+          is: null,
+        },
+      },
+    });
   }
 
-  async update(data: z.infer<ExerciseEventSchema>, id: number, ownerId: string, shouldApplyMigrationToAll = false, isAdmin = false) {
+  async update(
+    data: z.infer<ExerciseEventSchema>,
+    id: number,
+    ownerId: string,
+    shouldApplyMigrationToAll = false,
+    isAdmin = false
+  ) {
     const original = await this.getOneAndValidateOwner(id, ownerId, isAdmin);
 
     // Propogate this migration to all other exercises with the same name
@@ -118,14 +130,14 @@ export class ExerciseEventRepo {
           ownerId,
         },
         data: {
-          exerciseId: data.exerciseId
-        }
-      })
+          exerciseId: data.exerciseId,
+        },
+      });
     }
 
     return await this.prisma.exerciseEvent.update({
       data: {
-        ...data
+        ...data,
       },
       where: {
         id: Number(id),
@@ -138,9 +150,9 @@ export class ExerciseEventRepo {
 
     return await this.prisma.exerciseEvent.delete({
       where: {
-        id: Number(id)
-      }
-    })
+        id: Number(id),
+      },
+    });
   }
 
   async setCompleted(id: number, ownerId: string, newDate: Date, isCompleted: boolean) {
@@ -149,44 +161,46 @@ export class ExerciseEventRepo {
     const strippedDate = new Date(newDateStr);
 
     // Perform a lazy trim by removing anything that is not in this week
-    e.markedCompletions.filter(c => {
-      return isDateInTheSameWeekAsToday(c)
-    })
+    e.markedCompletions.filter((c) => {
+      return isDateInTheSameWeekAsToday(c);
+    });
 
     // Either add or remove the given date
     if (isCompleted) {
-      const alreadyExists = e.markedCompletions.find(c => c.toISOString().split('T')[0] == newDateStr);
+      const alreadyExists = e.markedCompletions.find(
+        (c) => c.toISOString().split('T')[0] == newDateStr
+      );
       if (alreadyExists) {
         return e;
       }
 
-      e.markedCompletions = [...e.markedCompletions, strippedDate]
+      e.markedCompletions = [...e.markedCompletions, strippedDate];
     } else {
-      e.markedCompletions = e.markedCompletions.filter(c => {
+      e.markedCompletions = e.markedCompletions.filter((c) => {
         const dstr1 = newDateStr;
         const dstr2 = c.toISOString().split('T')[0];
         return dstr1 != dstr2;
-      })
+      });
     }
 
     return await this.prisma.exerciseEvent.update({
       data: {
-        markedCompletions: e.markedCompletions
+        markedCompletions: e.markedCompletions,
       },
       where: {
         id: Number(id),
       },
-    })
+    });
   }
 
   async getCountOfExercisesThatNeedMigration(ownerId: string) {
     return this.prisma.exerciseEvent.count({
       where: {
         exercise: {
-          is: null
+          is: null,
         },
         ownerId,
-      }
-    })
+      },
+    });
   }
 }

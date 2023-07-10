@@ -21,11 +21,11 @@ export const load: PageServerLoad = async ({ locals, params }) => {
     return {
       widget,
       customQueries,
-      trainingPrograms
+      trainingPrograms,
     };
   } catch (e) {
-    console.error(e)
-    throw error(500, { message: SERVER_ERROR })
+    console.error(e);
+    throw error(500, { message: SERVER_ERROR });
   }
 };
 
@@ -44,13 +44,13 @@ export const actions: Actions = {
 
     const repo = new WidgetRepo(prisma);
     try {
-      await repo.update(form.data, id, user?.userId)
+      await repo.update(form.data, id, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form })
+        return fail(401, { message: e.detail, form });
       }
-      console.error(e)
-      throw error(500, { message: SERVER_ERROR })
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR });
     }
 
     if (url.searchParams.has('redirectTo')) {
@@ -65,13 +65,13 @@ export const actions: Actions = {
 
     const repo = new WidgetRepo(prisma);
     try {
-      await repo.delete(id, user?.userId)
+      await repo.delete(id, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail })
+        return fail(401, { message: e.detail });
       }
-      console.error(e)
-      throw error(500, { message: SERVER_ERROR })
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR });
     }
 
     if (url.searchParams.has('redirectTo')) {
@@ -94,13 +94,13 @@ export const actions: Actions = {
 
     const repo = new WidgetRepo(prisma);
     try {
-      await repo.addDataset(form.data, id, user?.userId)
+      await repo.addDataset(form.data, id, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form })
+        return fail(401, { message: e.detail, form });
       }
-      console.error(e)
-      throw error(500, { message: SERVER_ERROR })
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR });
     }
 
     if (url.searchParams.has('redirectTo')) {
@@ -108,5 +108,5 @@ export const actions: Actions = {
     }
 
     return { form };
-  }
-}
+  },
+};

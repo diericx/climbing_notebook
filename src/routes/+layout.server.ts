@@ -7,11 +7,12 @@ export const load: PageServerLoad = async ({ locals }) => {
   const exerciseEventsRepo = new ExerciseEventRepo(prisma);
   let countOfExercisesThatNeedMigration = 0;
   if (user) {
-    countOfExercisesThatNeedMigration = await exerciseEventsRepo.getCountOfExercisesThatNeedMigration(user.userId);
+    countOfExercisesThatNeedMigration =
+      await exerciseEventsRepo.getCountOfExercisesThatNeedMigration(user.userId);
   }
 
   return {
     user,
-    countOfExercisesThatNeedMigration
-  }
-}
+    countOfExercisesThatNeedMigration,
+  };
+};

@@ -2,71 +2,71 @@
 @import '@fontsource/pt-sans';
 
 :root {
-	--color-bg-0: rgb(202, 216, 228);
-	--color-bg-1: hsl(209, 36%, 86%);
-	--color-bg-2: hsl(224, 44%, 95%);
-	--color-theme-1: #ff3e00;
-	--color-theme-2: #4075a6;
-	--color-text: rgba(0, 0, 0, 0.7);
-	--column-width: 42rem;
-	--column-margin-top: 4rem;
-	--font-mono: 'Fira Mono', monospace;
-	font-family: 'PT Sans';
-	color: var(--color-text);
+  --color-bg-0: rgb(202, 216, 228);
+  --color-bg-1: hsl(209, 36%, 86%);
+  --color-bg-2: hsl(224, 44%, 95%);
+  --color-theme-1: #ff3e00;
+  --color-theme-2: #4075a6;
+  --color-text: rgba(0, 0, 0, 0.7);
+  --column-width: 42rem;
+  --column-margin-top: 4rem;
+  --font-mono: 'Fira Mono', monospace;
+  font-family: 'PT Sans';
+  color: var(--color-text);
 }
 
 body {
-	min-height: 100vh;
-	margin: 0;
-	background-attachment: fixed;
-	background-size: 100vw 100vh;
-	@apply bg-slate-50;
+  min-height: 100vh;
+  margin: 0;
+  background-attachment: fixed;
+  background-size: 100vw 100vh;
+  @apply bg-slate-50;
 }
 
 p {
-	line-height: 1.5;
+  line-height: 1.5;
 }
 
 pre {
-	font-size: 16px;
-	font-family: var(--font-mono);
-	background-color: rgba(255, 255, 255, 0.45);
-	border-radius: 3px;
-	box-shadow: 2px 2px 6px rgb(255 255 255 / 25%);
-	padding: 0.5em;
-	overflow-x: auto;
-	color: var(--color-text);
+  font-size: 16px;
+  font-family: var(--font-mono);
+  background-color: rgba(255, 255, 255, 0.45);
+  border-radius: 3px;
+  box-shadow: 2px 2px 6px rgb(255 255 255 / 25%);
+  padding: 0.5em;
+  overflow-x: auto;
+  color: var(--color-text);
 }
 
 .text-column {
-	display: flex;
-	max-width: 48rem;
-	flex: 0.6;
-	flex-direction: column;
-	justify-content: center;
-	margin: 0 auto;
+  display: flex;
+  max-width: 48rem;
+  flex: 0.6;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 auto;
 }
 
 @media (min-width: 720px) {
-	h1 {
-		font-size: 2.4rem;
-	}
+  h1 {
+    font-size: 2.4rem;
+  }
 }
 
 .visually-hidden {
-	border: 0;
-	clip: rect(0 0 0 0);
-	height: auto;
-	margin: 0;
-	overflow: hidden;
-	padding: 0;
-	position: absolute;
-	width: 1px;
-	white-space: nowrap;
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: auto;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  white-space: nowrap;
 }
 
 .ec-header {
-	background-color: white;
+  background-color: white;
 }
 .ec-body {
   background-color: white;

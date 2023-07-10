@@ -1,17 +1,17 @@
 <script lang="ts">
-	import FormCalendarEvent from '$lib/components/forms/FormCalendarEvent.svelte';
-	import type { PageData } from './$types';
+  import FormCalendarEvent from '$lib/components/forms/FormCalendarEvent.svelte';
+  import type { PageData } from './$types';
 
-	export let data: PageData;
-	const { calendarEvent } = data;
+  export let data: PageData;
+  const { calendarEvent } = data;
 </script>
 
 <div class="grid grid-cols-1">
-	<div>
-		<h1>Edit Calendar Event</h1>
-		<FormCalendarEvent
-			action={`/calendarEvent/${calendarEvent.id}?/edit`}
-			data={data.calendarEvent}
-		/>
-	</div>
+  <div>
+    <h1>Edit Calendar Event</h1>
+    <FormCalendarEvent
+      action={`/calendarEvent/${calendarEvent.id}?/edit`}
+      data={data.calendarEvent}
+    />
+  </div>
 </div>

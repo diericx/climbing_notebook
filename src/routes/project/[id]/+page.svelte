@@ -28,8 +28,8 @@
             meta: {
               action: `/project/${project.id}?/edit`,
               title: 'Edit Project',
-              data: project
-            }
+              data: project,
+            },
           })}
       >
         <Icon icon="material-symbols:edit-outline" height="18" />
@@ -78,8 +78,8 @@
         component: 'formModalProjectSession',
         meta: {
           action: `/project/${project.id}/session?/new`,
-          title: 'New Session'
-        }
+          title: 'New Session',
+        },
       })}
   >
     <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
@@ -106,8 +106,8 @@
                   meta: {
                     action: `/project/${project.id}/session/${session.id}?/edit`,
                     title: 'Edit Session',
-                    data: session
-                  }
+                    data: session,
+                  },
                 })}
             >
               <Icon icon="material-symbols:edit-outline" height="18" />

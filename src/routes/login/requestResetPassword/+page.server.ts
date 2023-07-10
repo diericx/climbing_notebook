@@ -32,10 +32,10 @@ https://climbingnotebook.com/login/resetPassword?token=${token.token}
       await sesClient.send(sendEmailCommand);
     } catch (e) {
       if (e instanceof APIError) {
-        return message(form, 'Email is not recognized')
+        return message(form, 'Email is not recognized');
       } else {
         console.error(e);
-        return message(form, 'Uknown error occured.')
+        return message(form, 'Uknown error occured.');
       }
     }
 

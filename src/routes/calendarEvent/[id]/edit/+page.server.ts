@@ -18,9 +18,9 @@ export const load: PageServerLoad = async ({ locals, params }) => {
     };
   } catch (e) {
     if (e instanceof APIError) {
-      throw error(401, { message: e.detail })
+      throw error(401, { message: e.detail });
     }
-    console.error(e)
-    throw error(500, { message: SERVER_ERROR })
+    console.error(e);
+    throw error(500, { message: SERVER_ERROR });
   }
 };

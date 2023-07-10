@@ -1,4 +1,3 @@
-
 import { error, fail, redirect, type Actions } from '@sveltejs/kit';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
@@ -16,18 +15,23 @@ export const actions: Actions = {
     const trainingProgramDayId = Number(params.dayId);
     const exerciseGroupId = Number(rawFormData.exerciseGroupId);
     if (isNaN(exerciseGroupId)) {
-      return fail(401, { message: 'Invalid exercise group', trainingProgramFormData: rawFormData })
+      return fail(401, { message: 'Invalid exercise group', trainingProgramFormData: rawFormData });
     }
 
     const repo = new TrainingProgramRepo(prisma);
     try {
-      await repo.connectExerciseGroupToDay(trainingProgramId, exerciseGroupId, trainingProgramDayId, user?.userId);
+      await repo.connectExerciseGroupToDay(
+        trainingProgramId,
+        exerciseGroupId,
+        trainingProgramDayId,
+        user?.userId
+      );
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, trainingProgramFormData: rawFormData })
+        return fail(401, { message: e.detail, trainingProgramFormData: rawFormData });
       }
-      console.error(e)
-      return fail(500, { message: SERVER_ERROR })
+      console.error(e);
+      return fail(500, { message: SERVER_ERROR });
     }
 
     if (url.searchParams.has('redirectTo')) {
@@ -44,18 +48,23 @@ export const actions: Actions = {
     const trainingProgramDayId = Number(params.dayId);
     const exerciseGroupId = Number(rawFormData.exerciseGroupId);
     if (isNaN(exerciseGroupId)) {
-      return fail(401, { message: 'Invalid exercise group', trainingProgramFormData: rawFormData })
+      return fail(401, { message: 'Invalid exercise group', trainingProgramFormData: rawFormData });
     }
 
     const repo = new TrainingProgramRepo(prisma);
     try {
-      await repo.disconnectExerciseGroupFromDay(trainingProgramId, exerciseGroupId, trainingProgramDayId, user?.userId);
+      await repo.disconnectExerciseGroupFromDay(
+        trainingProgramId,
+        exerciseGroupId,
+        trainingProgramDayId,
+        user?.userId
+      );
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, trainingProgramFormData: rawFormData })
+        return fail(401, { message: e.detail, trainingProgramFormData: rawFormData });
       }
-      console.error(e)
-      return fail(500, { message: SERVER_ERROR })
+      console.error(e);
+      return fail(500, { message: SERVER_ERROR });
     }
 
     if (url.searchParams.has('redirectTo')) {
@@ -80,13 +89,18 @@ export const actions: Actions = {
 
     const repo = new TrainingProgramRepo(prisma);
     try {
-      await repo.editTrainingProgramDay(form.data, trainingProgramId, trainingProgramDayId, user?.userId);
+      await repo.editTrainingProgramDay(
+        form.data,
+        trainingProgramId,
+        trainingProgramDayId,
+        user?.userId
+      );
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form })
+        return fail(401, { message: e.detail, form });
       }
-      console.error(e)
-      return fail(500, { message: SERVER_ERROR, form })
+      console.error(e);
+      return fail(500, { message: SERVER_ERROR, form });
     }
 
     if (url.searchParams.has('redirectTo')) {
@@ -111,13 +125,13 @@ export const actions: Actions = {
     form.data.trainingProgramDayId = Number(dayId);
     const exerciseEventRepo = new ExerciseEventRepo(prisma);
     try {
-      await exerciseEventRepo.new(form.data, user?.userId)
+      await exerciseEventRepo.new(form.data, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form })
+        return fail(401, { message: e.detail, form });
       }
-      console.error(e)
-      throw error(500, { message: SERVER_ERROR })
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR });
     }
 
     if (url.searchParams.has('redirectTo')) {
@@ -125,5 +139,5 @@ export const actions: Actions = {
     }
 
     return { form };
-  }
-}
+  },
+};

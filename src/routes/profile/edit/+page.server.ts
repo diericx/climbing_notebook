@@ -15,10 +15,10 @@ export const load: PageServerLoad = async ({ locals }) => {
     profile = await repo.getOne(user?.userId);
   } catch (e) {
     if (e instanceof APIError) {
-      return fail(401, { message: e.detail })
+      return fail(401, { message: e.detail });
     }
-    console.error(e)
-    throw error(500, { message: SERVER_ERROR })
+    console.error(e);
+    throw error(500, { message: SERVER_ERROR });
   }
 
   return {

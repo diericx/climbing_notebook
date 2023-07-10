@@ -21,15 +21,15 @@ export const datasetSchema = z.object({
 export type DatasetSchema = typeof datasetSchema;
 
 export class WidgetRepo {
-  constructor(private readonly prisma: PrismaClient) { }
+  constructor(private readonly prisma: PrismaClient) {}
   async new(data: z.infer<WidgetSchema>, ownerId: string) {
-    return await this.prisma.widget.create({
+    return (await this.prisma.widget.create({
       data: {
         ...data,
         ownerId: ownerId,
         createdAt: new Date(),
       },
-    }) as Widget;
+    })) as Widget;
   }
 
   async get(ownerId: string) {
@@ -46,8 +46,8 @@ export class WidgetRepo {
             customQuery: true,
           },
           orderBy: {
-            name: 'asc'
-          }
+            name: 'asc',
+          },
         },
         trainingProgram: {
           include: {
@@ -78,26 +78,26 @@ export class WidgetRepo {
                     exercises: {
                       orderBy: {
                         name: 'asc',
-                      }
-                    }
-                  }
+                      },
+                    },
+                  },
                 },
               },
               orderBy: {
                 // Note: ui depends on this being sorted in this way
                 dayOfTheWeek: 'asc',
               },
-            }
-          }
+            },
+          },
         },
-      }
+      },
     });
   }
 
   async getOneAndValidateOwner(id: string, ownerId: string) {
     const query = await this.prisma.widget.findUnique({
       where: {
-        id
+        id,
       },
       include: {
         datasets: {
@@ -105,17 +105,17 @@ export class WidgetRepo {
             customQuery: true,
           },
           orderBy: {
-            name: 'asc'
-          }
+            name: 'asc',
+          },
         },
         trainingProgram: true,
-      }
+      },
     });
     if (query == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
     if (query.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.')
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
     }
 
     return query;
@@ -139,8 +139,8 @@ export class WidgetRepo {
 
     return await this.prisma.widget.delete({
       where: {
-        id
-      }
+        id,
+      },
     });
   }
 
@@ -153,8 +153,8 @@ export class WidgetRepo {
           create: {
             ...data,
             ownerId,
-          }
-        }
+          },
+        },
       },
       where: {
         id,
@@ -162,7 +162,12 @@ export class WidgetRepo {
     });
   }
 
-  async updateDataset(data: z.infer<DatasetSchema>, widgetId: string, datasetId: string, ownerId: string) {
+  async updateDataset(
+    data: z.infer<DatasetSchema>,
+    widgetId: string,
+    datasetId: string,
+    ownerId: string
+  ) {
     await this.getOneAndValidateOwner(widgetId, ownerId);
 
     return await this.prisma.widget.update({
@@ -172,9 +177,9 @@ export class WidgetRepo {
             data,
             where: {
               id: datasetId,
-            }
-          }
-        }
+            },
+          },
+        },
       },
       where: {
         id: widgetId,
@@ -190,8 +195,8 @@ export class WidgetRepo {
         datasets: {
           delete: {
             id: datasetId,
-          }
-        }
+          },
+        },
       },
       where: {
         id: widgetId,

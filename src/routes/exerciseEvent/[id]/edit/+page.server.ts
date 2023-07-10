@@ -16,10 +16,10 @@ export const actions: Actions = {
       await repo.delete(id, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail })
+        return fail(401, { message: e.detail });
       }
-      console.error(e)
-      throw error(500, { message: SERVER_ERROR })
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR });
     }
 
     if (url.searchParams.has('redirectTo')) {
@@ -46,10 +46,10 @@ export const actions: Actions = {
       await repo.update(form.data, id, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form })
+        return fail(401, { message: e.detail, form });
       }
-      console.error(e)
-      throw error(500, { message: SERVER_ERROR })
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR });
     }
 
     if (url.searchParams.has('redirectTo')) {
@@ -60,13 +60,13 @@ export const actions: Actions = {
   },
 
   setCompleted: async ({ locals, params, request }) => {
-    const formData = await request.formData()
+    const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
     const id = Number(params.id);
-    const dateInput = formData.get('date')?.toString()
+    const dateInput = formData.get('date')?.toString();
 
     if (!dateInput) {
-      return fail(401, { message: 'date is required' })
+      return fail(401, { message: 'date is required' });
     }
 
     const isCompleted = formData.has('isCompleted');
@@ -77,12 +77,12 @@ export const actions: Actions = {
       await repo.setCompleted(id, user?.userId, date, isCompleted);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail })
+        return fail(401, { message: e.detail });
       }
-      console.error(e)
-      throw error(500, { message: SERVER_ERROR })
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR });
     }
 
-    return { success: true }
-  }
-}
+    return { success: true };
+  },
+};

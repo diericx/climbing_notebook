@@ -21,7 +21,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       _count: {
         select: {
           exerciseEvents: true,
-        }
+        },
       },
       id: true,
       name: true,
@@ -32,14 +32,13 @@ export const load: PageServerLoad = async ({ locals }) => {
       exercises,
       exerciseEvents,
       profile,
-      user
+      user,
     };
   } catch (e) {
-    console.error(e)
-    throw error(500, { message: SERVER_ERROR })
+    console.error(e);
+    throw error(500, { message: SERVER_ERROR });
   }
 };
-
 
 export const actions: Actions = {
   new: async ({ locals, request, url }) => {
@@ -55,19 +54,24 @@ export const actions: Actions = {
 
     const repo = new ExerciseEventRepo(prisma);
     try {
-      await repo.new(form.data, user?.userId)
+      await repo.new(form.data, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form })
+        return fail(401, { message: e.detail, form });
       }
-      console.error(e)
-      throw error(500, { message: SERVER_ERROR })
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR });
     }
 
     const exerciseToMarkCompletedId = formData.get('exerciseToMarkCompletedId');
     const dateToMarkCompleted = formData.get('dateToMarkCompleted');
     if (exerciseToMarkCompletedId != null && dateToMarkCompleted != null) {
-      await repo.setCompleted(Number(exerciseToMarkCompletedId), user?.userId, new Date(dateToMarkCompleted.toString()), true)
+      await repo.setCompleted(
+        Number(exerciseToMarkCompletedId),
+        user?.userId,
+        new Date(dateToMarkCompleted.toString()),
+        true
+      );
     }
 
     if (url.searchParams.has('redirectTo')) {
@@ -75,5 +79,5 @@ export const actions: Actions = {
     }
 
     return { form };
-  }
-}
+  },
+};

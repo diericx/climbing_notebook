@@ -11,7 +11,7 @@ export const trainingProgramSchema = z.object({
 export type TrainingProgramSchema = typeof trainingProgramSchema;
 
 export class TrainingProgramRepo {
-  constructor(private readonly prisma: PrismaClient) { }
+  constructor(private readonly prisma: PrismaClient) {}
 
   async getOneAndValidateOwner(id: number, ownerId: string) {
     const trainingProgram = await this.prisma.trainingProgram.findUnique({
@@ -46,25 +46,25 @@ export class TrainingProgramRepo {
                 exercises: {
                   orderBy: {
                     name: 'asc',
-                  }
-                }
-              }
+                  },
+                },
+              },
             },
           },
           orderBy: {
             // Note: ui depends on this being sorted in this way
             dayOfTheWeek: 'asc',
           },
-        }
-      }
+        },
+      },
     });
     if (trainingProgram == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
     if (trainingProgram.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this object.')
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this object.');
     }
-    return trainingProgram
+    return trainingProgram;
   }
 
   async duplicate(id: number, ownerId: string) {
@@ -82,7 +82,7 @@ export class TrainingProgramRepo {
               dayOfTheWeek: i,
               description: '',
               exercises: {
-                create: program.days[i].exercises.map(e => ({
+                create: program.days[i].exercises.map((e) => ({
                   ...e,
                   ownerId: undefined,
                   exerciseGroupId: undefined,
@@ -92,17 +92,17 @@ export class TrainingProgramRepo {
                   exercise: {
                     connect: {
                       id: e.exerciseId,
-                    }
+                    },
                   },
                   owner: {
                     connect: {
                       id: ownerId,
-                    }
+                    },
                   },
-                }))
+                })),
               },
-            }
-          })
+            };
+          }),
         },
       },
       include: {
@@ -112,7 +112,7 @@ export class TrainingProgramRepo {
             dayOfTheWeek: 'asc',
           },
         },
-      }
+      },
     });
 
     // Create each group individually by looping through the groups of the old program so
@@ -125,17 +125,17 @@ export class TrainingProgramRepo {
           trainingProgramId: undefined,
           trainingProgram: {
             connect: {
-              id: newProgram.id
-            }
+              id: newProgram.id,
+            },
           },
           ownerId: undefined,
           owner: {
             connect: {
               id: ownerId,
-            }
+            },
           },
           exercises: {
-            create: g.exercises.map(e => ({
+            create: g.exercises.map((e) => ({
               ...e,
               ownerId: undefined,
               exerciseGroupId: undefined,
@@ -145,23 +145,23 @@ export class TrainingProgramRepo {
               exercise: {
                 connect: {
                   id: e.exerciseId,
-                }
+                },
               },
               owner: {
                 connect: {
                   id: ownerId,
-                }
+                },
               },
-            }))
+            })),
           },
-        }
-      })
+        },
+      });
 
       // Find each day where the old group was connected by index and connect it
       // to the same day in the new program.
       for (const i in program.days) {
         const day = program.days[i];
-        if (day.exerciseGroups.find(_g => _g.id == g.id) != undefined) {
+        if (day.exerciseGroups.find((_g) => _g.id == g.id) != undefined) {
           await this.prisma.trainingProgram.update({
             where: {
               id: newProgram.id,
@@ -174,13 +174,13 @@ export class TrainingProgramRepo {
                   },
                   data: {
                     exerciseGroups: {
-                      connect: [{ id: newGroup.id }]
-                    }
-                  }
-                }
-              }
-            }
-          })
+                      connect: [{ id: newGroup.id }],
+                    },
+                  },
+                },
+              },
+            },
+          });
         }
       }
     }
@@ -197,10 +197,10 @@ export class TrainingProgramRepo {
               assignedBy: ownerId,
               dayOfTheWeek: i,
               description: '',
-            }
-          })
-        }
-      }
+            };
+          }),
+        },
+      },
     });
   }
 
@@ -241,17 +241,17 @@ export class TrainingProgramRepo {
                 exercises: {
                   orderBy: {
                     name: 'asc',
-                  }
-                }
-              }
+                  },
+                },
+              },
             },
           },
           orderBy: {
             // Note: ui depends on this being sorted in this way
             dayOfTheWeek: 'asc',
           },
-        }
-      }
+        },
+      },
     });
   }
 
@@ -269,8 +269,8 @@ export class TrainingProgramRepo {
                 exercise: {
                   select: {
                     name: true,
-                  }
-                }
+                  },
+                },
               },
               orderBy: {
                 name: 'asc',
@@ -288,8 +288,8 @@ export class TrainingProgramRepo {
                 exercise: {
                   select: {
                     name: true,
-                  }
-                }
+                  },
+                },
               },
               orderBy: {
                 name: 'asc',
@@ -305,28 +305,28 @@ export class TrainingProgramRepo {
                     exercise: {
                       select: {
                         name: true,
-                      }
-                    }
+                      },
+                    },
                   },
                   orderBy: {
                     name: 'asc',
-                  }
-                }
-              }
+                  },
+                },
+              },
             },
           },
           orderBy: {
             // Note: ui depends on this being sorted in this way
             dayOfTheWeek: 'asc',
           },
-        }
-      }
+        },
+      },
     });
     if (trainingProgram == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
     if (trainingProgram.ownerId != ownerId && !trainingProgram.isPublic) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this object.')
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this object.');
     }
     return trainingProgram;
   }
@@ -339,13 +339,13 @@ export class TrainingProgramRepo {
       },
       include: {
         days: true,
-      }
+      },
     });
     if (trainingProgram == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
     if (trainingProgram.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.')
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
     }
 
     // Update training program
@@ -364,16 +364,16 @@ export class TrainingProgramRepo {
 
     return await this.prisma.trainingProgram.delete({
       where: {
-        id
-      }
-    })
+        id,
+      },
+    });
   }
 
   async addExerciseGroup(exerciseGroup: z.infer<ExerciseGroupSchema>, id: number, ownerId: string) {
     await this.getOneAndValidateOwner(id, ownerId);
     return await this.prisma.trainingProgram.update({
       where: {
-        id
+        id,
       },
       data: {
         exerciseGroups: {
@@ -383,15 +383,20 @@ export class TrainingProgramRepo {
             owner: {
               connect: {
                 id: ownerId,
-              }
-            }
-          }
-        }
-      }
-    })
+              },
+            },
+          },
+        },
+      },
+    });
   }
 
-  async editExerciseGroup(exerciseGroup: z.infer<ExerciseGroupSchema>, trainingProgramId: number, exerciseGroupId: number, ownerId: string) {
+  async editExerciseGroup(
+    exerciseGroup: z.infer<ExerciseGroupSchema>,
+    trainingProgramId: number,
+    exerciseGroupId: number,
+    ownerId: string
+  ) {
     await this.getOneAndValidateOwner(trainingProgramId, ownerId);
     return await this.prisma.trainingProgram.update({
       where: {
@@ -404,31 +409,36 @@ export class TrainingProgramRepo {
               id: exerciseGroupId,
             },
             data: {
-              ...exerciseGroup
-            }
-          }
-        }
-      }
-    })
+              ...exerciseGroup,
+            },
+          },
+        },
+      },
+    });
   }
 
   async deleteExerciseGroup(id: number, ownerId: string, exerciseGroupId: number) {
     await this.getOneAndValidateOwner(id, ownerId);
     return await this.prisma.trainingProgram.update({
       where: {
-        id
+        id,
       },
       data: {
         exerciseGroups: {
           delete: {
             id: exerciseGroupId,
-          }
-        }
-      }
-    })
+          },
+        },
+      },
+    });
   }
 
-  async connectExerciseGroupToDay(trainingProgramId: number, groupId: number, trainingProgramDayId: number, ownerId: string) {
+  async connectExerciseGroupToDay(
+    trainingProgramId: number,
+    groupId: number,
+    trainingProgramDayId: number,
+    ownerId: string
+  ) {
     await this.getOneAndValidateOwner(trainingProgramId, ownerId);
     return await this.prisma.trainingProgram.update({
       where: {
@@ -442,16 +452,21 @@ export class TrainingProgramRepo {
             },
             data: {
               exerciseGroups: {
-                connect: [{ id: groupId }]
-              }
-            }
-          }
-        }
-      }
-    })
+                connect: [{ id: groupId }],
+              },
+            },
+          },
+        },
+      },
+    });
   }
 
-  async disconnectExerciseGroupFromDay(trainingProgramId: number, groupId: number, trainingProgramDayId: number, ownerId: string) {
+  async disconnectExerciseGroupFromDay(
+    trainingProgramId: number,
+    groupId: number,
+    trainingProgramDayId: number,
+    ownerId: string
+  ) {
     await this.getOneAndValidateOwner(trainingProgramId, ownerId);
     return await this.prisma.trainingProgram.update({
       where: {
@@ -465,16 +480,21 @@ export class TrainingProgramRepo {
             },
             data: {
               exerciseGroups: {
-                disconnect: [{ id: groupId }]
-              }
-            }
-          }
-        }
-      }
-    })
+                disconnect: [{ id: groupId }],
+              },
+            },
+          },
+        },
+      },
+    });
   }
 
-  async editTrainingProgramDay(data: z.infer<TrainingProgramSchema>, trainingProgramId: number, trainingProgramDayId: number, ownerId: string) {
+  async editTrainingProgramDay(
+    data: z.infer<TrainingProgramSchema>,
+    trainingProgramId: number,
+    trainingProgramDayId: number,
+    ownerId: string
+  ) {
     await this.getOneAndValidateOwner(trainingProgramId, ownerId);
     return await this.prisma.trainingProgram.update({
       where: {
@@ -487,20 +507,23 @@ export class TrainingProgramRepo {
               id: trainingProgramDayId,
             },
             data: {
-              ...data
-            }
-          }
-        }
-      }
-    })
+              ...data,
+            },
+          },
+        },
+      },
+    });
   }
 }
 
 export function doesTrainingProgramHaveLegacyExercises(p: TrainingProgramComplete) {
   for (const d of p.days) {
-    if (d.exercises.find(e => e.exerciseId == null) || d.exerciseGroups.find(g => g.exercises.find(e => e.exerciseId == null))) {
-      return true
+    if (
+      d.exercises.find((e) => e.exerciseId == null) ||
+      d.exerciseGroups.find((g) => g.exercises.find((e) => e.exerciseId == null))
+    ) {
+      return true;
     }
   }
-  return false
+  return false;
 }

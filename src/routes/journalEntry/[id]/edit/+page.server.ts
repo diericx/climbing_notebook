@@ -16,10 +16,10 @@ export const load: PageServerLoad = async ({ locals, params }) => {
     journalEntry = await repo.getOne(id, user?.userId);
   } catch (e) {
     if (e instanceof APIError) {
-      throw error(404, { message: 'Not found' })
+      throw error(404, { message: 'Not found' });
     }
-    console.error(e)
-    throw error(500, { message: SERVER_ERROR })
+    console.error(e);
+    throw error(500, { message: SERVER_ERROR });
   }
 
   return {

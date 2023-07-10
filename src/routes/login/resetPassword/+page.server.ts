@@ -19,7 +19,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     throw error(403, 'Invalid token');
   }
 
-  return { token }
+  return { token };
 };
 
 export const actions: Actions = {
@@ -36,10 +36,10 @@ export const actions: Actions = {
     const passwordResetRepo = new PasswordResetRepo(prisma);
     const { isValid, token } = await passwordResetRepo.canResetPassword(form.data.token);
     if (!isValid) {
-      return message(form, 'Invalid token')
+      return message(form, 'Invalid token');
     }
     if (token == undefined) {
-      console.error('Token or token user undefined: ', token)
+      console.error('Token or token user undefined: ', token);
       throw error(500, SERVER_ERROR);
     }
 
@@ -48,10 +48,10 @@ export const actions: Actions = {
       await auth.invalidateAllUserSessions(token.user.id);
       await passwordResetRepo.delete(token.user.id);
     } catch (e) {
-      console.error(e)
+      console.error(e);
       throw error(500, SERVER_ERROR);
     }
 
     throw redirect(303, '/login/resetPassword/success');
   },
-}
+};

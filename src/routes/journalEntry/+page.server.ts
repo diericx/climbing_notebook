@@ -14,8 +14,8 @@ export const load: PageServerLoad = async ({ locals }) => {
   try {
     journalEntries = await repo.get(user?.userId);
   } catch (e) {
-    console.error(e)
-    throw error(500, { message: SERVER_ERROR })
+    console.error(e);
+    throw error(500, { message: SERVER_ERROR });
   }
 
   return {
@@ -37,16 +37,16 @@ export const actions: Actions = {
 
     const repo = new JournalEntryRepo(prisma);
     try {
-      await repo.new(form.data, user?.userId)
+      await repo.new(form.data, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
         if (e.message == 'UNIQUENESS_COLLISION') {
-          form.message = 'Journal entry for that date already exists'
-          return fail(401, { form })
+          form.message = 'Journal entry for that date already exists';
+          return fail(401, { form });
         }
       }
-      console.error(e)
-      throw error(500, { message: SERVER_ERROR })
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR });
     }
 
     if (url.searchParams.has('redirectTo')) {
@@ -55,4 +55,4 @@ export const actions: Actions = {
 
     return { form };
   },
-}
+};

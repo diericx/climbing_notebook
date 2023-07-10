@@ -31,7 +31,7 @@ export const actions: Actions = {
       const session = await auth.createSession(key.userId);
       locals.auth.setSession(session);
     } catch (e) {
-      // Catch KNOWN duplicate username/provider id errors from both Lucia and the 
+      // Catch KNOWN duplicate username/provider id errors from both Lucia and the
       // propogated Prisma erros.
       if (
         e instanceof LuciaError &&
@@ -40,20 +40,20 @@ export const actions: Actions = {
           e.message === 'AUTH_INVALID_SESSION_ID')
       ) {
         console.error(e.name, e.message);
-        form.message = 'Incorrect username or password'
-        return fail(401, { form })
+        form.message = 'Incorrect username or password';
+        return fail(401, { form });
       }
 
       // Print and communicate unknown errors
       console.error(e);
-      throw error(500, { message: SERVER_ERROR })
+      throw error(500, { message: SERVER_ERROR });
     }
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
     }
     return {
-      form
+      form,
     };
   },
 
@@ -72,12 +72,12 @@ export const actions: Actions = {
         primaryKey: {
           providerId: 'username',
           providerUserId: form.data.username,
-          password: form.data.password
+          password: form.data.password,
         },
         attributes: {
           username: form.data.username,
-          email: form.data.email
-        }
+          email: form.data.email,
+        },
       });
       await prisma.profile.create({
         data: {
@@ -90,7 +90,7 @@ export const actions: Actions = {
       const session = await auth.createSession(user.userId);
       locals.auth.setSession(session);
     } catch (e) {
-      // Catch KNOWN duplicate username/provider id errors from both Lucia and the 
+      // Catch KNOWN duplicate username/provider id errors from both Lucia and the
       // propogated Prisma erros.
       if (
         e instanceof LuciaError &&
@@ -99,25 +99,23 @@ export const actions: Actions = {
           e.message === 'AUTH_INVALID_SESSION_ID')
       ) {
         form.message = 'Incorrect username or password';
-        return fail(401, { form })
+        return fail(401, { form });
       }
 
-      if (
-        e instanceof Prisma.PrismaClientKnownRequestError && e.code == 'P2002'
-      ) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code == 'P2002') {
         form.message = 'Username or email are already taken';
-        return fail(401, { form })
+        return fail(401, { form });
       }
       // Print and communicate unknown errors
       console.error(e.name, e.message);
-      throw error(500, { message: SERVER_ERROR })
+      throw error(500, { message: SERVER_ERROR });
     }
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
     }
     return {
-      form
+      form,
     };
-  }
+  },
 };

@@ -11,7 +11,7 @@ import { superValidate } from 'sveltekit-superforms/server';
 export const load: PageServerLoad = async ({ locals, url }) => {
   const { user } = await locals.auth.validateUser();
   if (!user) {
-    throw redirect(302, '/login?redirectTo=' + url.toString())
+    throw redirect(302, '/login?redirectTo=' + url.toString());
   }
 
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
@@ -20,10 +20,10 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     trainingPrograms = await trainingProgramRepo.get(user?.userId);
   } catch (e) {
     if (e instanceof APIError) {
-      return fail(401, { message: e.detail })
+      return fail(401, { message: e.detail });
     }
-    console.error(e)
-    throw error(500, { message: SERVER_ERROR })
+    console.error(e);
+    throw error(500, { message: SERVER_ERROR });
   }
 
   const repo = new ProfileRepo(prisma);
@@ -32,17 +32,17 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     profile = await repo.getOne(user?.userId);
   } catch (e) {
     if (e instanceof APIError) {
-      return fail(401, { message: e.detail })
+      return fail(401, { message: e.detail });
     }
-    console.error(e)
-    throw error(500, { message: SERVER_ERROR })
+    console.error(e);
+    throw error(500, { message: SERVER_ERROR });
   }
 
   return {
     trainingPrograms,
     profile,
-  }
-}
+  };
+};
 
 export const actions: Actions = {
   new: async ({ locals, request, url }) => {
@@ -55,13 +55,13 @@ export const actions: Actions = {
 
     const repo = new TrainingProgramRepo(prisma);
     try {
-      await repo.new(form.data, user?.userId)
+      await repo.new(form.data, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form })
+        return fail(401, { message: e.detail, form });
       }
-      console.error(e)
-      throw error(500, { message: SERVER_ERROR })
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR });
     }
 
     if (url.searchParams.has('redirectTo')) {
@@ -70,4 +70,4 @@ export const actions: Actions = {
 
     return { form };
   },
-}
+};

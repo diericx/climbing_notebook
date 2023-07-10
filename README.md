@@ -34,6 +34,7 @@ There are some features that require AWS access keys, namely ECS and S3 for pass
 ## Running locally
 
 Run the node server locally
+
 ```
 npm run dev
 ```
@@ -55,6 +56,7 @@ npx prisma migrate dev --name <name>
 ### Dev Notes
 
 #### ZOD Schemas
+
 - nullish values must be set in the forms or they will be parsed as null and thus unset
   in the database.
 
@@ -69,7 +71,7 @@ as well as some tooling for handling it in production.
 
 - `cn_staging_db_url`
   - A postgres url pointing to the staging db
--  `cn_prod_db_url`
+- `cn_prod_db_url`
   - A postgres url pointing to the production db
 
 #### Required Networks
@@ -88,4 +90,3 @@ docker run \
   climbingnotebook:master \
   prisma migrate deploy
 ```
-

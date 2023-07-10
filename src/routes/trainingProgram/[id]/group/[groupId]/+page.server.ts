@@ -26,10 +26,10 @@ export const actions: Actions = {
       await repo.editExerciseGroup(form.data, trainingProgramId, exerciseGroupId, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form })
+        return fail(401, { message: e.detail, form });
       }
-      console.error(e)
-      throw error(500, { message: SERVER_ERROR })
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR });
     }
 
     if (url.searchParams.has('redirectTo')) {
@@ -49,10 +49,10 @@ export const actions: Actions = {
       await repo.deleteExerciseGroup(trainingProgramId, user?.userId, exerciseGroupId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail })
+        return fail(401, { message: e.detail });
       }
-      console.error(e)
-      throw error(500, { message: SERVER_ERROR })
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR });
     }
 
     if (url.searchParams.has('redirectTo')) {
@@ -77,13 +77,13 @@ export const actions: Actions = {
     form.data.exerciseGroupId = groupId;
     const repo = new ExerciseEventRepo(prisma);
     try {
-      await repo.new(form.data, user?.userId)
+      await repo.new(form.data, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form })
+        return fail(401, { message: e.detail, form });
       }
-      console.error(e)
-      throw error(500, { message: SERVER_ERROR })
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR });
     }
 
     if (url.searchParams.has('redirectTo')) {
@@ -91,5 +91,5 @@ export const actions: Actions = {
     }
 
     return { form };
-  }
-}
+  },
+};

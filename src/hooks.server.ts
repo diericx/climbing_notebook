@@ -20,25 +20,23 @@ export const handle: Handle = async ({ event, resolve }) => {
       return new Response(null, {
         status: 302,
         headers: {
-          location: '/login?redirectTo=' + event.url
-        }
-      })
+          location: '/login?redirectTo=' + event.url,
+        },
+      });
     }
   }
 
-  if (
-    event.url.pathname.startsWith('/admin')
-  ) {
+  if (event.url.pathname.startsWith('/admin')) {
     if (!user && user.userId != '1') {
       return new Response(null, {
         status: 302,
         headers: {
-          location: '/'
-        }
-      })
+          location: '/',
+        },
+      });
     }
   }
 
-  const response = await resolve(event)
+  const response = await resolve(event);
   return response;
 };

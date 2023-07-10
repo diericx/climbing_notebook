@@ -5,7 +5,13 @@ export class APIError extends Error {
     super(errorMsg);
     this.detail = detail || '';
     this.message = errorMsg;
-  };
+  }
 }
-export type ErrorMessage = 'UNKNOWN' | 'UNIQUENESS_COLLISION' | 'NOT_FOUND' | 'INVALID_PERMISSIONS' | 'INVALID_INPUT' | 'INVALID_ACTION';
-export { };
+export type ErrorMessage =
+  | 'UNKNOWN'
+  | 'UNIQUENESS_COLLISION'
+  | 'NOT_FOUND'
+  | 'INVALID_PERMISSIONS'
+  | 'INVALID_INPUT'
+  | 'INVALID_ACTION';
+export {};

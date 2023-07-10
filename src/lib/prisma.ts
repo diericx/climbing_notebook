@@ -14,12 +14,14 @@ const profileWithActiveTrainingProgram = _Prisma.validator<_Prisma.ProfileArgs>(
           include: {
             exercises: true,
           },
-        }
-      }
-    }
+        },
+      },
+    },
   },
-})
-export type ProfileWithActiveTrainingProgram = _Prisma.ProfileGetPayload<typeof profileWithActiveTrainingProgram>
+});
+export type ProfileWithActiveTrainingProgram = _Prisma.ProfileGetPayload<
+  typeof profileWithActiveTrainingProgram
+>;
 
 const trainingProgramWithDays = _Prisma.validator<_Prisma.TrainingProgramArgs>()({
   include: {
@@ -30,12 +32,14 @@ const trainingProgramWithDays = _Prisma.validator<_Prisma.TrainingProgramArgs>()
           include: {
             exercises: true,
           },
-        }
+        },
       },
-    }
-  }
-})
-export type TrainingProgramWithDays = _Prisma.TrainingProgramGetPayload<typeof trainingProgramWithDays>
+    },
+  },
+});
+export type TrainingProgramWithDays = _Prisma.TrainingProgramGetPayload<
+  typeof trainingProgramWithDays
+>;
 
 const trainingProgramComplete = _Prisma.validator<_Prisma.TrainingProgramArgs>()({
   include: {
@@ -51,50 +55,54 @@ const trainingProgramComplete = _Prisma.validator<_Prisma.TrainingProgramArgs>()
           include: {
             exercises: true,
           },
-        }
+        },
       },
-    }
-  }
-})
-export type TrainingProgramComplete = _Prisma.TrainingProgramGetPayload<typeof trainingProgramComplete>
+    },
+  },
+});
+export type TrainingProgramComplete = _Prisma.TrainingProgramGetPayload<
+  typeof trainingProgramComplete
+>;
 
 const trainingProgramDayComplete = _Prisma.validator<_Prisma.TrainingProgramDayArgs>()({
   include: {
     exercises: true,
     exerciseGroups: true,
   },
-})
-export type TrainingProgramDayComplete = _Prisma.TrainingProgramDayGetPayload<typeof trainingProgramDayComplete>
+});
+export type TrainingProgramDayComplete = _Prisma.TrainingProgramDayGetPayload<
+  typeof trainingProgramDayComplete
+>;
 
 const exerciseGroupComplete = _Prisma.validator<_Prisma.TrainingProgramDayArgs>()({
   include: {
     exercises: true,
   },
-})
-export type ExerciseGroupComplete = _Prisma.ExerciseGroupGetPayload<typeof exerciseGroupComplete>
+});
+export type ExerciseGroupComplete = _Prisma.ExerciseGroupGetPayload<typeof exerciseGroupComplete>;
 
 const widgetComplete = _Prisma.validator<_Prisma.WidgetArgs>()({
   include: {
     datasets: {
       include: {
-        customQuery: true
+        customQuery: true,
       },
     },
     trainingProgram: true,
   },
-})
-export type WidgetComplete = _Prisma.WidgetGetPayload<typeof widgetComplete>
+});
+export type WidgetComplete = _Prisma.WidgetGetPayload<typeof widgetComplete>;
 
 const datasetComplete = _Prisma.validator<_Prisma.DatasetArgs>()({
   include: {
     customQuery: true,
   },
-})
-export type DatasetComplete = _Prisma.DatasetGetPayload<typeof datasetComplete>
+});
+export type DatasetComplete = _Prisma.DatasetGetPayload<typeof datasetComplete>;
 
 const exerciseEventComplete = _Prisma.validator<_Prisma.ExerciseEventArgs>()({
   include: {
-    exercise: true
+    exercise: true,
   },
-})
-export type ExerciseEventComplete = _Prisma.ExerciseEventGetPayload<typeof exerciseEventComplete>
+});
+export type ExerciseEventComplete = _Prisma.ExerciseEventGetPayload<typeof exerciseEventComplete>;
