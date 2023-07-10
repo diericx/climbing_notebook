@@ -18,7 +18,7 @@ export const huecoGrades: readonly [string, ...string[]] = [
   'V14',
   'V15',
   'V16',
-  'V17'
+  'V17',
 ];
 export const fontGrades: readonly [string, ...string[]] = [
   '4',
@@ -45,7 +45,7 @@ export const fontGrades: readonly [string, ...string[]] = [
   '9A',
   '9A+',
   '9B',
-  '9B+'
+  '9B+',
 ];
 export const gradeSystems: readonly [string, ...string[]] = ['hueco', 'font'];
 export const muscles: readonly [string, ...string[]] = [
@@ -76,7 +76,7 @@ export const muscles: readonly [string, ...string[]] = [
   'serratus anterior',
   'subscapularis',
   'tibialis anterior',
-  'upper trapezius'
+  'upper trapezius',
 ];
 export const muscleGroups: readonly [string, ...string[]] = [
   'abdominals',
@@ -91,7 +91,7 @@ export const muscleGroups: readonly [string, ...string[]] = [
   'quadriceps',
   'shoulders',
   'trapezius',
-  'triceps'
+  'triceps',
 ];
 export const equipments: readonly [string, ...string[]] = [
   'ab wheel',
@@ -113,7 +113,7 @@ export const equipments: readonly [string, ...string[]] = [
   'stability ball',
   'superband',
   'suspension trainer',
-  'weight plate'
+  'weight plate',
 ];
 export const postures: readonly [string, ...string[]] = [
   '90/90 seated',
@@ -147,26 +147,26 @@ export const postures: readonly [string, ...string[]] = [
   'toe balance standing',
   'v sit seated',
   'walking',
-  'wall sit'
+  'wall sit',
 ];
 export const exerciseTypes: readonly [string, ...string[]] = [
   'climbing',
   'strength',
   'stretch',
-  'cardio'
+  'cardio',
 ];
 export const difficulties: readonly [string, ...string[]] = [
   'novice',
   'beginner',
   'intermediate',
-  'advanced'
+  'advanced',
 ];
 export const exerciseEventFieldsToShow: readonly [string, ...string[]] = [
   'sets',
   'reps',
   'weight',
   'minutes',
-  'seconds'
+  'seconds',
 ];
 
 export function confirmDelete(e: MouseEvent) {
@@ -194,7 +194,7 @@ export function parseMetricStrings(s: string[]) {
     if (splitString[1] != '') {
       result.push({
         name: splitString[0],
-        value: splitString[1]
+        value: splitString[1],
       });
     }
     return result;
@@ -287,8 +287,3 @@ export function boldQuery(str: string, queries: string[]) {
   }
   return result;
 }
-
-export const fileUploadSchema = z.object({
-  files: z.any()
-});
-export type FileUploadSchema = typeof fileUploadSchema;

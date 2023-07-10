@@ -2,13 +2,13 @@ import type { Actions, PageServerLoad } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { prisma } from '$lib/prisma';
 import { SERVER_ERROR } from '$lib/helperTypes';
-import { projectPartialSchema, ProjectRepo, projectSchema } from '$lib/project';
+import { projectPartialSchema, ProjectRepo } from '$lib/project';
 import { setError, superValidate } from 'sveltekit-superforms/server';
 import { APIError } from '$lib/errors';
 import { deleteFile, getMetadata, getPresignedUrl, uploadFile } from '$lib/aws/s3';
 import { v4 as uuidv4 } from 'uuid';
 import sharp from 'sharp';
-import { fileUploadSchema } from '$lib/utils';
+import { fileUploadSchema } from '$lib/file';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
   const { user } = await locals.auth.validateUser();
@@ -29,7 +29,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
     return {
       project,
       s3ObjectUrls,
-      s3ObjectMetadatas
+      s3ObjectMetadatas,
     };
   } catch (e) {
     console.error(e);
@@ -71,7 +71,7 @@ export const actions: Actions = {
     const { user } = await locals.auth.validateUser();
     const id = params.id;
     const form = await superValidate(formData, projectPartialSchema, {
-      id: formData.get('_formId')?.toString()
+      id: formData.get('_formId')?.toString(),
     });
 
     if (!form.valid) {
@@ -101,7 +101,7 @@ export const actions: Actions = {
     const { user } = await locals.auth.validateUser();
     const id = params.id;
     const form = await superValidate(formData, fileUploadSchema, {
-      id: formData.get('_formId')?.toString()
+      id: formData.get('_formId')?.toString(),
     });
 
     console.log(form);
@@ -140,7 +140,7 @@ export const actions: Actions = {
         const key = `project/${project.id}/images/${uuidv4()}.${file.name.split('.').pop()}`;
         await uploadFile(key, file, {
           width: imageMetadata.width?.toString() || '0',
-          height: imageMetadata.height?.toString() || '0'
+          height: imageMetadata.height?.toString() || '0',
         });
 
         // Update the project
@@ -191,5 +191,5 @@ export const actions: Actions = {
     }
 
     return { success: true };
-  }
+  },
 };

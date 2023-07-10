@@ -9,24 +9,24 @@ module.exports = {
       files: ['*.svelte'],
       processor: 'svelte3/svelte3',
       rules: {
-        '@typescript-eslint/no-unnecessary-condition': 'off'
-      }
-    }
+        '@typescript-eslint/no-unnecessary-condition': 'off',
+      },
+    },
   ],
   settings: {
-    'svelte3/typescript': () => require('typescript')
+    'svelte3/typescript': () => require('typescript'),
   },
   parserOptions: {
     sourceType: 'module',
     ecmaVersion: 2020,
     tsconfigRootDir: __dirname,
     project: ['./tsconfig.json'],
-    extraFileExtensions: ['.svelte']
+    extraFileExtensions: ['.svelte'],
   },
   env: {
     browser: true,
     es2017: true,
-    node: true
+    node: true,
   },
   rules: {
     complexity: ['error', 14],
@@ -39,10 +39,10 @@ module.exports = {
       'single',
       {
         avoidEscape: true,
-        allowTemplateLiterals: true
-      }
+        allowTemplateLiterals: true,
+      },
     ],
     'comma-dangle': 'off',
-    '@typescript-eslint/comma-dangle': 'always'
-  }
+    '@typescript-eslint/comma-dangle': ['error', 'always-multiline'],
+  },
 };
