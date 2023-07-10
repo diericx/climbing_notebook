@@ -20,4 +20,6 @@ jobs:
         uses: creyD/prettier_action@v4.3
         with:
           prettier_options: --check .
-          prettier_plugins: ['prettier-plugin-svelte']
+          dry: True
+          prettier_plugins:
+            - 'prettier-plugin-svelte'
