@@ -21,5 +21,4 @@ jobs:
         with:
           prettier_options: --check .
           dry: True
-          prettier_plugins:
-            - 'prettier-plugin-svelte'
+          prettier_plugins: 'prettier-plugin-svelte'
