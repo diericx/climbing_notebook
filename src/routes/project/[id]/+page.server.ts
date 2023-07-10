@@ -104,7 +104,6 @@ export const actions: Actions = {
       id: formData.get('_formId')?.toString(),
     });
 
-    console.log(form);
     if (!form.valid) {
       return fail(400, { form });
     }
@@ -164,6 +163,10 @@ export const actions: Actions = {
   deleteImage: async ({ locals, url, params, request }) => {
     const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
+    const form = await superValidate(formData, projectPartialSchema, {
+      id: formData.get('_formId')?.toString(),
+    });
+
     const id = params.id;
     const key = formData.get('key');
 
@@ -190,6 +193,6 @@ export const actions: Actions = {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
     }
 
-    return { success: true };
+    return { form };
   },
 };

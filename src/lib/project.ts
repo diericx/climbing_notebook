@@ -19,7 +19,7 @@ export const projectPartialSchema = z.object({
   huecoGrade: z.enum(huecoGrades).nullish(),
   gradeSystem: z.enum(gradeSystems).optional(),
   url: z.string().optional(),
-  imageS3ObjectKey: z.string().optional(),
+  imageS3ObjectKey: z.string().nullish(),
 });
 export type ProjectPartialSchema = typeof projectPartialSchema;
 
