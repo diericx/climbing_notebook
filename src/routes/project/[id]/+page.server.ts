@@ -97,8 +97,14 @@ export const actions: Actions = {
   },
 
   uploadImage: async ({ locals, request, url, params }) => {
-    console.log(request);
-    const formData = await request.formData();
+    let formData;
+    try {
+      formData = await request.formData();
+    } catch (e) {
+      console.log(request.body);
+      console.log(await request.text());
+      return fail(500, { form });
+    }
     const { user } = await locals.auth.validateUser();
     const id = params.id;
     const form = await superValidate(formData, fileUploadSchema, {
