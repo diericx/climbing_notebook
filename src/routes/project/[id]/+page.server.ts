@@ -100,14 +100,18 @@ export const actions: Actions = {
     const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
     const id = params.id;
+    console.log('got here: ', formData);
     const form = await superValidate(formData, fileUploadSchema, {
       id: formData.get('_formId')?.toString(),
     });
+    console.log('got here2: ', form);
 
     if (!form.valid) {
+      console.log('got here3:', form);
       return fail(400, { form });
     }
 
+    console.log('got here4:', form);
     const repo = new ProjectRepo(prisma);
     try {
       const project = await repo.getOne(id, user?.userId);
