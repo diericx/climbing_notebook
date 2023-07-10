@@ -97,6 +97,7 @@ export const actions: Actions = {
   },
 
   uploadImage: async ({ locals, request, url, params }) => {
+    console.log(request);
     const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
     const id = params.id;
