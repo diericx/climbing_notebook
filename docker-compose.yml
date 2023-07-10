@@ -45,6 +45,8 @@ services:
         uid: '103'
         gid: '103'
         mode: 0440
+      - cn_prod_aws_access_key_id
+      - cn_prod_aws_secret_access_key
     entrypoint:
       [
         '/bin/sh',
