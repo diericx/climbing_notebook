@@ -37,9 +37,6 @@
         onSuccess();
       }
     },
-    onError({ result, message }) {
-      console.log(result, message);
-    },
   });
   const {
     form,

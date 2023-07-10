@@ -97,23 +97,17 @@ export const actions: Actions = {
   },
 
   uploadImage: async ({ locals, request, url, params }) => {
-    console.log('got here 0...');
     const formData = await request.formData();
-    console.log('got here 0.1...');
     const { user } = await locals.auth.validateUser();
     const id = params.id;
-    console.log('got here: ', formData);
     const form = await superValidate(formData, fileUploadSchema, {
       id: formData.get('_formId')?.toString(),
     });
-    console.log('got here2: ', form);
 
     if (!form.valid) {
-      console.log('got here3:', form);
       return fail(400, { form });
     }
 
-    console.log('got here4:', form);
     const repo = new ProjectRepo(prisma);
     try {
       const project = await repo.getOne(id, user?.userId);
@@ -122,12 +116,10 @@ export const actions: Actions = {
       if (file instanceof File) {
         // File is required
         if (file.size == 0) {
-          console.log('file required...');
           return setError(form, 'file', 'No file was selected to upload');
         }
         // File type restriction
         if (file.type != 'image/jpeg' && file.type != 'image/png') {
-          console.log('set error...');
           return setError(form, 'file', 'File type not supported.');
         }
 
