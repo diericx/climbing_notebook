@@ -28,8 +28,6 @@
   bind:submitting
   bind:delayed
   resetForm={true}
-  let:form
-  let:formData
   let:errors
 >
   <input type="hidden" name="_formId" value={id} />
