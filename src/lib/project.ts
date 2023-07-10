@@ -9,8 +9,19 @@ export const projectSchema = z.object({
   huecoGrade: z.enum(huecoGrades).nullish(),
   gradeSystem: z.enum(gradeSystems),
   url: z.string().nullish(),
+  imageS3ObjectKey: z.string().nullish(),
 });
 export type ProjectSchema = typeof projectSchema;
+
+export const projectPartialSchema = z.object({
+  name: z.string().min(1).optional(),
+  fontGrade: z.enum(fontGrades).nullish(),
+  huecoGrade: z.enum(huecoGrades).nullish(),
+  gradeSystem: z.enum(gradeSystems).optional(),
+  url: z.string().optional(),
+  imageS3ObjectKey: z.string().nullish(),
+});
+export type ProjectPartialSchema = typeof projectPartialSchema;
 
 export const projectSessionSchema = z.object({
   notes: z.string().nullish(),
@@ -20,7 +31,7 @@ export const projectSessionSchema = z.object({
 export type ProjectSessionSchema = typeof projectSessionSchema;
 
 export class ProjectRepo {
-  constructor(private readonly prisma: PrismaClient) { }
+  constructor(private readonly prisma: PrismaClient) {}
 
   async getOneAndValidateOwner(id: string, ownerId: string) {
     const project = await this.prisma.project.findUnique({
@@ -30,18 +41,18 @@ export class ProjectRepo {
       include: {
         sessions: {
           orderBy: {
-            date: 'desc'
-          }
+            date: 'desc',
+          },
         },
-      }
+      },
     });
     if (project == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
     if (project.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.')
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
     }
-    return project
+    return project;
   }
 
   async new(data: z.infer<ProjectSchema>, ownerId: string) {
@@ -50,7 +61,7 @@ export class ProjectRepo {
         ...data,
         ownerId,
         createdAt: new Date(),
-      }
+      },
     });
   }
 
@@ -66,18 +77,18 @@ export class ProjectRepo {
       include: {
         sessions: {
           orderBy: {
-            date: 'desc'
-          }
+            date: 'desc',
+          },
         },
-      }
+      },
     });
   }
 
   async getOne(id: string, ownerId: string) {
-    return this.getOneAndValidateOwner(id, ownerId)
+    return this.getOneAndValidateOwner(id, ownerId);
   }
 
-  async update(data: z.infer<ProjectSchema>, id: string, ownerId: string) {
+  async update(data: z.infer<ProjectPartialSchema>, id: string, ownerId: string) {
     await this.getOneAndValidateOwner(id, ownerId);
 
     return await this.prisma.project.update({
@@ -96,9 +107,9 @@ export class ProjectRepo {
 
     return await this.prisma.project.delete({
       where: {
-        id: id
-      }
-    })
+        id: id,
+      },
+    });
   }
 
   async addSession(data: z.infer<ProjectSessionSchema>, projectId: string, ownerId: string) {
@@ -115,12 +126,12 @@ export class ProjectRepo {
             owner: {
               connect: {
                 id: ownerId,
-              }
-            }
-          }
-        }
-      }
-    })
+              },
+            },
+          },
+        },
+      },
+    });
   }
 
   async deleteSession(projectId: string, sessionId: string, ownerId: string) {
@@ -132,13 +143,18 @@ export class ProjectRepo {
       data: {
         updatedAt: new Date(),
         sessions: {
-          delete: [{ id: sessionId }]
-        }
-      }
-    })
+          delete: [{ id: sessionId }],
+        },
+      },
+    });
   }
 
-  async updateSession(data: z.infer<ProjectSessionSchema>, projectId: string, sessionId: string, ownerId: string) {
+  async updateSession(
+    data: z.infer<ProjectSessionSchema>,
+    projectId: string,
+    sessionId: string,
+    ownerId: string,
+  ) {
     await this.getOneAndValidateOwner(projectId, ownerId);
     return await this.prisma.project.update({
       where: {
@@ -149,14 +165,14 @@ export class ProjectRepo {
         sessions: {
           update: {
             data: {
-              ...data
+              ...data,
             },
             where: {
               id: sessionId,
-            }
-          }
-        }
-      }
-    })
+            },
+          },
+        },
+      },
+    });
   }
 }

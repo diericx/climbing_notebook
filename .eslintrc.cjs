@@ -1,22 +1,20 @@
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'prettier'
-  ],
+  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'prettier'],
   plugins: ['svelte3', '@typescript-eslint'],
   ignorePatterns: ['*.cjs'],
   overrides: [
     {
-      files: ['*.svelte'], processor: 'svelte3/svelte3', "rules": {
-        "@typescript-eslint/no-unnecessary-condition": "off",
-      }
-    }
+      files: ['*.svelte'],
+      processor: 'svelte3/svelte3',
+      rules: {
+        '@typescript-eslint/no-unnecessary-condition': 'off',
+      },
+    },
   ],
   settings: {
-    'svelte3/typescript': () => require('typescript')
+    'svelte3/typescript': () => require('typescript'),
   },
   parserOptions: {
     sourceType: 'module',
@@ -28,22 +26,23 @@ module.exports = {
   env: {
     browser: true,
     es2017: true,
-    node: true
+    node: true,
   },
   rules: {
-    "complexity": ["error", 11],
-    "@typescript-eslint/no-unnecessary-condition": "error",
-    "no-shadow": "off",
-    "@typescript-eslint/no-shadow": "error",
-    "@typescript-eslint/no-floating-promises": "error",
-    "@typescript-eslint/quotes": [
-      "error",
-      "single",
+    complexity: ['error', 14],
+    '@typescript-eslint/no-unnecessary-condition': 'error',
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': 'error',
+    '@typescript-eslint/no-floating-promises': 'error',
+    '@typescript-eslint/quotes': [
+      'error',
+      'single',
       {
-        "avoidEscape": true,
-        "allowTemplateLiterals": true
-      }
-    ]
-
-  }
+        avoidEscape: true,
+        allowTemplateLiterals: true,
+      },
+    ],
+    'comma-dangle': 'off',
+    '@typescript-eslint/comma-dangle': ['error', 'always-multiline'],
+  },
 };

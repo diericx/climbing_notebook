@@ -1,4 +1,4 @@
-import type { CalendarEvent, PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client';
 import { APIError } from './errors';
 import { z } from 'zod';
 
@@ -14,21 +14,21 @@ export type CalendarEventSchema = typeof calendarEventSchema;
 export type CalendarEventPartialSchema = typeof calendarEventPartialSchema;
 
 export class CalendarEventRepo {
-  constructor(private readonly prisma: PrismaClient) { }
+  constructor(private readonly prisma: PrismaClient) {}
 
   async getOneAndValidateOwner(id: number, ownerId: string) {
     const e = await this.prisma.calendarEvent.findUnique({
       where: {
-        id: Number(id),
+        id: Number(id)
       }
     });
     if (e == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
     if (e.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.')
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
     }
-    return e
+    return e;
   }
 
   async new(data: z.infer<CalendarEventSchema>, ownerId: string) {
@@ -36,7 +36,7 @@ export class CalendarEventRepo {
       data: {
         ...data,
         ownerId,
-        createdAt: new Date(),
+        createdAt: new Date()
       }
     });
   }
@@ -45,16 +45,16 @@ export class CalendarEventRepo {
     // Fetch all
     return await this.prisma.calendarEvent.findMany({
       where: {
-        ownerId: ownerId,
+        ownerId: ownerId
       },
       orderBy: {
-        dateStart: 'desc',
-      },
+        dateStart: 'desc'
+      }
     });
   }
 
   async getOne(id: number, ownerId: string) {
-    return this.getOneAndValidateOwner(id, ownerId)
+    return this.getOneAndValidateOwner(id, ownerId);
   }
 
   async update(data: z.infer<CalendarEventPartialSchema>, id: number, ownerId: string) {
@@ -63,8 +63,8 @@ export class CalendarEventRepo {
     return await this.prisma.calendarEvent.update({
       data,
       where: {
-        id: Number(id),
-      },
+        id: Number(id)
+      }
     });
   }
 
@@ -75,6 +75,6 @@ export class CalendarEventRepo {
       where: {
         id: Number(id)
       }
-    })
+    });
   }
 }
