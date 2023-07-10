@@ -9,7 +9,7 @@ export const projectSchema = z.object({
   huecoGrade: z.enum(huecoGrades).nullish(),
   gradeSystem: z.enum(gradeSystems),
   url: z.string().nullish(),
-  imageS3ObjectKey: z.string().nullish()
+  imageS3ObjectKey: z.string().nullish(),
 });
 export type ProjectSchema = typeof projectSchema;
 
@@ -19,14 +19,14 @@ export const projectPartialSchema = z.object({
   huecoGrade: z.enum(huecoGrades).nullish(),
   gradeSystem: z.enum(gradeSystems).optional(),
   url: z.string().optional(),
-  imageS3ObjectKey: z.string().optional()
+  imageS3ObjectKey: z.string().optional(),
 });
 export type ProjectPartialSchema = typeof projectPartialSchema;
 
 export const projectSessionSchema = z.object({
   notes: z.string().nullish(),
   date: z.date(),
-  sent: z.boolean().default(false)
+  sent: z.boolean().default(false),
 });
 export type ProjectSessionSchema = typeof projectSessionSchema;
 
@@ -36,15 +36,15 @@ export class ProjectRepo {
   async getOneAndValidateOwner(id: string, ownerId: string) {
     const project = await this.prisma.project.findUnique({
       where: {
-        id: id
+        id: id,
       },
       include: {
         sessions: {
           orderBy: {
-            date: 'desc'
-          }
-        }
-      }
+            date: 'desc',
+          },
+        },
+      },
     });
     if (project == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
@@ -60,8 +60,8 @@ export class ProjectRepo {
       data: {
         ...data,
         ownerId,
-        createdAt: new Date()
-      }
+        createdAt: new Date(),
+      },
     });
   }
 
@@ -69,18 +69,18 @@ export class ProjectRepo {
     // Fetch all
     return await this.prisma.project.findMany({
       where: {
-        ownerId: ownerId
+        ownerId: ownerId,
       },
       orderBy: {
-        updatedAt: 'desc'
+        updatedAt: 'desc',
       },
       include: {
         sessions: {
           orderBy: {
-            date: 'desc'
-          }
-        }
-      }
+            date: 'desc',
+          },
+        },
+      },
     });
   }
 
@@ -94,11 +94,11 @@ export class ProjectRepo {
     return await this.prisma.project.update({
       data: {
         ...data,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       },
       where: {
-        id: id
-      }
+        id: id,
+      },
     });
   }
 
@@ -107,8 +107,8 @@ export class ProjectRepo {
 
     return await this.prisma.project.delete({
       where: {
-        id: id
-      }
+        id: id,
+      },
     });
   }
 
@@ -116,7 +116,7 @@ export class ProjectRepo {
     await this.getOneAndValidateOwner(projectId, ownerId);
     return await this.prisma.project.update({
       where: {
-        id: projectId
+        id: projectId,
       },
       data: {
         updatedAt: new Date(),
@@ -125,12 +125,12 @@ export class ProjectRepo {
             ...data,
             owner: {
               connect: {
-                id: ownerId
-              }
-            }
-          }
-        }
-      }
+                id: ownerId,
+              },
+            },
+          },
+        },
+      },
     });
   }
 
@@ -138,14 +138,14 @@ export class ProjectRepo {
     await this.getOneAndValidateOwner(projectId, ownerId);
     return await this.prisma.project.update({
       where: {
-        id: projectId
+        id: projectId,
       },
       data: {
         updatedAt: new Date(),
         sessions: {
-          delete: [{ id: sessionId }]
-        }
-      }
+          delete: [{ id: sessionId }],
+        },
+      },
     });
   }
 
@@ -153,26 +153,26 @@ export class ProjectRepo {
     data: z.infer<ProjectSessionSchema>,
     projectId: string,
     sessionId: string,
-    ownerId: string
+    ownerId: string,
   ) {
     await this.getOneAndValidateOwner(projectId, ownerId);
     return await this.prisma.project.update({
       where: {
-        id: projectId
+        id: projectId,
       },
       data: {
         updatedAt: new Date(),
         sessions: {
           update: {
             data: {
-              ...data
+              ...data,
             },
             where: {
-              id: sessionId
-            }
-          }
-        }
-      }
+              id: sessionId,
+            },
+          },
+        },
+      },
     });
   }
 }
