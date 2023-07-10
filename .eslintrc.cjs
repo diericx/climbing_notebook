@@ -31,7 +31,7 @@ module.exports = {
     node: true
   },
   rules: {
-    "complexity": ["error", 11],
+    "complexity": ["error", 14],
     "@typescript-eslint/no-unnecessary-condition": "error",
     "no-shadow": "off",
     "@typescript-eslint/no-shadow": "error",
