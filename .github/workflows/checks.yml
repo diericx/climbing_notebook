@@ -12,6 +12,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2 # Check out the repository first.
+      - name: Run prettier
+        run: |-
+          npx install prettier-plugin-svelte
       - uses: actionsx/prettier@v2
         with:
           # prettier CLI arguments.
