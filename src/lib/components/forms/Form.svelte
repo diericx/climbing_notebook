@@ -36,7 +36,10 @@
       if ((result.type == 'success' || result.type == 'redirect') && onSuccess != undefined) {
         onSuccess();
       }
-    }
+    },
+    onError({ result, message }) {
+      console.log(result, message);
+    },
   });
   const {
     form,
@@ -44,7 +47,7 @@
     enhance,
     message,
     submitting: _submitting,
-    delayed: _delayed
+    delayed: _delayed,
   } = newSuperForm;
 
   $: {
