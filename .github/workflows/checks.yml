@@ -12,10 +12,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2 # Check out the repository first.
-        - uses: actions/setup-node@v3
-          with:
-            node-version: 18
-            cache: 'npm'
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
       - run: npm install prettier-plugin-svelte
       - uses: actionsx/prettier@v2
         with:
