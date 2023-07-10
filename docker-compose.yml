@@ -39,6 +39,7 @@ services:
         - 'traefik.http.routers.svelte-staging.entrypoints=websecure'
         - 'traefik.http.routers.svelte-staging.tls.certresolver=letsencrypt'
         - 'traefik.http.services.svelte-staging.loadbalancer.server.port=3000'
+        - 'traefik.http.middlewares.limit.buffering.maxRequestBodyBytes=5000000'
     secrets:
       - source: cn_staging_db_url
         target: db_url
