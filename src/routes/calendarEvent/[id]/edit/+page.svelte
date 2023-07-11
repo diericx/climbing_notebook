@@ -13,7 +13,7 @@
     <h1>Edit Calendar Event</h1>
     <Form
       schema={calendarEventSchema}
-      {data}
+      data={calendarEvent}
       action={`/calendarEvent/${calendarEvent.id}?/edit`}
       let:superForm
     >
