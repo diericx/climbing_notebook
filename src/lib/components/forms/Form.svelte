@@ -47,6 +47,8 @@
     delayed: _delayed,
   } = newSuperForm;
 
+  // Unsure why I have to do this but without subscribing here in reactive vars
+  // it didn't seem to be propagating changes down stream...
   $: {
     submitting = $_submitting;
     delayed = $_delayed;

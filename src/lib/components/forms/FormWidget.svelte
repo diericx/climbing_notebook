@@ -18,21 +18,20 @@
   export let showOrder = true;
   export let trainingPrograms: TrainingProgram[] = [];
 
-  let type = '';
+  // let type = '';
 </script>
 
-<Form schema={widgetSchema} {data} {action} {id} {onSuccess} resetForm={true} let:form let:delayed>
-  <!-- 
-	Subscribe to the form so we can extract certain values. Placed in a function that
-	returns a string so it will not render anything. This code is stupid. So it goes.
-	-->
-  {(() => {
-    form.form.subscribe((_form) => {
-      type = _form.type;
-    });
-    return '';
-  })()}
-  <!-- {JSON.stringify(_form.fields.name)} -->
+<Form
+  schema={widgetSchema}
+  {data}
+  {action}
+  {id}
+  {onSuccess}
+  resetForm={true}
+  let:form
+  let:formData
+  let:delayed
+>
   <TextField name="name" field="name" {form} />
   {#if showOrder}
     <NumberField name="order" field="order" {form} />
@@ -51,7 +50,7 @@
     </SelectField>
   {/if}
 
-  {#if type == 'dailyExerciseCalendar'}
+  {#if formData.type == 'dailyExerciseCalendar'}
     <SelectField name="trainingProgramId" field="trainingProgramId" label="Training Program" {form}>
       <option value={null}> Active Training Program </option>
       <option disabled>---------</option>
