@@ -6,10 +6,9 @@
   import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
   // This contains the bulk of Skeletons required styles:
   import '@skeletonlabs/skeleton/styles/skeleton.css';
+  import '../app.css';
   // import '@event-calendar/core/index.css';
   import 'nprogress/nprogress.css';
-  import './styles.css';
-  import '../app.css';
   import { navigating } from '$app/stores';
   import { popup } from '@skeletonlabs/skeleton';
   import type { PopupSettings } from '@skeletonlabs/skeleton';

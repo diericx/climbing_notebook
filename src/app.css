@@ -1,135 +1,200 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import '@fontsource/fira-mono';
+@import '@fontsource/pt-sans';
 
-@layer base {
-  h1 {
-    @apply text-2xl !important;
-  }
-  h2 {
-    @apply text-xl !important;
-  }
-  h3 {
-    @apply text-base !important;
-  }
+h1 {
+  @apply text-2xl !important;
+}
+h2 {
+  @apply text-xl !important;
+}
+h3 {
+  @apply text-base !important;
 }
 
-@layer components {
-  .basic-input {
-    @apply my-2 shadow appearance-none border border-gray-300 rounded py-2 px-3 text-gray-700 leading-tight;
-  }
-  input[type='text'] {
-    @apply basic-input;
-  }
-  input[type='username'] {
-    @apply basic-input;
-  }
-  input[type='email'] {
-    @apply basic-input;
-  }
-  input[type='password'] {
-    @apply basic-input;
-  }
-  .input[type='text']:focus {
-    @apply shadow;
-  }
-  input[type='date'] {
-    @apply basic-input;
-  }
-  input[type='number'] {
-    @apply basic-input;
-  }
-  input[type='search'] {
-    @apply basic-input;
-  }
-  input::placeholder {
-    @apply text-gray-400;
-  }
-  select {
-    @apply basic-input;
-  }
-  textarea {
-    @apply basic-input;
-  }
-  textarea::placeholder {
-    @apply text-gray-400;
-  }
-  .textarea:focus {
-    @apply shadow;
-  }
-
-  select:focus {
-    @apply outline-none bg-white;
-  }
-
-  label {
-    @apply text-gray-400;
-  }
-  label .description {
-    @apply text-gray-300;
-  }
-
-  table {
-    @apply w-full table-auto text-left text-gray-400 shadow;
-  }
-  tbody {
-    @apply divide-y text-gray-600 border-b;
-  }
-  thead {
-    @apply bg-slate-50;
-  }
-  th {
-    @apply bg-gray-800 text-gray-200 px-6 py-1;
-  }
-  tr {
-    @apply bg-white border-r border-l;
-  }
-  td {
-    @apply px-6 py-1;
-  }
-  hr {
-    @apply pb-2;
-  }
-
-  .server-message {
-    @apply w-full rounded py-2 pl-3 mt-3;
-  }
-  .success {
-    @apply bg-green-300 text-white;
-  }
-
-  .error {
-    @apply bg-red-300 text-white;
-  }
-
-  .card {
-    /* @apply border border-gray-200; */
-    background-color: white;
-  }
-
-  .clickable-list a {
-    color: inherit !important; /* blue colors for links too */
-    text-decoration: inherit !important; /* no underline */
-    /* border-radius: 0; */
-    /* background-color: rgba(0, 0, 0, 0) !important;  */
-  }
-
-  .list li {
-    @apply rounded-lg;
-    display: inherit;
-  }
-
-  .link {
-    @apply text-slate-600;
-    text-decoration: underline;
-  }
-
-  .loading {
-    background: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor"%3E%3Canimate attributeName="r" begin="0" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(45 12 12)"%3E%3Canimate attributeName="r" begin="0.125s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(90 12 12)"%3E%3Canimate attributeName="r" begin="0.25s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(135 12 12)"%3E%3Canimate attributeName="r" begin="0.375s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(180 12 12)"%3E%3Canimate attributeName="r" begin="0.5s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(225 12 12)"%3E%3Canimate attributeName="r" begin="0.625s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(270 12 12)"%3E%3Canimate attributeName="r" begin="0.75s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(315 12 12)"%3E%3Canimate attributeName="r" begin="0.875s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3C%2Fsvg%3E')
-      center center no-repeat;
-    background-size: 50px 50px;
-  }
+.basic-input {
+  @apply my-2 shadow appearance-none border border-gray-300 rounded py-2 px-3 text-gray-700 leading-tight;
 }
+input[type='text'] {
+  @apply basic-input;
+}
+input[type='username'] {
+  @apply basic-input;
+}
+input[type='email'] {
+  @apply basic-input;
+}
+input[type='password'] {
+  @apply basic-input;
+}
+.input[type='text']:focus {
+  @apply shadow;
+}
+input[type='date'] {
+  @apply basic-input;
+}
+input[type='number'] {
+  @apply basic-input;
+}
+input[type='search'] {
+  @apply basic-input;
+}
+input::placeholder {
+  @apply text-gray-400;
+}
+select {
+  @apply basic-input;
+}
+textarea {
+  @apply basic-input;
+}
+textarea::placeholder {
+  @apply text-gray-400;
+}
+.textarea:focus {
+  @apply shadow;
+}
+
+select:focus {
+  @apply outline-none bg-white;
+}
+
+label {
+  @apply text-gray-400;
+}
+label .description {
+  @apply text-gray-300;
+}
+
+table {
+  @apply w-full table-auto text-left text-gray-400 shadow;
+}
+tbody {
+  @apply divide-y text-gray-600 border-b;
+}
+thead {
+  @apply bg-slate-50;
+}
+th {
+  @apply bg-gray-800 text-gray-200 px-6 py-1;
+}
+tr {
+  @apply bg-white border-r border-l;
+}
+td {
+  @apply px-6 py-1;
+}
+hr {
+  @apply pb-2;
+}
+
+.server-message {
+  @apply w-full rounded py-2 pl-3 mt-3;
+}
+.success {
+  @apply bg-green-300 text-white;
+}
+
+.error {
+  @apply bg-red-300 text-white;
+}
+
+.card {
+  /* @apply border border-gray-200; */
+  background-color: white;
+}
+
+.clickable-list a {
+  color: inherit !important; /* blue colors for links too */
+  text-decoration: inherit !important; /* no underline */
+}
+
+.list li {
+  @apply rounded-lg;
+  display: inherit;
+}
+
+.link {
+  @apply text-slate-600;
+  text-decoration: underline;
+}
+
+.loading {
+  background: url('data:image/svg+xml,%3Csvg xmlns="http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg" width="24" height="24" viewBox="0 0 24 24"%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor"%3E%3Canimate attributeName="r" begin="0" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(45 12 12)"%3E%3Canimate attributeName="r" begin="0.125s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(90 12 12)"%3E%3Canimate attributeName="r" begin="0.25s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(135 12 12)"%3E%3Canimate attributeName="r" begin="0.375s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(180 12 12)"%3E%3Canimate attributeName="r" begin="0.5s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(225 12 12)"%3E%3Canimate attributeName="r" begin="0.625s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(270 12 12)"%3E%3Canimate attributeName="r" begin="0.75s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3Ccircle cx="12" cy="2" r="0" fill="currentColor" transform="rotate(315 12 12)"%3E%3Canimate attributeName="r" begin="0.875s" calcMode="spline" dur="1s" keySplines="0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8%3B0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0%3B2%3B0%3B0"%2F%3E%3C%2Fcircle%3E%3C%2Fsvg%3E')
+    center center no-repeat;
+  background-size: 50px 50px;
+}
+
 .invalid {
   color: orangered;
+}
+
+:root {
+  --color-bg-0: rgb(202, 216, 228);
+  --color-bg-1: hsl(209, 36%, 86%);
+  --color-bg-2: hsl(224, 44%, 95%);
+  --color-theme-1: #ff3e00;
+  --color-theme-2: #4075a6;
+  --color-text: rgba(0, 0, 0, 0.7);
+  --column-width: 42rem;
+  --column-margin-top: 4rem;
+  --font-mono: 'Fira Mono', monospace;
+  font-family: 'PT Sans';
+  color: var(--color-text);
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background-attachment: fixed;
+  background-size: 100vw 100vh;
+  @apply bg-slate-50;
+}
+
+p {
+  line-height: 1.5;
+}
+
+pre {
+  font-size: 16px;
+  font-family: var(--font-mono);
+  background-color: rgba(255, 255, 255, 0.45);
+  border-radius: 3px;
+  box-shadow: 2px 2px 6px rgb(255 255 255 / 25%);
+  padding: 0.5em;
+  overflow-x: auto;
+  color: var(--color-text);
+}
+
+.text-column {
+  display: flex;
+  max-width: 48rem;
+  flex: 0.6;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+@media (min-width: 720px) {
+  h1 {
+    font-size: 2.4rem;
+  }
+}
+
+.visually-hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: auto;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  white-space: nowrap;
+}
+
+.ec-header {
+  background-color: white;
+}
+.ec-body {
+  background-color: white;
 }

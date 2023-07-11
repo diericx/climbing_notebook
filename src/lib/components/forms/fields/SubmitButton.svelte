@@ -9,7 +9,7 @@
   const { delayed, formId } = superForm;
 </script>
 
-<button class="relative btn variant-filled mt-2" form={$formId} disabled={$delayed}>
+<button class="relative btn variant-filled mt-2" form={$formId} disabled={$delayed} type="submit">
   {#if $delayed}
     <span class="absolute">
       <Icon class="text-xl" icon="line-md:loading-loop" />
