@@ -15,6 +15,7 @@
   import SelectField from './fields/SelectField.svelte';
   import MultipleSelectField from './fields/MultipleSelectField.svelte';
   import { v4 as uuidv4 } from 'uuid';
+  import SubmitButton from './fields/SubmitButton.svelte';
 
   export let data: Exercise | undefined = undefined;
   export let action = '';
@@ -24,7 +25,7 @@
   export let onSuccess: (() => void) | undefined = undefined;
 </script>
 
-<Form schema={exerciseSchema} bind:data {action} {id} {onSuccess} let:form>
+<Form schema={exerciseSchema} bind:data {action} {id} {onSuccess} let:form let:delayed>
   <TextField name="name" field="name" {form} />
 
   <SelectField name="type" field="type" {form}>
@@ -87,6 +88,6 @@
   <TextField name="videoUrl" field="videoUrl" {form} />
 
   {#if showSubmitButton}
-    <button class="btn btn-sm variant-filled">Submit</button>
+    <SubmitButton formId={id} {delayed} />
   {/if}
 </Form>

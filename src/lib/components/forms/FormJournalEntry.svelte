@@ -5,15 +5,26 @@
   import type { JournalEntry } from '@prisma/client';
   import Form from './Form.svelte';
   import { v4 as uuidv4 } from 'uuid';
+  import SubmitButton from './fields/SubmitButton.svelte';
 
   // Form action to execute
   export let action = '/journalEntry?/new';
   export let data: JournalEntry | undefined = undefined;
   export let onSuccess: (() => void) | undefined = undefined;
   export let id = uuidv4();
+  export let showSubmitButton = true;
 </script>
 
-<Form schema={journalEntrySchema} {data} {action} {id} {onSuccess} resetForm={true} let:form>
+<Form
+  schema={journalEntrySchema}
+  {data}
+  {action}
+  {id}
+  {onSuccess}
+  resetForm={true}
+  let:form
+  let:delayed
+>
   <input type="hidden" name="_formId" value={id} />
   <input type="hidden" name="type" value="climbing" />
 
@@ -41,5 +52,7 @@
 leftShoulderPain: 2`}
   />
 
-  <button class="btn btn-primary btn-sm variant-filled">Submit</button>
+  {#if showSubmitButton}
+    <SubmitButton formId={id} {delayed} />
+  {/if}
 </Form>

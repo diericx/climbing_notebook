@@ -14,8 +14,8 @@
   export let debug = false;
 
   // Two way bindings meant to send this info up stream
-  export let submitting: boolean;
-  export let delayed: boolean;
+  export let submitting: boolean = false;
+  export let delayed: boolean = false;
 
   // Add redirect data
   if ($page.url.searchParams.has('redirectTo')) {
@@ -56,10 +56,12 @@
 {#if $message}
   <div class="invalid">{$message}</div>
 {/if}
+
 <form method="POST" {action} use:enhance {id} class="form">
   <input type="hidden" name="_formId" value={id} />
   <slot form={newSuperForm} formData={$form} errors={$errors} {submitting} {delayed} />
 </form>
+
 {#if debug}
   <SuperDebug data={$form} />
 {/if}

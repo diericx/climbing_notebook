@@ -6,6 +6,7 @@
   import NumberField from './fields/NumberField.svelte';
   import TextField from './fields/TextField.svelte';
   import { v4 as uuidv4 } from 'uuid';
+  import SubmitButton from './fields/SubmitButton.svelte';
 
   // Form action to execute
   export let action = '';
@@ -20,7 +21,7 @@
   let type = '';
 </script>
 
-<Form schema={widgetSchema} {data} {action} {id} {onSuccess} resetForm={true} let:form>
+<Form schema={widgetSchema} {data} {action} {id} {onSuccess} resetForm={true} let:form let:delayed>
   <!-- 
 	Subscribe to the form so we can extract certain values. Placed in a function that
 	returns a string so it will not render anything. This code is stupid. So it goes.
@@ -61,6 +62,6 @@
   {/if}
 
   {#if showSubmitButton}
-    <button class="btn btn-primary btn-sm variant-filled">Submit</button>
+    <SubmitButton formId={id} {delayed} />
   {/if}
 </Form>

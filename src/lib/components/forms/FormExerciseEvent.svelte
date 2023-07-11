@@ -8,6 +8,7 @@
   import { v4 as uuidv4 } from 'uuid';
   import Autocomplete from './fields/Autocomplete.svelte';
   import type { ExerciseEventComplete } from '$lib/prisma';
+  import SubmitButton from './fields/SubmitButton.svelte';
 
   export let data: ExerciseEventComplete | undefined;
   export let action = '';
@@ -39,6 +40,7 @@
   {debug}
   let:form
   let:formData
+  let:delayed
 >
   {#if showMigrationOption && !data?.exerciseId}
     <label>
@@ -130,6 +132,6 @@
   <TextArea class="w-full" name="notes" field="notes" {form} />
 
   {#if showSubmitButton}
-    <button class="btn btn-sm variant-filled">Submit</button>
+    <SubmitButton formId={id} {delayed} />
   {/if}
 </Form>

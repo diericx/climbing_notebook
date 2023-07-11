@@ -6,6 +6,7 @@
   import TextArea from './fields/TextArea.svelte';
   import Form from './Form.svelte';
   import { v4 as uuidv4 } from 'uuid';
+  import SubmitButton from './fields/SubmitButton.svelte';
 
   // Form action to execute
   export let action = '';
@@ -23,7 +24,7 @@
   {onSuccess}
   resetForm={true}
   let:form
-  let:formData
+  let:delayed
 >
   <input type="hidden" name="_formId" value={id} />
   <Checkbox name="sent" field="sent" {form} />
@@ -31,6 +32,6 @@
   <TextArea name="notes" field="notes" {form} />
 
   {#if showSubmitButton}
-    <button class="btn btn-primary btn-sm variant-filled">Submit</button>
+    <SubmitButton formId={id} {delayed} />
   {/if}
 </Form>

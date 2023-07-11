@@ -5,6 +5,7 @@
   import Form from './Form.svelte';
   import Checkbox from './fields/Checkbox.svelte';
   import { v4 as uuidv4 } from 'uuid';
+  import SubmitButton from './fields/SubmitButton.svelte';
 
   // Form action to execute
   export let action = '';
@@ -14,7 +15,7 @@
   export let showSubmitButton = true;
 </script>
 
-<Form schema={trainingProgramSchema} bind:data {action} {id} {onSuccess} let:form>
+<Form schema={trainingProgramSchema} bind:data {action} {id} {onSuccess} let:form let:delayed>
   <input type="hidden" name="type" value="climbing" />
 
   <TextField name="name" field="name" {form} />
@@ -23,6 +24,6 @@
   <br />
 
   {#if showSubmitButton}
-    <button class="btn btn-sm variant-filled">Submit</button>
+    <SubmitButton formId={id} {delayed} />
   {/if}
 </Form>

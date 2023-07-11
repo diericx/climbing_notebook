@@ -6,6 +6,7 @@
   import { datasetSchema } from '$lib/widget';
   import ColorField from './fields/ColorField.svelte';
   import { v4 as uuidv4 } from 'uuid';
+  import SubmitButton from './fields/SubmitButton.svelte';
 
   // Form action to execute
   export let action = '';
@@ -19,7 +20,7 @@
   export let showType = true;
 </script>
 
-<Form schema={datasetSchema} {data} {action} {id} {onSuccess} resetForm={true} let:form>
+<Form schema={datasetSchema} {data} {action} {id} {onSuccess} resetForm={true} let:form let:delayed>
   <TextField name="name" field="name" {form} />
   {#if showColor}
     <ColorField name="color" field="color" {form} />
@@ -54,6 +55,6 @@
   {/if}
 
   {#if showSubmitButton}
-    <button class="btn btn-primary btn-sm variant-filled">Submit</button>
+    <SubmitButton formId={id} {delayed} />
   {/if}
 </Form>

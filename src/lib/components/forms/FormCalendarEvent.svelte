@@ -6,15 +6,16 @@
   import TextField from './fields/TextField.svelte';
   import { calendarEventSchema } from '$lib/calendarEvent';
   import { v4 as uuidv4 } from 'uuid';
+  import SubmitButton from './fields/SubmitButton.svelte';
 
   export let data: CalendarEvent | undefined = undefined;
   export let action = '';
-  export let id = uuidv4;
+  export let id = uuidv4();
   export let showSubmitButton = true;
   export let onSuccess: (() => void) | undefined = undefined;
 </script>
 
-<Form schema={calendarEventSchema} {data} {action} {id} {onSuccess} let:form>
+<Form schema={calendarEventSchema} {data} {action} {id} {onSuccess} let:delayed let:form>
   <DateField name="dateStart" {form} field="dateStart" />
   <DateField name="dateEnd" {form} field="dateEnd" />
   <TextField name="title" {form} field="title" placeholder={'Trip to Moab'} />
@@ -29,6 +30,6 @@
     placeholder={'Going to Moab with Megan and Alex'}
   />
   {#if showSubmitButton}
-    <button class="btn btn-sm variant-filled">Submit</button>
+    <SubmitButton formId={id} {delayed} />
   {/if}
 </Form>

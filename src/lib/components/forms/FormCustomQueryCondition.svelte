@@ -5,6 +5,7 @@
   import SelectField from './fields/SelectField.svelte';
   import { customQueryConditionSchema } from '$lib/customQuery';
   import { v4 as uuidv4 } from 'uuid';
+  import SubmitButton from './fields/SubmitButton.svelte';
 
   // Form action to execute
   export let action = '';
@@ -23,6 +24,7 @@
   {onSuccess}
   resetForm={true}
   let:form
+  let:delayed
 >
   {#if query.table == 'exerciseEvent'}
     <SelectField name="column" field="column" {form}>
@@ -43,6 +45,6 @@
   <TextField name="value" field="value" {form} />
 
   {#if showSubmitButton}
-    <button class="btn btn-primary btn-sm variant-filled">Submit</button>
+    <SubmitButton formId={id} {delayed} />
   {/if}
 </Form>

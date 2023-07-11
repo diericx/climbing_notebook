@@ -4,6 +4,7 @@
   import Form from './Form.svelte';
   import { v4 as uuidv4 } from 'uuid';
   import Icon from '@iconify/svelte';
+  import SubmitButton from './fields/SubmitButton.svelte';
 
   // Form action to execute
   export let action = '';
@@ -62,13 +63,6 @@
   </FileDropzone>
 
   {#if showSubmitButton}
-    <button class="relative btn variant-filled mt-2" form={id} disabled={delayed}>
-      {#if delayed}
-        <span class="absolute">
-          <Icon class="text-xl" icon="line-md:loading-loop" />
-        </span>
-      {/if}
-      <span class={delayed ? 'invisible' : ''}> Upload </span>
-    </button>
+    <SubmitButton formId={id} {delayed} />
   {/if}
 </Form>

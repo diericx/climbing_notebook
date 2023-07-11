@@ -5,6 +5,7 @@
   import SelectField from './fields/SelectField.svelte';
   import { customQuerySchema } from '$lib/customQuery';
   import { v4 as uuidv4 } from 'uuid';
+  import SubmitButton from './fields/SubmitButton.svelte';
 
   // Form action to execute
   export let action = '';
@@ -15,7 +16,16 @@
   export let showOperator = true;
 </script>
 
-<Form schema={customQuerySchema} {data} {action} {id} {onSuccess} resetForm={true} let:form>
+<Form
+  schema={customQuerySchema}
+  {data}
+  {action}
+  {id}
+  {onSuccess}
+  resetForm={true}
+  let:delayed
+  let:form
+>
   <TextField name="name" field="name" {form} />
 
   <SelectField name="table" field="table" {form}>
@@ -31,6 +41,6 @@
   {/if}
 
   {#if showSubmitButton}
-    <button class="btn btn-primary btn-sm variant-filled">Submit</button>
+    <SubmitButton formId={id} {delayed} />
   {/if}
 </Form>
