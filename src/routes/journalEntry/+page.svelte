@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import FormJournalEntry from '$lib/components/forms/FormJournalEntry.svelte';
+  import FormBodyJournalEntry from '$lib/components/forms/bodies/FormBodyJournalEntry.svelte';
   import { confirmDelete } from '$lib/utils';
   import { enhance } from '$app/forms';
   import Icon from '@iconify/svelte';
@@ -16,7 +16,7 @@
     <hr />
 
     <Form resetForm={true} schema={journalEntrySchema} action="/journalEntry?/new" let:superForm>
-      <FormJournalEntry {superForm} />
+      <FormBodyJournalEntry {superForm} />
     </Form>
   </div>
 </div>

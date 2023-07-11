@@ -1,5 +1,5 @@
 <script lang="ts">
-  import TextField from './fields/TextField.svelte';
+  import TextField from '../fields/TextField.svelte';
   import {
     difficulties,
     equipments,
@@ -9,9 +9,9 @@
     muscles,
     postures,
   } from '$lib/utils';
-  import SelectField from './fields/SelectField.svelte';
-  import MultipleSelectField from './fields/MultipleSelectField.svelte';
-  import SubmitButton from './fields/SubmitButton.svelte';
+  import SelectField from '../fields/SelectField.svelte';
+  import MultipleSelectField from '../fields/MultipleSelectField.svelte';
+  import SubmitButton from '../fields/SubmitButton.svelte';
   import type { SuperForm } from 'sveltekit-superforms/client';
   import type { z } from 'zod';
 

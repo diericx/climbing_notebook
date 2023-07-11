@@ -1,12 +1,9 @@
 <script lang="ts">
-  import type { CustomQuery, TrainingProgram } from '@prisma/client';
-  import Form from './Form.svelte';
-  import SelectField from './fields/SelectField.svelte';
-  import { widgetSchema } from '$lib/widget';
-  import NumberField from './fields/NumberField.svelte';
-  import TextField from './fields/TextField.svelte';
-  import { v4 as uuidv4 } from 'uuid';
-  import SubmitButton from './fields/SubmitButton.svelte';
+  import type { TrainingProgram } from '@prisma/client';
+  import SelectField from '../fields/SelectField.svelte';
+  import NumberField from '../fields/NumberField.svelte';
+  import TextField from '../fields/TextField.svelte';
+  import SubmitButton from '../fields/SubmitButton.svelte';
   import type { SuperForm } from 'sveltekit-superforms/client';
   import type { z } from 'zod';
 

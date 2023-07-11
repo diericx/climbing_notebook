@@ -1,6 +1,6 @@
 <script lang="ts">
   import Form from '$lib/components/forms/Form.svelte';
-  import FormExercise from '$lib/components/forms/FormExercise.svelte';
+  import FormBodyExercise from '$lib/components/forms/bodies/FormBodyExercise.svelte';
   import { exerciseSchema } from '$lib/exercise';
   import type { PageData } from './$types';
 
@@ -18,5 +18,5 @@
   schema={exerciseSchema}
   let:superForm
 >
-  <FormExercise {superForm} />
+  <FormBodyExercise {superForm} />
 </Form>

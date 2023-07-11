@@ -1,6 +1,6 @@
 <script lang="ts">
   import { modalStore } from '@skeletonlabs/skeleton';
-  import FormExerciseEvent from '../forms/FormExerciseEvent.svelte';
+  import FormBodyExerciseEvent from '../forms/bodies/FormBodyExerciseEvent.svelte';
   import FormModal from './FormModal.svelte';
   import { exerciseEventSchema } from '$lib/exerciseEvent';
 
@@ -13,7 +13,7 @@
 </script>
 
 <FormModal schema={exerciseEventSchema} let:superForm>
-  <FormExerciseEvent
+  <FormBodyExerciseEvent
     {exercises}
     {exerciseToMarkCompleted}
     {dateToMarkCompleted}

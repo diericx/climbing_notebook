@@ -1,9 +1,9 @@
 <script lang="ts">
-  import FormProject from '../forms/FormProject.svelte';
+  import FormBodyProject from '../forms/bodies/FormBodyProject.svelte';
   import FormModal from './FormModal.svelte';
   import { projectSchema } from '$lib/project';
 </script>
 
 <FormModal schema={projectSchema} let:superForm>
-  <FormProject {superForm} showSubmitButton={false} />
+  <FormBodyProject {superForm} showSubmitButton={false} />
 </FormModal>

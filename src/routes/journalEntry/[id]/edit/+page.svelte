@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import FormJournalEntry from '$lib/components/forms/FormJournalEntry.svelte';
+  import FormBodyJournalEntry from '$lib/components/forms/bodies/FormJournalEntry.svelte';
   import Form from '$lib/components/forms/Form.svelte';
   import { journalEntrySchema } from '$lib/journalEntry';
 
@@ -19,7 +19,7 @@
       action={`/journalEntry/${journalEntry.id}?/edit`}
       let:superForm
     >
-      <FormJournalEntry {superForm} />
+      <FormBodyJournalEntry {superForm} />
     </Form>
   </div>
 </div>

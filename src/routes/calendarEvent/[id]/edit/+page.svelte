@@ -1,5 +1,7 @@
 <script lang="ts">
-  import FormCalendarEvent from '$lib/components/forms/FormCalendarEvent.svelte';
+  import { calendarEventSchema } from '$lib/calendarEvent';
+  import Form from '$lib/components/forms/Form.svelte';
+  import FormBodyCalendarEvent from '$lib/components/forms/bodies/FormBodyCalendarEvent.svelte';
   import type { PageData } from './$types';
 
   export let data: PageData;
@@ -9,9 +11,13 @@
 <div class="grid grid-cols-1">
   <div>
     <h1>Edit Calendar Event</h1>
-    <FormCalendarEvent
+    <Form
+      schema={calendarEventSchema}
+      {data}
       action={`/calendarEvent/${calendarEvent.id}?/edit`}
-      data={data.calendarEvent}
-    />
+      let:superForm
+    >
+      <FormBodyCalendarEvent {superForm} />
+    </Form>
   </div>
 </div>

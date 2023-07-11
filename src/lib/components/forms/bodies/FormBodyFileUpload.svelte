@@ -1,7 +1,7 @@
 <script lang="ts">
   import { FileDropzone } from '@skeletonlabs/skeleton';
   import Icon from '@iconify/svelte';
-  import SubmitButton from './fields/SubmitButton.svelte';
+  import SubmitButton from '../fields/SubmitButton.svelte';
   import type { SuperForm } from 'sveltekit-superforms/client';
   import type { z } from 'zod';
 

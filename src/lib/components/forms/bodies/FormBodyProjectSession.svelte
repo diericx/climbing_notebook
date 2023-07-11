@@ -1,8 +1,8 @@
 <script lang="ts">
-  import Checkbox from './fields/Checkbox.svelte';
-  import DateField from './fields/DateField.svelte';
-  import TextArea from './fields/TextArea.svelte';
-  import SubmitButton from './fields/SubmitButton.svelte';
+  import Checkbox from '../fields/Checkbox.svelte';
+  import DateField from '../fields/DateField.svelte';
+  import TextArea from '../fields/TextArea.svelte';
+  import SubmitButton from '../fields/SubmitButton.svelte';
   import type { SuperForm } from 'sveltekit-superforms/client';
   import type { z } from 'zod';
 

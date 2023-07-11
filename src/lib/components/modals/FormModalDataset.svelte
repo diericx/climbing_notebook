@@ -1,6 +1,6 @@
 <script lang="ts">
   import { modalStore } from '@skeletonlabs/skeleton';
-  import FormDataset from '../forms/FormDataset.svelte';
+  import FormBodyDataset from '../forms/bodies/FormBodyDataset.svelte';
   import FormModal from './FormModal.svelte';
   import { datasetSchema } from '$lib/widget';
 
@@ -11,7 +11,7 @@
 </script>
 
 <FormModal schema={datasetSchema} let:superForm>
-  <FormDataset
+  <FormBodyDataset
     {customQueries}
     {showColor}
     {showType}

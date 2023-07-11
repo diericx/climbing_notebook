@@ -1,6 +1,6 @@
 <script lang="ts">
   import { modalStore } from '@skeletonlabs/skeleton';
-  import FormWidget from '../forms/FormWidget.svelte';
+  import FormBodyWidget from '../forms/bodies/FormBodyWidget.svelte';
   import FormModal from './FormModal.svelte';
   import { widgetSchema } from '$lib/widget';
 
@@ -10,5 +10,5 @@
 </script>
 
 <FormModal schema={widgetSchema} let:superForm>
-  <FormWidget {superForm} {showType} {showOrder} {trainingPrograms} showSubmitButton={false} />
+  <FormBodyWidget {superForm} {showType} {showOrder} {trainingPrograms} showSubmitButton={false} />
 </FormModal>

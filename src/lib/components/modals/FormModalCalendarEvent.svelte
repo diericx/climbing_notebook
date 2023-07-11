@@ -1,9 +1,9 @@
 <script lang="ts">
-  import FormCalendarEvent from '../forms/FormCalendarEvent.svelte';
+  import FormBodyCalendarEvent from '../forms/bodies/FormBodyCalendarEvent.svelte';
   import FormModal from './FormModal.svelte';
   import { calendarEventSchema } from '$lib/calendarEvent';
 </script>
 
 <FormModal schema={calendarEventSchema} let:superForm>
-  <FormCalendarEvent {superForm} showSubmitButton={false} />
+  <FormBodyCalendarEvent {superForm} showSubmitButton={false} />
 </FormModal>

@@ -14,12 +14,12 @@
   export let showSubmitButton = true;
 </script>
 
-<Form schema={profileSchema} {data} {action} {id} {onSuccess} let:form let:delayed>
+<Form schema={profileSchema} {data} {action} {id} {onSuccess} let:superForm>
   <input type="hidden" name="type" value="climbing" />
   <TextArea
     name="goals"
     field="goals"
-    {form}
+    form={superForm}
     class="w-full"
     rows={15}
     placeholder={`3 weeks
@@ -40,6 +40,6 @@
   <br />
 
   {#if showSubmitButton}
-    <SubmitButton formId={id} {delayed} />
+    <SubmitButton {superForm} />
   {/if}
 </Form>
