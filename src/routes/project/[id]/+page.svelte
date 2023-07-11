@@ -64,7 +64,7 @@
       class={'max-h-96'}
     />
   {:else}
-    <FormFileUpload label="" action={`/project/${project.id}?/uploadImage`} />
+    <!-- <FormFileUpload label="" action={`/project/${project.id}?/uploadImage`} /> -->
   {/if}
 </div>
 

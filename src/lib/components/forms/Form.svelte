@@ -13,10 +13,6 @@
   export let resetForm = false;
   export let debug = false;
 
-  // Two way bindings meant to send this info up stream
-  export let submitting: boolean = false;
-  export let delayed: boolean = false;
-
   // Add redirect data
   if ($page.url.searchParams.has('redirectTo')) {
     action += '&redirectTo=' + $page.url.searchParams.get('redirectTo');
@@ -38,21 +34,7 @@
       }
     },
   });
-  const {
-    form,
-    errors,
-    enhance,
-    message,
-    submitting: _submitting,
-    delayed: _delayed,
-  } = newSuperForm;
-
-  // Unsure why I have to do this but without subscribing here in reactive vars
-  // it didn't seem to be propagating changes down stream...
-  $: {
-    submitting = $_submitting;
-    delayed = $_delayed;
-  }
+  const { form, errors, enhance, message, submitting, delayed } = newSuperForm;
 </script>
 
 {#if $message}
@@ -61,7 +43,7 @@
 
 <form method="POST" {action} use:enhance {id} class="form">
   <input type="hidden" name="_formId" value={id} />
-  <slot form={newSuperForm} formData={$form} errors={$errors} {submitting} {delayed} />
+  <slot superForm={newSuperForm} />
 </form>
 
 {#if debug}
