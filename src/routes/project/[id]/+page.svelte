@@ -5,7 +5,9 @@
   import { enhance } from '$app/forms';
   import { confirmDelete } from '$lib/utils';
   import Image from '$lib/components/Image.svelte';
-  import FormFileUpload from '$lib/components/forms/FormFileUpload.svelte';
+  import FormBodyFileUpload from '$lib/components/forms/bodies/FormBodyFileUpload.svelte';
+  import Form from '$lib/components/forms/Form.svelte';
+  import { fileUploadSchema } from '$lib/file';
   export let data: PageData;
 
   $: s3ObjectUrls = data.s3ObjectUrls;
@@ -64,7 +66,9 @@
       class={'max-h-96'}
     />
   {:else}
-    <FormFileUpload label="" action={`/project/${project.id}?/uploadImage`} />
+    <Form schema={fileUploadSchema} let:superForm action={`/project/${project.id}?/uploadImage`}>
+      <FormBodyFileUpload label="" {superForm} />
+    </Form>
   {/if}
 </div>
 

@@ -1,7 +1,11 @@
 <script lang="ts">
-  import FormExercise from '$lib/components/forms/FormExercise.svelte';
+  import Form from '$lib/components/forms/Form.svelte';
+  import FormBodyExercise from '$lib/components/forms/bodies/FormBodyExercise.svelte';
+  import { exerciseSchema } from '$lib/exercise';
 </script>
 
 <h1 class="mb-4">New Exercise</h1>
 
-<FormExercise action={'/exercise?/new'} />
+<Form action={'/exercise?/new'} resetForm={true} schema={exerciseSchema} let:superForm>
+  <FormBodyExercise {superForm} />
+</Form>

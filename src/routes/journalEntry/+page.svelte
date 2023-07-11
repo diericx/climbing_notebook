@@ -1,9 +1,11 @@
 <script lang="ts">
   import type { PageData } from './$types';
-  import FormJournalEntry from '$lib/components/forms/FormJournalEntry.svelte';
+  import FormBodyJournalEntry from '$lib/components/forms/bodies/FormBodyJournalEntry.svelte';
   import { confirmDelete } from '$lib/utils';
   import { enhance } from '$app/forms';
   import Icon from '@iconify/svelte';
+  import Form from '$lib/components/forms/Form.svelte';
+  import { journalEntrySchema } from '$lib/journalEntry';
 
   export let data: PageData;
 </script>
@@ -12,7 +14,10 @@
   <div>
     <h1>New Journal Entry</h1>
     <hr />
-    <FormJournalEntry />
+
+    <Form resetForm={true} schema={journalEntrySchema} action="/journalEntry?/new" let:superForm>
+      <FormBodyJournalEntry {superForm} />
+    </Form>
   </div>
 </div>
 

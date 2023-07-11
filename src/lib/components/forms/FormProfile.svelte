@@ -4,20 +4,22 @@
   import Form from './Form.svelte';
   import TextArea from './fields/TextArea.svelte';
   import { v4 as uuidv4 } from 'uuid';
+  import SubmitButton from './fields/SubmitButton.svelte';
 
   // Form action to execute
   export let action = '';
   export let data: Profile | undefined = undefined;
   export let onSuccess: (() => Promise<void>) | undefined = undefined;
   export let id = uuidv4();
+  export let showSubmitButton = true;
 </script>
 
-<Form schema={profileSchema} {data} {action} {id} {onSuccess} let:form>
+<Form schema={profileSchema} {data} {action} {id} {onSuccess} let:superForm>
   <input type="hidden" name="type" value="climbing" />
   <TextArea
     name="goals"
     field="goals"
-    {form}
+    form={superForm}
     class="w-full"
     rows={15}
     placeholder={`3 weeks
@@ -37,5 +39,7 @@
 
   <br />
 
-  <button class="btn btn-sm variant-filled">Submit</button>
+  {#if showSubmitButton}
+    <SubmitButton {superForm} />
+  {/if}
 </Form>

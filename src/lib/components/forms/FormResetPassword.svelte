@@ -1,6 +1,7 @@
 <script lang="ts">
   import { loginSchema } from '$lib/user';
   import PasswordField from './fields/PasswordField.svelte';
+  import SubmitButton from './fields/SubmitButton.svelte';
   import Form from './Form.svelte';
   import { v4 as uuidv4 } from 'uuid';
 
@@ -11,7 +12,7 @@
   export let token: string;
 </script>
 
-<Form data={{ token }} schema={loginSchema} {action} {id} {onSuccess} let:form>
-  <PasswordField name="password" field="password" {form} />
-  <button class="btn btn-primary btn-sm variant-filled">Submit</button>
+<Form data={{ token }} schema={loginSchema} {action} {id} {onSuccess} let:superForm>
+  <PasswordField name="password" field="password" form={superForm} />
+  <SubmitButton label="Login" {superForm} />
 </Form>

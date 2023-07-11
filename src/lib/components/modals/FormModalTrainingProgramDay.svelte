@@ -1,20 +1,9 @@
-<script>
-  import { modalStore } from '@skeletonlabs/skeleton';
-  import FormTrainingProgramDay from '../forms/FormTrainingProgramDay.svelte';
+<script lang="ts">
+  import FormBodyTrainingProgramDay from '../forms/bodies/FormBodyTrainingProgramDay.svelte';
   import FormModal from './FormModal.svelte';
+  import { trainingProgramDaySchema } from '$lib/trainingProgramDay';
 </script>
 
-<FormModal let:data let:action let:id>
-  <span slot="content">
-    <FormTrainingProgramDay
-      {data}
-      {id}
-      {action}
-      showSubmitButton={false}
-      onSuccess={() => modalStore.close()}
-    />
-  </span>
-  <span slot="footer">
-    <button class="btn variant-filled" form={id}>Submit</button>
-  </span>
+<FormModal schema={trainingProgramDaySchema} let:superForm>
+  <FormBodyTrainingProgramDay {superForm} showSubmitButton={false} />
 </FormModal>

@@ -4,18 +4,15 @@
   import { defaultData, superForm } from 'sveltekit-superforms/client';
   import type { z, ZodRawShape } from 'zod';
   import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
+  import { v4 as uuidv4 } from 'uuid';
 
   export let schema: z.ZodObject<ZodRawShape>;
   export let data: any = {};
-  export let id: string;
+  export let id: string = uuidv4();
   export let onSuccess: (() => void) | undefined = undefined;
   export let action = '';
   export let resetForm = false;
   export let debug = false;
-
-  // Two way bindings meant to send this info up stream
-  export let submitting: boolean;
-  export let delayed: boolean;
 
   // Add redirect data
   if ($page.url.searchParams.has('redirectTo')) {
@@ -38,28 +35,18 @@
       }
     },
   });
-  const {
-    form,
-    errors,
-    enhance,
-    message,
-    submitting: _submitting,
-    delayed: _delayed,
-  } = newSuperForm;
-
-  $: {
-    submitting = $_submitting;
-    delayed = $_delayed;
-  }
+  const { form, errors, enhance, message, submitting, delayed } = newSuperForm;
 </script>
 
 {#if $message}
   <div class="invalid">{$message}</div>
 {/if}
+
 <form method="POST" {action} use:enhance {id} class="form">
   <input type="hidden" name="_formId" value={id} />
-  <slot form={newSuperForm} formData={$form} errors={$errors} {submitting} {delayed} />
+  <slot superForm={newSuperForm} />
 </form>
+
 {#if debug}
   <SuperDebug data={$form} />
 {/if}
