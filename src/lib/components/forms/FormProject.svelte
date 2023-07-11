@@ -7,8 +7,8 @@
   import type { z } from 'zod';
 
   // Form action to execute
-  export let showSubmitButton = true;
   export let superForm: SuperForm<z.AnyZodObject, any>;
+  export let showSubmitButton = true;
 
   const { form } = superForm;
 </script>

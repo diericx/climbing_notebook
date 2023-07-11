@@ -4,6 +4,8 @@
   import { confirmDelete } from '$lib/utils';
   import { enhance } from '$app/forms';
   import Icon from '@iconify/svelte';
+  import Form from '$lib/components/forms/Form.svelte';
+  import { journalEntrySchema } from '$lib/journalEntry';
 
   export let data: PageData;
 </script>
@@ -12,7 +14,10 @@
   <div>
     <h1>New Journal Entry</h1>
     <hr />
-    <FormJournalEntry />
+
+    <Form resetForm={true} schema={journalEntrySchema} action="/journalEntry?/new" let:superForm>
+      <FormJournalEntry {superForm} />
+    </Form>
   </div>
 </div>
 

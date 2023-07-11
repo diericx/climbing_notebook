@@ -1,6 +1,5 @@
 <script lang="ts">
   import { modalStore } from '@skeletonlabs/skeleton';
-  import { v4 as uuidv4 } from 'uuid';
   import type { ZodRawShape, z } from 'zod';
   import Form from '../forms/Form.svelte';
   import SubmitButton from '../forms/fields/SubmitButton.svelte';
@@ -21,7 +20,6 @@
       {schema}
       {data}
       {action}
-      id={uuidv4()}
       onSuccess={() => {
         modalStore.close();
       }}

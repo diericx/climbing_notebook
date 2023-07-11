@@ -1,37 +1,19 @@
 <script lang="ts">
-  import { journalEntrySchema } from '$lib/journalEntry';
-  import type { Project } from '@prisma/client';
   import Checkbox from './fields/Checkbox.svelte';
   import DateField from './fields/DateField.svelte';
   import TextArea from './fields/TextArea.svelte';
-  import Form from './Form.svelte';
-  import { v4 as uuidv4 } from 'uuid';
   import SubmitButton from './fields/SubmitButton.svelte';
+  import type { SuperForm } from 'sveltekit-superforms/client';
+  import type { z } from 'zod';
 
-  // Form action to execute
-  export let action = '';
-  export let data: Project | undefined = undefined;
-  export let onSuccess: (() => void) | undefined = undefined;
-  export let id = uuidv4();
+  export let superForm: SuperForm<z.AnyZodObject, any>;
   export let showSubmitButton = true;
 </script>
 
-<Form
-  schema={journalEntrySchema}
-  {data}
-  {action}
-  {id}
-  {onSuccess}
-  resetForm={true}
-  let:form
-  let:delayed
->
-  <input type="hidden" name="_formId" value={id} />
-  <Checkbox name="sent" field="sent" {form} />
-  <DateField name="date" field="date" {form} />
-  <TextArea name="notes" field="notes" {form} />
+<Checkbox name="sent" field="sent" form={superForm} />
+<DateField name="date" field="date" form={superForm} />
+<TextArea name="notes" field="notes" form={superForm} />
 
-  {#if showSubmitButton}
-    <SubmitButton formId={id} {delayed} />
-  {/if}
-</Form>
+{#if showSubmitButton}
+  <SubmitButton {superForm} />
+{/if}

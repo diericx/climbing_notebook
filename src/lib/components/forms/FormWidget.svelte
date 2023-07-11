@@ -7,60 +7,52 @@
   import TextField from './fields/TextField.svelte';
   import { v4 as uuidv4 } from 'uuid';
   import SubmitButton from './fields/SubmitButton.svelte';
+  import type { SuperForm } from 'sveltekit-superforms/client';
+  import type { z } from 'zod';
 
   // Form action to execute
-  export let action = '';
-  export let data: CustomQuery | undefined = undefined;
-  export let onSuccess: (() => void) | undefined = undefined;
-  export let id = uuidv4();
+  export let superForm: SuperForm<z.AnyZodObject, any>;
   export let showSubmitButton = true;
   export let showType = true;
   export let showOrder = true;
   export let trainingPrograms: TrainingProgram[] = [];
 
-  // let type = '';
+  const { form } = superForm;
 </script>
 
-<Form
-  schema={widgetSchema}
-  {data}
-  {action}
-  {id}
-  {onSuccess}
-  resetForm={true}
-  let:form
-  let:formData
-  let:delayed
->
-  <TextField name="name" field="name" {form} />
-  {#if showOrder}
-    <NumberField name="order" field="order" {form} />
-  {/if}
-  <SelectField name="width" field="width" {form}>
-    <option value="full">Full</option>
-    <option value="half">Half</option>
+<TextField name="name" field="name" form={superForm} />
+{#if showOrder}
+  <NumberField name="order" field="order" form={superForm} />
+{/if}
+<SelectField name="width" field="width" form={superForm}>
+  <option value="full">Full</option>
+  <option value="half">Half</option>
+</SelectField>
+
+{#if showType}
+  <SelectField name="type" field="type" form={superForm}>
+    <option value="chart"> Chart </option>
+    <option value="calendar"> Full Calendar </option>
+    <option value="heatmapCalendar"> Heatmap Calendar </option>
+    <option value="dailyExerciseCalendar"> Daily Exercise Calendar </option>
   </SelectField>
+{/if}
 
-  {#if showType}
-    <SelectField name="type" field="type" {form}>
-      <option value="chart"> Chart </option>
-      <option value="calendar"> Full Calendar </option>
-      <option value="heatmapCalendar"> Heatmap Calendar </option>
-      <option value="dailyExerciseCalendar"> Daily Exercise Calendar </option>
-    </SelectField>
-  {/if}
+{#if $form.type == 'dailyExerciseCalendar'}
+  <SelectField
+    name="trainingProgramId"
+    field="trainingProgramId"
+    label="Training Program"
+    form={superForm}
+  >
+    <option value={null}> Active Training Program </option>
+    <option disabled>---------</option>
+    {#each trainingPrograms as trainingProgram}
+      <option value={trainingProgram.id}> {trainingProgram.name} </option>
+    {/each}
+  </SelectField>
+{/if}
 
-  {#if formData.type == 'dailyExerciseCalendar'}
-    <SelectField name="trainingProgramId" field="trainingProgramId" label="Training Program" {form}>
-      <option value={null}> Active Training Program </option>
-      <option disabled>---------</option>
-      {#each trainingPrograms as trainingProgram}
-        <option value={trainingProgram.id}> {trainingProgram.name} </option>
-      {/each}
-    </SelectField>
-  {/if}
-
-  {#if showSubmitButton}
-    <SubmitButton formId={id} {delayed} />
-  {/if}
-</Form>
+{#if showSubmitButton}
+  <SubmitButton {superForm} />
+{/if}

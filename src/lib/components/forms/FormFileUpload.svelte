@@ -1,68 +1,50 @@
 <script lang="ts">
-  import { journalEntrySchema } from '$lib/journalEntry';
   import { FileDropzone } from '@skeletonlabs/skeleton';
-  import Form from './Form.svelte';
-  import { v4 as uuidv4 } from 'uuid';
   import Icon from '@iconify/svelte';
   import SubmitButton from './fields/SubmitButton.svelte';
+  import type { SuperForm } from 'sveltekit-superforms/client';
+  import type { z } from 'zod';
 
-  // Form action to execute
-  export let action = '';
-  export let onSuccess: (() => void) | undefined = undefined;
-  export let id = uuidv4();
+  export let superForm: SuperForm<z.AnyZodObject, any>;
   export let showSubmitButton = true;
   export let label = 'Files';
 
-  // These are two way bindings from form values so the Modals can access
-  export let submitting: boolean = false;
-  export let delayed: boolean = false;
-
   // Bound to the file picker
   let files: FileList;
+
+  const { errors } = superForm;
 </script>
 
-<Form
-  schema={journalEntrySchema}
-  {action}
-  {id}
-  {onSuccess}
-  bind:submitting
-  bind:delayed
-  resetForm={true}
-  let:errors
->
-  <input type="hidden" name="_formId" value={id} />
+<label for="file" class="font-bold"> {label} </label>
+<!-- Files are not handled by SuperForms so all errors are sent manually to 'file'-->
+{#if $errors.file}<span class="invalid">{$errors.file}</span>{/if}
 
-  <label for="file" class="font-bold"> {label} </label>
-  {#if errors.file}<span class="invalid">{errors.file}</span>{/if}
+<FileDropzone name="file" bind:files>
+  <svelte:fragment slot="lead">
+    {#if !files || files.length == 0}
+      <div class="flex justify-center">
+        <Icon icon="mingcute:file-upload-fill" height="50" />
+      </div>
+    {:else}
+      <div class="flex justify-center">
+        <Icon icon="bi:image" height="50" />
+      </div>
+    {/if}
+  </svelte:fragment>
+  <svelte:fragment slot="message">
+    {#if !files || files.length == 0}
+      <b>Upload an image </b> or drag and drop
+    {:else}
+      {files[0].name}
+    {/if}
+  </svelte:fragment>
+  <svelte:fragment slot="meta">
+    {#if !files || files.length == 0}
+      JPG and PNG allowed
+    {/if}</svelte:fragment
+  >
+</FileDropzone>
 
-  <FileDropzone name="file" bind:files>
-    <svelte:fragment slot="lead">
-      {#if !files || files.length == 0}
-        <div class="flex justify-center">
-          <Icon icon="mingcute:file-upload-fill" height="50" />
-        </div>
-      {:else}
-        <div class="flex justify-center">
-          <Icon icon="bi:image" height="50" />
-        </div>
-      {/if}
-    </svelte:fragment>
-    <svelte:fragment slot="message">
-      {#if !files || files.length == 0}
-        <b>Upload an image </b> or drag and drop
-      {:else}
-        {files[0].name}
-      {/if}
-    </svelte:fragment>
-    <svelte:fragment slot="meta">
-      {#if !files || files.length == 0}
-        JPG and PNG allowed
-      {/if}</svelte:fragment
-    >
-  </FileDropzone>
-
-  {#if showSubmitButton}
-    <SubmitButton formId={id} {delayed} />
-  {/if}
-</Form>
+{#if showSubmitButton}
+  <SubmitButton {superForm} />
+{/if}

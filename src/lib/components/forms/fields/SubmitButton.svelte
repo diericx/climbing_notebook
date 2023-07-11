@@ -4,6 +4,7 @@
   import type { z } from 'zod';
 
   export let superForm: SuperForm<z.AnyZodObject, any>;
+  export let label = 'Submit';
 
   const { delayed, formId } = superForm;
 </script>
@@ -14,5 +15,5 @@
       <Icon class="text-xl" icon="line-md:loading-loop" />
     </span>
   {/if}
-  <span class={$delayed ? 'invisible' : ''}> Upload </span>
+  <span class={$delayed ? 'invisible' : ''}> {label} </span>
 </button>
