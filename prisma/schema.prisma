@@ -206,15 +206,16 @@ model CalendarEvent {
 }
 
 model CustomQuery {
-  id         String                 @id @default(cuid())
-  name       String
-  table      String
-  operator   String
-  conditions CustomQueryCondition[]
-  dataset    Dataset[]
+  id       String @id @default(cuid())
+  name     String
+  table    String
+  equation String
 
-  createdAt DateTime @default(now()) @map("created_at")
-  ownerId   String   @map("owner_id")
+  conditions CustomQueryCondition[]
+  dataset    Dataset                @relation(fields: [datasetId], references: [id])
+  datasetId  String                 @map("dataset_id")
+  createdAt  DateTime               @default(now()) @map("created_at")
+  ownerId    String                 @map("owner_id")
 
   @@map("custom_query")
 }
@@ -234,11 +235,18 @@ model CustomQueryCondition {
 }
 
 model Widget {
-  id    String @id @default(cuid())
-  name  String
-  width String
-  order Int
-  type  String
+  id          String  @id @default(cuid())
+  name        String
+  description String
+  width       String
+  order       Int
+  type        String
+  isTemplate  Boolean @map("is_template")
+  sets        Int?
+  reps        Int?
+  weight      Int?
+  seconds     Int?
+  minutes     Int?
 
   // For chart and calendar heatmap type
   datasets        Dataset[]
@@ -253,18 +261,16 @@ model Widget {
 }
 
 model Dataset {
-  id            String      @id @default(cuid())
-  type          String      @default("line")
-  name          String
-  equation      String
-  color         String
-  customQuery   CustomQuery @relation(fields: [customQueryId], references: [id], onDelete: Cascade)
-  customQueryId String      @map("custom_query_id")
+  id    String @id @default(cuid())
+  type  String @default("line")
+  name  String
+  color String
 
-  createdAt DateTime @default(now()) @map("created_at")
-  ownerId   String   @map("owner_id")
-  widget    Widget   @relation(fields: [widgetId], references: [id], onDelete: Cascade)
-  widgetId  String   @map("widget_id")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  ownerId     String        @map("owner_id")
+  widget      Widget        @relation(fields: [widgetId], references: [id], onDelete: Cascade)
+  widgetId    String        @map("widget_id")
+  CustomQuery CustomQuery[]
 
   @@map("dataset")
 }

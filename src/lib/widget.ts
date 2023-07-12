@@ -4,9 +4,16 @@ import { APIError } from './errors';
 
 export const widgetSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
+  description: z.string().min(1, { message: 'Description is required' }),
   width: z.enum(['half', 'full']).default('half'),
   order: z.number(),
   type: z.enum(['chart', 'calendar', 'heatmapCalendar', 'dailyExerciseCalendar']).default('chart'),
+  isTemplate: z.boolean(),
+  sets: z.number().nullish(),
+  reps: z.number().nullish(),
+  weight: z.number().nullish(),
+  seconds: z.number().nullish(),
+  minutes: z.number().nullish(),
   trainingProgramId: z.number().nullish(),
 });
 export type WidgetSchema = typeof widgetSchema;
@@ -15,13 +22,12 @@ export const datasetSchema = z.object({
   type: z.enum(['line', 'bar']).default('line'),
   color: z.string(),
   name: z.string().min(1, { message: 'Name is required' }),
-  equation: z.string(),
-  customQueryId: z.string().min(1, { message: 'Query is required' }),
+  widgetId: z.string().min(1, { message: 'Widget is required' }),
 });
 export type DatasetSchema = typeof datasetSchema;
 
 export class WidgetRepo {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaClient) { }
   async new(data: z.infer<WidgetSchema>, ownerId: string) {
     return (await this.prisma.widget.create({
       data: {

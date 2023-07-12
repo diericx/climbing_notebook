@@ -5,7 +5,8 @@ import { APIError } from './errors';
 export const customQuerySchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
   table: z.enum(['metric', 'exerciseEvent']).default('exerciseEvent'),
-  operator: z.enum(['AND', 'OR']).default('AND'),
+  equation: z.string(),
+  datasetId: z.string().min(1, { message: 'Dataset is required' }),
 });
 export type CustomQuerySchema = typeof customQuerySchema;
 
@@ -22,7 +23,7 @@ export type CustomQueryResults = {
 };
 
 export class CustomQueryRepo {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaClient) { }
   async new(data: z.infer<CustomQuerySchema>, ownerId: string) {
     return (await this.prisma.customQuery.create({
       data: {
