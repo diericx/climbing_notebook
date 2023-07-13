@@ -8,6 +8,7 @@
   export let superForm: SuperForm<z.AnyZodObject, any>;
   export let showSubmitButton = true;
   export let showOperator = true;
+  export let showEquation = true;
 </script>
 
 <TextField name="name" field="name" form={superForm} />
@@ -22,6 +23,18 @@
     <option value="AND"> AND </option>
     <option value="OR">OR </option>
   </SelectField>
+{/if}
+
+{#if showEquation}
+  <TextField name="equation" field="equation" placeholder="sets*reps" form={superForm}>
+    <div slot="description">
+      A simple math equation. Each attribute of the resource is given as a variable.
+      <br />
+      <i>Exercise Events: </i> sets, reps, weight, minutes, seconds
+      <br />
+      <i>Metrics: </i> value
+    </div>
+  </TextField>
 {/if}
 
 {#if showSubmitButton}

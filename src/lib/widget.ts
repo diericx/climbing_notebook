@@ -22,7 +22,6 @@ export const datasetSchema = z.object({
   type: z.enum(['line', 'bar']).default('line'),
   color: z.string(),
   name: z.string().min(1, { message: 'Name is required' }),
-  widgetId: z.string().min(1, { message: 'Widget is required' }),
 });
 export type DatasetSchema = typeof datasetSchema;
 
