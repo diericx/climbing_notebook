@@ -9,6 +9,7 @@
   let title = $modalStore[0]?.meta?.title;
   let data = $modalStore[0]?.meta?.data;
   let action = $modalStore[0]?.meta?.action;
+  let debug = $modalStore[0]?.meta?.debug;
 </script>
 
 <div style="max-height: 90vh" class="card w-modal">
@@ -20,6 +21,7 @@
       {schema}
       {data}
       {action}
+      {debug}
       onSuccess={() => {
         modalStore.close();
       }}

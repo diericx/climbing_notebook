@@ -7,7 +7,7 @@ import { superValidate } from 'sveltekit-superforms/server';
 import { WidgetRepo, widgetSchema } from '$lib/widget';
 
 export const actions: Actions = {
-  new: async ({ locals, request, url }) => {
+  new: async ({ locals, request }) => {
     const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
     const form = await superValidate(formData, widgetSchema, {
@@ -15,12 +15,14 @@ export const actions: Actions = {
     });
 
     if (!form.valid) {
+      console.log(form);
       return fail(400, { form });
     }
 
     const repo = new WidgetRepo(prisma);
+    let widget;
     try {
-      await repo.new(form.data, user?.userId);
+      widget = await repo.new(form.data, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
         return fail(401, { message: e.detail, form });
@@ -29,10 +31,6 @@ export const actions: Actions = {
       throw error(500, { message: SERVER_ERROR });
     }
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
-    return { form };
+    throw redirect(303, `/widget/${widget.id}/edit`);
   },
 };

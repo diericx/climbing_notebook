@@ -4,7 +4,7 @@ import { APIError } from './errors';
 
 export const widgetSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
-  description: z.string().min(1, { message: 'Description is required' }),
+  description: z.string().nullish(),
   width: z.enum(['half', 'full']).default('half'),
   order: z.number(),
   type: z.enum(['chart', 'calendar', 'heatmapCalendar', 'dailyExerciseCalendar']).default('chart'),
@@ -27,7 +27,7 @@ export const datasetSchema = z.object({
 export type DatasetSchema = typeof datasetSchema;
 
 export class WidgetRepo {
-  constructor(private readonly prisma: PrismaClient) { }
+  constructor(private readonly prisma: PrismaClient) {}
   async new(data: z.infer<WidgetSchema>, ownerId: string) {
     return (await this.prisma.widget.create({
       data: {

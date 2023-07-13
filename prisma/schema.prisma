@@ -237,7 +237,7 @@ model CustomQueryCondition {
 model Widget {
   id          String  @id @default(cuid())
   name        String
-  description String
+  description String?
   width       String
   order       Int
   type        String
@@ -270,7 +270,7 @@ model Dataset {
   ownerId     String        @map("owner_id")
   widget      Widget        @relation(fields: [widgetId], references: [id], onDelete: Cascade)
   widgetId    String        @map("widget_id")
-  CustomQuery CustomQuery[]
+  customQuery CustomQuery[]
 
   @@map("dataset")
 }
