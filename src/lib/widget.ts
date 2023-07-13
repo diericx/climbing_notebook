@@ -26,7 +26,7 @@ export const datasetSchema = z.object({
 export type DatasetSchema = typeof datasetSchema;
 
 export class WidgetRepo {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaClient) { }
   async new(data: z.infer<WidgetSchema>, ownerId: string) {
     return (await this.prisma.widget.create({
       data: {
@@ -48,7 +48,7 @@ export class WidgetRepo {
       include: {
         datasets: {
           include: {
-            customQuery: true,
+            customQueries: true,
           },
           orderBy: {
             name: 'asc',
@@ -107,7 +107,7 @@ export class WidgetRepo {
       include: {
         datasets: {
           include: {
-            customQuery: true,
+            customQueries: true,
           },
           orderBy: {
             name: 'asc',

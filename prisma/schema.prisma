@@ -266,11 +266,11 @@ model Dataset {
   name  String
   color String
 
-  createdAt   DateTime      @default(now()) @map("created_at")
-  ownerId     String        @map("owner_id")
-  widget      Widget        @relation(fields: [widgetId], references: [id], onDelete: Cascade)
-  widgetId    String        @map("widget_id")
-  customQuery CustomQuery[]
+  createdAt     DateTime      @default(now()) @map("created_at")
+  ownerId       String        @map("owner_id")
+  widget        Widget        @relation(fields: [widgetId], references: [id], onDelete: Cascade)
+  widgetId      String        @map("widget_id")
+  customQueries CustomQuery[]
 
   @@map("dataset")
 }

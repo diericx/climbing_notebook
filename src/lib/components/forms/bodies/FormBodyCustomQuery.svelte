@@ -7,7 +7,6 @@
 
   export let superForm: SuperForm<z.AnyZodObject, any>;
   export let showSubmitButton = true;
-  export let showOperator = true;
   export let showEquation = true;
 </script>
 
@@ -17,13 +16,6 @@
   <option value="exerciseEvent">Exercise Events</option>
   <option value="metric"> Metrics </option>
 </SelectField>
-
-{#if showOperator}
-  <SelectField name="operator" field="operator" form={superForm}>
-    <option value="AND"> AND </option>
-    <option value="OR">OR </option>
-  </SelectField>
-{/if}
 
 {#if showEquation}
   <TextField name="equation" field="equation" placeholder="sets*reps" form={superForm}>
