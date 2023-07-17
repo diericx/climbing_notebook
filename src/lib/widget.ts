@@ -26,7 +26,7 @@ export const datasetSchema = z.object({
 export type DatasetSchema = typeof datasetSchema;
 
 export class WidgetRepo {
-  constructor(private readonly prisma: PrismaClient) { }
+  constructor(private readonly prisma: PrismaClient) {}
   async new(data: z.infer<WidgetSchema>, ownerId: string) {
     return (await this.prisma.widget.create({
       data: {
@@ -100,14 +100,18 @@ export class WidgetRepo {
   }
 
   async getOneAndValidateOwner(id: string, ownerId: string) {
-    const query = await this.prisma.widget.findUnique({
+    const widget = await this.prisma.widget.findUnique({
       where: {
         id,
       },
       include: {
         datasets: {
           include: {
-            customQueries: true,
+            customQueries: {
+              include: {
+                conditions: true,
+              },
+            },
           },
           orderBy: {
             name: 'asc',
@@ -116,14 +120,14 @@ export class WidgetRepo {
         trainingProgram: true,
       },
     });
-    if (query == null) {
+    if (widget == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
-    if (query.ownerId != ownerId) {
+    if (widget.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
     }
 
-    return query;
+    return widget;
   }
 
   async update(data: z.infer<WidgetSchema>, id: string, ownerId: string) {

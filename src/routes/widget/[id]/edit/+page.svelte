@@ -124,7 +124,7 @@
         </div>
 
         <div>
-          <div class="flex w-full items-center mb-2">
+          <div class="flex w-full items-center mb-4">
             <span class="items-end text-lg font-light">Queries</span>
             <div class="flex-1" />
             <button
@@ -150,38 +150,115 @@
           <ul class="list">
             {#each dataset.customQueries as customQuery}
               <li class="card bg-white py-3 px-2 md:px-4 mb-2">
-                <div class="flex items-center md:space-x-3">
-                  <div class="flex-1 min-w-0">
-                    <p>{customQuery.name}</p>
-                  </div>
-                  <div class="flex min-w-0 float-right space-x-2">
-                    <button
-                      class="btn btn-sm variant-ringed"
-                      on:click={() =>
-                        modalStore.trigger({
-                          type: 'component',
-                          component: 'formModalCustomQuery',
-                          meta: {
-                            data: customQuery,
-                            action: `/widget/${widget.id}/dataset/${dataset.id}/customQuery/${customQuery.id}?/edit`,
-                            title: 'Edit Exercise Event',
-                          },
-                        })}
-                    >
-                      <Icon icon="material-symbols:edit-outline" height="18" />
-                      <span>Edit</span>
-                    </button>
-                    <form
-                      class="inline"
-                      use:enhance
-                      method="POST"
-                      action={`/widget/${widget.id}/dataset/${dataset.id}/customQuery/${customQuery.id}?/delete`}
-                    >
-                      <button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
-                        <Icon icon="mdi:trash-outline" height="18" />
-                        <span class="ml-1 mr-1"> Delete </span>
+                <div>
+                  <div class="flex items-center md:space-x-3 mb-7">
+                    <div class="flex-1 min-w-0">
+                      <p class="font-bold">{customQuery.name}</p>
+                    </div>
+                    <div class="flex min-w-0 float-right space-x-2">
+                      <button
+                        class="btn btn-sm variant-ringed"
+                        on:click={() =>
+                          modalStore.trigger({
+                            type: 'component',
+                            component: 'formModalCustomQuery',
+                            meta: {
+                              data: customQuery,
+                              action: `/widget/${widget.id}/dataset/${dataset.id}/customQuery/${customQuery.id}?/edit`,
+                              title: 'Edit Exercise Event',
+                            },
+                          })}
+                      >
+                        <Icon icon="material-symbols:edit-outline" height="18" />
+                        <span>Edit</span>
                       </button>
-                    </form>
+                      <form
+                        class="inline"
+                        use:enhance
+                        method="POST"
+                        action={`/widget/${widget.id}/dataset/${dataset.id}/query/${customQuery.id}?/delete`}
+                      >
+                        <button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
+                          <Icon icon="mdi:trash-outline" height="18" />
+                          <span class="ml-1 mr-1"> Delete </span>
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="flex justify-between mb-4">
+                      <span class="items-end text-lg font-light">Constraints</span>
+                      <button
+                        class="btn btn-sm variant-filled"
+                        on:click={() =>
+                          modalStore.trigger({
+                            type: 'component',
+                            component: 'formModalCustomQueryCondition',
+                            meta: {
+                              action: `/widget/${widget.id}/dataset/${dataset.id}/query/${customQuery.id}?/addCondition`,
+                              title: 'Add Constraint',
+                              query: customQuery,
+                            },
+                          })}
+                      >
+                        <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
+                        <span>Add Constraint</span>
+                      </button>
+                    </div>
+                    <div>
+                      {#if customQuery.conditions.length == 0}
+                        <i class="text-gray-400">No query conditions</i>
+                      {:else}
+                        <div class="divide-y border-t">
+                          {#each customQuery.conditions as condition}
+                            <div class="flex justify-between py-3">
+                              <div>
+                                <code class="code">
+                                  {condition.column}
+                                </code>
+                                {condition.condition}
+                                <code class="code">
+                                  {condition.value}
+                                </code>
+                              </div>
+                              <div>
+                                <button
+                                  class="btn btn-sm variant-ringed"
+                                  on:click={() =>
+                                    modalStore.trigger({
+                                      type: 'component',
+                                      component: 'formModalCustomQueryCondition',
+                                      meta: {
+                                        query: customQuery,
+                                        data: condition,
+                                        action: `/widget/${widget.id}/dataset/${dataset.id}/query/${customQuery.id}/condition/${condition.id}?/update`,
+                                        title: 'Edit Constraint',
+                                      },
+                                    })}
+                                >
+                                  <Icon icon="material-symbols:edit-outline" height="18" />
+                                  <span>Edit</span>
+                                </button>
+                                <form
+                                  class="inline"
+                                  use:enhance
+                                  method="POST"
+                                  action={`/widget/${widget.id}/dataset/${dataset.id}/query/${customQuery.id}/condition/${condition.id}?/delete`}
+                                >
+                                  <button
+                                    class="btn btn-sm variant-ringed"
+                                    on:click={confirmDelete}
+                                  >
+                                    <Icon icon="mdi:trash-outline" height="18" />
+                                    <span class="ml-1 mr-1"> Delete </span>
+                                  </button>
+                                </form>
+                              </div>
+                            </div>
+                          {/each}
+                        </div>
+                      {/if}
+                    </div>
                   </div>
                 </div>
               </li>

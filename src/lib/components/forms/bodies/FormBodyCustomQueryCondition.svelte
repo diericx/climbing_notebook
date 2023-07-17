@@ -13,18 +13,16 @@
 
 {#if query.table == 'exerciseEvent'}
   <SelectField name="column" field="column" form={superForm}>
-    <option value="name">Name</option>
-    <option value="notes"> Notes </option>
-  </SelectField>
-{:else if query.table == 'metric'}
-  <SelectField name="column" field="column" form={superForm}>
-    <option value="name">Name</option>
+    <option value="sets">sets</option>
+    <option value="reps">reps</option>
+    <option value="weight">weight</option>
+    <option value="minutes">minutes</option>
+    <option value="seconds">seconds</option>
   </SelectField>
 {/if}
 
 <SelectField name="condition" field="condition" form={superForm}>
-  <option value="equals"> Equals </option>
-  <option value="contains"> Contains </option>
+  <option value="equals"> equals </option>
 </SelectField>
 
 <TextField name="value" field="value" form={superForm} />

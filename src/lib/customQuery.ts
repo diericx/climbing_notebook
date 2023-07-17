@@ -67,14 +67,17 @@ export class CustomQueryRepo {
     return await this.prisma[query.table].findMany(prismaQuery);
   }
   async get(ownerId: string) {
-    return (await this.prisma.customQuery.findMany({
+    return await this.prisma.customQuery.findMany({
       where: {
         ownerId: ownerId,
       },
       orderBy: {
         name: 'asc',
       },
-    })) as CustomQuery[];
+      include: {
+        conditions: true,
+      },
+    });
   }
 
   async getOneAndValidateOwner(id: string, ownerId: string) {
@@ -121,7 +124,7 @@ export class CustomQueryRepo {
 
   async addCondition(data: z.infer<CustomQueryConditionSchema>, id: string, ownerId: string) {
     await this.getOneAndValidateOwner(id, ownerId);
-    return (await this.prisma.customQuery.update({
+    return await this.prisma.customQuery.update({
       data: {
         conditions: {
           create: [
@@ -136,7 +139,7 @@ export class CustomQueryRepo {
       where: {
         id,
       },
-    })) as CustomQuery;
+    });
   }
 
   async deleteCondition(queryId: string, conditionId: string, ownerId: string) {

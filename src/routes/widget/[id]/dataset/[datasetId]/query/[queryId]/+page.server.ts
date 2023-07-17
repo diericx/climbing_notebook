@@ -1,40 +1,18 @@
-import { CustomQueryRepo } from '$lib/customQuery';
-import { APIError } from '$lib/errors';
+import type { Actions } from './$types';
+import { error, fail, redirect } from '@sveltejs/kit';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
-import { TrainingProgramRepo } from '$lib/trainingProgram';
-import { datasetSchema, WidgetRepo, widgetSchema } from '$lib/widget';
-import { error, fail, redirect } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms/server';
-import type { Actions, PageServerLoad } from './$types';
-
-export const load: PageServerLoad = async ({ locals, params }) => {
-  const { user } = await locals.auth.validateUser();
-  const widgetRepo = new WidgetRepo(prisma);
-  const customQueryRepo = new CustomQueryRepo(prisma);
-  const trainingProgramRepo = new TrainingProgramRepo(prisma);
-  const id = params.id;
-  try {
-    const widget = await widgetRepo.getOneAndValidateOwner(id, user?.userId);
-    // TODO: remove this call?
-    const customQueries = await customQueryRepo.get(user?.userId);
-    const trainingPrograms = await trainingProgramRepo.get(user?.userId);
-    return {
-      widget,
-      customQueries,
-      trainingPrograms,
-    };
-  } catch (e) {
-    console.error(e);
-    throw error(500, { message: SERVER_ERROR });
-  }
-};
+import { APIError } from '$lib/errors';
+import { message, superValidate } from 'sveltekit-superforms/server';
+import { customQueryConditionSchema, CustomQueryRepo, customQuerySchema } from '$lib/customQuery';
+import type { PageServerLoad } from './$types';
+import type { ExerciseEvent, Metric } from '@prisma/client';
 
 export const actions: Actions = {
-  update: async ({ locals, request, url, params }) => {
+  update: async ({ request, locals, params, url }) => {
     const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
-    const form = await superValidate(formData, widgetSchema, {
+    const form = await superValidate(formData, customQuerySchema, {
       id: formData.get('_formId')?.toString(),
     });
     const id = params.id;
@@ -43,7 +21,7 @@ export const actions: Actions = {
       return fail(400, { form });
     }
 
-    const repo = new WidgetRepo(prisma);
+    const repo = new CustomQueryRepo(prisma);
     try {
       await repo.update(form.data, id, user?.userId);
     } catch (e) {
@@ -60,11 +38,12 @@ export const actions: Actions = {
 
     return { form };
   },
-  delete: async ({ locals, url, params }) => {
-    const id = params.id;
-    const { user } = await locals.auth.validateUser();
 
-    const repo = new WidgetRepo(prisma);
+  delete: async ({ params, locals, url }) => {
+    const { user } = await locals.auth.validateUser();
+    const id = params.id;
+
+    const repo = new CustomQueryRepo(prisma);
     try {
       await repo.delete(id, user?.userId);
     } catch (e) {
@@ -79,26 +58,31 @@ export const actions: Actions = {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
     }
 
-    return {};
+    return { success: true };
   },
-  addDataset: async ({ locals, request, url, params }) => {
+
+  addCondition: async ({ request, locals, params, url }) => {
     const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
-    const form = await superValidate(formData, datasetSchema, {
+    const form = await superValidate(formData, customQueryConditionSchema, {
       id: formData.get('_formId')?.toString(),
     });
-    const id = params.id;
+    const queryId = params.queryId;
 
     if (!form.valid) {
       return fail(400, { form });
     }
 
-    const repo = new WidgetRepo(prisma);
+    const repo = new CustomQueryRepo(prisma);
     try {
-      await repo.addDataset(form.data, id, user?.userId);
+      await repo.addCondition(form.data, queryId, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form });
+        if (e.message == 'NOT_FOUND') {
+          return message(form, 'Query not found for condition.', {
+            status: 401,
+          });
+        }
       }
       console.error(e);
       throw error(500, { message: SERVER_ERROR });
