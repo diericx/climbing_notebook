@@ -45,10 +45,8 @@ export class CustomQueryRepo {
       const prismaCondition = {};
       prismaCondition[c.column] = {};
       prismaCondition[c.column][c.condition] = c.value;
-      prismaCondition[c.column]['mode'] = 'insensitive';
       return prismaCondition;
     });
-    console.log(prismaQuery);
 
     // Filter out exercise events in programs in an admittedly confusing double negative way
     if (query.table == 'exerciseEvent') {

@@ -16,7 +16,7 @@
     PointElement,
   } from 'chart.js';
   import { evaluate } from 'mathjs';
-  import type { Dataset, ExerciseEvent, Metric } from '@prisma/client';
+  import type { ExerciseEvent, Metric } from '@prisma/client';
   import type { CustomQueryResults } from '$lib/customQuery';
   import { onMount } from 'svelte';
   import type { DatasetComplete } from '$lib/prisma';
@@ -54,14 +54,7 @@
 
   let chartDatasets: ChartDataset[] = [];
   for (const dataset of datasets) {
-    const customQueryResult = customQueryResults.find(
-      (r) => r.customQueryId == dataset.customQueryId
-    );
-    if (customQueryResult == undefined) {
-      console.error('Could not find data for custom query: ', dataset.customQueryId);
-      continue;
-    }
-
+    // Set up the chart
     let chartDataset: ChartDataset = {
       pointHoverRadius: 5,
       pointHitRadius: 25,
@@ -70,6 +63,7 @@
       backgroundColor: dataset.color,
       data: [],
     };
+    // Create helper function for adding a data point to this chart
     function addDataPoint(dataPoint: ChartDataPoint) {
       let existingDatumIndex = chartDataset.data.findIndex((d) => d.x == dataPoint.x);
       if (existingDatumIndex != -1) {
@@ -78,28 +72,36 @@
         chartDataset.data.push(dataPoint);
       }
     }
-    if (dataset.customQuery.table == 'exerciseEvent') {
-      const data = customQueryResult.data as ExerciseEvent[];
-      for (const e of data) {
-        if (e.date) {
-          let score = evaluate(dataset.equation, {
-            sets: e.sets,
-            reps: e.reps,
-            weight: e.weight,
-            minutes: e.minutes,
-            seconds: e.seconds,
-          });
-          addDataPoint({ x: e.date.toISOString().split('T')[0], y: score });
-        }
+    // Loop through all queries for this dataset and add them to the chart
+    for (const customQuery of dataset.customQueries) {
+      const customQueryResult = customQueryResults.find((r) => r.customQueryId == customQuery.id);
+      if (customQueryResult == undefined) {
+        console.error('Could not find data for custom query: ', customQuery.id);
+        continue;
       }
-    } else if (dataset.customQuery.table == 'metric') {
-      const data = customQueryResult.data as Metric[];
-      for (const m of data) {
-        if (m.date) {
-          let score = evaluate(dataset.equation, {
-            value: m.value,
-          });
-          addDataPoint({ x: m.date.toISOString().split('T')[0], y: score });
+      if (customQuery.table == 'exerciseEvent') {
+        const data = customQueryResult.data as ExerciseEvent[];
+        for (const e of data) {
+          if (e.date) {
+            let score = evaluate(customQuery.equation, {
+              sets: e.sets,
+              reps: e.reps,
+              weight: e.weight,
+              minutes: e.minutes,
+              seconds: e.seconds,
+            });
+            addDataPoint({ x: e.date.toISOString().split('T')[0], y: score });
+          }
+        }
+      } else if (customQuery.table == 'metric') {
+        const data = customQueryResult.data as Metric[];
+        for (const m of data) {
+          if (m.date) {
+            let score = evaluate(customQuery.equation, {
+              value: m.value,
+            });
+            addDataPoint({ x: m.date.toISOString().split('T')[0], y: score });
+          }
         }
       }
     }
