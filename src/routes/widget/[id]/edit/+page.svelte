@@ -81,13 +81,16 @@
   {:else}
     {#each widget.datasets as dataset}
       <div class="rounded-lg px-4 pb-4 pt-3 border mb-4 bg-white">
-        <div class="flex items-center">
-          <div class="flex mb-7 space-x-2 md:space-x-4 w-full items-center justify-between">
+        <div class="flex items-center mb-1">
+          <div class="flex w-full items-center justify-between">
             {#if dataset.color != undefined && dataset.color != ''}
-              <span class="w-8 h-8 rounded-full" style={`background-color: ${dataset.color}`} />
+              <span
+                class="w-8 h-8 rounded-full mr-2"
+                style={`background-color: ${dataset.color}`}
+              />
             {/if}
             <div class="flex-1 min-w-0">
-              <p class="font-bold">{dataset.name}</p>
+              <p class="font-bold text-2xl">{dataset.name}</p>
             </div>
 
             <div class="flex space-x-2">
@@ -123,6 +126,16 @@
           <div />
         </div>
 
+        <div class="mb-7">
+          <p class="text-gray-500">
+            {#if dataset.type == 'line'}
+              <b>Type: </b>Line
+            {:else if dataset.type == 'bar'}
+              <b>Type: </b>Bar
+            {/if}
+          </p>
+        </div>
+
         <div>
           <div class="flex w-full items-center mb-4">
             <span class="items-end text-lg font-light">Queries</span>
@@ -149,11 +162,14 @@
 
           <ul class="list">
             {#each dataset.customQueries as customQuery}
-              <li class="card bg-white py-3 px-2 md:px-4 mb-2">
+              <li class="card bg-white py-3 px-2 md:px-4 mb-7 shadow">
                 <div>
-                  <div class="flex items-center md:space-x-3 mb-7">
+                  <div class="flex items-center md:space-x-3 mb-1">
                     <div class="flex-1 min-w-0">
-                      <p class="font-bold">{customQuery.name}</p>
+                      <div class="flex items-center">
+                        <Icon icon="mdi:sql-query" class="mr-1" height="24" />
+                        <p class="font-bold text-lg">{customQuery.name}</p>
+                      </div>
                     </div>
                     <div class="flex min-w-0 float-right space-x-2">
                       <button
@@ -165,7 +181,7 @@
                             meta: {
                               data: customQuery,
                               action: `/widget/${widget.id}/dataset/${dataset.id}/query/${customQuery.id}?/update`,
-                              title: 'Edit Exercise Event',
+                              title: 'Edit Query',
                             },
                           })}
                       >
@@ -185,8 +201,17 @@
                       </form>
                     </div>
                   </div>
+
+                  <div class="mb-7 text-gray-500">
+                    <b>Resource:</b>
+                    {customQuery.table}
+                    <br />
+                    <b>Equation:</b>
+                    {customQuery.equation}
+                  </div>
+
                   <div>
-                    <div class="flex justify-between mb-4">
+                    <div class="flex justify-between mb-2">
                       <span class="items-end text-lg font-light">Constraints</span>
                       <button
                         class="btn btn-sm variant-filled"
@@ -195,7 +220,7 @@
                             type: 'component',
                             component: 'formModalCustomQueryCondition',
                             meta: {
-                              action: `/widget/${widget.id}/dataset/${dataset.id}/query/${customQuery.id}?/addCondition`,
+                              action: `/widget/${widget.id}/dataset/${dataset.id}/query/${customQuery.id}/condition?/new`,
                               title: 'Add Constraint',
                               query: customQuery,
                             },
