@@ -1,4 +1,4 @@
-import { CustomQueryRepo } from '$lib/customQuery';
+import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
 import { APIError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
@@ -14,15 +14,34 @@ export const load: PageServerLoad = async ({ locals, params }) => {
   const customQueryRepo = new CustomQueryRepo(prisma);
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
   const id = params.id;
+
   try {
     const widget = await widgetRepo.getOneAndValidateOwner(id, user?.userId);
-    // TODO: remove this call?
-    const customQueries = await customQueryRepo.get(user?.userId);
     const trainingPrograms = await trainingProgramRepo.get(user?.userId);
+    // compile datasets for widgets
+    const customQueryResults: CustomQueryResults[] = [];
+    // Go through each widget and fetch cooresponding query results
+    if (widget.type == 'chart' || widget.type == 'heatmapCalendar') {
+      for (const dataset of widget.datasets) {
+        for (const customQuery of dataset.customQueries) {
+          // Don't run the same queries multiple times
+          if (customQueryResults.find((r) => r.customQueryId == customQuery.id)) {
+            continue;
+          }
+
+          const data = await customQueryRepo.runCustomQuery(customQuery.id, user?.userId);
+          customQueryResults.push({
+            customQueryId: customQuery.id,
+            data,
+          });
+        }
+      }
+    }
+
     return {
       widget,
-      customQueries,
       trainingPrograms,
+      customQueryResults,
     };
   } catch (e) {
     console.error(e);

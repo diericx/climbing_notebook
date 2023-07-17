@@ -4,11 +4,17 @@
   import Icon from '@iconify/svelte';
   import { modalStore } from '@skeletonlabs/skeleton';
   import type { PageData } from './$types';
+  import Chart from '$lib/components/Chart.svelte';
 
   export let data: PageData;
   $: widget = data.widget;
-  $: customQueries = data.customQueries;
   $: trainingPrograms = data.trainingPrograms;
+  $: customQueryResults = data.customQueryResults;
+  $: datasets = widget.datasets;
+
+  $: {
+    console.log(datasets);
+  }
 </script>
 
 <div class="flex justify-between">
@@ -38,12 +44,20 @@
 </div>
 <hr />
 
-<div class="mb-8">
+<div class="mb-7">
   <p><b>Width:</b> {widget.width}</p>
   <p><b>Order:</b> {widget.order}</p>
   <p><b>Type:</b> {camelToTitle(widget.type)}</p>
   {#if widget.type == 'dailyExerciseCalendar'}
     <p><b>Training Program:</b> {widget.trainingProgram?.name || 'Active Training Program'}</p>
+  {/if}
+</div>
+
+<div class="mb-7">
+  <h1>Chart Preview</h1>
+  <hr />
+  {#if widget.type == 'chart'}
+    <Chart {datasets} {customQueryResults} />
   {/if}
 </div>
 
@@ -62,7 +76,6 @@
             meta: {
               action: `/widget/${widget.id}?/addDataset`,
               title: 'Add Dataset',
-              customQueries,
               showType: widget.type != 'heatmapCalendar',
               showColor: widget.type != 'heatmapCalendar',
               showEquation: widget.type != 'heatmapCalendar',

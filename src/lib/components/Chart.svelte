@@ -52,60 +52,68 @@
 
   let equationErrorMessage: string | undefined = undefined;
 
-  let chartDatasets: ChartDataset[] = [];
-  for (const dataset of datasets) {
-    // Set up the chart
-    let chartDataset: ChartDataset = {
-      pointHoverRadius: 5,
-      pointHitRadius: 25,
-      label: dataset.name,
-      type: dataset.type,
-      backgroundColor: dataset.color,
-      data: [],
-    };
-    // Create helper function for adding a data point to this chart
-    function addDataPoint(dataPoint: ChartDataPoint) {
-      let existingDatumIndex = chartDataset.data.findIndex((d) => d.x == dataPoint.x);
-      if (existingDatumIndex != -1) {
-        chartDataset.data[existingDatumIndex].y += dataPoint.y;
-      } else {
-        chartDataset.data.push(dataPoint);
-      }
-    }
-    // Loop through all queries for this dataset and add them to the chart
-    for (const customQuery of dataset.customQueries) {
-      const customQueryResult = customQueryResults.find((r) => r.customQueryId == customQuery.id);
-      if (customQueryResult == undefined) {
-        console.error('Could not find data for custom query: ', customQuery.id);
-        continue;
-      }
-      if (customQuery.table == 'exerciseEvent') {
-        const data = customQueryResult.data as ExerciseEvent[];
-        for (const e of data) {
-          if (e.date) {
-            let score = evaluate(customQuery.equation, {
-              sets: e.sets,
-              reps: e.reps,
-              weight: e.weight,
-              minutes: e.minutes,
-              seconds: e.seconds,
-            });
-            addDataPoint({ x: e.date.toISOString().split('T')[0], y: score });
-          }
-        }
-      } else if (customQuery.table == 'metric') {
-        const data = customQueryResult.data as Metric[];
-        for (const m of data) {
-          if (m.date) {
-            let score = evaluate(customQuery.equation, {
-              value: m.value,
-            });
-            addDataPoint({ x: m.date.toISOString().split('T')[0], y: score });
-          }
+  // Reactively update chart data
+  $: chartDatasets = [];
+  $: chartData = { datasets: chartDatasets };
+  $: {
+    chartDatasets = [];
+    chartData = { datasets: chartDatasets };
+
+    for (const dataset of datasets) {
+      // Set up the chart
+      let chartDataset: ChartDataset = {
+        pointHoverRadius: 5,
+        pointHitRadius: 25,
+        label: dataset.name,
+        type: dataset.type,
+        backgroundColor: dataset.color,
+        data: [],
+      };
+      // Create helper function for adding a data point to this chart
+      function addDataPoint(dataPoint: ChartDataPoint) {
+        let existingDatumIndex = chartDataset.data.findIndex((d) => d.x == dataPoint.x);
+        if (existingDatumIndex != -1) {
+          chartDataset.data[existingDatumIndex].y += dataPoint.y;
+        } else {
+          chartDataset.data.push(dataPoint);
         }
       }
+      // Loop through all queries for this dataset and add them to the chart
+      for (const customQuery of dataset.customQueries) {
+        const customQueryResult = customQueryResults.find((r) => r.customQueryId == customQuery.id);
+        if (customQueryResult == undefined) {
+          console.error('Could not find data for custom query: ', customQuery.id);
+          continue;
+        }
+        if (customQuery.table == 'exerciseEvent') {
+          const data = customQueryResult.data as ExerciseEvent[];
+          for (const e of data) {
+            if (e.date) {
+              let score = evaluate(customQuery.equation, {
+                sets: e.sets,
+                reps: e.reps,
+                weight: e.weight,
+                minutes: e.minutes,
+                seconds: e.seconds,
+              });
+              addDataPoint({ x: e.date.toISOString().split('T')[0], y: score });
+            }
+          }
+        } else if (customQuery.table == 'metric') {
+          const data = customQueryResult.data as Metric[];
+          for (const m of data) {
+            if (m.date) {
+              let score = evaluate(customQuery.equation, {
+                value: m.value,
+              });
+              addDataPoint({ x: m.date.toISOString().split('T')[0], y: score });
+            }
+          }
+        }
+      }
+      chartDatasets.push(chartDataset);
     }
-    chartDatasets.push(chartDataset);
+    chartData.datasets = chartDatasets;
   }
 
   // Chart resizes with window
@@ -126,7 +134,7 @@
   <Chart
     type={'line'}
     bind:chart={chartComponent}
-    data={{ datasets: chartDatasets }}
+    data={chartData}
     options={{
       responsive: true,
       interaction: {
