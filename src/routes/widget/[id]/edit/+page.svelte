@@ -99,7 +99,7 @@
                     component: 'formModalDataset',
                     meta: {
                       data: dataset,
-                      action: `/widget/${widget.id}/dataset/${dataset.id}?/edit`,
+                      action: `/widget/${widget.id}/dataset/${dataset.id}?/update`,
                       title: 'Edit Dataset',
                     },
                   })}
@@ -134,7 +134,7 @@
                   type: 'component',
                   component: 'formModalCustomQuery',
                   meta: {
-                    action: `/widget/${widget.id}/dataset/${dataset.id}?/newQuery`,
+                    action: `/widget/${widget.id}/dataset/${dataset.id}/query?/new`,
                     title: 'Add Query',
                     showDate: false,
                     showDifficulty: false,
@@ -164,7 +164,7 @@
                             component: 'formModalCustomQuery',
                             meta: {
                               data: customQuery,
-                              action: `/widget/${widget.id}/dataset/${dataset.id}/customQuery/${customQuery.id}?/edit`,
+                              action: `/widget/${widget.id}/dataset/${dataset.id}/query/${customQuery.id}?/update`,
                               title: 'Edit Exercise Event',
                             },
                           })}

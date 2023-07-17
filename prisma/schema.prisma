@@ -224,7 +224,7 @@ model CustomQueryCondition {
   id            String       @id @default(cuid())
   column        String
   condition     String
-  value         String
+  value         Float
   customQuery   CustomQuery? @relation(fields: [customQueryId], references: [id], onDelete: Cascade)
   customQueryId String?      @map("custom_query_id")
 

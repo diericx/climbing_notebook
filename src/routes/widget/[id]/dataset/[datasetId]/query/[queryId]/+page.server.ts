@@ -15,7 +15,7 @@ export const actions: Actions = {
     const form = await superValidate(formData, customQuerySchema, {
       id: formData.get('_formId')?.toString(),
     });
-    const id = params.id;
+    const queryId = params.queryId;
 
     if (!form.valid) {
       return fail(400, { form });
@@ -23,7 +23,7 @@ export const actions: Actions = {
 
     const repo = new CustomQueryRepo(prisma);
     try {
-      await repo.update(form.data, id, user?.userId);
+      await repo.update(form.data, queryId, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
         return fail(401, { message: e.detail, form });

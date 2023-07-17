@@ -12,7 +12,7 @@ export type CustomQuerySchema = typeof customQuerySchema;
 export const customQueryConditionSchema = z.object({
   column: z.string().min(1, { message: 'Column is required' }),
   condition: z.enum(['equals', 'contains']).default('contains'),
-  value: z.string(),
+  value: z.number(),
 });
 export type CustomQueryConditionSchema = typeof customQueryConditionSchema;
 
@@ -41,13 +41,14 @@ export class CustomQueryRepo {
   async runCustomQuery(id: string, ownerId: string) {
     const query = await this.getOneAndValidateOwner(id, ownerId);
     const prismaQuery = { where: { ownerId }, orderBy: { date: 'asc' } };
-    prismaQuery.where[query.operator] = query.conditions.map((c) => {
+    prismaQuery.where['AND'] = query.conditions.map((c) => {
       const prismaCondition = {};
       prismaCondition[c.column] = {};
       prismaCondition[c.column][c.condition] = c.value;
       prismaCondition[c.column]['mode'] = 'insensitive';
       return prismaCondition;
     });
+    console.log(prismaQuery);
 
     // Filter out exercise events in programs in an admittedly confusing double negative way
     if (query.table == 'exerciseEvent') {
