@@ -42,7 +42,7 @@
         <span>Edit</span>
       </button>
     {:else}
-      <a class="btn btn-sm variant-ringed mr-2" href={`/widget/${widget.id}`}>
+      <a class="btn btn-sm variant-ringed mr-2" href={`/widget/${widget.id}/edit`}>
         <Icon icon="material-symbols:edit-outline" height="18" />
         <span>Edit</span>
       </a>

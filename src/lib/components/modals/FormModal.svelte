@@ -31,7 +31,12 @@
         <slot {superForm} />
       </section>
       <footer class="card-footer float-right space-x-4">
-        <button class="btn variant-ghost-surface" on:click={() => modalStore.close()}>Cancel</button
+        <button
+          class="btn variant-ghost-surface"
+          on:click={(e) => {
+            e.preventDefault();
+            modalStore.close();
+          }}>Cancel</button
         >
         <SubmitButton {superForm} />
       </footer>
