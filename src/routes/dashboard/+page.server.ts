@@ -35,7 +35,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     const metrics = await metricRepo.get(user?.userId, dateMin, new Date());
     const journalEntries = await journalEntryRepo.get(user?.userId);
     const calendarEvents = await calendarEventRepo.get(user?.userId);
-    const widgets = await widgetRepo.get(user?.userId);
+    const widgets = await widgetRepo.get({ ownerId: user?.userId });
     const trainingPrograms = await trainingProgramRepo.get(user?.userId);
 
     // compile datasets for widgets

@@ -5,6 +5,30 @@ import { APIError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { superValidate } from 'sveltekit-superforms/server';
 import { WidgetRepo, widgetSchema } from '$lib/widget';
+import type { PageServerLoad } from './$types';
+
+export const load: PageServerLoad = async ({ locals, url }) => {
+  const { user } = await locals.auth.validateUser();
+  if (!user) {
+    throw redirect(302, '/login?redirectTo=' + url.toString());
+  }
+
+  const widgetRepo = new WidgetRepo(prisma);
+  let widgets;
+  try {
+    widgets = await widgetRepo.get({ isTemplate: true });
+  } catch (e) {
+    if (e instanceof APIError) {
+      return fail(401, { message: e.detail });
+    }
+    console.error(e);
+    throw error(500, { message: SERVER_ERROR });
+  }
+
+  return {
+    widgets,
+  };
+};
 
 export const actions: Actions = {
   new: async ({ locals, request }) => {
@@ -31,6 +55,12 @@ export const actions: Actions = {
       throw error(500, { message: SERVER_ERROR });
     }
 
-    throw redirect(303, `/widget/${widget.id}/edit`);
+    // Redirect to the edit page for charts and heatmap calendars (basically charts)
+    // because by default they are not complete and need more info
+    if (widget.type == 'chart' || widget.type == 'heatmapCalendar') {
+      throw redirect(303, `/widget/${widget.id}/edit`);
+    }
+
+    return { form };
   },
 };

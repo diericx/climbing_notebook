@@ -1,4 +1,4 @@
-import type { PrismaClient, Widget } from '@prisma/client';
+import type { PrismaClient, Widget, Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
 
@@ -37,11 +37,9 @@ export class WidgetRepo {
     })) as Widget;
   }
 
-  async get(ownerId: string) {
+  async get(where: Prisma.WidgetWhereInput) {
     return await this.prisma.widget.findMany({
-      where: {
-        ownerId: ownerId,
-      },
+      where,
       orderBy: {
         order: 'asc',
       },

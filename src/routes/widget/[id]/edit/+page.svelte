@@ -53,13 +53,13 @@
   {/if}
 </div>
 
-<div class="mb-7">
-  <h1>Chart Preview</h1>
-  <hr />
-  {#if widget.type == 'chart'}
+{#if widget.type == 'chart'}
+  <div class="mb-7">
+    <h1>Chart Preview</h1>
+    <hr />
     <Chart {datasets} {customQueryResults} />
-  {/if}
-</div>
+  </div>
+{/if}
 
 {#if widget.type == 'chart' || widget.type == 'heatmapCalendar'}
   <div class="flex justify-between">

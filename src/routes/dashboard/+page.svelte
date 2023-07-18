@@ -40,24 +40,29 @@
     <div>
       <h1>Dashboard</h1>
     </div>
-    <div>
+    <div class="flex space-x-2">
       <button
-        class="btn btn-sm variant-filled mb-1"
+        class="btn btn-sm variant-ringed mb-1"
         on:click={() =>
           modalStore.trigger({
             type: 'component',
             component: 'formModalWidget',
             meta: {
               action: `/widget?/new`,
-              title: 'Add Widget',
-              showOrder: false,
+              title: 'New Custom Widget',
               trainingPrograms: trainingPrograms,
             },
           })}
       >
         <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-        <span>Add Widget</span>
+        <span>New Custom Widget</span>
       </button>
+      <div>
+        <a href="/widget" class="btn btn-sm variant-filled mb-1">
+          <Icon icon="material-symbols:search" height="18" />
+          <span>Browse Community Widgets </span>
+        </a>
+      </div>
     </div>
   </div>
   <hr />
