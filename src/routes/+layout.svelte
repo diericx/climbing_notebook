@@ -31,6 +31,7 @@
   import FormModalProject from '$lib/components/modals/FormModalProject.svelte';
   import FormModalProjectSession from '$lib/components/modals/FormModalProjectSession.svelte';
   import FormModalExercise from '$lib/components/modals/FormModalExercise.svelte';
+  import FormModalWidgetTemplate from '$lib/components/modals/FormModalWidgetTemplate.svelte';
 
   storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
@@ -59,6 +60,7 @@
     formModalCustomQuery: { ref: FormModalCustomQuery },
     formModalCustomQueryCondition: { ref: FormModalCustomQueryCondition },
     formModalWidget: { ref: FormModalWidget },
+    formModalWidgetTemplate: { ref: FormModalWidgetTemplate },
     formModalDataset: { ref: FormModalDataset },
     formModalProject: { ref: FormModalProject },
     formModalProjectSession: { ref: FormModalProjectSession },

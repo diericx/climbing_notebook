@@ -1,7 +1,7 @@
 import { APIError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
-import { datasetSchema, WidgetRepo, widgetSchema } from '$lib/widget';
+import { datasetSchema, WidgetRepo, widgetSchema, widgetTemplateSchema } from '$lib/widget';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions } from './$types';
@@ -59,18 +59,21 @@ export const actions: Actions = {
   },
 
   // Create a new template from this widget
-  newTemplate: async ({ locals, url, params }) => {
-    const id = params.id;
+  newTemplate: async ({ locals, url, params, request }) => {
+    const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
+    const form = await superValidate(formData, widgetTemplateSchema, {
+      id: formData.get('_formId')?.toString(),
+    });
+    const id = params.id;
+
+    if (!form.valid) {
+      return fail(400, { form });
+    }
 
     const repo = new WidgetRepo(prisma);
     try {
-      const template = await repo.newTemplate(id, user?.userId);
-
-      if (url.searchParams.has('redirectTo')) {
-        throw redirect(303, url.searchParams.get('redirectTo') || '/');
-      }
-      return template;
+      await repo.newTemplate(form.data, id, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
         return fail(401, { message: e.detail });
@@ -78,5 +81,11 @@ export const actions: Actions = {
       console.error(e);
       throw error(500, { message: SERVER_ERROR });
     }
+
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
+
+    return { form };
   },
 };

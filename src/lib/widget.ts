@@ -1,10 +1,9 @@
-import type { PrismaClient, Widget, Prisma } from '@prisma/client';
-import { custom, z } from 'zod';
+import type { PrismaClient, Prisma } from '@prisma/client';
+import { z } from 'zod';
 import { APIError } from './errors';
 
 export const widgetSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
-  description: z.string().nullish(),
   width: z.enum(['half', 'full']).default('half'),
   order: z.number(),
   type: z.enum(['chart', 'calendar', 'heatmapCalendar', 'dailyExerciseCalendar']).default('chart'),
@@ -17,6 +16,12 @@ export const widgetSchema = z.object({
   trainingProgramId: z.number().nullish(),
 });
 export type WidgetSchema = typeof widgetSchema;
+
+export const widgetTemplateSchema = z.object({
+  name: z.string().min(1, { message: 'Name is required' }),
+  description: z.string().min(1, { message: 'Description is required' }),
+});
+export type WidgetTemplateSchema = typeof widgetTemplateSchema;
 
 export const datasetSchema = z.object({
   type: z.enum(['line', 'bar']).default('line'),
@@ -38,11 +43,12 @@ export class WidgetRepo {
   }
 
   // Create a new template from a given widget
-  async newTemplate(id: string, ownerId: string) {
+  async newTemplate(data: z.infer<WidgetTemplateSchema>, id: string, ownerId: string) {
     const source = await this.getOneAndValidateOwner(id, ownerId);
     return await this.prisma.widget.create({
       data: {
         ...source,
+        ...data,
         id: undefined,
         trainingProgramId: undefined,
         trainingProgram: undefined,
