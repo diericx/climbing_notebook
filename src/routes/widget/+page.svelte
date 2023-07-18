@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Widget from '$lib/components/Widget.svelte';
+  import WidgetTemplate from '$lib/components/WidgetTemplate.svelte';
   import type { PageData } from './$types';
 
   export let data: PageData;
@@ -17,7 +17,7 @@
   <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
     {#each widgets as widget}
       <div class={widget.width == 'full' ? 'col-span-2' : 'col-span-1'}>
-        <Widget {widget} {customQueryResults} />
+        <WidgetTemplate {widget} {customQueryResults} />
       </div>
     {/each}
   </div>
