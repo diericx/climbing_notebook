@@ -100,33 +100,4 @@ export const actions: Actions = {
 
     return {};
   },
-  addDataset: async ({ locals, request, url, params }) => {
-    const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
-    const form = await superValidate(formData, datasetSchema, {
-      id: formData.get('_formId')?.toString(),
-    });
-    const id = params.id;
-
-    if (!form.valid) {
-      return fail(400, { form });
-    }
-
-    const repo = new WidgetRepo(prisma);
-    try {
-      await repo.addDataset(form.data, id, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form });
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
-    return { form };
-  },
 };

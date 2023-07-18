@@ -11,10 +11,6 @@
   $: trainingPrograms = data.trainingPrograms;
   $: customQueryResults = data.customQueryResults;
   $: datasets = widget.datasets;
-
-  $: {
-    console.log(datasets);
-  }
 </script>
 
 <div class="flex justify-between">
@@ -74,7 +70,7 @@
             type: 'component',
             component: 'formModalDataset',
             meta: {
-              action: `/widget/${widget.id}?/addDataset`,
+              action: `/widget/${widget.id}/dataset?/new`,
               title: 'Add Dataset',
               showType: widget.type != 'heatmapCalendar',
               showColor: widget.type != 'heatmapCalendar',
