@@ -212,7 +212,7 @@ model CustomQuery {
   equation String
 
   conditions CustomQueryCondition[]
-  dataset    Dataset                @relation(fields: [datasetId], references: [id])
+  dataset    Dataset                @relation(fields: [datasetId], references: [id], onDelete: Cascade)
   datasetId  String                 @map("dataset_id")
   createdAt  DateTime               @default(now()) @map("created_at")
   ownerId    String                 @map("owner_id")

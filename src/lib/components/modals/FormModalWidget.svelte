@@ -6,9 +6,17 @@
 
   let showType = $modalStore[0]?.meta?.showType;
   let showOrder = $modalStore[0]?.meta?.showOrder;
+  let showWidth = $modalStore[0]?.meta?.showWidth;
   let trainingPrograms = $modalStore[0]?.meta?.trainingPrograms;
 </script>
 
 <FormModal schema={widgetSchema} let:superForm>
-  <FormBodyWidget {superForm} {showType} {showOrder} {trainingPrograms} showSubmitButton={false} />
+  <FormBodyWidget
+    {superForm}
+    {showType}
+    {showOrder}
+    {showWidth}
+    {trainingPrograms}
+    showSubmitButton={false}
+  />
 </FormModal>

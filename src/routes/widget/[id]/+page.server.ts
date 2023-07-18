@@ -57,34 +57,26 @@ export const actions: Actions = {
 
     return {};
   },
-  addDataset: async ({ locals, request, url, params }) => {
-    const formData = await request.formData();
+
+  // Create a new template from this widget
+  newTemplate: async ({ locals, url, params }) => {
     const id = params.id;
     const { user } = await locals.auth.validateUser();
 
-    const form = await superValidate(formData, datasetSchema, {
-      id: formData.get('_formId')?.toString(),
-    });
-
-    if (!form.valid) {
-      return fail(400, { form });
-    }
-
     const repo = new WidgetRepo(prisma);
     try {
-      await repo.addDataset(form.data, id, user?.userId);
+      const template = await repo.newTemplate(id, user?.userId);
+
+      if (url.searchParams.has('redirectTo')) {
+        throw redirect(303, url.searchParams.get('redirectTo') || '/');
+      }
+      return template;
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form });
+        return fail(401, { message: e.detail });
       }
       console.error(e);
       throw error(500, { message: SERVER_ERROR });
     }
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
-    return { form };
   },
 };

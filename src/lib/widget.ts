@@ -1,5 +1,5 @@
 import type { PrismaClient, Widget, Prisma } from '@prisma/client';
-import { z } from 'zod';
+import { custom, z } from 'zod';
 import { APIError } from './errors';
 
 export const widgetSchema = z.object({
@@ -28,13 +28,52 @@ export type DatasetSchema = typeof datasetSchema;
 export class WidgetRepo {
   constructor(private readonly prisma: PrismaClient) {}
   async new(data: z.infer<WidgetSchema>, ownerId: string) {
-    return (await this.prisma.widget.create({
+    return await this.prisma.widget.create({
       data: {
         ...data,
         ownerId: ownerId,
         createdAt: new Date(),
       },
-    })) as Widget;
+    });
+  }
+
+  // Create a new template from a given widget
+  async newTemplate(id: string, ownerId: string) {
+    const source = await this.getOneAndValidateOwner(id, ownerId);
+    return await this.prisma.widget.create({
+      data: {
+        ...source,
+        id: undefined,
+        trainingProgramId: undefined,
+        trainingProgram: undefined,
+        isTemplate: true,
+        datasets: {
+          create: source.datasets.map((d) => {
+            return {
+              ...d,
+              id: undefined,
+              widgetId: undefined,
+              customQueries: {
+                create: d.customQueries.map((customQuery) => {
+                  return {
+                    ...customQuery,
+                    id: undefined,
+                    datasetId: undefined,
+                    conditions: {
+                      create: customQuery.conditions.map((condition) => ({
+                        ...condition,
+                        id: undefined,
+                        customQueryId: undefined,
+                      })),
+                    },
+                  };
+                }),
+              },
+            };
+          }),
+        },
+      },
+    });
   }
 
   async get(where: Prisma.WidgetWhereInput) {

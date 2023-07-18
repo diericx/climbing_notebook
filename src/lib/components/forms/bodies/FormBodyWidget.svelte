@@ -12,6 +12,7 @@
   export let showSubmitButton = true;
   export let showType = true;
   export let showOrder = true;
+  export let showWidth = true;
   export let trainingPrograms: TrainingProgram[] = [];
 
   const { form } = superForm;
@@ -21,10 +22,13 @@
 {#if showOrder}
   <NumberField name="order" field="order" form={superForm} />
 {/if}
-<SelectField name="width" field="width" form={superForm}>
-  <option value="full">Full</option>
-  <option value="half">Half</option>
-</SelectField>
+
+{#if showWidth}
+  <SelectField name="width" field="width" form={superForm}>
+    <option value="full">Full</option>
+    <option value="half">Half</option>
+  </SelectField>
+{/if}
 
 {#if showType}
   <SelectField name="type" field="type" form={superForm}>

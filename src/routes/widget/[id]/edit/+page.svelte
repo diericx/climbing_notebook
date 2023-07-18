@@ -36,6 +36,17 @@
       <Icon icon="material-symbols:edit-outline" height="18" />
       <span>Edit</span>
     </button>
+    <form
+      use:enhance
+      method="POST"
+      action={`/widget/${widget.id}?/newTemplate&redirectTo=/widget`}
+      class="flex-initial"
+    >
+      <button class="btn btn-sm variant-ringed mb-1">
+        <Icon icon="material-symbols:share" height="18" />
+        <span>Share Widget Template</span>
+      </button>
+    </form>
   </div>
 </div>
 <hr />
