@@ -36,21 +36,23 @@
       <Icon icon="material-symbols:edit-outline" height="18" />
       <span>Edit</span>
     </button>
-    <button
-      class="btn btn-sm variant-filled mb-1"
-      on:click={() =>
-        modalStore.trigger({
-          type: 'component',
-          component: 'formModalWidgetTemplate',
-          meta: {
-            action: `/widget/${widget.id}?/newTemplate&redirectTo=/widget`,
-            title: 'New Community Widget Template',
-          },
-        })}
-    >
-      <Icon icon="material-symbols:share" height="18" />
-      <span>Share Widget</span>
-    </button>
+    {#if !widget.isTemplate}
+      <button
+        class="btn btn-sm variant-filled mb-1"
+        on:click={() =>
+          modalStore.trigger({
+            type: 'component',
+            component: 'formModalWidgetTemplate',
+            meta: {
+              action: `/widget/${widget.id}?/newTemplate&redirectTo=/widget`,
+              title: 'New Community Widget Template',
+            },
+          })}
+      >
+        <Icon icon="material-symbols:share" height="18" />
+        <span>Share Widget</span>
+      </button>
+    {/if}
   </div>
 </div>
 <hr />
