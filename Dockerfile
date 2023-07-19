@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package*.json .
 
 # Deps for segfault package, leave these until we find out what is causing the issue
-RUN apk add python3 cmake make gcc g++ elfutils-dev libexecinfo-dev libexecinfo
+RUN apk add --no-cache python3 cmake make g++ git bash zip curl-dev zlib-dev elfutils-dev 
 
 RUN npm ci
 
@@ -17,7 +17,7 @@ RUN npm prune --production
 FROM node:18-alpine AS run
 
 # Deps for segfault package, leave these until we find out what is causing the issue
-RUN apk add python3 cmake make gcc g++ elfutils-dev libexecinfo-dev libexecinfo
+RUN apk add --no-cache python3 cmake make g++ git bash zip curl-dev zlib-dev elfutils-dev 
 
 ENV NODE_ENV=production
 
