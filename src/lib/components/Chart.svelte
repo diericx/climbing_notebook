@@ -89,24 +89,32 @@
           const data = customQueryResult.data as ExerciseEvent[];
           for (const e of data) {
             if (e.date) {
-              let score = evaluate(customQuery.equation, {
-                sets: e.sets,
-                reps: e.reps,
-                weight: e.weight,
-                minutes: e.minutes,
-                seconds: e.seconds,
-              });
-              addDataPoint({ x: e.date.toISOString().split('T')[0], y: score });
+              try {
+                let score = evaluate(customQuery.equation, {
+                  sets: e.sets,
+                  reps: e.reps,
+                  weight: e.weight,
+                  minutes: e.minutes,
+                  seconds: e.seconds,
+                });
+                addDataPoint({ x: e.date.toISOString().split('T')[0], y: score });
+              } catch (e) {
+                equationErrorMessage = e.toString();
+              }
             }
           }
         } else if (customQuery.table == 'metric') {
           const data = customQueryResult.data as Metric[];
           for (const m of data) {
             if (m.date) {
-              let score = evaluate(customQuery.equation, {
-                value: m.value,
-              });
-              addDataPoint({ x: m.date.toISOString().split('T')[0], y: score });
+              try {
+                let score = evaluate(customQuery.equation, {
+                  value: m.value,
+                });
+                addDataPoint({ x: m.date.toISOString().split('T')[0], y: score });
+              } catch (e) {
+                equationErrorMessage = e.toString();
+              }
             }
           }
         }
