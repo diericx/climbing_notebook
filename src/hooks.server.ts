@@ -1,9 +1,7 @@
 import { auth } from '$lib/server/lucia';
 import type { Handle } from '@sveltejs/kit';
-
-import pkg from 'segfault-raub';
-const { causeSegfault } = pkg;
-causeSegfault();
+import segfaultHandler from 'node-segfault-handler';
+segfaultHandler.registerHandler();
 
 export const handle: Handle = async ({ event, resolve }) => {
   event.locals.auth = auth.handleRequest(event);
