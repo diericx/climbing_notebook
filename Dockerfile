@@ -1,4 +1,4 @@
-FROM node:18-alpine AS build
+FROM node:18 AS build
 
 WORKDIR /app
 
@@ -14,7 +14,7 @@ RUN npm run prisma-generate
 RUN npm run build
 RUN npm prune --production
 
-FROM node:18-alpine AS run
+FROM node:18 AS run
 
 # Deps for segfault package, leave these until we find out what is causing the issue
 RUN apk add --no-cache python3 cmake make g++ git bash zip curl-dev zlib-dev elfutils-dev 
