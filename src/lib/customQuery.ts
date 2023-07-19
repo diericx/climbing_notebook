@@ -1,4 +1,5 @@
 import type { PrismaClient, CustomQuery, ExerciseEvent, Metric } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
 
@@ -39,7 +40,32 @@ export class CustomQueryRepo {
   }
 
   async runCustomQuery(id: string, ownerId: string) {
-    const query = await this.getOneAndValidateOwner(id, ownerId);
+    // Set up types for this one off query
+    const queryWithWidget = Prisma.validator<Prisma.CustomQueryArgs>()({
+      include: {
+        dataset: {
+          include: {
+            widget: true,
+          },
+        },
+      },
+    });
+    type QueryWithWidget = Prisma.CustomQueryGetPayload<typeof queryWithWidget>;
+    // Get the widget
+    const query = (await this.getOne(id, {
+      dataset: { include: { widget: true } },
+    })) as QueryWithWidget;
+
+    // Permissions: if it is not a template, only the owner can run the query
+    if (!query.dataset.widget.isTemplate) {
+      if (query.ownerId != ownerId) {
+        throw new APIError(
+          'INVALID_PERMISSIONS',
+          'You do not have permission to edit this object.'
+        );
+      }
+    }
+
     const prismaQuery = { where: { ownerId }, orderBy: { date: 'asc' } };
     prismaQuery.where['AND'] = query.conditions.map((c) => {
       const prismaCondition = {};
@@ -79,18 +105,28 @@ export class CustomQueryRepo {
     });
   }
 
-  async getOneAndValidateOwner(id: string, ownerId: string) {
+  async getOne(id: string, include: Prisma.CustomQueryInclude = {}) {
     const query = await this.prisma.customQuery.findUnique({
       where: {
         id,
       },
       include: {
         conditions: true,
+        ...include,
+        dataset: {
+          include: {
+            widget: true,
+          },
+        },
       },
     });
     if (query == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
+    return query;
+  }
+  async getOneAndValidateOwner(id: string, ownerId: string) {
+    const query = await this.getOne(id);
     if (query.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
     }

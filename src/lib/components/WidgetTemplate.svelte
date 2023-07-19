@@ -11,33 +11,40 @@
 
   export let widget: WidgetComplete;
   export let customQueryResults: CustomQueryResults[];
+  export let user: any;
 </script>
 
-<div class="card p-4">
+<div class="block card card-hover p-4">
   <div class="w-full flex mb-1">
     <div class="flex-1">
       <div class="font-bold text-xl">
         {widget.name}
       </div>
     </div>
-    <div>
-      <a class="btn btn-sm variant-ringed mr-2" href={`/widget/${widget.id}/edit`}>
-        <Icon icon="material-symbols:edit-outline" height="18" />
-        <span>Edit</span>
-      </a>
-    </div>
-    <form method="POST" action={`/widget/${widget.id}?/delete`} use:enhance>
-      <input type="hidden" name="id" value={widget.id} />
-      <button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
-        <Icon icon="mdi:trash-outline" height="18" />
-        Delete
-      </button>
-    </form>
+    {#if widget.owner.id == user.userId}
+      <div>
+        <a class="btn btn-sm variant-ringed mr-2" href={`/widget/${widget.id}/edit`}>
+          <Icon icon="material-symbols:edit-outline" height="18" />
+          <span>Edit</span>
+        </a>
+      </div>
+      <form method="POST" action={`/widget/${widget.id}?/delete`} use:enhance>
+        <input type="hidden" name="id" value={widget.id} />
+        <button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
+          <Icon icon="mdi:trash-outline" height="18" />
+          Delete
+        </button>
+      </form>
+    {/if}
   </div>
-  <div class="mb-4">
+  <div class="mb-2">
     <div class="text-gray-500">
       {widget.description}
+      <br />
     </div>
+  </div>
+  <div class="mb-4 text-gray-500">
+    by <b>{widget.owner.username}</b>
   </div>
 
   {#if widget.type == 'chart'}

@@ -49,6 +49,7 @@ export class WidgetRepo {
       data: {
         ...source,
         ...data,
+        owner: undefined,
         id: undefined,
         trainingProgramId: undefined,
         trainingProgram: undefined,
@@ -89,9 +90,14 @@ export class WidgetRepo {
         order: 'asc',
       },
       include: {
+        owner: true,
         datasets: {
           include: {
-            customQueries: true,
+            customQueries: {
+              include: {
+                conditions: true,
+              },
+            },
           },
           orderBy: {
             name: 'asc',
@@ -148,6 +154,7 @@ export class WidgetRepo {
         id,
       },
       include: {
+        owner: true,
         datasets: {
           include: {
             customQueries: {

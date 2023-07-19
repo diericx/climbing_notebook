@@ -94,6 +94,7 @@ export type DatasetComplete = _Prisma.DatasetGetPayload<typeof datasetComplete>;
 
 const widgetComplete = _Prisma.validator<_Prisma.WidgetArgs>()({
   include: {
+    owner: true,
     datasets: {
       include: {
         customQueries: {
