@@ -3,7 +3,6 @@ import type { Handle } from '@sveltejs/kit';
 import SegfaultHandler from 'segfault-handler';
 
 SegfaultHandler.registerHandler('crash.log');
-SegfaultHandler.causeSegfault();
 
 export const handle: Handle = async ({ event, resolve }) => {
   event.locals.auth = auth.handleRequest(event);
