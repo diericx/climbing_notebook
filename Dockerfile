@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package*.json .
 
 # Deps for segfault package, leave these until we find out what is causing the issue
-RUN apt install python make gcc
+RUN apk add python make gcc
 
 RUN npm ci
 
