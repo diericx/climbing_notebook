@@ -3,8 +3,9 @@ import { prisma } from '$lib/prisma';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { APIError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
-import { superValidate } from 'sveltekit-superforms/server';
+import { message, setError, superValidate } from 'sveltekit-superforms/server';
 import { CustomQueryRepo, customQuerySchema } from '$lib/customQuery';
+import { evaluate } from 'mathjs';
 
 export const actions: Actions = {
   new: async ({ locals, request, url, params }) => {
@@ -21,6 +22,25 @@ export const actions: Actions = {
 
     const repo = new CustomQueryRepo(prisma);
     try {
+      // Check if equation is valid
+      try {
+        if (form.data.table == 'exerciseEvent') {
+          evaluate(form.data.equation, {
+            sets: 0,
+            reps: 0,
+            weight: 0,
+            minutes: 0,
+            seconds: 0,
+          });
+        } else if (form.data.table == 'metric') {
+          evaluate(form.data.equation, {
+            value: 0,
+          });
+        }
+      } catch (e) {
+        return setError(form, 'equation', e.toString());
+      }
+
       await repo.new(form.data, datasetId, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
