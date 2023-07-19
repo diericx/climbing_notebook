@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package*.json .
 
 # Deps for segfault package, leave these until we find out what is causing the issue
-RUN apk add python make gcc
+RUN apk add python3 make gcc
 
 RUN npm ci
 
@@ -17,7 +17,7 @@ RUN npm prune --production
 FROM node:18-alpine AS run
 
 # Deps for segfault package, leave these until we find out what is causing the issue
-RUN apk add python make gcc
+RUN apk add python3 make gcc
 
 ENV NODE_ENV=production
 
