@@ -47,6 +47,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
       widget,
       trainingPrograms,
       customQueryResults,
+      user,
     };
   } catch (e) {
     console.error(e);

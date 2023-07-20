@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { camelToTitle, confirmDelete } from '$lib/utils';
+  import { camelToTitle } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import { modalStore } from '@skeletonlabs/skeleton';
   import type { PageData } from './$types';

@@ -98,7 +98,12 @@
     <ul class="list space-y-7">
       {#each dataset.customQueries as customQuery}
         <li>
-          <CustomQuery class="card bg-white py-3 px-2 md:px-4 shadow" {widget} {customQuery} />
+          <CustomQuery
+            class="card bg-white py-3 px-2 md:px-4 shadow"
+            {showButtons}
+            {widget}
+            {customQuery}
+          />
         </li>
       {/each}
     </ul>
