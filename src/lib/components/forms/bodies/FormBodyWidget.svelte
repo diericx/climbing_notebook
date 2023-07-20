@@ -13,9 +13,12 @@
   export let showType = true;
   export let showOrder = true;
   export let showWidth = true;
+  export let showSimpleFields = true;
   export let trainingPrograms: TrainingProgram[] = [];
 
   const { form } = superForm;
+  let setsFieldEnabled = $form.sets != null && $form.sets != undefined;
+  console.log($form.sets, setsFieldEnabled);
 </script>
 
 <TextField name="name" field="name" form={superForm} />
@@ -52,6 +55,22 @@
       <option value={trainingProgram.id}> {trainingProgram.name} </option>
     {/each}
   </SelectField>
+{/if}
+
+{#if showSimpleFields}
+  <label>
+    <input
+      type="checkbox"
+      bind:checked={setsFieldEnabled}
+      on:change={() => {
+        $form.sets = $form.sets == null ? ($form.sets = 0) : ($form.sets = null);
+      }}
+    />
+    Enable Sets Field
+  </label>
+  {#if setsFieldEnabled}
+    <NumberField class="w-20" name="sets" field="sets" form={superForm} />
+  {/if}
 {/if}
 
 {#if showSubmitButton}

@@ -72,6 +72,37 @@
 {/if}
 
 {#if widget.type == 'chart' || widget.type == 'heatmapCalendar'}
+  <div class="mb-7">
+    <div class="flex justify-between">
+      <div>
+        <h2>Simple Editor Fields</h2>
+      </div>
+      <button
+        class="btn btn-sm variant-ringed mb-1"
+        on:click={() =>
+          modalStore.trigger({
+            type: 'component',
+            component: 'formModalWidget',
+            meta: {
+              action: `/widget/${widget.id}?/update`,
+              title: 'Edit Widget',
+              data: widget,
+              showType: false,
+              trainingPrograms,
+            },
+          })}
+      >
+        <Icon icon="material-symbols:edit-outline" height="18" />
+        <span>Edit</span>
+      </button>
+    </div>
+    <hr />
+    <p class="text-gray-400">
+      The Simple Editor Fields allows you to present a few fields in the small editor modal from the
+      dashboard. You can then use these values in your Dataset Constraints below.
+    </p>
+  </div>
+
   <div class="flex justify-between">
     <div>
       <h2>Datasets</h2>
