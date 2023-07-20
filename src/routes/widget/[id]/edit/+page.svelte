@@ -15,7 +15,7 @@
 
 <div class="flex justify-between">
   <div>
-    <h1>{widget.name}</h1>
+    <h1 class="font-bold">{widget.name}</h1>
   </div>
   <div class="mb-1">
     <button
@@ -55,7 +55,6 @@
     {/if}
   </div>
 </div>
-<hr />
 
 <div class="mb-7">
   <p><b>Width:</b> {widget.width}</p>
@@ -67,9 +66,7 @@
 </div>
 
 {#if widget.type == 'chart'}
-  <div class="mb-7">
-    <h1>Chart Preview</h1>
-    <hr />
+  <div class="mb-7 card p-4">
     <Chart {datasets} {customQueryResults} />
   </div>
 {/if}

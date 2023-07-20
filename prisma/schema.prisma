@@ -242,11 +242,13 @@ model Widget {
   order       Int
   type        String
   isTemplate  Boolean @map("is_template")
-  sets        Int?
-  reps        Int?
-  weight      Int?
-  seconds     Int?
-  minutes     Int?
+
+  // Top level values for simple editor
+  sets    Int?
+  reps    Int?
+  weight  Int?
+  seconds Int?
+  minutes Int?
 
   // For chart and calendar heatmap type
   datasets        Dataset[]
