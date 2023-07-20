@@ -3,8 +3,9 @@ import { APIError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
 import { TrainingProgramRepo } from '$lib/trainingProgram';
-import { datasetSchema, WidgetRepo, widgetSchema, widgetTemplateSchema } from '$lib/widget';
+import { WidgetRepo, widgetSchema, widgetTemplateSchema } from '$lib/widget';
 import { error, fail, redirect } from '@sveltejs/kit';
+import { typeOf } from 'mathjs';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -17,9 +18,9 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 
   try {
     const widget = await widgetRepo.getOne(id);
-    // Non-template widgets can only be viewed by their owner
-    if (!widget.isTemplate && user?.userId != widget.ownerId) {
-      throw error(403, 'You do not have permission to view this resource');
+    // This page is only for template widgets
+    if (!widget.isTemplate) {
+      throw error(401, 'Only template widgets can be viewed individually');
     }
 
     const trainingPrograms = await trainingProgramRepo.get(user?.userId);
@@ -51,6 +52,9 @@ export const load: PageServerLoad = async ({ locals, params }) => {
     };
   } catch (e) {
     console.error(e);
+    if (typeOf(e) == 'HttpError') {
+      throw e;
+    }
     throw error(500, { message: SERVER_ERROR });
   }
 };
