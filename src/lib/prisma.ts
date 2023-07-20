@@ -92,6 +92,13 @@ const datasetComplete = _Prisma.validator<_Prisma.DatasetArgs>()({
 });
 export type DatasetComplete = _Prisma.DatasetGetPayload<typeof datasetComplete>;
 
+const customQueryComplete = _Prisma.validator<_Prisma.CustomQueryArgs>()({
+  include: {
+    conditions: true,
+  },
+});
+export type CustomQueryComplete = _Prisma.CustomQueryGetPayload<typeof customQueryComplete>;
+
 const widgetComplete = _Prisma.validator<_Prisma.WidgetArgs>()({
   include: {
     owner: true,
