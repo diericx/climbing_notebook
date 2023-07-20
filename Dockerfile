@@ -1,8 +1,9 @@
-FROM node:18-alpine AS build
+FROM node:18 AS build
 
 WORKDIR /app
 
 COPY package*.json .
+
 RUN npm ci
 
 COPY . .
@@ -10,7 +11,8 @@ RUN npm run prisma-generate
 RUN npm run build
 RUN npm prune --production
 
-FROM node:18-alpine AS run
+FROM node:18 AS run
+
 ENV NODE_ENV=production
 
 WORKDIR /app
