@@ -148,7 +148,7 @@ export class WidgetRepo {
     });
   }
 
-  async getOneAndValidateOwner(id: string, ownerId: string) {
+  async getOne(id: string) {
     const widget = await this.prisma.widget.findUnique({
       where: {
         id,
@@ -173,6 +173,12 @@ export class WidgetRepo {
     if (widget == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
+    return widget;
+  }
+
+  // Only returns successfully if you are the owner of this widget
+  async getOneAndValidateOwner(id: string, ownerId: string) {
+    const widget = await this.getOne(id);
     if (widget.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
     }

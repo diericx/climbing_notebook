@@ -16,7 +16,9 @@ export const load: PageServerLoad = async ({ locals, params }) => {
   const id = params.id;
 
   try {
+    // Editing can only be done by the owner
     const widget = await widgetRepo.getOneAndValidateOwner(id, user?.userId);
+
     const trainingPrograms = await trainingProgramRepo.get(user?.userId);
     // compile datasets for widgets
     const customQueryResults: CustomQueryResults[] = [];
