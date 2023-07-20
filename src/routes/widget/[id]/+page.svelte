@@ -1,7 +1,7 @@
 <script lang="ts">
   import { camelToTitle } from '$lib/utils';
   import Icon from '@iconify/svelte';
-  import { modalStore } from '@skeletonlabs/skeleton';
+  import { Avatar, modalStore } from '@skeletonlabs/skeleton';
   import type { PageData } from './$types';
   import Chart from '$lib/components/Chart.svelte';
   import Dataset from '$lib/components/Dataset.svelte';
@@ -13,71 +13,39 @@
   $: customQueryResults = data.customQueryResults;
   $: datasets = widget.datasets;
 
-  $: showButtons = widget.ownerId == user.userId;
+  $: isOwner = widget.ownerId == user.userId;
 </script>
 
 <div class="flex justify-between">
   <div>
-    <h1>{widget.name}</h1>
+    <h1 class="font-bold">{widget.name}</h1>
+    <div class="flex mb-8 items-center">
+      <Avatar
+        class="text-white"
+        width="w-9"
+        initials={widget.owner.username}
+        background="bg-primary-500"
+      />
+      <div class="ml-3 align-middle items-center">
+        <div class="text-md leading-none">By {widget.owner.username}</div>
+      </div>
+    </div>
   </div>
   <div class="mb-1">
-    {#if showButtons}
-      <button
-        class="btn btn-sm variant-ringed"
-        on:click={() =>
-          modalStore.trigger({
-            type: 'component',
-            component: 'formModalWidget',
-            meta: {
-              action: `/widget/${widget.id}?/update`,
-              title: 'Edit Widget',
-              data: widget,
-              showType: false,
-              trainingPrograms,
-            },
-          })}
-      >
+    {#if isOwner}
+      <a class="btn btn-sm variant-ringed" href={`/widget/${widget.id}/edit`}>
         <Icon icon="material-symbols:edit-outline" height="18" />
         <span>Edit</span>
-      </button>
-    {/if}
-    {#if !widget.isTemplate}
-      <button
-        class="btn btn-sm variant-filled mb-1"
-        on:click={() =>
-          modalStore.trigger({
-            type: 'component',
-            component: 'formModalWidgetTemplate',
-            meta: {
-              action: `/widget/${widget.id}?/newTemplate&redirectTo=/widget`,
-              title: 'New Community Widget Template',
-            },
-          })}
-      >
-        <Icon icon="material-symbols:share" height="18" />
-        <span>Share Widget</span>
-      </button>
+      </a>
     {/if}
   </div>
 </div>
-<hr />
-
-{#if !widget.isTemplate}
-  <div class="mb-7">
-    <p><b>Width:</b> {widget.width}</p>
-    <p><b>Order:</b> {widget.order}</p>
-    <p><b>Type:</b> {camelToTitle(widget.type)}</p>
-    {#if widget.type == 'dailyExerciseCalendar'}
-      <p><b>Training Program:</b> {widget.trainingProgram?.name || 'Active Training Program'}</p>
-    {/if}
-  </div>
-{/if}
 
 {#if widget.type == 'chart'}
   <div class="mb-7">
-    <h1>Chart Preview</h1>
-    <hr />
-    <Chart {datasets} {customQueryResults} />
+    <div class="card p-4">
+      <Chart {datasets} {customQueryResults} />
+    </div>
   </div>
 {/if}
 
@@ -85,28 +53,6 @@
   <div class="flex justify-between">
     <div>
       <h2>Datasets</h2>
-    </div>
-    <div>
-      {#if showButtons}
-        <button
-          class="btn btn-sm variant-filled mb-1"
-          on:click={() =>
-            modalStore.trigger({
-              type: 'component',
-              component: 'formModalDataset',
-              meta: {
-                action: `/widget/${widget.id}/dataset?/new`,
-                title: 'Add Dataset',
-                showType: widget.type != 'heatmapCalendar',
-                showColor: widget.type != 'heatmapCalendar',
-                showEquation: widget.type != 'heatmapCalendar',
-              },
-            })}
-        >
-          <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-          <span>Add Dataset</span>
-        </button>
-      {/if}
     </div>
   </div>
   <hr />
