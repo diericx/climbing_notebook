@@ -85,9 +85,15 @@
             component: 'formModalWidget',
             meta: {
               action: `/widget/${widget.id}?/update`,
-              title: 'Edit Widget',
+              title: 'Simple Editor Fields',
+              description:
+                'The fields you enable here will be available to the user in their dashboard. You can then use them in constraints below.',
               data: widget,
               showType: false,
+              showOrder: false,
+              showName: false,
+              showWidth: false,
+              showSimpleFields: true,
               trainingPrograms,
             },
           })}

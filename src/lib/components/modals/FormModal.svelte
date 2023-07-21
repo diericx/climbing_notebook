@@ -6,15 +6,14 @@
 
   export let schema: z.ZodObject<ZodRawShape>;
 
-  let title = $modalStore[0]?.meta?.title;
-  let data = $modalStore[0]?.meta?.data;
-  let action = $modalStore[0]?.meta?.action;
-  let debug = $modalStore[0]?.meta?.debug;
+  let meta = $modalStore[0]?.meta || {};
+  const { title, description, data, action, debug } = meta;
 </script>
 
 <div style="max-height: 90vh" class="card w-modal">
   <header class="card-header">
     <h2 class="font-bold">{title}</h2>
+    <p class="text-gray-400">{description}</p>
   </header>
   <div style="max-height: 80vh" class="overflow-scroll">
     <Form

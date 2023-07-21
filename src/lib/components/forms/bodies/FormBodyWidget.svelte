@@ -10,18 +10,28 @@
   // Form action to execute
   export let superForm: SuperForm<z.AnyZodObject, any>;
   export let showSubmitButton = true;
+  export let showName = true;
   export let showType = true;
   export let showOrder = true;
   export let showWidth = true;
-  export let showSimpleFields = true;
+  export let showSimpleFields = false;
   export let trainingPrograms: TrainingProgram[] = [];
 
   const { form } = superForm;
+
+  // If any of these fields is null, then the form does not show a field and is
+  // thus "disabled". Check boxes allow the user to set a value.
   let setsFieldEnabled = $form.sets != null && $form.sets != undefined;
-  console.log($form.sets, setsFieldEnabled);
+  let repsFieldEnabled = $form.reps != null && $form.reps != undefined;
+  let weightFieldEnabled = $form.weight != null && $form.weight != undefined;
+  let minutesFieldEnabled = $form.minutes != null && $form.minutes != undefined;
+  let secondsFieldEnabled = $form.seconds != null && $form.seconds != undefined;
 </script>
 
-<TextField name="name" field="name" form={superForm} />
+{#if showName}
+  <TextField name="name" field="name" form={superForm} />
+{/if}
+
 {#if showOrder}
   <NumberField name="order" field="order" form={superForm} />
 {/if}
@@ -69,7 +79,93 @@
     Enable Sets Field
   </label>
   {#if setsFieldEnabled}
-    <NumberField class="w-20" name="sets" field="sets" form={superForm} />
+    <NumberField
+      class="w-20"
+      name="sets"
+      field="sets"
+      label="Default Sets Value"
+      form={superForm}
+    />
+  {/if}
+
+  <label>
+    <input
+      type="checkbox"
+      bind:checked={repsFieldEnabled}
+      on:change={() => {
+        $form.reps = $form.reps == null ? ($form.reps = 0) : ($form.reps = null);
+      }}
+    />
+    Enable Reps Field
+  </label>
+  {#if repsFieldEnabled}
+    <NumberField
+      class="w-20"
+      name="reps"
+      field="reps"
+      label="Default Reps Value"
+      form={superForm}
+    />
+  {/if}
+
+  <label>
+    <input
+      type="checkbox"
+      bind:checked={weightFieldEnabled}
+      on:change={() => {
+        $form.weight = $form.weight == null ? ($form.weight = 0) : ($form.weight = null);
+      }}
+    />
+    Enable weight Field
+  </label>
+  {#if weightFieldEnabled}
+    <NumberField
+      class="w-20"
+      name="weight"
+      field="weight"
+      label="Default weight Value"
+      form={superForm}
+    />
+  {/if}
+
+  <label>
+    <input
+      type="checkbox"
+      bind:checked={minutesFieldEnabled}
+      on:change={() => {
+        $form.minutes = $form.minutes == null ? ($form.minutes = 0) : ($form.minutes = null);
+      }}
+    />
+    Enable minutes Field
+  </label>
+  {#if minutesFieldEnabled}
+    <NumberField
+      class="w-20"
+      name="minutes"
+      field="minutes"
+      label="Default minutes Value"
+      form={superForm}
+    />
+  {/if}
+
+  <label>
+    <input
+      type="checkbox"
+      bind:checked={secondsFieldEnabled}
+      on:change={() => {
+        $form.seconds = $form.seconds == null ? ($form.seconds = 0) : ($form.seconds = null);
+      }}
+    />
+    Enable seconds Field
+  </label>
+  {#if secondsFieldEnabled}
+    <NumberField
+      class="w-20"
+      name="seconds"
+      field="seconds"
+      label="Default seconds Value"
+      form={superForm}
+    />
   {/if}
 {/if}
 
