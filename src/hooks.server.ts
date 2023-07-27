@@ -2,7 +2,6 @@ import { auth } from '$lib/server/lucia';
 import type { Handle } from '@sveltejs/kit';
 import segfaultHandler from 'node-segfault-handler';
 
-console.log('running this code...');
 segfaultHandler.registerHandler();
 
 export const handle: Handle = async ({ event, resolve }) => {
