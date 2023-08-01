@@ -252,6 +252,7 @@ model Widget {
   order       Int
   type        String
   isTemplate  Boolean @map("is_template")
+  useCount    Int     @map("use_count")
 
   // Top level values for the simple editor
   sets    Int?

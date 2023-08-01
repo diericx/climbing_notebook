@@ -269,4 +269,60 @@ export class WidgetRepo {
       },
     });
   }
+
+  async duplicateTemplateAsDashboardWidget(widgetId: string, userId: string) {
+    const sourceWidget = await this.getOne(widgetId);
+    // Can only be done on templates
+    if (!sourceWidget.isTemplate) {
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
+    }
+
+    const newWidget = await this.prisma.widget.create({
+      data: {
+        ...sourceWidget,
+        id: undefined,
+        trainingProgramId: undefined,
+        trainingProgram: undefined,
+        ownerId: undefined,
+        isTemplate: false,
+        owner: {
+          connect: {
+            id: userId,
+          },
+        },
+        datasets: {
+          create: sourceWidget.datasets.map((dataset) => ({
+            ...dataset,
+            id: undefined,
+            widgetId: undefined,
+            ownerId: userId,
+            customQueries: {
+              create: dataset.customQueries.map((customQuery) => ({
+                ...customQuery,
+                id: undefined,
+                ownerId: userId,
+                datasetId: undefined,
+                exerciseId: undefined,
+                exercise: {
+                  connect: {
+                    id: customQuery.exerciseId,
+                  },
+                },
+                conditions: {
+                  create: customQuery.conditions.map((condition) => ({
+                    ...condition,
+                    ownerId: userId,
+                    id: undefined,
+                    customQueryId: undefined,
+                  })),
+                },
+              })),
+            },
+          })),
+        },
+      },
+    });
+
+    console.log(newWidget);
+  }
 }

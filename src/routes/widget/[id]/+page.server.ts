@@ -141,4 +141,27 @@ export const actions: Actions = {
 
     return { form };
   },
+
+  addToMyDashboard: async ({ locals, url, params, request }) => {
+    const { user } = await locals.auth.validateUser();
+    const id = params.id;
+
+    const repo = new WidgetRepo(prisma);
+    try {
+      await repo.duplicateTemplateAsDashboardWidget(id, user?.userId);
+    } catch (e) {
+      if (e instanceof APIError) {
+        console.error(e);
+        return fail(401, { message: e.detail });
+      }
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR });
+    }
+
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
+
+    return { form };
+  },
 };
