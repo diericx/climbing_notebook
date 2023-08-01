@@ -6,6 +6,7 @@
   import SubmitButton from '../fields/SubmitButton.svelte';
   import type { SuperForm } from 'sveltekit-superforms/client';
   import type { z } from 'zod';
+  import TextArea from '../fields/TextArea.svelte';
 
   // Form action to execute
   export let superForm: SuperForm<z.AnyZodObject, any>;
@@ -14,6 +15,7 @@
   export let showType = true;
   export let showOrder = true;
   export let showWidth = true;
+  export let showDescription = false;
   export let showSimpleFields = false;
   export let trainingPrograms: TrainingProgram[] = [];
 
@@ -30,6 +32,12 @@
 
 {#if showName}
   <TextField name="name" field="name" form={superForm} />
+{/if}
+
+{#if showDescription}
+  <TextArea name="description" field="description" form={superForm}>
+    <p class="text-gray-400">Be as detailed as possible in the description</p>
+  </TextArea>
 {/if}
 
 {#if showOrder}

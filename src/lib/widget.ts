@@ -4,6 +4,7 @@ import { APIError } from './errors';
 
 export const widgetSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
+  description: z.string().nullish(),
   width: z.enum(['half', 'full']).default('half'),
   order: z.number(),
   type: z.enum(['chart', 'calendar', 'heatmapCalendar', 'dailyExerciseCalendar']).default('chart'),

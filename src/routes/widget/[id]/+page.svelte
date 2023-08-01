@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { camelToTitle } from '$lib/utils';
   import Icon from '@iconify/svelte';
-  import { Avatar, modalStore } from '@skeletonlabs/skeleton';
+  import { Avatar } from '@skeletonlabs/skeleton';
   import type { PageData } from './$types';
   import Chart from '$lib/components/Chart.svelte';
   import Dataset from '$lib/components/Dataset.svelte';
@@ -9,7 +8,6 @@
   export let data: PageData;
   const { user } = data;
   $: widget = data.widget;
-  $: trainingPrograms = data.trainingPrograms;
   $: customQueryResults = data.customQueryResults;
   $: datasets = widget.datasets;
 
@@ -31,12 +29,22 @@
       </div>
     </div>
   </div>
-  <div class="mb-1">
+  <div class="mb-1 flex space-x-2">
+    <div>
+      <form method="POST" action={`/widget/${widget.id}?/addToMyDashboard&redirectTo=/`}>
+        <button class="btn btn-sm variant-filled" value="Set Active">
+          <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
+          <span>Add To My Dashboard</span>
+        </button>
+      </form>
+    </div>
     {#if isOwner}
-      <a class="btn btn-sm variant-ringed" href={`/widget/${widget.id}/edit`}>
-        <Icon icon="material-symbols:edit-outline" height="18" />
-        <span>Edit</span>
-      </a>
+      <div>
+        <a class="btn btn-sm variant-ringed" href={`/widget/${widget.id}/edit`}>
+          <Icon icon="material-symbols:edit-outline" height="18" />
+          <span>Edit</span>
+        </a>
+      </div>
     {/if}
   </div>
 </div>

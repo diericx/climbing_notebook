@@ -30,6 +30,8 @@
             title: 'Edit Widget',
             data: widget,
             showType: false,
+            showDescription: widget.isTemplate,
+            showOrder: !widget.isTemplate,
             trainingPrograms,
           },
         })}
@@ -58,8 +60,13 @@
 </div>
 
 <div class="mb-7">
+  {#if widget.isTemplate}
+    <p><b>Description:</b> {widget.description}</p>
+  {/if}
   <p><b>Width:</b> {widget.width}</p>
-  <p><b>Order:</b> {widget.order}</p>
+  {#if !widget.isTemplate}
+    <p><b>Order:</b> {widget.order}</p>
+  {/if}
   <p><b>Type:</b> {camelToTitle(widget.type)}</p>
   {#if widget.type == 'dailyExerciseCalendar'}
     <p><b>Training Program:</b> {widget.trainingProgram?.name || 'Active Training Program'}</p>
