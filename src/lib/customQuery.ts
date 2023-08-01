@@ -76,7 +76,6 @@ export class CustomQueryRepo {
       }
     }
 
-    console.log(query);
     const prismaQuery = { where: { ownerId }, orderBy: { date: 'asc' } };
     prismaQuery.where['AND'] = query.conditions.map((c) => {
       const prismaCondition = {};

@@ -20,6 +20,8 @@ export const actions: Actions = {
       return fail(400, { form });
     }
 
+    // Run more complicated checks
+    // TODO: put this in the schema once superforms is updated
     if (form.data.table == 'exerciseEvent' && !form.data.exerciseId) {
       return setError(form, 'exerciseId', 'Exercise is required');
     }
