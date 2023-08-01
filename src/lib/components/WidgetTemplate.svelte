@@ -39,15 +39,11 @@
       {/if}
     </div>
     <div class="mb-2">
-      <div class="text-gray-500">
+      <div class="">
         {widget.description}
         <br />
       </div>
     </div>
-    <div class="mb-4 text-gray-500">
-      by <b>{widget.owner.username}</b>
-    </div>
-
     {#if widget.type == 'chart'}
       {#if widget.datasets.length == 0}
         <p class="text-gray-400 italic">
@@ -61,5 +57,12 @@
         <HeatmapCalendar datasets={widget.datasets} {customQueryResults} />
       </div>
     {/if}
+
+    <div class="mt-4 flex justify-between">
+      <div class="text-gray-400">
+        by <b>{widget.owner.username}</b>
+      </div>
+      <div class="text-gray-400">Used <b>{widget.useCount} times</b></div>
+    </div>
   </a>
 </div>
