@@ -7,6 +7,7 @@
   import type { SuperForm } from 'sveltekit-superforms/client';
   import type { z } from 'zod';
   import TextArea from '../fields/TextArea.svelte';
+  import { modalStore } from '@skeletonlabs/skeleton';
 
   // Form action to execute
   export let superForm: SuperForm<z.AnyZodObject, any>;
@@ -76,104 +77,126 @@
 {/if}
 
 {#if showSimpleFields}
-  <label>
-    <input
-      type="checkbox"
-      bind:checked={setsFieldEnabled}
-      on:change={() => {
-        $form.sets = $form.sets == null ? ($form.sets = 0) : ($form.sets = null);
-      }}
-    />
-    Enable Sets Field
-  </label>
+  {#if !$form.isTemplate}
+    <hr class="border-red-100 divider my-4" />
+  {/if}
+
+  {#if $form.isTemplate}
+    <label>
+      <input
+        type="checkbox"
+        bind:checked={setsFieldEnabled}
+        on:change={() => {
+          $form.sets = $form.sets == null ? ($form.sets = 0) : ($form.sets = null);
+        }}
+      />
+      Enable Sets Field
+    </label>
+  {/if}
   {#if setsFieldEnabled}
     <NumberField
       class="w-20"
       name="sets"
       field="sets"
-      label="Default Sets Value"
+      label={$form.isTemplate ? 'Default Sets Value' : 'Sets'}
       form={superForm}
     />
   {/if}
 
-  <label>
-    <input
-      type="checkbox"
-      bind:checked={repsFieldEnabled}
-      on:change={() => {
-        $form.reps = $form.reps == null ? ($form.reps = 0) : ($form.reps = null);
-      }}
-    />
-    Enable Reps Field
-  </label>
+  {#if $form.isTemplate}
+    <label>
+      <input
+        type="checkbox"
+        bind:checked={repsFieldEnabled}
+        on:change={() => {
+          $form.reps = $form.reps == null ? ($form.reps = 0) : ($form.reps = null);
+        }}
+      />
+      Enable Reps Field
+    </label>
+  {/if}
   {#if repsFieldEnabled}
     <NumberField
       class="w-20"
       name="reps"
       field="reps"
-      label="Default Reps Value"
+      label={$form.isTemplate ? 'Default Reps Value' : 'Reps'}
       form={superForm}
     />
   {/if}
 
-  <label>
-    <input
-      type="checkbox"
-      bind:checked={weightFieldEnabled}
-      on:change={() => {
-        $form.weight = $form.weight == null ? ($form.weight = 0) : ($form.weight = null);
-      }}
-    />
-    Enable weight Field
-  </label>
+  {#if $form.isTemplate}
+    <label>
+      <input
+        type="checkbox"
+        bind:checked={weightFieldEnabled}
+        on:change={() => {
+          $form.weight = $form.weight == null ? ($form.weight = 0) : ($form.weight = null);
+        }}
+      />
+      Enable weight Field
+    </label>
+  {/if}
   {#if weightFieldEnabled}
     <NumberField
       class="w-20"
       name="weight"
       field="weight"
-      label="Default weight Value"
+      label={$form.isTemplate ? 'Default Weight Value' : 'Weight'}
       form={superForm}
     />
   {/if}
 
-  <label>
-    <input
-      type="checkbox"
-      bind:checked={minutesFieldEnabled}
-      on:change={() => {
-        $form.minutes = $form.minutes == null ? ($form.minutes = 0) : ($form.minutes = null);
-      }}
-    />
-    Enable minutes Field
-  </label>
+  {#if $form.isTemplate}
+    <label>
+      <input
+        type="checkbox"
+        bind:checked={minutesFieldEnabled}
+        on:change={() => {
+          $form.minutes = $form.minutes == null ? ($form.minutes = 0) : ($form.minutes = null);
+        }}
+      />
+      Enable minutes Field
+    </label>
+  {/if}
   {#if minutesFieldEnabled}
     <NumberField
       class="w-20"
       name="minutes"
       field="minutes"
-      label="Default minutes Value"
+      label={$form.isTemplate ? 'Default Minutes Value' : Minutes}
       form={superForm}
     />
   {/if}
 
-  <label>
-    <input
-      type="checkbox"
-      bind:checked={secondsFieldEnabled}
-      on:change={() => {
-        $form.seconds = $form.seconds == null ? ($form.seconds = 0) : ($form.seconds = null);
-      }}
-    />
-    Enable seconds Field
-  </label>
+  {#if $form.isTemplate}
+    <label>
+      <input
+        type="checkbox"
+        bind:checked={secondsFieldEnabled}
+        on:change={() => {
+          $form.seconds = $form.seconds == null ? ($form.seconds = 0) : ($form.seconds = null);
+        }}
+      />
+      Enable seconds Field
+    </label>
+  {/if}
   {#if secondsFieldEnabled}
     <NumberField
       class="w-20"
       name="seconds"
       field="seconds"
-      label="Default seconds Value"
+      label={$form.isTemplate ? 'Default Seconds Value' : 'Seconds'}
       form={superForm}
     />
+  {/if}
+
+  {#if !$form.isTemplate}
+    <div class="mt-4">
+      <a class="link" on:click={modalStore.close} href={`/widget/${$form.id}/edit`}
+        >Go to advanced editor</a
+      >
+    </div>
   {/if}
 {/if}
 
