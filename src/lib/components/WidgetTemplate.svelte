@@ -8,6 +8,7 @@
   import Icon from '@iconify/svelte';
   import Chart from './Chart.svelte';
   import HeatmapCalendar from './HeatmapCalendar.svelte';
+  import { Avatar } from '@skeletonlabs/skeleton';
 
   export let widget: WidgetComplete;
   export let customQueryResults: CustomQueryResults[];
@@ -58,11 +59,25 @@
       </div>
     {/if}
 
-    <div class="mt-4 flex justify-between">
-      <div class="text-gray-400">
-        by <b>{widget.owner.username}</b>
+    <hr class="border-gray-200 divider my-4 mb-2" />
+
+    <div class="flex justify-between">
+      <div class="text-gray-400 flex items-center">
+        <Avatar
+          class="text-white"
+          width="w-9"
+          initials={widget.owner.username}
+          background="bg-primary-500"
+        />
+        <div class="ml-2 align-middle items-center">
+          <div class="text-md leading-none font-bold">{widget.owner.username}</div>
+        </div>
       </div>
-      <div class="text-gray-400">Used <b>{widget.useCount} times</b></div>
+      <div class="text-gray-400 flex items-center">
+        <p>
+          Used <b>{widget.useCount} times</b>
+        </p>
+      </div>
     </div>
   </a>
 </div>
