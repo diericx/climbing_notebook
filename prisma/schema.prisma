@@ -81,6 +81,7 @@ model Exercise {
   createdBy           AuthUser        @relation(fields: [createdByAuthUserId], references: [id])
   createdByAuthUserId String          @map("created_by_auth_user_id")
   exerciseEvents      ExerciseEvent[]
+  CustomQuery         CustomQuery[]
 
   @@map("exercise")
 }
@@ -206,25 +207,34 @@ model CalendarEvent {
 }
 
 model CustomQuery {
-  id       String @id @default(cuid())
+  id       String    @id @default(cuid())
   name     String
   table    String
   equation String
+  exercise Exercise? @relation(fields: [exerciseId], references: [id])
+  metric   String?
 
   conditions CustomQueryCondition[]
   dataset    Dataset                @relation(fields: [datasetId], references: [id], onDelete: Cascade)
   datasetId  String                 @map("dataset_id")
   createdAt  DateTime               @default(now()) @map("created_at")
   ownerId    String                 @map("owner_id")
+  exerciseId String?                @map("exercise_id")
 
   @@map("custom_query")
 }
 
 model CustomQueryCondition {
-  id            String       @id @default(cuid())
-  column        String
-  condition     String
-  value         Float
+  id        String @id @default(cuid())
+  column    String
+  condition String
+  value     Float
+
+  // User can decide to use a value set on the widget object for
+  // use in the simple editor.
+  useWidgetField   Boolean @default(false) @map("use_widget_field")
+  widgetFieldToUse String? @map("widget_field_to_use")
+
   customQuery   CustomQuery? @relation(fields: [customQueryId], references: [id], onDelete: Cascade)
   customQueryId String?      @map("custom_query_id")
 
@@ -243,7 +253,7 @@ model Widget {
   type        String
   isTemplate  Boolean @map("is_template")
 
-  // Top level values for simple editor
+  // Top level values for the simple editor
   sets    Int?
   reps    Int?
   weight  Int?

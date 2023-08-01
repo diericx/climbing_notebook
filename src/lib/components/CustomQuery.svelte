@@ -3,11 +3,12 @@
   import type { CustomQueryComplete } from '$lib/prisma';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
-  import type { Widget } from '@prisma/client';
+  import type { Exercise, Widget } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
 
   export let widget: Widget;
   export let customQuery: CustomQueryComplete;
+  export let exercises: Exercise[];
 
   let className: string = '';
   export { className as class };
@@ -34,6 +35,7 @@
                 data: customQuery,
                 action: `/widget/${widget.id}/dataset/${customQuery.datasetId}/query/${customQuery.id}?/update`,
                 title: 'Edit Query',
+                exercises,
               },
             })}
         >
@@ -76,6 +78,7 @@
               meta: {
                 action: `/widget/${widget.id}/dataset/${customQuery.datasetId}/query/${customQuery.id}/condition?/new`,
                 title: 'Add Constraint',
+                widget: widget,
                 query: customQuery,
               },
             })}
@@ -97,9 +100,15 @@
                   {condition.column}
                 </code>
                 {condition.condition}
-                <code class="code">
-                  {condition.value}
-                </code>
+                {#if condition.useWidgetField}
+                  <code class="code">
+                    {condition.widgetFieldToUse}
+                  </code> field from Simple Editor
+                {:else}
+                  <code class="code">
+                    {condition.value}
+                  </code>
+                {/if}
               </div>
               {#if showButtons}
                 <div>
@@ -112,6 +121,7 @@
                         meta: {
                           query: customQuery,
                           data: condition,
+                          widget: widget,
                           action: `/widget/${widget.id}/dataset/${customQuery.datasetId}/query/${customQuery.id}/condition/${condition.id}?/update`,
                           title: 'Edit Constraint',
                         },

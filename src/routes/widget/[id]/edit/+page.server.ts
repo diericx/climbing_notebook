@@ -1,5 +1,6 @@
 import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
 import { APIError } from '$lib/errors';
+import { ExerciseRepo } from '$lib/exercise';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
 import { TrainingProgramRepo } from '$lib/trainingProgram';
@@ -12,6 +13,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
   const { user } = await locals.auth.validateUser();
   const widgetRepo = new WidgetRepo(prisma);
   const customQueryRepo = new CustomQueryRepo(prisma);
+  const exerciseRepo = new ExerciseRepo(prisma);
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
   const id = params.id;
 
@@ -40,10 +42,22 @@ export const load: PageServerLoad = async ({ locals, params }) => {
       }
     }
 
+    const exercises = await exerciseRepo.get({
+      _count: {
+        select: {
+          exerciseEvents: true,
+        },
+      },
+      id: true,
+      name: true,
+      fieldsToShow: true,
+    });
+
     return {
       widget,
       trainingPrograms,
       customQueryResults,
+      exercises,
     };
   } catch (e) {
     console.error(e);

@@ -13,7 +13,7 @@
 <div style="max-height: 90vh" class="card w-modal">
   <header class="card-header">
     <h2 class="font-bold">{title}</h2>
-    <p class="text-gray-400">{description}</p>
+    <p class="text-gray-400">{description || ''}</p>
   </header>
   <div style="max-height: 80vh" class="overflow-scroll">
     <Form

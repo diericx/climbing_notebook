@@ -5,10 +5,11 @@
   import Icon from '@iconify/svelte';
   import { modalStore } from '@skeletonlabs/skeleton';
   import CustomQuery from './CustomQuery.svelte';
-  import type { Widget } from '@prisma/client';
+  import type { Exercise, Widget } from '@prisma/client';
 
   export let dataset: DatasetComplete;
   export let widget: Widget;
+  export let exercises: Exercise[];
 
   let className: string = '';
   export { className as class };
@@ -86,6 +87,7 @@
                 showDate: false,
                 showDifficulty: false,
                 showMigrationOption: false,
+                exercises,
               },
             })}
         >
@@ -103,6 +105,7 @@
             {showButtons}
             {widget}
             {customQuery}
+            {exercises}
           />
         </li>
       {/each}

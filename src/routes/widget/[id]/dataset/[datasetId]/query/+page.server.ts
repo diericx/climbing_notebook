@@ -20,6 +20,13 @@ export const actions: Actions = {
       return fail(400, { form });
     }
 
+    if (form.data.table == 'exerciseEvent' && !form.data.exerciseId) {
+      return setError(form, 'exerciseId', 'Exercise is required');
+    }
+    if (form.data.table == 'metric' && !form.data.metric) {
+      return setError(form, 'metric', 'Metric is required');
+    }
+
     const repo = new CustomQueryRepo(prisma);
     try {
       // Check if equation is valid
