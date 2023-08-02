@@ -1,6 +1,8 @@
 <script lang="ts">
   import WidgetTemplate from '$lib/components/WidgetTemplate.svelte';
+  import { modalStore } from '@skeletonlabs/skeleton';
   import type { PageData } from './$types';
+  import Icon from '@iconify/svelte';
 
   export let data: PageData;
   const { user } = data;
@@ -9,11 +11,35 @@
 </script>
 
 <div class="mb-7">
-  <h1>Community Widgets</h1>
+  <div class="flex justify-between">
+    <h1>Community Widgets</h1>
+
+    <button
+      class="btn btn-sm variant-ringed mb-1"
+      on:click={() =>
+        modalStore.trigger({
+          type: 'component',
+          component: 'formModalWidgetTemplate',
+          meta: {
+            data: { isTemplate: true },
+            action: `/widget?/new`,
+            title: 'New Community Widget',
+            showOrder: false,
+            allowedTypes: ['chart', 'heatmapCalendar'],
+          },
+        })}
+    >
+      <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
+      <span>New Community Widget</span>
+    </button>
+  </div>
   <div class="text-gray-400">
-    All charts below are being rendered using the data on your account. If some charts are empty
-    this means you don't have any relevant data. Refer to the widget description for more info or
-    click on the widget to see how it is made.
+    Find charts made by the community and add them to your dashboard!
+    <br />
+    <br />
+    All charts below are being rendered using the data on your account. If some charts are empty this
+    means you don't have any relevant data. Refer to the widget description for more info or click on
+    the widget to see how it is made.
   </div>
 </div>
 

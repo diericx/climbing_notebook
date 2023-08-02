@@ -48,8 +48,8 @@
     initials={widget.owner.username}
     background="bg-primary-500"
   />
-  <div class="ml-3 align-middle items-center">
-    <div class="text-md leading-none">By {widget.owner.username}</div>
+  <div class="ml-2 align-middle items-center">
+    <div class="text-md leading-none text-gray-600 font-bold">{widget.owner.username}</div>
   </div>
 </div>
 

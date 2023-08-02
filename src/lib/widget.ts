@@ -6,7 +6,7 @@ export const widgetSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
   description: z.string().nullish(),
   width: z.enum(['half', 'full']).default('half'),
-  order: z.number(),
+  order: z.number().default(0),
   type: z.enum(['chart', 'calendar', 'heatmapCalendar', 'dailyExerciseCalendar']).default('chart'),
   isTemplate: z.boolean(),
   sets: z.number().nullish(),
@@ -85,10 +85,10 @@ export class WidgetRepo {
     });
   }
 
-  async get(where: Prisma.WidgetWhereInput) {
+  async get(where: Prisma.WidgetWhereInput, orderBy?: Prisma.WidgetOrderByWithRelationInput) {
     return await this.prisma.widget.findMany({
       where,
-      orderBy: {
+      orderBy: orderBy || {
         order: 'asc',
       },
       include: {

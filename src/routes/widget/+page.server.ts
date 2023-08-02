@@ -3,7 +3,7 @@ import { prisma } from '$lib/prisma';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { APIError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
-import { superValidate } from 'sveltekit-superforms/server';
+import { setError, superValidate } from 'sveltekit-superforms/server';
 import { WidgetRepo, widgetSchema } from '$lib/widget';
 import type { PageServerLoad } from './$types';
 import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
@@ -19,7 +19,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
   let widgets;
   try {
-    widgets = await widgetRepo.get({ isTemplate: true });
+    widgets = await widgetRepo.get({ isTemplate: true }, { useCount: 'desc' });
     // compile datasets for widgets
     const customQueryResults: CustomQueryResults[] = [];
     for (const w of widgets) {
@@ -65,6 +65,11 @@ export const actions: Actions = {
 
     if (!form.valid) {
       return fail(400, { form });
+    }
+
+    // TODO: do this in zod validation after updating superforms
+    if (form.data.isTemplate && !form.data.description) {
+      return setError(form, 'description', 'Description is required');
     }
 
     const repo = new WidgetRepo(prisma);

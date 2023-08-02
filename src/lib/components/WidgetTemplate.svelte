@@ -40,8 +40,8 @@
       {/if}
     </div>
     <div class="mb-2">
-      <div class="">
-        {widget.description}
+      <div class="text-gray-600">
+        {widget.description || ''}
         <br />
       </div>
     </div>

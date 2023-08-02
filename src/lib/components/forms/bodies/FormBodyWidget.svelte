@@ -19,6 +19,12 @@
   export let showDescription = false;
   export let showSimpleFields = false;
   export let trainingPrograms: TrainingProgram[] = [];
+  export let allowedTypes: String[] = [
+    'chart',
+    'calendar',
+    'heatmapCalendar',
+    'dailyExerciseCalendar',
+  ];
 
   const { form } = superForm;
 
@@ -54,10 +60,18 @@
 
 {#if showType}
   <SelectField name="type" field="type" form={superForm}>
-    <option value="chart"> Chart </option>
-    <option value="calendar"> Full Calendar </option>
-    <option value="heatmapCalendar"> Heatmap Calendar </option>
-    <option value="dailyExerciseCalendar"> Daily Exercise Calendar </option>
+    {#if allowedTypes.includes('chart')}
+      <option value="chart"> Chart </option>
+    {/if}
+    {#if allowedTypes.includes('calendar')}
+      <option value="calendar"> Full Calendar </option>
+    {/if}
+    {#if allowedTypes.includes('heatmapCalendar')}
+      <option value="heatmapCalendar"> Heatmap Calendar </option>
+    {/if}
+    {#if allowedTypes.includes('dailyExerciseCalendar')}
+      <option value="dailyExerciseCalendar"> Daily Exercise Calendar </option>
+    {/if}
   </SelectField>
 {/if}
 
