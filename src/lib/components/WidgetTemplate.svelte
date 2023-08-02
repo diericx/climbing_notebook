@@ -8,7 +8,7 @@
   import Icon from '@iconify/svelte';
   import Chart from './Chart.svelte';
   import HeatmapCalendar from './HeatmapCalendar.svelte';
-  import { Avatar } from '@skeletonlabs/skeleton';
+  import { Avatar, popup } from '@skeletonlabs/skeleton';
 
   export let widget: WidgetComplete;
   export let customQueryResults: CustomQueryResults[];
@@ -26,21 +26,23 @@
           <div class="font-bold text-red-300">Not published yet</div>
         {/if}
       </div>
-      {#if widget.owner.id == user.userId}
-        <div>
-          <a class="btn btn-sm variant-ringed mr-2" href={`/widget/${widget.id}/edit`}>
-            <Icon icon="material-symbols:edit-outline" height="18" />
-            <span>Edit</span>
-          </a>
-        </div>
-        <form method="POST" action={`/widget/${widget.id}?/delete`} use:enhance>
-          <input type="hidden" name="id" value={widget.id} />
-          <button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
-            <Icon icon="mdi:trash-outline" height="18" />
-            Delete
-          </button>
-        </form>
-      {/if}
+
+      <button
+        class={`btn !bg-transparent justify-between ${
+          widget.owner.id == user.userId ? '' : 'hidden'
+        }`}
+        use:popup={{
+          event: 'focus-click',
+          target: widget.id,
+          placement: 'bottom-end',
+        }}
+        on:click={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+        }}
+      >
+        <Icon icon="fe:elipsis-h" height="18" />
+      </button>
     </div>
     <div class="mb-2">
       <div class="text-gray-600">
@@ -83,4 +85,46 @@
       </div>
     </div>
   </a>
+</div>
+
+<div class="card shadow-xl py-2 z-50" data-popup={widget.id}>
+  <nav class="list-nav">
+    <ul>
+      <li>
+        <div>
+          <a class="btn btn-sm flex justify-start" href={`/widget/${widget.id}/edit`}>
+            <Icon icon="material-symbols:edit-outline" height="18" />
+            <span>Edit</span>
+          </a>
+        </div>
+      </li>
+      <li>
+        <form method="POST" action={`/widget/${widget.id}?/delete`} use:enhance>
+          <input type="hidden" name="id" value={widget.id} />
+          <button class="btn btn-sm" on:click={confirmDelete}>
+            <Icon icon="mdi:trash-outline" height="18" />
+            <span> Delete </span>
+          </button>
+        </form>
+      </li>
+      <li>
+        {#if widget.isPublished}
+          <form method="POST" action={`/widget/${widget.id}?/hide`} use:enhance>
+            <button class="btn btn-sm">
+              <Icon icon="mdi:hide-outline" height="18" />
+              <span> Hide </span>
+            </button>
+          </form>
+        {:else}
+          <form method="POST" action={`/widget/${widget.id}?/publish`} use:enhance>
+            <button class="btn btn-sm">
+              <Icon icon="majesticons:share-line" height="18" />
+              <span> Publish </span>
+            </button>
+          </form>
+        {/if}
+      </li>
+    </ul>
+  </nav>
+  <div class="arrow bg-surface-100-800-token" />
 </div>

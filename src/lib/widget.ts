@@ -16,8 +16,12 @@ export const widgetSchema = z.object({
   minutes: z.number().nullish(),
   trainingProgramId: z.number().nullish(),
   parentId: z.string().nullish(),
+  isPublished: z.boolean().optional(),
 });
 export type WidgetSchema = typeof widgetSchema;
+
+export const widgetPartialSchema = widgetSchema.partial();
+export type WidgetPartialSchema = typeof widgetPartialSchema;
 
 export const widgetTemplateSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
@@ -56,6 +60,7 @@ export class WidgetRepo {
         trainingProgramId: undefined,
         trainingProgram: undefined,
         isTemplate: true,
+        isPublished: true,
         datasets: {
           create: source.datasets.map((d) => {
             return {
@@ -188,7 +193,7 @@ export class WidgetRepo {
     return widget;
   }
 
-  async update(data: z.infer<WidgetSchema>, id: string, ownerId: string) {
+  async update(data: z.infer<WidgetPartialSchema>, id: string, ownerId: string) {
     await this.getOneAndValidateOwner(id, ownerId);
 
     return await this.prisma.widget.update({

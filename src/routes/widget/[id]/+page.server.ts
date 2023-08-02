@@ -89,6 +89,41 @@ export const actions: Actions = {
 
     return { form };
   },
+
+  publish: async ({ locals, url, params }) => {
+    const { user } = await locals.auth.validateUser();
+    const id = params.id;
+
+    const repo = new WidgetRepo(prisma);
+    try {
+      await repo.update({ isPublished: true }, id, user?.userId);
+    } catch (e) {
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR });
+    }
+
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
+  },
+
+  hide: async ({ locals, url, params }) => {
+    const { user } = await locals.auth.validateUser();
+    const id = params.id;
+
+    const repo = new WidgetRepo(prisma);
+    try {
+      await repo.update({ isPublished: false }, id, user?.userId);
+    } catch (e) {
+      console.error(e);
+      throw error(500, { message: SERVER_ERROR });
+    }
+
+    if (url.searchParams.has('redirectTo')) {
+      throw redirect(303, url.searchParams.get('redirectTo') || '/');
+    }
+  },
+
   delete: async ({ locals, url, params }) => {
     const id = params.id;
     const { user } = await locals.auth.validateUser();
