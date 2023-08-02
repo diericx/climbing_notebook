@@ -169,7 +169,7 @@
             {#if item.children && item.children.length > 0}
               <!--Create the menu button-->
               <button
-                class="btn hover:variant-soft-primary text-gray-600 font-light px-3"
+                class="btn hover:variant-soft-primary rounded-md text-gray-600 font-light px-3"
                 use:popup={{ ...popupCombobox, target: item.title }}
               >
                 <div class="flex items-center space-x-1">
@@ -184,7 +184,7 @@
                 <nav class="list-nav">
                   <ul>
                     {#each item.children as child}
-                      <li class="listbox-item">
+                      <li class="listbox-item px-1">
                         <a href={child.url}> {child.title} </a>
                       </li>
                     {/each}
