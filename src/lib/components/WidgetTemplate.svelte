@@ -22,6 +22,9 @@
         <div class="font-bold text-xl">
           {widget.name}
         </div>
+        {#if widget.isPublished == false}
+          <div class="font-bold text-red-300">Not published yet</div>
+        {/if}
       </div>
       {#if widget.owner.id == user.userId}
         <div>
