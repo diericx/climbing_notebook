@@ -15,6 +15,7 @@ export const widgetSchema = z.object({
   seconds: z.number().nullish(),
   minutes: z.number().nullish(),
   trainingProgramId: z.number().nullish(),
+  parentId: z.string().nullish(),
 });
 export type WidgetSchema = typeof widgetSchema;
 
@@ -293,6 +294,7 @@ export class WidgetRepo {
           trainingProgramId: undefined,
           trainingProgram: undefined,
           ownerId: undefined,
+          parentId: sourceWidget.id,
           isTemplate: false,
           owner: {
             connect: {
