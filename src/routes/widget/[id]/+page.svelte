@@ -17,17 +17,6 @@
 <div class="flex justify-between">
   <div>
     <h1 class="font-bold">{widget.name}</h1>
-    <div class="flex mb-8 items-center">
-      <Avatar
-        class="text-white"
-        width="w-9"
-        initials={widget.owner.username}
-        background="bg-primary-500"
-      />
-      <div class="ml-3 align-middle items-center">
-        <div class="text-md leading-none">By {widget.owner.username}</div>
-      </div>
-    </div>
   </div>
   <div class="mb-1 flex space-x-2">
     <div>
@@ -46,6 +35,21 @@
         </a>
       </div>
     {/if}
+  </div>
+</div>
+
+<div class="mt-1 text-gray-600">
+  {widget.description}
+</div>
+<div class="flex mb-8 mt-2 items-center">
+  <Avatar
+    class="text-white"
+    width="w-9"
+    initials={widget.owner.username}
+    background="bg-primary-500"
+  />
+  <div class="ml-3 align-middle items-center">
+    <div class="text-md leading-none">By {widget.owner.username}</div>
   </div>
 </div>
 

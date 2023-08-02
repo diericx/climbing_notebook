@@ -62,7 +62,7 @@
     <hr class="border-gray-200 divider my-4 mb-2" />
 
     <div class="flex justify-between">
-      <div class="text-gray-400 flex items-center">
+      <div class="text-gray-600 flex items-center">
         <Avatar
           class="text-white"
           width="w-9"
@@ -73,7 +73,7 @@
           <div class="text-md leading-none font-bold">{widget.owner.username}</div>
         </div>
       </div>
-      <div class="text-gray-400 flex items-center">
+      <div class="text-gray-600 flex items-center">
         <p>
           Used <b>{widget.useCount} times</b>
         </p>
