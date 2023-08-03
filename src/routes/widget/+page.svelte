@@ -13,9 +13,9 @@
 
   // Apply filters
   $: {
-    widgetsToShow = widgets;
+    widgets = data.widgets;
     if (shouldApplyFilterMadeByMe) {
-      widgetsToShow = widgets.filter((w) => w.ownerId == user.userId);
+      widgets = widgets.filter((w) => w.ownerId == user.userId);
     }
   }
 </script>
@@ -68,7 +68,7 @@
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-    {#each widgetsToShow as widget}
+    {#each widgets as widget}
       <div class={widget.width == 'full' ? 'col-span-2' : 'col-span-1'}>
         <WidgetTemplate {user} {widget} {customQueryResults} />
       </div>
