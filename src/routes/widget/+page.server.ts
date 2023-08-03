@@ -19,7 +19,24 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
   let widgets;
   try {
-    widgets = await widgetRepo.get({ isTemplate: true }, { useCount: 'desc' });
+    widgets = await widgetRepo.get(
+      {
+        AND: [
+          {
+            isTemplate: true,
+            OR: [
+              {
+                ownerId: user.userId,
+              },
+              {
+                isPublished: true,
+              },
+            ],
+          },
+        ],
+      },
+      { useCount: 'desc' }
+    );
     // compile datasets for widgets
     const customQueryResults: CustomQueryResults[] = [];
     for (const w of widgets) {
