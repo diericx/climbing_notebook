@@ -9,6 +9,8 @@
   $: widgets = data.widgets;
   $: customQueryResults = data.customQueryResults;
   $: shouldApplyFilterMadeByMe = false;
+  $: shouldApplyFilterChart = false;
+  $: shouldApplyFilterHeatmap = false;
   $: widgetsToShow = widgets;
 
   // Apply filters
@@ -16,6 +18,12 @@
     widgets = data.widgets;
     if (shouldApplyFilterMadeByMe) {
       widgets = widgets.filter((w) => w.ownerId == user.userId);
+    }
+    if (shouldApplyFilterChart) {
+      widgets = widgets.filter((w) => w.type == 'chart');
+    }
+    if (shouldApplyFilterHeatmap) {
+      widgets = widgets.filter((w) => w.type == 'heatmapCalendar');
     }
   }
 </script>
@@ -64,6 +72,24 @@
       on:keypress
     >
       <span>Made By Me</span>
+    </span>
+    <span
+      class="chip {shouldApplyFilterChart ? 'variant-filled' : 'variant-soft'}"
+      on:click={() => {
+        shouldApplyFilterChart = !shouldApplyFilterChart;
+      }}
+      on:keypress
+    >
+      <span>Charts</span>
+    </span>
+    <span
+      class="chip {shouldApplyFilterHeatmap ? 'variant-filled' : 'variant-soft'}"
+      on:click={() => {
+        shouldApplyFilterHeatmap = !shouldApplyFilterHeatmap;
+      }}
+      on:keypress
+    >
+      <span>Heatmaps</span>
     </span>
   </div>
 
