@@ -4,6 +4,7 @@
   import type { PageData } from './$types';
   import Chart from '$lib/components/Chart.svelte';
   import Dataset from '$lib/components/Dataset.svelte';
+  import HeatmapCalendar from '$lib/components/HeatmapCalendar.svelte';
 
   export let data: PageData;
   const { user } = data;
@@ -57,6 +58,12 @@
   <div class="mb-7">
     <div class="card p-4">
       <Chart {datasets} {customQueryResults} />
+    </div>
+  </div>
+{:else if widget.type == 'heatmapCalendar'}
+  <div class="mb-7 w-fit">
+    <div class="card p-4">
+      <HeatmapCalendar {datasets} {customQueryResults} />
     </div>
   </div>
 {/if}

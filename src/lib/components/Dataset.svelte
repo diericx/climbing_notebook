@@ -9,7 +9,8 @@
 
   export let dataset: DatasetComplete;
   export let widget: Widget;
-  export let exercises: Exercise[];
+  // Optional for view only use case
+  export let exercises: Exercise[] = [];
 
   let className: string = '';
   export { className as class };

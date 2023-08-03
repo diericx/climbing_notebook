@@ -17,71 +17,75 @@
 
 <div class="block card card-hover p-4">
   <a style="height: 100%;" class="flex flex-col justify-between" href={`/widget/${widget.id}`}>
-    <div class="w-full flex mb-1">
-      <div class="flex-1">
-        <div class="font-bold text-xl">
-          {widget.name}
+    <div class="w-full mb-1">
+      <div class="w-full flex">
+        <div class="flex-1">
+          <div class="font-bold text-xl">
+            {widget.name}
+          </div>
+          {#if widget.isPublished == false}
+            <div class="font-bold text-red-300">Not published yet</div>
+          {/if}
         </div>
-        {#if widget.isPublished == false}
-          <div class="font-bold text-red-300">Not published yet</div>
+
+        <button
+          class={`btn !bg-transparent justify-between ${
+            widget.owner.id == user.userId ? '' : 'hidden'
+          }`}
+          use:popup={{
+            event: 'focus-click',
+            target: widget.id,
+            placement: 'bottom-end',
+          }}
+          on:click={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+          }}
+        >
+          <Icon icon="fe:elipsis-h" height="18" />
+        </button>
+      </div>
+      <div class="mb-2">
+        <div class="text-gray-600 line-clamp-3">
+          {widget.description || ''}
+          <br />
+        </div>
+      </div>
+      {#if widget.type == 'chart'}
+        {#if widget.datasets.length == 0}
+          <p class="text-gray-400 italic">
+            Widget is not fully configured yet. Edit the widget to finish configuration.
+          </p>
+        {:else}
+          <Chart datasets={widget.datasets} {customQueryResults} />
         {/if}
-      </div>
-
-      <button
-        class={`btn !bg-transparent justify-between ${
-          widget.owner.id == user.userId ? '' : 'hidden'
-        }`}
-        use:popup={{
-          event: 'focus-click',
-          target: widget.id,
-          placement: 'bottom-end',
-        }}
-        on:click={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-        }}
-      >
-        <Icon icon="fe:elipsis-h" height="18" />
-      </button>
-    </div>
-    <div class="mb-2">
-      <div class="text-gray-600">
-        {widget.description || ''}
-        <br />
-      </div>
-    </div>
-    {#if widget.type == 'chart'}
-      {#if widget.datasets.length == 0}
-        <p class="text-gray-400 italic">
-          Widget is not fully configured yet. Edit the widget to finish configuration.
-        </p>
-      {:else}
-        <Chart datasets={widget.datasets} {customQueryResults} />
-      {/if}
-    {:else if widget.type == 'heatmapCalendar'}
-      <div>
-        <HeatmapCalendar datasets={widget.datasets} {customQueryResults} />
-      </div>
-    {/if}
-
-    <hr class="border-gray-200 divider my-4 mb-2" />
-
-    <div class="flex justify-between">
-      <div class="text-gray-600 flex items-center">
-        <Avatar
-          class="text-white"
-          width="w-9"
-          initials={widget.owner.username}
-          background="bg-primary-500"
-        />
-        <div class="ml-2 align-middle items-center">
-          <div class="text-md leading-none font-bold">{widget.owner.username}</div>
+      {:else if widget.type == 'heatmapCalendar'}
+        <div class="mt-12">
+          <HeatmapCalendar datasets={widget.datasets} {customQueryResults} />
         </div>
-      </div>
-      <div class="text-gray-600 flex items-center">
-        <p>
-          Used <b>{widget.useCount} times</b>
-        </p>
+      {/if}
+    </div>
+
+    <div>
+      <hr class="border-gray-200 divider my-4 mb-2" />
+
+      <div class="flex justify-between">
+        <div class="text-gray-600 flex items-center">
+          <Avatar
+            class="text-white"
+            width="w-9"
+            initials={widget.owner.username}
+            background="bg-primary-500"
+          />
+          <div class="ml-2 align-middle items-center">
+            <div class="text-md leading-none font-bold">{widget.owner.username}</div>
+          </div>
+        </div>
+        <div class="text-gray-600 flex items-center">
+          <p>
+            Used <b>{widget.useCount} times</b>
+          </p>
+        </div>
       </div>
     </div>
   </a>
