@@ -49,13 +49,13 @@
             component: 'formModalWidget',
             meta: {
               action: `/widget?/new`,
-              title: 'New Custom Widget',
+              title: 'New Widget',
               trainingPrograms: trainingPrograms,
             },
           })}
       >
         <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-        <span>New Custom Widget</span>
+        <span>New Widget</span>
       </button>
       <div>
         <a href="/widget" class="btn btn-sm variant-filled mb-1">

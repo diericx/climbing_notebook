@@ -95,7 +95,7 @@
         { title: 'Journal', url: '/journalEntry' },
       ],
     },
-    { title: 'Climbing', children: [{ title: 'Projects', url: '/project' }] },
+    { title: 'Climbing', children: [{ title: 'Project Notes', url: '/project' }] },
     {
       title: 'Community Marketplace',
       children: [{ title: 'Widgets', url: '/widget' }],
