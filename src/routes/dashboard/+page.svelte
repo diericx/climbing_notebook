@@ -67,6 +67,13 @@
   </div>
   <hr />
 
+  {#if widgets.length == 0}
+    <div class="text-gray-400">
+      You don't have any widgets. You can create your own calendar, chart or heatmap widget or you
+      can find pre-made widgets in the Community Marketplace.
+    </div>
+  {/if}
+
   <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
     {#each widgets as widget}
       <div class={widget.width == 'full' ? 'col-span-2' : 'col-span-1'}>
