@@ -8,6 +8,16 @@
   const { user } = data;
   $: widgets = data.widgets;
   $: customQueryResults = data.customQueryResults;
+  $: shouldApplyFilterMadeByMe = false;
+  $: widgetsToShow = widgets;
+
+  // Apply filters
+  $: {
+    widgetsToShow = widgets;
+    if (shouldApplyFilterMadeByMe) {
+      widgetsToShow = widgets.filter((w) => w.ownerId == user.userId);
+    }
+  }
 </script>
 
 <div class="mb-7">
@@ -45,17 +55,23 @@
 </div>
 
 <div class="mb-7">
-  <h3 class="text-gray-400">Created by me</h3>
-  <hr />
+  <div class="mb-4">
+    <span
+      class="chip {shouldApplyFilterMadeByMe ? 'variant-filled' : 'variant-soft'}"
+      on:click={() => {
+        shouldApplyFilterMadeByMe = !shouldApplyFilterMadeByMe;
+      }}
+      on:keypress
+    >
+      <span>Made By Me</span>
+    </span>
+  </div>
+
   <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-    {#each widgets as widget}
+    {#each widgetsToShow as widget}
       <div class={widget.width == 'full' ? 'col-span-2' : 'col-span-1'}>
         <WidgetTemplate {user} {widget} {customQueryResults} />
       </div>
     {/each}
   </div>
-</div>
-
-<div>
-  <hr />
 </div>
