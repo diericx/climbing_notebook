@@ -16,6 +16,9 @@ export const auth = lucia({
     };
   },
   middleware: sveltekit(),
+  experimental: {
+    debugMode: true,
+  },
 });
 
 export type Auth = typeof auth;
