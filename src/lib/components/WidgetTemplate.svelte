@@ -45,6 +45,21 @@
           >
             <Icon icon="fe:elipsis-h" height="18" />
           </button>
+
+          {#if widget.ownerId != user.userId}
+            <form method="POST" action={`/widget/${widget.id}?/addToMyDashboard&redirectTo=/`}>
+              <button
+                class="btn btn-sm variant-filled"
+                value="Set Active"
+                on:click={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
+                <span>Add To My Dashboard</span>
+              </button>
+            </form>
+          {/if}
         </div>
         <div class="mb-2">
           <div class="text-gray-600 line-clamp-2">

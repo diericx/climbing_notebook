@@ -56,9 +56,9 @@
     Find charts made by the community and add them to your dashboard!
     <br />
     <br />
-    All charts below are being rendered using the data on your account. If some charts are empty this
-    means you don't have any relevant data. Refer to the widget description for more info or click on
-    the widget to see how it is made.
+    All charts below are being rendered using your exercise data. If some charts are empty this means
+    you don't have any relevant data. Refer to the widget description for more info or click on the widget
+    to see how it is made.
   </div>
 </div>
 
