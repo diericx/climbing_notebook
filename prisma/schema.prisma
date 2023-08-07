@@ -271,7 +271,7 @@ model Widget {
 
   createdAt         DateTime @default(now()) @map("created_at")
   ownerId           String   @map("owner_id")
-  owner             AuthUser @relation(fields: [ownerId], references: [id])
+  owner             AuthUser @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   trainingProgramId Int?     @map("training_program_id")
 
   @@map("widget")
