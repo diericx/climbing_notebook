@@ -12,7 +12,7 @@
 
 <TextField name="name" field="name" form={superForm} />
 <TextArea name="description" field="description" form={superForm}>
-  <p class="text-gray-400">Be as detailed as possible in the description</p>
+  <p class="text-gray-400">Be as detailed as possible</p>
 </TextArea>
 
 {#if showSubmitButton}

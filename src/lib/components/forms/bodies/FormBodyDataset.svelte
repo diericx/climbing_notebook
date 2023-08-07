@@ -14,7 +14,9 @@
   export let showType = true;
 </script>
 
-<TextField name="name" field="name" form={superForm} />
+<TextField name="name" field="name" form={superForm}>
+  <div slot="description">This will be the label on the chart</div>
+</TextField>
 {#if showColor}
   <ColorField name="color" field="color" form={superForm} />
 {/if}
