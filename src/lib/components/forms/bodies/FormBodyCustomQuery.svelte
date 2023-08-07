@@ -56,13 +56,23 @@
     </div>
   </div>
 {:else if $form.table == 'metric'}
-  M
+  <div class="w-full sm:w-64">
+    <TextField name="metric" field="metric" placeholder="leftShoulderPain" form={superForm}>
+      <div slot="description">The exact metric name</div>
+    </TextField>
+  </div>
 {/if}
 
 {#if showEquation}
-  <TextField name="equation" field="equation" placeholder="sets*reps" form={superForm}>
+  <TextField
+    name="equation"
+    field="equation"
+    placeholder={$form.table == 'exerciseEvent' ? 'sets*reps' : 'value'}
+    form={superForm}
+  >
     <div slot="description">
-      A simple math equation. Each attribute of the resource is given as a variable.
+      A simple math equation to determine the value for each data point. Each attribute of the
+      resource is given as a variable.
       <br />
       <i>Exercise Events: </i> sets, reps, weight, minutes, seconds
       <br />

@@ -33,11 +33,13 @@ export class CustomQueryRepo {
       data: {
         ...data,
         exerciseId: undefined,
-        exercise: {
-          connect: {
-            id: data.exerciseId,
-          },
-        },
+        exercise: data.exerciseId
+          ? {
+              connect: {
+                id: data.exerciseId,
+              },
+            }
+          : undefined,
         dataset: {
           connect: {
             id: datasetId,
