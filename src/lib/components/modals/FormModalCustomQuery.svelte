@@ -5,8 +5,9 @@
   import { customQuerySchema } from '$lib/customQuery';
 
   let showOperator = $modalStore[0]?.meta?.showOperator;
+  let exercises = $modalStore[0]?.meta?.exercises;
 </script>
 
 <FormModal schema={customQuerySchema} let:superForm>
-  <FormBodyCustomQuery {showOperator} {superForm} showSubmitButton={false} />
+  <FormBodyCustomQuery {exercises} {showOperator} {superForm} showSubmitButton={false} />
 </FormModal>

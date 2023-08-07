@@ -36,6 +36,7 @@
 <label>
   <span class="font-bold">{camelToTitle(String(path))}</span>
   <br />
+  <slot />
   <textarea
     class={className}
     {cols}

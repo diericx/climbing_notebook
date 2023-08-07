@@ -31,6 +31,8 @@
   import FormModalProject from '$lib/components/modals/FormModalProject.svelte';
   import FormModalProjectSession from '$lib/components/modals/FormModalProjectSession.svelte';
   import FormModalExercise from '$lib/components/modals/FormModalExercise.svelte';
+  import FormModalWidgetTemplate from '$lib/components/modals/FormModalWidgetTemplate.svelte';
+  import { children } from 'svelte/internal';
 
   storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
@@ -59,6 +61,7 @@
     formModalCustomQuery: { ref: FormModalCustomQuery },
     formModalCustomQueryCondition: { ref: FormModalCustomQueryCondition },
     formModalWidget: { ref: FormModalWidget },
+    formModalWidgetTemplate: { ref: FormModalWidgetTemplate },
     formModalDataset: { ref: FormModalDataset },
     formModalProject: { ref: FormModalProject },
     formModalProjectSession: { ref: FormModalProjectSession },
@@ -83,29 +86,59 @@
   };
 
   let menuItems = [
-    { title: 'Home', url: '/' },
-    { title: 'Journal', url: '/journalEntry' },
-    { title: 'Exercise Log', url: '/exerciseEvent' },
-    { title: 'Training Programs', url: '/trainingProgram' },
-    { title: 'Queries', url: '/query' },
-    { title: 'Projects', url: '/project' },
+    { title: 'Dashboard', url: '/dashboard' },
+    {
+      title: 'Training',
+      children: [
+        { title: 'Exercise Log', url: '/exerciseEvent' },
+        { title: 'Training Programs', url: '/trainingProgram' },
+        { title: 'Journal', url: '/journalEntry' },
+      ],
+    },
+    { title: 'Climbing', children: [{ title: 'Project Notes', url: '/project' }] },
+    {
+      title: 'Community Marketplace',
+      children: [{ title: 'Widgets', url: '/widget' }],
+    },
     { title: 'Feedback', url: '/feedback' },
   ];
 </script>
 
 <Modal components={modalComponentRegistry} />
-<Drawer bgDrawer="bg-white">
-  <nav class="list-nav p-4">
-    <ul>
-      {#each menuItems as item}
-        <li>
-          <a on:click={drawerClose} class="btn hover:variant-soft-primary" href={item.url}>
-            {item.title}
+<Drawer width="auto" bgDrawer="bg-white">
+  <div class="pt-2 mr-4">
+    {#each menuItems as item}
+      {#if item.children && item.children.length > 0}
+        <div class="pl-5 text text-gray-900 mt-4">
+          {item.title}
+        </div>
+
+        {#each item.children as child}
+          <div>
+            <a
+              class="btn rounded-md pl-3 text-gray-500 text-sm font hover:variant-soft-primary w-full mx-2"
+              href={child.url}
+            >
+              <span class="w-full text-left">
+                {child.title}
+              </span>
+            </a>
+          </div>
+        {/each}
+      {:else}
+        <div>
+          <a
+            class="btn rounded-md pl-3 text-gray-500 text-sm font hover:variant-soft-primary w-full mx-2"
+            href={item.url}
+          >
+            <span class="w-full text-left">
+              {item.title}
+            </span>
           </a>
-        </li>
-      {/each}
-    </ul>
-  </nav>
+        </div>
+      {/if}
+    {/each}
+  </div>
 </Drawer>
 
 <AppShell slotSidebarLeft="bg-surface-500/5 w-0 lg:w-64">
@@ -133,33 +166,45 @@
       <svelte:fragment slot="trail">
         <div class="hidden md:block w-full flex-grow">
           {#each menuItems as item}
-            <a class="px-2 text-gray-600 hover:text-black font-light" href={item.url}>
-              {item.title}
-            </a>
+            {#if item.children && item.children.length > 0}
+              <!--Create the menu button-->
+              <button
+                class="btn hover:variant-soft-primary rounded-md text-gray-600 font-light px-3"
+                use:popup={{ ...popupCombobox, target: item.title }}
+              >
+                <div class="flex items-center space-x-1">
+                  <span class="capitalize">{item.title}</span>
+                  <span class="text-gray-400">
+                    <Icon icon="ion:caret-down" height="15" />
+                  </span>
+                </div>
+              </button>
+              <!--Create the pop up-->
+              <div class="card w-48 shadow-xl py-2 z-50" data-popup={item.title}>
+                <nav class="list-nav">
+                  <ul>
+                    {#each item.children as child}
+                      <li class="listbox-item px-1">
+                        <a href={child.url}> {child.title} </a>
+                      </li>
+                    {/each}
+                  </ul>
+                </nav>
+                <div class="arrow bg-surface-100-800-token" />
+              </div>
+            {:else}
+              <a class="px-2 text-gray-600 hover:text-black font-light" href={item.url}>
+                {item.title}
+              </a>
+            {/if}
           {/each}
         </div>
 
         {#if data.user != undefined}
           <div>
-            <button class="p-1" use:popup={popupCombobox}>
+            <button class="p-1" use:popup={{ ...popupCombobox, target: 'auth' }}>
               <Icon icon="iconamoon:profile-circle-fill" height="28" />
             </button>
-          </div>
-          <!-- AUTH POPUP  -->
-          <div class="card w-48 shadow-xl py-2" data-popup="combobox">
-            <nav class="list-nav">
-              <ul>
-                <li>
-                  <a href="/profile"> Profile </a>
-                </li>
-                <li>
-                  <form method="POST" action="/?/signout">
-                    <button class="w-full" style="margin-top: 0px">Logout</button>
-                  </form>
-                </li>
-              </ul>
-            </nav>
-            <div class="arrow bg-surface-100-800-token" />
           </div>
         {:else}
           <a class="px-2 text-gray-600 hover:text-black font-light" href="/login"> Login </a>
@@ -181,3 +226,38 @@
     </main>
   </div>
 </AppShell>
+
+<!-- AUTH POPUP  -->
+<div class="card w-48 shadow-xl py-2 z-50" data-popup="auth">
+  <nav class="list-nav">
+    <ul>
+      <li class="listbox-item">
+        <a href="/profile"> Profile </a>
+      </li>
+      <li class="listbox-item">
+        <form method="POST" action="/?/signout">
+          <button class="w-full" style="margin-top: 0px">Logout</button>
+        </form>
+      </li>
+    </ul>
+  </nav>
+  <div class="arrow bg-surface-100-800-token" />
+</div>
+
+<!-- TRAINING POPUP  -->
+<div class="card w-48 shadow-xl py-2 z-50" data-popup="training">
+  <nav class="list-nav">
+    <ul>
+      <li class="listbox-item">
+        <a href="/exerciseEvent"> Exercise Log </a>
+      </li>
+      <li class="listbox-item">
+        <a href="/trainingProgram"> Training Programs </a>
+      </li>
+      <li class="listbox-item">
+        <a href="/journalEntry"> Journal </a>
+      </li>
+    </ul>
+  </nav>
+  <div class="arrow bg-surface-100-800-token" />
+</div>

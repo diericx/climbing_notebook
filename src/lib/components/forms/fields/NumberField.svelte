@@ -11,6 +11,7 @@
   export let field: keyof z.infer<T> | FieldPath<z.infer<T>>;
   export let placeholder = '';
   export let step = '1';
+  export let label: string | undefined = undefined;
   let className: string = '';
   export { className as class };
 
@@ -18,7 +19,7 @@
 </script>
 
 <label>
-  <span class="font-bold">{camelToTitle(String(path))}</span>
+  <span class="font-bold">{label || camelToTitle(String(path))}</span>
   <br />
   <input
     type="number"

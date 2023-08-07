@@ -1,77 +1,77 @@
 <script lang="ts">
-  import { enhance } from '$app/forms';
-  import { camelToTitle, confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
-  import { modalStore } from '@skeletonlabs/skeleton';
+  import { Avatar } from '@skeletonlabs/skeleton';
   import type { PageData } from './$types';
+  import Chart from '$lib/components/Chart.svelte';
+  import Dataset from '$lib/components/Dataset.svelte';
+  import HeatmapCalendar from '$lib/components/HeatmapCalendar.svelte';
 
   export let data: PageData;
+  const { user } = data;
   $: widget = data.widget;
-  $: customQueries = data.customQueries;
-  $: trainingPrograms = data.trainingPrograms;
+  $: customQueryResults = data.customQueryResults;
+  $: datasets = widget.datasets;
+
+  $: isOwner = widget.ownerId == user.userId;
 </script>
 
 <div class="flex justify-between">
   <div>
-    <h1>{widget.name}</h1>
+    <h1 class="font-bold">{widget.name}</h1>
   </div>
-  <div class="mb-1">
-    <button
-      class="btn btn-sm variant-ringed"
-      on:click={() =>
-        modalStore.trigger({
-          type: 'component',
-          component: 'formModalWidget',
-          meta: {
-            action: `/widget/${widget.id}?/update`,
-            title: 'Edit Widget',
-            data: widget,
-            showType: false,
-            trainingPrograms,
-          },
-        })}
-    >
-      <Icon icon="material-symbols:edit-outline" height="18" />
-      <span>Edit</span>
-    </button>
+  <div class="mb-1 flex space-x-2">
+    <div>
+      <form method="POST" action={`/widget/${widget.id}?/addToMyDashboard&redirectTo=/`}>
+        <button class="btn btn-sm variant-filled" value="Set Active">
+          <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
+          <span>Add To My Dashboard</span>
+        </button>
+      </form>
+    </div>
+    {#if isOwner}
+      <div>
+        <a class="btn btn-sm variant-ringed" href={`/widget/${widget.id}/edit`}>
+          <Icon icon="material-symbols:edit-outline" height="18" />
+          <span>Edit</span>
+        </a>
+      </div>
+    {/if}
   </div>
 </div>
-<hr />
 
-<div class="mb-8">
-  <p><b>Width:</b> {widget.width}</p>
-  <p><b>Order:</b> {widget.order}</p>
-  <p><b>Type:</b> {camelToTitle(widget.type)}</p>
-  {#if widget.type == 'dailyExerciseCalendar'}
-    <p><b>Training Program:</b> {widget.trainingProgram?.name || 'Active Training Program'}</p>
-  {/if}
+<div class="mt-1 text-gray-600">
+  {widget.description}
 </div>
+<div class="flex mb-8 mt-2 items-center">
+  <Avatar
+    class="text-white"
+    width="w-9"
+    initials={widget.owner.username}
+    background="bg-primary-500"
+  />
+  <div class="ml-2 align-middle items-center">
+    <div class="text-md leading-none text-gray-600 font-bold">{widget.owner.username}</div>
+  </div>
+</div>
+
+{#if widget.type == 'chart'}
+  <div class="mb-7">
+    <div class="card p-4">
+      <Chart {datasets} {customQueryResults} />
+    </div>
+  </div>
+{:else if widget.type == 'heatmapCalendar'}
+  <div class="mb-7 w-fit">
+    <div class="card p-4">
+      <HeatmapCalendar {datasets} {customQueryResults} />
+    </div>
+  </div>
+{/if}
 
 {#if widget.type == 'chart' || widget.type == 'heatmapCalendar'}
   <div class="flex justify-between">
     <div>
       <h2>Datasets</h2>
-    </div>
-    <div>
-      <button
-        class="btn btn-sm variant-filled mb-1"
-        on:click={() =>
-          modalStore.trigger({
-            type: 'component',
-            component: 'formModalDataset',
-            meta: {
-              action: `/widget/${widget.id}?/addDataset`,
-              title: 'Add Dataset',
-              customQueries,
-              showType: widget.type != 'heatmapCalendar',
-              showColor: widget.type != 'heatmapCalendar',
-              showEquation: widget.type != 'heatmapCalendar',
-            },
-          })}
-      >
-        <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-        <span>Add Dataset</span>
-      </button>
     </div>
   </div>
   <hr />
@@ -79,51 +79,8 @@
   {#if widget.datasets.length == 0}
     <p class="text-gray-400 italic">No Datasets</p>
   {:else}
-    <ul class="divide-y divide-gray-200 border">
-      {#each widget.datasets as dataset}
-        <li class="bg-white py-4 px-4 md:px-6">
-          <div class="flex items-center space-x-2 md:space-x-4">
-            {#if dataset.color != undefined && dataset.color != ''}
-              <span class="w-8 h-8 rounded-full" style={`background-color: ${dataset.color}`} />
-            {/if}
-            <div class="flex-1 min-w-0">
-              <p class="font-bold">{dataset.name}</p>
-            </div>
-            <div class="flex items-center min-w-0 float-right space-x-2">
-              <button
-                class="btn btn-sm variant-ringed"
-                on:click={() =>
-                  modalStore.trigger({
-                    type: 'component',
-                    component: 'formModalDataset',
-                    meta: {
-                      action: `/widget/${widget.id}/dataset/${dataset.id}?/update`,
-                      title: 'Edit Dataset',
-                      customQueries,
-                      data: dataset,
-                      showType: widget.type != 'heatmapCalendar',
-                      showColor: widget.type != 'heatmapCalendar',
-                      showEquation: widget.type != 'heatmapCalendar',
-                    },
-                  })}
-              >
-                <Icon icon="material-symbols:edit-outline" height="18" />
-                <span>Edit</span>
-              </button>
-              <form
-                method="POST"
-                action={`/widget/${widget.id}/dataset/${dataset.id}?/delete`}
-                use:enhance
-              >
-                <button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
-                  <Icon icon="mdi:trash-outline" height="18" />
-                  <span> Delete </span>
-                </button>
-              </form>
-            </div>
-          </div>
-        </li>
-      {/each}
-    </ul>
+    {#each widget.datasets as dataset}
+      <Dataset showButtons={false} {widget} {dataset} />
+    {/each}
   {/if}
 {/if}

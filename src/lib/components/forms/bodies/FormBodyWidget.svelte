@@ -6,32 +6,72 @@
   import SubmitButton from '../fields/SubmitButton.svelte';
   import type { SuperForm } from 'sveltekit-superforms/client';
   import type { z } from 'zod';
+  import TextArea from '../fields/TextArea.svelte';
+  import { modalStore } from '@skeletonlabs/skeleton';
 
   // Form action to execute
   export let superForm: SuperForm<z.AnyZodObject, any>;
   export let showSubmitButton = true;
+  export let showName = true;
   export let showType = true;
   export let showOrder = true;
+  export let showWidth = true;
+  export let showDescription = false;
+  export let showSimpleFields = false;
   export let trainingPrograms: TrainingProgram[] = [];
+  export let allowedTypes: String[] = [
+    'chart',
+    'calendar',
+    'heatmapCalendar',
+    'dailyExerciseCalendar',
+  ];
 
   const { form } = superForm;
+
+  // If any of these fields is null, then the form does not show a field and is
+  // thus "disabled". Check boxes allow the user to set a value.
+  let setsFieldEnabled = $form.sets != null && $form.sets != undefined;
+  let repsFieldEnabled = $form.reps != null && $form.reps != undefined;
+  let weightFieldEnabled = $form.weight != null && $form.weight != undefined;
+  let minutesFieldEnabled = $form.minutes != null && $form.minutes != undefined;
+  let secondsFieldEnabled = $form.seconds != null && $form.seconds != undefined;
 </script>
 
-<TextField name="name" field="name" form={superForm} />
+{#if showName}
+  <TextField name="name" field="name" form={superForm} />
+{/if}
+
+{#if showDescription}
+  <TextArea name="description" field="description" form={superForm}>
+    <p class="text-gray-400">Be as detailed as possible in the description</p>
+  </TextArea>
+{/if}
+
 {#if showOrder}
   <NumberField name="order" field="order" form={superForm} />
 {/if}
-<SelectField name="width" field="width" form={superForm}>
-  <option value="full">Full</option>
-  <option value="half">Half</option>
-</SelectField>
+
+{#if showWidth}
+  <SelectField name="width" field="width" form={superForm}>
+    <option value="full">Full</option>
+    <option value="half">Half</option>
+  </SelectField>
+{/if}
 
 {#if showType}
   <SelectField name="type" field="type" form={superForm}>
-    <option value="chart"> Chart </option>
-    <option value="calendar"> Full Calendar </option>
-    <option value="heatmapCalendar"> Heatmap Calendar </option>
-    <option value="dailyExerciseCalendar"> Daily Exercise Calendar </option>
+    {#if allowedTypes.includes('chart')}
+      <option value="chart"> Chart </option>
+    {/if}
+    {#if allowedTypes.includes('calendar')}
+      <option value="calendar"> Full Calendar </option>
+    {/if}
+    {#if allowedTypes.includes('heatmapCalendar')}
+      <option value="heatmapCalendar"> Heatmap Calendar </option>
+    {/if}
+    {#if allowedTypes.includes('dailyExerciseCalendar')}
+      <option value="dailyExerciseCalendar"> Daily Exercise Calendar </option>
+    {/if}
   </SelectField>
 {/if}
 
@@ -48,6 +88,130 @@
       <option value={trainingProgram.id}> {trainingProgram.name} </option>
     {/each}
   </SelectField>
+{/if}
+
+{#if showSimpleFields}
+  {#if !$form.isTemplate}
+    <hr class="border-red-100 divider my-4" />
+  {/if}
+
+  {#if $form.isTemplate}
+    <label>
+      <input
+        type="checkbox"
+        bind:checked={setsFieldEnabled}
+        on:change={() => {
+          $form.sets = $form.sets == null ? ($form.sets = 0) : ($form.sets = null);
+        }}
+      />
+      Enable Sets Field
+    </label>
+  {/if}
+  {#if setsFieldEnabled}
+    <NumberField
+      class="w-20"
+      name="sets"
+      field="sets"
+      label={$form.isTemplate ? 'Default Sets Value' : 'Sets'}
+      form={superForm}
+    />
+  {/if}
+
+  {#if $form.isTemplate}
+    <label>
+      <input
+        type="checkbox"
+        bind:checked={repsFieldEnabled}
+        on:change={() => {
+          $form.reps = $form.reps == null ? ($form.reps = 0) : ($form.reps = null);
+        }}
+      />
+      Enable Reps Field
+    </label>
+  {/if}
+  {#if repsFieldEnabled}
+    <NumberField
+      class="w-20"
+      name="reps"
+      field="reps"
+      label={$form.isTemplate ? 'Default Reps Value' : 'Reps'}
+      form={superForm}
+    />
+  {/if}
+
+  {#if $form.isTemplate}
+    <label>
+      <input
+        type="checkbox"
+        bind:checked={weightFieldEnabled}
+        on:change={() => {
+          $form.weight = $form.weight == null ? ($form.weight = 0) : ($form.weight = null);
+        }}
+      />
+      Enable weight Field
+    </label>
+  {/if}
+  {#if weightFieldEnabled}
+    <NumberField
+      class="w-20"
+      name="weight"
+      field="weight"
+      label={$form.isTemplate ? 'Default Weight Value' : 'Weight'}
+      form={superForm}
+    />
+  {/if}
+
+  {#if $form.isTemplate}
+    <label>
+      <input
+        type="checkbox"
+        bind:checked={minutesFieldEnabled}
+        on:change={() => {
+          $form.minutes = $form.minutes == null ? ($form.minutes = 0) : ($form.minutes = null);
+        }}
+      />
+      Enable minutes Field
+    </label>
+  {/if}
+  {#if minutesFieldEnabled}
+    <NumberField
+      class="w-20"
+      name="minutes"
+      field="minutes"
+      label={$form.isTemplate ? 'Default Minutes Value' : Minutes}
+      form={superForm}
+    />
+  {/if}
+
+  {#if $form.isTemplate}
+    <label>
+      <input
+        type="checkbox"
+        bind:checked={secondsFieldEnabled}
+        on:change={() => {
+          $form.seconds = $form.seconds == null ? ($form.seconds = 0) : ($form.seconds = null);
+        }}
+      />
+      Enable seconds Field
+    </label>
+  {/if}
+  {#if secondsFieldEnabled}
+    <NumberField
+      class="w-20"
+      name="seconds"
+      field="seconds"
+      label={$form.isTemplate ? 'Default Seconds Value' : 'Seconds'}
+      form={superForm}
+    />
+  {/if}
+
+  {#if !$form.isTemplate}
+    <div class="mt-4">
+      <a class="link" on:click={modalStore.close} href={`/widget/${$form.id}/edit`}
+        >Go to advanced editor</a
+      >
+    </div>
+  {/if}
 {/if}
 
 {#if showSubmitButton}

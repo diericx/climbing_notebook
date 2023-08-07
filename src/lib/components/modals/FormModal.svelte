@@ -6,20 +6,21 @@
 
   export let schema: z.ZodObject<ZodRawShape>;
 
-  let title = $modalStore[0]?.meta?.title;
-  let data = $modalStore[0]?.meta?.data;
-  let action = $modalStore[0]?.meta?.action;
+  let meta = $modalStore[0]?.meta || {};
+  const { title, description, data, action, debug } = meta;
 </script>
 
 <div style="max-height: 90vh" class="card w-modal">
   <header class="card-header">
     <h2 class="font-bold">{title}</h2>
+    <p class="text-gray-400">{description || ''}</p>
   </header>
   <div style="max-height: 80vh" class="overflow-scroll">
     <Form
       {schema}
       {data}
       {action}
+      {debug}
       onSuccess={() => {
         modalStore.close();
       }}
@@ -29,7 +30,12 @@
         <slot {superForm} />
       </section>
       <footer class="card-footer float-right space-x-4">
-        <button class="btn variant-ghost-surface" on:click={() => modalStore.close()}>Cancel</button
+        <button
+          class="btn variant-ghost-surface"
+          on:click={(e) => {
+            e.preventDefault();
+            modalStore.close();
+          }}>Cancel</button
         >
         <SubmitButton {superForm} />
       </footer>

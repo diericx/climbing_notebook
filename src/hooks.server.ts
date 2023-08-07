@@ -1,6 +1,7 @@
 import { auth } from '$lib/server/lucia';
 import type { Handle } from '@sveltejs/kit';
 import { dev } from '$app/environment';
+
 import segfaultHandler from 'node-segfault-handler';
 
 if (!dev) {
@@ -19,7 +20,8 @@ export const handle: Handle = async ({ event, resolve }) => {
     event.url.pathname.startsWith('/query') ||
     event.url.pathname.startsWith('/dashboard') ||
     event.url.pathname.startsWith('/project') ||
-    event.url.pathname.startsWith('/exercise')
+    event.url.pathname.startsWith('/exercise') ||
+    event.url.pathname.startsWith('/widget')
     // trainingProgram is handled at the path level
   ) {
     if (!user) {

@@ -81,24 +81,40 @@ const exerciseGroupComplete = _Prisma.validator<_Prisma.TrainingProgramDayArgs>(
 });
 export type ExerciseGroupComplete = _Prisma.ExerciseGroupGetPayload<typeof exerciseGroupComplete>;
 
+const datasetComplete = _Prisma.validator<_Prisma.DatasetArgs>()({
+  include: {
+    customQueries: {
+      include: {
+        conditions: true,
+      },
+    },
+  },
+});
+export type DatasetComplete = _Prisma.DatasetGetPayload<typeof datasetComplete>;
+
+const customQueryComplete = _Prisma.validator<_Prisma.CustomQueryArgs>()({
+  include: {
+    conditions: true,
+  },
+});
+export type CustomQueryComplete = _Prisma.CustomQueryGetPayload<typeof customQueryComplete>;
+
 const widgetComplete = _Prisma.validator<_Prisma.WidgetArgs>()({
   include: {
+    owner: true,
     datasets: {
       include: {
-        customQuery: true,
+        customQueries: {
+          include: {
+            conditions: true,
+          },
+        },
       },
     },
     trainingProgram: true,
   },
 });
 export type WidgetComplete = _Prisma.WidgetGetPayload<typeof widgetComplete>;
-
-const datasetComplete = _Prisma.validator<_Prisma.DatasetArgs>()({
-  include: {
-    customQuery: true,
-  },
-});
-export type DatasetComplete = _Prisma.DatasetGetPayload<typeof datasetComplete>;
 
 const exerciseEventComplete = _Prisma.validator<_Prisma.ExerciseEventArgs>()({
   include: {

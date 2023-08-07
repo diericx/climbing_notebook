@@ -35,7 +35,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     const metrics = await metricRepo.get(user?.userId, dateMin, new Date());
     const journalEntries = await journalEntryRepo.get(user?.userId);
     const calendarEvents = await calendarEventRepo.get(user?.userId);
-    const widgets = await widgetRepo.get(user?.userId);
+    const widgets = await widgetRepo.get({ ownerId: user?.userId, isTemplate: false });
     const trainingPrograms = await trainingProgramRepo.get(user?.userId);
 
     // compile datasets for widgets
@@ -44,16 +44,18 @@ export const load: PageServerLoad = async ({ locals }) => {
       // Go through each widget and fetch cooresponding query results
       if (w.type == 'chart' || w.type == 'heatmapCalendar') {
         for (const dataset of w.datasets) {
-          // Don't run the same queries multiple times
-          if (customQueryResults.find((r) => r.customQueryId == dataset.customQueryId)) {
-            continue;
-          }
+          for (const customQuery of dataset.customQueries) {
+            // Don't run the same queries multiple times
+            if (customQueryResults.find((r) => r.customQueryId == customQuery.id)) {
+              continue;
+            }
 
-          const data = await customQueryRepo.runCustomQuery(dataset.customQueryId, user?.userId);
-          customQueryResults.push({
-            customQueryId: dataset.customQueryId,
-            data,
-          });
+            const data = await customQueryRepo.runCustomQuery(customQuery.id, user?.userId);
+            customQueryResults.push({
+              customQueryId: customQuery.id,
+              data,
+            });
+          }
         }
       }
     }

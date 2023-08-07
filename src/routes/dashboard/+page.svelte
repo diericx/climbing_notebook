@@ -40,27 +40,39 @@
     <div>
       <h1>Dashboard</h1>
     </div>
-    <div>
+    <div class="flex space-x-2">
       <button
-        class="btn btn-sm variant-filled mb-1"
+        class="btn btn-sm variant-ringed mb-1"
         on:click={() =>
           modalStore.trigger({
             type: 'component',
             component: 'formModalWidget',
             meta: {
               action: `/widget?/new`,
-              title: 'Add Widget',
-              showOrder: false,
+              title: 'New Widget',
               trainingPrograms: trainingPrograms,
             },
           })}
       >
         <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-        <span>Add Widget</span>
+        <span>New Widget</span>
       </button>
+      <div>
+        <a href="/widget" class="btn btn-sm variant-filled mb-1">
+          <Icon icon="material-symbols:search" height="18" />
+          <span>Browse Community Widgets </span>
+        </a>
+      </div>
     </div>
   </div>
   <hr />
+
+  {#if widgets.length == 0}
+    <div class="text-gray-400">
+      You don't have any widgets. You can create your own calendar, chart or heatmap widget or you
+      can find pre-made widgets in the Community Marketplace.
+    </div>
+  {/if}
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
     {#each widgets as widget}

@@ -4,27 +4,13 @@
   import { doesTrainingProgramHaveLegacyExercises } from '$lib/trainingProgram';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
-  import {
-    clipboard,
-    ListBox,
-    ListBoxItem,
-    modalStore,
-    popup,
-    type PopupSettings,
-  } from '@skeletonlabs/skeleton';
+  import { modalStore, popup } from '@skeletonlabs/skeleton';
   import type { PageData } from './$types';
 
   export let data: PageData;
 
   $: profile = data.profile;
   $: trainingPrograms = data.trainingPrograms as TrainingProgramWithDays[];
-
-  const popupCombobox: PopupSettings = {
-    event: 'focus-click',
-    target: 'popupCombobox',
-    placement: 'bottom',
-    closeQuery: '.listbox-item',
-  };
 </script>
 
 <div>
