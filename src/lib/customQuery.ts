@@ -1,4 +1,4 @@
-import type { PrismaClient, CustomQuery, ExerciseEvent, Metric } from '@prisma/client';
+import type { PrismaClient, CustomQuery, ExerciseEvent, Metric, Widget } from '@prisma/client';
 import { Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
@@ -60,6 +60,7 @@ export class CustomQueryRepo {
             widget: true,
           },
         },
+        conditions: true,
       },
     });
     type QueryWithWidget = Prisma.CustomQueryGetPayload<typeof queryWithWidget>;
@@ -78,36 +79,64 @@ export class CustomQueryRepo {
       }
     }
 
-    const prismaQuery = { where: { ownerId }, orderBy: { date: 'asc' } };
-    prismaQuery.where['AND'] = query.conditions.map((c) => {
-      const prismaCondition = {};
-      prismaCondition[c.column] = {};
-      // use the value from the parent widget if enabled
-      if (c.useWidgetField) {
-        prismaCondition[c.column][c.condition] = query.dataset.widget[c.column];
-      } else {
-        prismaCondition[c.column][c.condition] = c.value;
-      }
-      return prismaCondition;
-    });
-
-    // Filter out exercise events in programs in an admittedly confusing double negative way
+    // Initialize query values for each case
     if (query.table == 'exerciseEvent') {
-      prismaQuery.where['NOT'] = [
-        {
-          trainingProgramDayId: {
-            not: null,
-          },
+      return this.prisma.exerciseEvent.findMany({
+        where: {
+          ownerId,
+          // Add each query condition
+          AND: query.conditions.map((c) => {
+            return {
+              [c.column]: {
+                [c.condition]: c.useWidgetField
+                  ? query.dataset.widget[c.column as keyof Widget]
+                  : c.value,
+              },
+            };
+          }),
+          // Filter out exercise events that are *in* training programs
+          // in an admittedly confusing double negative way
+          NOT: [
+            {
+              trainingProgramDayId: {
+                not: null,
+              },
+            },
+            {
+              exerciseGroupId: {
+                not: null,
+              },
+            },
+          ],
         },
-        {
-          exerciseGroupId: {
-            not: null,
-          },
+        orderBy: { date: 'asc' },
+      });
+    } else if (query.table == 'metric') {
+      return await this.prisma.metric.findMany({
+        where: {
+          ownerId,
+          AND: [
+            // Add each query condition
+            ...query.conditions.map((c) => {
+              return {
+                [c.column]: {
+                  [c.condition]: c.useWidgetField
+                    ? query.dataset.widget[c.column as keyof Widget]
+                    : c.value,
+                },
+              };
+            }),
+            // Add filter for the metric name
+            { name: query.metric || '' },
+          ],
         },
-      ];
+        orderBy: { date: 'asc' },
+      });
+    } else {
+      throw new APIError('INVALID_INPUT', `Unrecognized table "${query.table}"`);
     }
-    return await this.prisma[query.table].findMany(prismaQuery);
   }
+
   async get(ownerId: string) {
     return await this.prisma.customQuery.findMany({
       where: {
