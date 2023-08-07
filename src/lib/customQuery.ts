@@ -27,7 +27,7 @@ export type CustomQueryResults = {
 };
 
 export class CustomQueryRepo {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaClient) { }
   async new(data: z.infer<CustomQuerySchema>, datasetId: string, ownerId: string) {
     return (await this.prisma.customQuery.create({
       data: {
@@ -35,10 +35,10 @@ export class CustomQueryRepo {
         exerciseId: undefined,
         exercise: data.exerciseId
           ? {
-              connect: {
-                id: data.exerciseId,
-              },
-            }
+            connect: {
+              id: data.exerciseId,
+            },
+          }
           : undefined,
         dataset: {
           connect: {
@@ -85,15 +85,17 @@ export class CustomQueryRepo {
         where: {
           ownerId,
           // Add each query condition
-          AND: query.conditions.map((c) => {
-            return {
+          AND: [
+            ...query.conditions.map((c) => ({
               [c.column]: {
                 [c.condition]: c.useWidgetField
                   ? query.dataset.widget[c.column as keyof Widget]
                   : c.value,
               },
-            };
-          }),
+            })),
+            // Add filter for exercise
+            { exerciseId: query.exerciseId },
+          ],
           // Filter out exercise events that are *in* training programs
           // in an admittedly confusing double negative way
           NOT: [
