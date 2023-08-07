@@ -33,7 +33,7 @@ ADD COLUMN     "value" DOUBLE PRECISION NOT NULL;
 -- AlterTable
 ALTER TABLE "widget" ADD COLUMN     "description" TEXT,
 ADD COLUMN     "is_published" BOOLEAN NOT NULL DEFAULT false,
-ADD COLUMN     "is_template" BOOLEAN NOT NULL,
+ADD COLUMN     "is_template" BOOLEAN NOT NULL DEFAULT false,
 ADD COLUMN     "minutes" INTEGER,
 ADD COLUMN     "parentId" TEXT,
 ADD COLUMN     "reps" INTEGER,

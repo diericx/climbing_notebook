@@ -251,7 +251,7 @@ model Widget {
   width       String
   order       Int
   type        String
-  isTemplate  Boolean @map("is_template")
+  isTemplate  Boolean @default(false) @map("is_template")
   useCount    Int     @default(0) @map("use_count")
   // Parent template widget id
   parentId    String?
