@@ -149,6 +149,7 @@ export class CustomQueryRepo {
       },
       include: {
         conditions: true,
+        exercise: true,
       },
     });
   }
@@ -160,6 +161,7 @@ export class CustomQueryRepo {
       },
       include: {
         conditions: true,
+        exercise: true,
         ...include,
         dataset: {
           include: {

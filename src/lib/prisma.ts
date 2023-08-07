@@ -95,6 +95,7 @@ export type DatasetComplete = _Prisma.DatasetGetPayload<typeof datasetComplete>;
 const customQueryComplete = _Prisma.validator<_Prisma.CustomQueryArgs>()({
   include: {
     conditions: true,
+    exercise: true,
   },
 });
 export type CustomQueryComplete = _Prisma.CustomQueryGetPayload<typeof customQueryComplete>;
@@ -107,6 +108,7 @@ const widgetComplete = _Prisma.validator<_Prisma.WidgetArgs>()({
         customQueries: {
           include: {
             conditions: true,
+            exercise: true,
           },
         },
       },

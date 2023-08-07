@@ -63,6 +63,14 @@
     <br />
     <b>Equation:</b>
     {customQuery.equation}
+    <br />
+    {#if customQuery.table == 'metric'}
+      <b>Metric: </b>
+      {customQuery.metric}
+    {:else if customQuery.table == 'exerciseEvent'}
+      <b>Exercise: </b>
+      {customQuery.exercise?.name}
+    {/if}
   </div>
 
   <div>
