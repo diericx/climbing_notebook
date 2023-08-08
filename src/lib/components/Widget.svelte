@@ -32,9 +32,11 @@
             action: `/widget/${widget.id}?/update`,
             title: 'Edit Widget',
             data: widget,
-            showType: false,
-            showSimpleFields: true,
-            trainingPrograms,
+            formProps: {
+              showType: false,
+              showSimpleFields: true,
+              trainingPrograms,
+            },
           },
         })}
     >

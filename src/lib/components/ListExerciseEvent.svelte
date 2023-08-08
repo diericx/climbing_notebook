@@ -59,9 +59,11 @@
                       data: exerciseEvent,
                       action: `/exerciseEvent/${exerciseEvent.id}?/edit`,
                       title: 'Edit Exercise Event',
-                      showDate,
-                      showDifficulty,
-                      exercises,
+                      formProps: {
+                        showDate,
+                        showDifficulty,
+                        exercises,
+                      },
                     },
                   })}
               >

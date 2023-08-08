@@ -39,12 +39,14 @@
           type: 'component',
           component: 'formModalWidget',
           meta: {
-            data: { isTemplate: true },
             action: `/widget?/new`,
             title: 'New Community Widget',
-            showOrder: false,
-            showDescription: true,
-            allowedTypes: ['chart', 'heatmapCalendar'],
+            data: { isTemplate: true },
+            formProps: {
+              showOrder: false,
+              showDescription: true,
+              allowedTypes: ['chart', 'heatmapCalendar'],
+            },
           },
         })}
     >

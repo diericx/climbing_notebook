@@ -91,6 +91,8 @@
             type: 'component',
             component: 'formModalExerciseEvent',
             meta: {
+              action: `/exerciseEvent?/new`,
+              title: 'Complete Exercise',
               // remove group id and program id so this will be considered an exercise event
               data: {
                 ...exerciseEvent,
@@ -98,11 +100,11 @@
                 trainingProgramDayId: null,
                 date: new Date(),
               },
-              exercises,
-              action: `/exerciseEvent?/new`,
-              title: 'Complete Exercise',
-              exerciseToMarkCompleted: exerciseEvent,
-              dateToMarkCompleted: date,
+              formProps: {
+                exercises,
+                exerciseToMarkCompleted: exerciseEvent,
+                dateToMarkCompleted: date,
+              },
             },
           })}
       >

@@ -60,7 +60,9 @@
           meta: {
             action: `/query/${query.id}?/addCondition`,
             title: 'Add Condition',
-            query,
+            formProps: {
+              query,
+            },
           },
         })}
     >
@@ -98,7 +100,9 @@
                       action: `/query/${query.id}/condition/${condition.id}?/update`,
                       title: 'Edit Condition',
                       data: condition,
-                      query,
+                      formProps: {
+                        query,
+                      },
                     },
                   })}
               >

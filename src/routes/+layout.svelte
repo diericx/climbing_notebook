@@ -7,32 +7,30 @@
   // This contains the bulk of Skeletons required styles:
   import '@skeletonlabs/skeleton/styles/skeleton.css';
   import '../app.css';
-  // import '@event-calendar/core/index.css';
   import 'nprogress/nprogress.css';
   import { navigating } from '$app/stores';
   import { popup } from '@skeletonlabs/skeleton';
   import type { PopupSettings } from '@skeletonlabs/skeleton';
   import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
   import { storePopup } from '@skeletonlabs/skeleton';
-  import FormModalExerciseEvent from '$lib/components/modals/FormModalExerciseEvent.svelte';
-  import FormModalExerciseGroup from '$lib/components/modals/FormModalExerciseGroup.svelte';
-  import FormModalTrainingProgram from '$lib/components/modals/FormModalTrainingProgram.svelte';
-  import FormModalTrainingProgramDay from '$lib/components/modals/FormModalTrainingProgramDay.svelte';
-  import FormModalCalendarEvent from '$lib/components/modals/FormModalCalendarEvent.svelte';
+  import FormModalExerciseEvent from '$lib/components/modals/formModals/FormModalExerciseEvent.svelte';
+  import FormModalExerciseGroup from '$lib/components/modals/formModals/FormModalExerciseGroup.svelte';
+  import FormModalTrainingProgram from '$lib/components/modals/formModals/FormModalTrainingProgram.svelte';
+  import FormModalTrainingProgramDay from '$lib/components/modals/formModals/FormModalTrainingProgramDay.svelte';
+  import FormModalCalendarEvent from '$lib/components/modals/formModals/FormModalCalendarEvent.svelte';
+  import FormModalCustomQuery from '$lib/components/modals/formModals/FormModalCustomQuery.svelte';
+  import FormModalCustomQueryCondition from '$lib/components/modals/formModals/FormModalCustomQueryCondition.svelte';
+  import FormModalWidget from '$lib/components/modals/formModals/FormModalWidget.svelte';
+  import FormModalDataset from '$lib/components/modals/formModals/FormModalDataset.svelte';
+  import FormModalProject from '$lib/components/modals/formModals/FormModalProject.svelte';
+  import FormModalProjectSession from '$lib/components/modals/formModals/FormModalProjectSession.svelte';
+  import FormModalExercise from '$lib/components/modals/formModals/FormModalExercise.svelte';
+  import FormModalWidgetTemplate from '$lib/components/modals/formModals/FormModalWidgetTemplate.svelte';
   import ModalCalendarEvent from '$lib/components/modals/ModalCalendarEvent.svelte';
   import ModalJournalEntry from '$lib/components/modals/ModalJournalEntry.svelte';
+  import ModalShareTrainingProgram from '$lib/components/modals/ModalShareTrainingProgram.svelte';
   import { Drawer, drawerStore } from '@skeletonlabs/skeleton';
   import Icon from '@iconify/svelte';
-  import FormModalCustomQuery from '$lib/components/modals/FormModalCustomQuery.svelte';
-  import FormModalCustomQueryCondition from '$lib/components/modals/FormModalCustomQueryCondition.svelte';
-  import FormModalWidget from '$lib/components/modals/FormModalWidget.svelte';
-  import FormModalDataset from '$lib/components/modals/FormModalDataset.svelte';
-  import ModalShareTrainingProgram from '$lib/components/modals/ModalShareTrainingProgram.svelte';
-  import FormModalProject from '$lib/components/modals/FormModalProject.svelte';
-  import FormModalProjectSession from '$lib/components/modals/FormModalProjectSession.svelte';
-  import FormModalExercise from '$lib/components/modals/FormModalExercise.svelte';
-  import FormModalWidgetTemplate from '$lib/components/modals/FormModalWidgetTemplate.svelte';
-  import { children } from 'svelte/internal';
 
   storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
@@ -72,9 +70,6 @@
   };
   function drawerOpen(): void {
     drawerStore.open({});
-  }
-  function drawerClose(): void {
-    drawerStore.close();
   }
 
   let popupCombobox: PopupSettings = {

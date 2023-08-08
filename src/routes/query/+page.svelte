@@ -22,7 +22,9 @@
           meta: {
             action: `/query?/new`,
             title: 'New Query',
-            showOperator: false,
+            formProps: {
+              showOperator: false,
+            },
           },
         })}
     >

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { modalStore } from '@skeletonlabs/skeleton';
   import type { CalendarEvent } from '@prisma/client';
-  import { applyAction, enhance } from '$app/forms';
+  import { enhance } from '$app/forms';
   import { confirmDelete } from '$lib/utils';
   let calendarEvent = $modalStore[0]?.meta?.data as CalendarEvent;
 </script>

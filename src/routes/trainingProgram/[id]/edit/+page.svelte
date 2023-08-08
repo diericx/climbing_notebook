@@ -146,10 +146,12 @@
                   meta: {
                     action: `/trainingProgram/${trainingProgram.id}/group/${group.id}?/newExerciseEvent`,
                     title: 'Add Exercise',
-                    showDate: false,
-                    showDifficulty: false,
-                    showMigrationOption: false,
-                    exercises,
+                    formProps: {
+                      showDate: false,
+                      showDifficulty: false,
+                      showMigrationOption: false,
+                      exercises,
+                    },
                   },
                 })}
             >
@@ -256,10 +258,12 @@
                 meta: {
                   action: `/trainingProgram/${trainingProgram.id}/day/${day.id}?/newExerciseEvent`,
                   title: 'Add Exercise',
-                  showDate: false,
-                  showDifficulty: false,
-                  showMigrationOption: false,
-                  exercises,
+                  formProps: {
+                    showDate: false,
+                    showDifficulty: false,
+                    showMigrationOption: false,
+                    exercises,
+                  },
                 },
               })}
           >

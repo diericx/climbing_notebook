@@ -1,13 +1,13 @@
 <script lang="ts">
   import { modalStore } from '@skeletonlabs/skeleton';
   import type { ZodRawShape, z } from 'zod';
-  import Form from '../forms/Form.svelte';
-  import SubmitButton from '../forms/fields/SubmitButton.svelte';
+  import Form from '../../forms/Form.svelte';
+  import SubmitButton from '../../forms/fields/SubmitButton.svelte';
 
   export let schema: z.ZodObject<ZodRawShape>;
 
   let meta = $modalStore[0]?.meta || {};
-  const { title, description, data, action, debug } = meta;
+  const { title, description, action, data, debug, formProps } = meta;
 </script>
 
 <div style="max-height: 90vh" class="card w-modal">
@@ -27,7 +27,7 @@
       let:superForm
     >
       <section class="p-4 overflow-scroll">
-        <slot {superForm} />
+        <slot {superForm} {formProps} />
       </section>
       <footer class="card-footer float-right space-x-4">
         <button

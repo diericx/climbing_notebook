@@ -35,7 +35,9 @@
                 data: customQuery,
                 action: `/widget/${widget.id}/dataset/${customQuery.datasetId}/query/${customQuery.id}?/update`,
                 title: 'Edit Query',
-                exercises,
+                formProps: {
+                  exercises,
+                },
               },
             })}
         >
@@ -86,8 +88,10 @@
               meta: {
                 action: `/widget/${widget.id}/dataset/${customQuery.datasetId}/query/${customQuery.id}/condition?/new`,
                 title: 'Add Constraint',
-                widget: widget,
-                query: customQuery,
+                formProps: {
+                  widget: widget,
+                  query: customQuery,
+                },
               },
             })}
         >
@@ -127,11 +131,13 @@
                         type: 'component',
                         component: 'formModalCustomQueryCondition',
                         meta: {
-                          query: customQuery,
-                          data: condition,
-                          widget: widget,
                           action: `/widget/${widget.id}/dataset/${customQuery.datasetId}/query/${customQuery.id}/condition/${condition.id}?/update`,
                           title: 'Edit Constraint',
+                          data: condition,
+                          formProps: {
+                            query: customQuery,
+                            widget: widget,
+                          },
                         },
                       })}
                   >

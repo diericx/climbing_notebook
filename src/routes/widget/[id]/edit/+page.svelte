@@ -29,10 +29,12 @@
             action: `/widget/${widget.id}?/update`,
             title: 'Edit Widget',
             data: widget,
-            showType: false,
-            showDescription: widget.isTemplate,
-            showOrder: !widget.isTemplate,
-            trainingPrograms,
+            formProps: {
+              showType: false,
+              showDescription: widget.isTemplate,
+              showOrder: !widget.isTemplate,
+              trainingPrograms,
+            },
           },
         })}
     >
@@ -98,12 +100,14 @@
                 description:
                   'The fields you enable here will be available to the user in their dashboard. You can then use them in constraints below.',
                 data: widget,
-                showType: false,
-                showOrder: false,
-                showName: false,
-                showWidth: false,
-                showSimpleFields: true,
-                trainingPrograms,
+                formProps: {
+                  showType: false,
+                  showOrder: false,
+                  showName: false,
+                  showWidth: false,
+                  showSimpleFields: true,
+                  trainingPrograms,
+                },
               },
             })}
         >
@@ -160,9 +164,11 @@
             meta: {
               action: `/widget/${widget.id}/dataset?/new`,
               title: 'Add Dataset',
-              showType: widget.type != 'heatmapCalendar',
-              showColor: widget.type != 'heatmapCalendar',
-              showEquation: widget.type != 'heatmapCalendar',
+              formProps: {
+                showType: widget.type != 'heatmapCalendar',
+                showColor: widget.type != 'heatmapCalendar',
+                showEquation: widget.type != 'heatmapCalendar',
+              },
             },
           })}
       >

@@ -85,10 +85,9 @@
               meta: {
                 action: `/widget/${dataset.widgetId}/dataset/${dataset.id}/query?/new`,
                 title: 'Add Query',
-                showDate: false,
-                showDifficulty: false,
-                showMigrationOption: false,
-                exercises,
+                formProps: {
+                  exercises,
+                },
               },
             })}
         >

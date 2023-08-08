@@ -50,7 +50,9 @@
             meta: {
               action: `/widget?/new`,
               title: 'New Widget',
-              trainingPrograms: trainingPrograms,
+              formProps: {
+                trainingPrograms: trainingPrograms,
+              },
             },
           })}
       >

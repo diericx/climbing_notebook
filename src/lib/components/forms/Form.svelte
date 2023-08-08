@@ -5,7 +5,6 @@
   import type { z, ZodRawShape } from 'zod';
   import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
   import { v4 as uuidv4 } from 'uuid';
-  import { goto } from '$app/navigation';
 
   export let schema: z.ZodObject<ZodRawShape>;
   export let data: any = {};
@@ -36,7 +35,7 @@
       }
     },
   });
-  const { form, errors, enhance, message, submitting, delayed } = newSuperForm;
+  const { form, enhance, message } = newSuperForm;
 </script>
 
 {#if $message}
