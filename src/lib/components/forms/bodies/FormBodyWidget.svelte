@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TrainingProgram } from '@prisma/client';
+  import type { TrainingProgram, Widget } from '@prisma/client';
   import SelectField from '../fields/SelectField.svelte';
   import NumberField from '../fields/NumberField.svelte';
   import TextField from '../fields/TextField.svelte';
@@ -11,6 +11,7 @@
 
   // Form action to execute
   export let superForm: SuperForm<z.AnyZodObject, any>;
+  export let widget: Widget;
   export let showSubmitButton = true;
   export let showName = true;
   export let showType = true;
@@ -178,7 +179,7 @@
       class="w-20"
       name="minutes"
       field="minutes"
-      label={$form.isTemplate ? 'Default Minutes Value' : Minutes}
+      label={$form.isTemplate ? 'Default Minutes Value' : 'Minutes'}
       form={superForm}
     />
   {/if}
@@ -207,7 +208,7 @@
 
   {#if !$form.isTemplate}
     <div class="mt-4">
-      <a class="link" on:click={modalStore.close} href={`/widget/${$form.id}/edit`}
+      <a class="link" on:click={modalStore.close} href={`/widget/${widget.id}/edit`}
         >Go to advanced editor</a
       >
     </div>

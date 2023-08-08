@@ -33,6 +33,7 @@
             title: 'Edit Widget',
             data: widget,
             formProps: {
+              widget,
               showType: false,
               showSimpleFields: true,
               trainingPrograms,
