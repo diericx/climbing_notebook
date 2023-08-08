@@ -177,7 +177,7 @@ export const actions: Actions = {
     return { form };
   },
 
-  addToMyDashboard: async ({ locals, url, params, request }) => {
+  addToMyDashboard: async ({ locals, url, params }) => {
     const { user } = await locals.auth.validateUser();
     const id = params.id;
 
@@ -197,6 +197,6 @@ export const actions: Actions = {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
     }
 
-    return { form };
+    return {};
   },
 };

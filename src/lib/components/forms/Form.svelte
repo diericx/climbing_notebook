@@ -1,7 +1,6 @@
 <script lang="ts">
   import { page } from '$app/stores';
-  import { assignDefined } from '$lib/utils';
-  import { defaultData, superForm } from 'sveltekit-superforms/client';
+  import { superForm, superValidateSync } from 'sveltekit-superforms/client';
   import type { z, ZodRawShape } from 'zod';
   import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
   import { v4 as uuidv4 } from 'uuid';
@@ -19,8 +18,9 @@
     action += '&redirectTo=' + $page.url.searchParams.get('redirectTo');
   }
 
-  let formData: z.infer<typeof schema> = assignDefined(defaultData(schema), data || {});
-  const newSuperForm = superForm(formData, {
+  // As we are just initializing the form with the provided data, disable errors.
+  // Errors will come in after submit either from the server or from client.
+  const newSuperForm = superForm(superValidateSync(data, schema, { errors: false }), {
     resetForm,
     applyAction: true,
     invalidateAll: true,
@@ -35,7 +35,7 @@
       }
     },
   });
-  const { form, enhance, message } = newSuperForm;
+  const { form, enhance, message, errors } = newSuperForm;
 </script>
 
 {#if $message}

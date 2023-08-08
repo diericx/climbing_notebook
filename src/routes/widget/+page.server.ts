@@ -19,24 +19,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
   let widgets;
   try {
-    widgets = await widgetRepo.get(
-      {
-        AND: [
-          {
-            isTemplate: true,
-            OR: [
-              {
-                ownerId: user.userId,
-              },
-              {
-                isPublished: true,
-              },
-            ],
-          },
-        ],
-      },
-      { useCount: 'desc' }
-    );
+    widgets = await widgetRepo.get({ isTemplate: true }, { useCount: 'desc' });
     // compile datasets for widgets
     const customQueryResults: CustomQueryResults[] = [];
     for (const w of widgets) {
@@ -82,11 +65,6 @@ export const actions: Actions = {
 
     if (!form.valid) {
       return fail(400, { form });
-    }
-
-    // TODO: do this in zod validation after updating superforms
-    if (form.data.isTemplate && !form.data.description) {
-      return setError(form, 'description', 'Description is required');
     }
 
     const repo = new WidgetRepo(prisma);

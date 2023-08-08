@@ -250,18 +250,6 @@ export function getSecretFromFile(path: string): string | undefined {
   });
 }
 
-export function assignDefined(target, ...sources) {
-  for (const source of sources) {
-    for (const key of Object.keys(source)) {
-      const val = source[key];
-      if (val !== undefined && val != null) {
-        target[key] = val;
-      }
-    }
-  }
-  return target;
-}
-
 export function camelToTitle(source: string): string {
   const result = source.replace(/([A-Z])/g, ' $1');
   return result.charAt(0).toUpperCase() + result.slice(1);

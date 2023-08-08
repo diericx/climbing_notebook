@@ -5,7 +5,7 @@ import { matchMetricsInString, parseMetricStrings, toNum } from './utils';
 
 export const journalEntrySchema = z.object({
   date: z.date().default(new Date()),
-  content: z.string().min(1).default(''),
+  content: z.string().min(1, { message: 'Journal entry content is required' }),
   type: z.string().default('climbing'),
 });
 export type JournalEntrySchema = typeof journalEntrySchema;

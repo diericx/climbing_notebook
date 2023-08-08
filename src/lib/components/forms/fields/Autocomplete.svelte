@@ -42,10 +42,8 @@
     class="autocomplete w-full"
     type="search"
     bind:value={searchValue}
-    data-invalid={$errors}
     placeholder="Search..."
     use:popup={popupSettings}
-    {...$constraints}
     {...$$restProps}
   />
 </label>

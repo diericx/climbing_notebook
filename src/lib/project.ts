@@ -3,14 +3,32 @@ import { z } from 'zod';
 import { APIError } from './errors';
 import { fontGrades, gradeSystems, huecoGrades } from './utils';
 
-export const projectSchema = z.object({
-  name: z.string().min(1),
-  fontGrade: z.enum(fontGrades).nullish(),
-  huecoGrade: z.enum(huecoGrades).nullish(),
-  gradeSystem: z.enum(gradeSystems),
-  url: z.string().nullish(),
-  imageS3ObjectKey: z.string().nullish(),
-});
+export const projectSchema = z
+  .object({
+    name: z.string().min(1),
+    fontGrade: z.enum(fontGrades).nullish(),
+    huecoGrade: z.enum(huecoGrades).nullish(),
+    gradeSystem: z.enum(gradeSystems),
+    url: z.string().nullish(),
+    imageS3ObjectKey: z.string().nullish(),
+  })
+  .superRefine((val, ctx) => {
+    if (val.gradeSystem == 'hueco' && !val.huecoGrade) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Grade is required`,
+        path: ['huecoGrade'],
+      });
+    }
+    if (val.gradeSystem == 'font' && !val.fontGrade) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Grade is required`,
+        path: ['fontGrade'],
+      });
+    }
+  });
+
 export type ProjectSchema = typeof projectSchema;
 
 export const projectPartialSchema = z.object({
@@ -26,7 +44,7 @@ export type ProjectPartialSchema = typeof projectPartialSchema;
 export const projectSessionSchema = z.object({
   notes: z.string().nullish(),
   date: z.date(),
-  sent: z.boolean().default(false),
+  sent: z.boolean().default(false).optional(),
 });
 export type ProjectSessionSchema = typeof projectSessionSchema;
 

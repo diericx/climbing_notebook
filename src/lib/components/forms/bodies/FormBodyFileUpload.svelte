@@ -19,7 +19,7 @@
 <!-- Files are not handled by SuperForms so all errors are sent manually to 'file'-->
 {#if $errors.file}<span class="invalid">{$errors.file}</span>{/if}
 
-<FileDropzone name="file" bind:files>
+<FileDropzone name="file" field="file" bind:files>
   <svelte:fragment slot="lead">
     {#if !files || files.length == 0}
       <div class="flex justify-center">

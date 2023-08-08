@@ -6,7 +6,7 @@ import type { TrainingProgramComplete } from './prisma';
 
 export const trainingProgramSchema = z.object({
   name: z.string().min(1),
-  isPublic: z.boolean(),
+  isPublic: z.boolean().optional().default(false),
 });
 export type TrainingProgramSchema = typeof trainingProgramSchema;
 

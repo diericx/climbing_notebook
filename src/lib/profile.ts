@@ -5,7 +5,7 @@ import type { ProfileWithActiveTrainingProgram } from './prisma';
 
 export const profileSchema = z.object({
   goals: z.string().optional(),
-  activeTrainingProgramId: z.number().optional(),
+  activeTrainingProgramId: z.number().nullish().optional(),
 });
 export type ProfileSchema = typeof profileSchema;
 

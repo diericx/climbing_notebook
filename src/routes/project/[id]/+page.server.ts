@@ -67,13 +67,6 @@ export const actions: Actions = {
   },
 
   edit: async ({ locals, request, url, params }) => {
-    function sleep(ms) {
-      return new Promise((resolve) => {
-        setTimeout(resolve, ms);
-      });
-    }
-    await sleep(1000);
-
     const formData = await request.formData();
     const { user } = await locals.auth.validateUser();
     const id = params.id;
