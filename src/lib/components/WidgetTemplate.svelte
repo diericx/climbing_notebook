@@ -123,15 +123,6 @@
         </div>
       </li>
       <li>
-        <form method="POST" action={`/widget/${widget.id}?/delete`} use:enhance>
-          <input type="hidden" name="id" value={widget.id} />
-          <button class="btn btn-sm" on:click={confirmDelete}>
-            <Icon icon="mdi:trash-outline" height="18" />
-            <span> Delete </span>
-          </button>
-        </form>
-      </li>
-      <li>
         {#if widget.isPublished}
           <form method="POST" action={`/widget/${widget.id}?/hide`} use:enhance>
             <button class="btn btn-sm">
@@ -147,6 +138,15 @@
             </button>
           </form>
         {/if}
+      </li>
+      <li>
+        <form method="POST" action={`/widget/${widget.id}?/delete`} use:enhance>
+          <input type="hidden" name="id" value={widget.id} />
+          <button class="btn btn-sm" on:click={confirmDelete}>
+            <Icon icon="mdi:trash-outline" height="18" />
+            <span> Delete </span>
+          </button>
+        </form>
       </li>
     </ul>
   </nav>
