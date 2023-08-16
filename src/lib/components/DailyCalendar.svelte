@@ -1,9 +1,34 @@
 <script lang="ts">
-  import type { TrainingProgramWithDays } from '$lib/prisma';
   import CalExerciseEvent from '$lib/components/WeeklyCalendarExerciseEvent.svelte';
   import { getDayWeekStartsMonday } from '$lib/utils';
+  import { Prisma } from '@prisma/client';
 
-  export let trainingProgram: TrainingProgramWithDays;
+  // Define prisma types
+  const _trainingProgram = Prisma.validator<Prisma.TrainingProgramArgs>()({
+    include: {
+      days: {
+        include: {
+          exercises: {
+            include: {
+              exercise: true,
+            }
+          },
+          exerciseGroups: {
+            include: {
+              exercises: {
+                include: {
+                  exercise: true,
+                }
+              }
+            }
+          },
+        }
+      },
+    },
+  });
+  type TrainingProgram = Prisma.TrainingProgramGetPayload<typeof _trainingProgram>;
+
+  export let trainingProgram: TrainingProgram;
 
   const todayDayOfTheWeek = getDayWeekStartsMonday(new Date());
   let daysOfTheWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];

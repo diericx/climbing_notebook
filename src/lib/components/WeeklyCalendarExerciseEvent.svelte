@@ -3,11 +3,18 @@
   import { modalStore } from '@skeletonlabs/skeleton';
   import { popup } from '@skeletonlabs/skeleton';
   import type { PopupSettings } from '@skeletonlabs/skeleton';
-  import type { ExerciseEventComplete } from '$lib/prisma';
-  import type { Exercise } from '@prisma/client';
+  import { Prisma, type Exercise, type ExerciseEvent } from '@prisma/client';
 
-  export let exerciseEvent: ExerciseEventComplete;
-  export let exercises: Exercise[];
+  // Define prisma types
+  const _exerciseEvent = Prisma.validator<Prisma.ExerciseEventArgs>()({
+    include: {
+      exercise: true,
+    },
+  });
+  type ExerciseEvent = Prisma.ExerciseEventGetPayload<typeof _exerciseEvent>;
+
+  export let exerciseEvent: ExerciseEvent;
+  export let exercises: Exercise[] | undefined = undefined;
   export let date: Date;
   export let disableActionButtons = false;
   export let showMarkedCompleted = true;
@@ -27,7 +34,7 @@
         }) != undefined
       : false;
 
-  let formForIsMarkedCompleted: HTMLElement;
+  let formForIsMarkedCompleted: HTMLFormElement;
   let isLegacy = exerciseEvent.exerciseId == null;
 </script>
 

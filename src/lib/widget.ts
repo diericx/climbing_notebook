@@ -2,37 +2,43 @@ import type { PrismaClient, Prisma } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
 
-export const widgetSchema = z
-  .object({
-    name: z.string().min(1, { message: 'Name is required' }),
-    description: z.string().nullish(),
-    width: z.enum(['half', 'full']).default('half'),
-    order: z.number(),
-    type: z
-      .enum(['chart', 'calendar', 'heatmapCalendar', 'dailyExerciseCalendar'])
-      .default('chart'),
-    isTemplate: z.boolean(),
-    sets: z.number().nullish(),
-    reps: z.number().nullish(),
-    weight: z.number().nullish(),
-    seconds: z.number().nullish(),
-    minutes: z.number().nullish(),
-    trainingProgramId: z.number().nullish(),
-    parentId: z.string().nullish(),
-    isPublished: z.boolean().optional(),
-  })
-  .superRefine((val, ctx) => {
-    if (val.isTemplate) {
-      if (!val.description) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: `Description is required`,
-          path: ['description'],
-        });
-      }
+const widgetSchemaBase = z.object({
+  name: z.string().min(1, { message: 'Name is required' }),
+  description: z.string().nullish(),
+  width: z.enum(['half', 'full']).default('half'),
+  order: z.number(),
+  type: z.enum(['chart', 'calendar', 'heatmapCalendar', 'dailyExerciseCalendar']).default('chart'),
+  isTemplate: z.boolean(),
+  sets: z.number().nullish(),
+  reps: z.number().nullish(),
+  weight: z.number().nullish(),
+  seconds: z.number().nullish(),
+  minutes: z.number().nullish(),
+  trainingProgramId: z.number().nullish(),
+  parentId: z.string().nullish(),
+  isPublished: z.boolean().optional(),
+});
+export const widgetSchemaBasePartial = widgetSchemaBase.partial();
+
+function refinementFunc(
+  val: z.infer<typeof widgetSchemaBase> | z.infer<typeof widgetSchemaBasePartial>,
+  ctx: z.RefinementCtx
+) {
+  if (val.isTemplate) {
+    if (!val.description) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Description is required`,
+        path: ['description'],
+      });
     }
-  });
+  }
+}
+export const widgetSchema = widgetSchemaBase.superRefine(refinementFunc);
 export type WidgetSchema = typeof widgetSchema;
+
+export const widgetSchemaPartial = widgetSchemaBasePartial.superRefine(refinementFunc);
+export type WidgetSchemaPartial = typeof widgetSchemaPartial;
 
 export const widgetTemplateSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
@@ -46,6 +52,63 @@ export const datasetSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
 });
 export type DatasetSchema = typeof datasetSchema;
+
+export const widgetInclude = {
+  owner: true,
+  datasets: {
+    include: {
+      customQueries: {
+        include: {
+          conditions: true,
+        },
+      },
+    },
+    orderBy: {
+      name: 'asc',
+    },
+  },
+  trainingProgram: {
+    include: {
+      exerciseGroups: {
+        include: {
+          exercises: {
+            orderBy: {
+              name: 'asc',
+            },
+          },
+        },
+        orderBy: {
+          name: 'asc',
+        },
+      },
+      days: {
+        include: {
+          exercises: {
+            orderBy: {
+              name: 'asc',
+            },
+          },
+          exerciseGroups: {
+            orderBy: {
+              name: 'asc',
+            },
+            include: {
+              exercises: {
+                orderBy: {
+                  name: 'asc',
+                },
+              },
+            },
+          },
+        },
+        orderBy: {
+          // Note: ui depends on this being sorted in this way
+          dayOfTheWeek: 'asc',
+        },
+      },
+    },
+  },
+} satisfies Prisma.WidgetInclude;
 
 export class WidgetRepo {
   constructor(private readonly prisma: PrismaClient) { }
@@ -101,68 +164,25 @@ export class WidgetRepo {
     });
   }
 
-  async get(where: Prisma.WidgetWhereInput, orderBy?: Prisma.WidgetOrderByWithRelationInput) {
-    return await this.prisma.widget.findMany({
+  async get<S extends Prisma.WidgetInclude>({
+    where,
+    include,
+    orderBy,
+  }: {
+    where: Prisma.WidgetWhereInput;
+    include: Prisma.Subset<S, Prisma.WidgetInclude>;
+    orderBy?: Prisma.WidgetOrderByWithRelationInput;
+  }) {
+    return await this.prisma.widget.findMany<{
+      include: S;
+      where: Prisma.WidgetWhereInput;
+      orderBy: Prisma.WidgetOrderByWithRelationInput;
+    }>({
       where,
       orderBy: orderBy || {
         order: 'asc',
       },
-      include: {
-        owner: true,
-        datasets: {
-          include: {
-            customQueries: {
-              include: {
-                conditions: true,
-              },
-            },
-          },
-          orderBy: {
-            name: 'asc',
-          },
-        },
-        trainingProgram: {
-          include: {
-            exerciseGroups: {
-              include: {
-                exercises: {
-                  orderBy: {
-                    name: 'asc',
-                  },
-                },
-              },
-              orderBy: {
-                name: 'asc',
-              },
-            },
-            days: {
-              include: {
-                exercises: {
-                  orderBy: {
-                    name: 'asc',
-                  },
-                },
-                exerciseGroups: {
-                  orderBy: {
-                    name: 'asc',
-                  },
-                  include: {
-                    exercises: {
-                      orderBy: {
-                        name: 'asc',
-                      },
-                    },
-                  },
-                },
-              },
-              orderBy: {
-                // Note: ui depends on this being sorted in this way
-                dayOfTheWeek: 'asc',
-              },
-            },
-          },
-        },
-      },
+      include,
     });
   }
 
@@ -171,23 +191,7 @@ export class WidgetRepo {
       where: {
         id,
       },
-      include: {
-        owner: true,
-        datasets: {
-          include: {
-            customQueries: {
-              include: {
-                conditions: true,
-                exercise: true,
-              },
-            },
-          },
-          orderBy: {
-            name: 'asc',
-          },
-        },
-        trainingProgram: true,
-      },
+      include: widgetInclude,
     });
     if (widget == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
@@ -205,7 +209,7 @@ export class WidgetRepo {
     return widget;
   }
 
-  async update(data: z.infer<WidgetPartialSchema>, id: string, ownerId: string) {
+  async update(data: z.infer<WidgetSchemaPartial>, id: string, ownerId: string) {
     await this.getOneAndValidateOwner(id, ownerId);
 
     return await this.prisma.widget.update({
