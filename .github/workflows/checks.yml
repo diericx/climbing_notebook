@@ -23,7 +23,7 @@ jobs:
           node-version: 18
           cache: 'npm'
       - run: npm install --save-dev prettier-plugin-svelte
-      - name: Prettify code
+      - name: Prettify check
         uses: creyD/prettier_action@v4.3
         with:
           # This part is also where you can pass other options, for example:
