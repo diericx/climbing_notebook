@@ -40,7 +40,28 @@ export const load: PageServerLoad = async ({ locals }) => {
       where: { ownerId: user?.userId, isTemplate: false },
       include: {
         owner: true,
-        trainingProgram: true,
+        trainingProgram: {
+          include: {
+            days: {
+              include: {
+                exercises: {
+                  include: {
+                    exercise: true,
+                  },
+                },
+                exerciseGroups: {
+                  include: {
+                    exercises: {
+                      include: {
+                        exercise: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
         datasets: {
           include: {
             customQueries: {

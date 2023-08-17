@@ -1,13 +1,12 @@
 <script lang="ts">
   import Icon from '@iconify/svelte';
-  import { Prisma } from '@prisma/client';
+  import type { Prisma } from '@prisma/client';
 
-  const _exerciseGroup = Prisma.validator<Prisma.ExerciseGroupArgs>()({
+  type ExerciseGroup = Prisma.ExerciseGroupGetPayload<{
     include: {
-      exercises: true,
-    }
-  })
-  type ExerciseGroup = Prisma.ExerciseGroupGetPayload<typeof _exerciseGroup>;
+      exercises: true;
+    };
+  }>;
 
   export let exerciseGroups: ExerciseGroup[];
 </script>

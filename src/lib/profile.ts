@@ -28,11 +28,7 @@ export class ProfileRepo {
                     name: 'desc',
                   },
                   include: {
-                    exercise: {
-                      select: {
-                        name: true,
-                      },
-                    },
+                    exercise: true,
                   },
                 },
                 exerciseGroups: {

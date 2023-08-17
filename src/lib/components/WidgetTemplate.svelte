@@ -9,16 +9,24 @@
   import Chart from './Chart.svelte';
   import HeatmapCalendar from './HeatmapCalendar.svelte';
   import { Avatar, popup } from '@skeletonlabs/skeleton';
-  import { Prisma } from '@prisma/client';
+  import type { Prisma } from '@prisma/client';
 
-  const _widget = Prisma.validator<Prisma.WidgetArgs>()({
+  type Widget = Prisma.WidgetGetPayload<{
     include: {
-      owner: true
-    }
-  })
-  type Widget = Prisma.WidgetGetPayload<typeof _widget>;
+      owner: true;
+      datasets: {
+        include: {
+          customQueries: {
+            include: {
+              conditions: true;
+            };
+          };
+        };
+      };
+    };
+  }>;
 
-  export let widget: WidgetComplete;
+  export let widget: Widget;
   export let customQueryResults: CustomQueryResults[];
   export let user: any;
 </script>

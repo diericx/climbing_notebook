@@ -3,15 +3,14 @@
   import { modalStore } from '@skeletonlabs/skeleton';
   import { popup } from '@skeletonlabs/skeleton';
   import type { PopupSettings } from '@skeletonlabs/skeleton';
-  import { Prisma, type Exercise, type ExerciseEvent } from '@prisma/client';
+  import type { Prisma, Exercise } from '@prisma/client';
 
-  // Define prisma types
-  const _exerciseEvent = Prisma.validator<Prisma.ExerciseEventArgs>()({
+  // Generate partial prisma types
+  type ExerciseEvent = Prisma.ExerciseEventGetPayload<{
     include: {
-      exercise: true,
-    },
-  });
-  type ExerciseEvent = Prisma.ExerciseEventGetPayload<typeof _exerciseEvent>;
+      exercise: true;
+    };
+  }>;
 
   export let exerciseEvent: ExerciseEvent;
   export let exercises: Exercise[] | undefined = undefined;

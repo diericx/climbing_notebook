@@ -3,58 +3,53 @@
   import type { CustomQueryResults } from '$lib/customQuery';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
-  import {
-    Prisma,
-    type CalendarEvent,
-    type JournalEntry,
-    type TrainingProgram,
-  } from '@prisma/client';
+  import type { Prisma, CalendarEvent, JournalEntry, TrainingProgram } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
   import Calendar from './Calendar.svelte';
   import Chart from './Chart.svelte';
   import DailyCalendar from './DailyCalendar.svelte';
   import HeatmapCalendar from './HeatmapCalendar.svelte';
+  import CustomQuery from './CustomQuery.svelte';
 
-  // Define prisma types
-  const _widget = Prisma.validator<Prisma.WidgetArgs>()({
+  // Generate partial prisma types
+  type Widget = Prisma.WidgetGetPayload<{
     include: {
-      owner: true,
+      owner: true;
       datasets: {
         include: {
           customQueries: {
             include: {
-              conditions: true,
-            },
-          },
-        },
-      },
+              conditions: true;
+            };
+          };
+        };
+      };
       trainingProgram: {
         include: {
           days: {
             include: {
               exercises: {
                 include: {
-                  exercise: true,
-                }
-              },
+                  exercise: true;
+                };
+              };
               exerciseGroups: {
                 include: {
                   exercises: {
                     include: {
-                      exercise: true,
-                    }
-                  }
-                }
-              },
-            }
-          },
-        }
-      },
-    },
-  });
-  type Widget = Prisma.WidgetGetPayload<typeof _widget>;
+                      exercise: true;
+                    };
+                  };
+                };
+              };
+            };
+          };
+        };
+      };
+    };
+  }>;
 
-  const _profile = Prisma.validator<Prisma.ProfileArgs>()({
+  type Profile = Prisma.ProfileGetPayload<{
     include: {
       activeTrainingProgram: {
         include: {
@@ -62,25 +57,24 @@
             include: {
               exercises: {
                 include: {
-                  exercise: true,
-                }
-              },
+                  exercise: true;
+                };
+              };
               exerciseGroups: {
                 include: {
                   exercises: {
                     include: {
-                      exercise: true,
-                    }
-                  }
-                }
-              },
-            }
-          },
-        }
-      },
-    },
-  });
-  type Profile = Prisma.ProfileGetPayload<typeof _profile>;
+                      exercise: true;
+                    };
+                  };
+                };
+              };
+            };
+          };
+        };
+      };
+    };
+  }>;
 
   export let widget: Widget;
   export let customQueryResults: CustomQueryResults[];
