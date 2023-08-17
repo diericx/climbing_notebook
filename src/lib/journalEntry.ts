@@ -77,18 +77,19 @@ export class JournalEntryRepo {
   }
 
   async getOne(id: number) {
-    return await this.prisma.journalEntry.findUnique({
+    const journalEntry = await this.prisma.journalEntry.findUnique({
       where: {
         id,
       },
     });
+    if (journalEntry == null) {
+      throw new APIError('NOT_FOUND', 'Resource not found');
+    }
+    return journalEntry;
   }
 
   async getOneAndValidateOwner(id: number, ownerId: string) {
     const journalEntry = await this.getOne(id);
-    if (journalEntry == null) {
-      throw new APIError('NOT_FOUND', 'Resource not found');
-    }
     if (journalEntry.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
     }

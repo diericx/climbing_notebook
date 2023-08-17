@@ -52,7 +52,7 @@ export class ProjectRepo {
   constructor(private readonly prisma: PrismaClient) {}
 
   async getOne(id: string) {
-    return await this.prisma.project.findUnique({
+    const project = await this.prisma.project.findUnique({
       where: {
         id: id,
       },
@@ -64,13 +64,14 @@ export class ProjectRepo {
         },
       },
     });
+    if (project == null) {
+      throw new APIError('NOT_FOUND', 'Resource not found');
+    }
+    return project;
   }
 
   async getOneAndValidateOwner(id: string, ownerId: string) {
     const project = await this.getOne(id);
-    if (project == null) {
-      throw new APIError('NOT_FOUND', 'Resource not found');
-    }
     if (project.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
     }

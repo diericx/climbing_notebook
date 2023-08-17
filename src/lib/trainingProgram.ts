@@ -87,9 +87,6 @@ export class TrainingProgramRepo {
 
   async getOneAndValidateOwner(id: number, ownerId: string) {
     const trainingProgram = await this.getOne(id);
-    if (trainingProgram == null) {
-      throw new APIError('NOT_FOUND', 'Resource not found');
-    }
     if (trainingProgram.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this object.');
     }
