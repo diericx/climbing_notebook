@@ -12,6 +12,82 @@ export type TrainingProgramSchema = typeof trainingProgramSchema;
 export class TrainingProgramRepo {
   constructor(private readonly prisma: PrismaClient) {}
 
+  async getOne(id: number, ownerId: string) {
+    const trainingProgram = await this.prisma.trainingProgram.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        owner: true,
+        exerciseGroups: {
+          include: {
+            exercises: {
+              include: {
+                exercise: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+              orderBy: {
+                name: 'asc',
+              },
+            },
+          },
+          orderBy: {
+            name: 'asc',
+          },
+        },
+        days: {
+          include: {
+            exercises: {
+              include: {
+                exercise: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+              orderBy: {
+                name: 'asc',
+              },
+            },
+            exerciseGroups: {
+              orderBy: {
+                name: 'asc',
+              },
+              include: {
+                exercises: {
+                  include: {
+                    exercise: {
+                      select: {
+                        name: true,
+                      },
+                    },
+                  },
+                  orderBy: {
+                    name: 'asc',
+                  },
+                },
+              },
+            },
+          },
+          orderBy: {
+            // Note: ui depends on this being sorted in this way
+            dayOfTheWeek: 'asc',
+          },
+        },
+      },
+    });
+    if (trainingProgram == null) {
+      throw new APIError('NOT_FOUND', 'Resource not found');
+    }
+    if (trainingProgram.ownerId != ownerId && !trainingProgram.isPublic) {
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this object.');
+    }
+    return trainingProgram;
+  }
+
   async getOneAndValidateOwner(id: number, ownerId: string) {
     const trainingProgram = await this.prisma.trainingProgram.findUnique({
       where: {
@@ -252,82 +328,6 @@ export class TrainingProgramRepo {
         },
       },
     });
-  }
-
-  async getOne(id: number, ownerId: string) {
-    const trainingProgram = await this.prisma.trainingProgram.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        owner: true,
-        exerciseGroups: {
-          include: {
-            exercises: {
-              include: {
-                exercise: {
-                  select: {
-                    name: true,
-                  },
-                },
-              },
-              orderBy: {
-                name: 'asc',
-              },
-            },
-          },
-          orderBy: {
-            name: 'asc',
-          },
-        },
-        days: {
-          include: {
-            exercises: {
-              include: {
-                exercise: {
-                  select: {
-                    name: true,
-                  },
-                },
-              },
-              orderBy: {
-                name: 'asc',
-              },
-            },
-            exerciseGroups: {
-              orderBy: {
-                name: 'asc',
-              },
-              include: {
-                exercises: {
-                  include: {
-                    exercise: {
-                      select: {
-                        name: true,
-                      },
-                    },
-                  },
-                  orderBy: {
-                    name: 'asc',
-                  },
-                },
-              },
-            },
-          },
-          orderBy: {
-            // Note: ui depends on this being sorted in this way
-            dayOfTheWeek: 'asc',
-          },
-        },
-      },
-    });
-    if (trainingProgram == null) {
-      throw new APIError('NOT_FOUND', 'Resource not found');
-    }
-    if (trainingProgram.ownerId != ownerId && !trainingProgram.isPublic) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this object.');
-    }
-    return trainingProgram;
   }
 
   async update(data: z.infer<TrainingProgramSchema>, id: number, ownerId: string) {
