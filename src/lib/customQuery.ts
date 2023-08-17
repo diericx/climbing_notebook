@@ -27,7 +27,7 @@ export type CustomQueryResults = {
 };
 
 export class CustomQueryRepo {
-  constructor(private readonly prisma: PrismaClient) { }
+  constructor(private readonly prisma: PrismaClient) {}
   async new(data: z.infer<CustomQuerySchema>, datasetId: string, ownerId: string) {
     return (await this.prisma.customQuery.create({
       data: {
@@ -35,10 +35,10 @@ export class CustomQueryRepo {
         exerciseId: undefined,
         exercise: data.exerciseId
           ? {
-            connect: {
-              id: data.exerciseId,
-            },
-          }
+              connect: {
+                id: data.exerciseId,
+              },
+            }
           : undefined,
         dataset: {
           connect: {
