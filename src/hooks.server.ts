@@ -10,8 +10,8 @@ if (!dev) {
 
 export const handle: Handle = async ({ event, resolve }) => {
   event.locals.auth = auth.handleRequest(event);
+  const session = await event.locals.auth.validate();
 
-  const { user } = await event.locals.auth.validate();
   if (
     event.url.pathname.startsWith('/chart') ||
     event.url.pathname.startsWith('/exerciseEvent') ||
@@ -24,7 +24,7 @@ export const handle: Handle = async ({ event, resolve }) => {
     event.url.pathname.startsWith('/widget')
     // trainingProgram is handled at the path level
   ) {
-    if (!user) {
+    if (session === null) {
       return new Response(null, {
         status: 302,
         headers: {

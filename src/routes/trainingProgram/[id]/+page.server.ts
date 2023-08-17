@@ -9,14 +9,15 @@ import { superValidate } from 'sveltekit-superforms/server';
 import { exerciseGroupSchema } from '$lib/exerciseGroup';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-  const { user } = await locals.auth.validate();
+  const session = await locals.auth.validate();
+  const user = session?.user;
 
   try {
     const trainingProgramRepo = new TrainingProgramRepo(prisma);
     const trainingProgram = await trainingProgramRepo.getOne(Number(params.id));
     // If no user is signed in and the training program is not public, error out
     if (!trainingProgram.isPublic && !user) {
-      throw error(403, 'Unauthorized');
+      throw new APIError('INVALID_PERMISSIONS', 'Unauthorized to view this training program');
     }
     return { trainingProgram, user };
   } catch (e) {
