@@ -9,6 +9,14 @@
   import Chart from './Chart.svelte';
   import HeatmapCalendar from './HeatmapCalendar.svelte';
   import { Avatar, popup } from '@skeletonlabs/skeleton';
+  import { Prisma } from '@prisma/client';
+
+  const _widget = Prisma.validator<Prisma.WidgetArgs>()({
+    include: {
+      owner: true
+    }
+  })
+  type Widget = Prisma.WidgetGetPayload<typeof _widget>;
 
   export let widget: WidgetComplete;
   export let customQueryResults: CustomQueryResults[];
