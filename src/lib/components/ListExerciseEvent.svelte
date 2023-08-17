@@ -3,14 +3,13 @@
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import { modalStore } from '@skeletonlabs/skeleton';
-  import { Prisma, type Exercise, type ExerciseEvent } from '@prisma/client';
+  import type { Prisma, Exercise } from '@prisma/client';
 
-  const _exerciseEvent = Prisma.validator<Prisma.ExerciseEventArgs>()({
+  type ExerciseEvent = Prisma.ExerciseEventGetPayload<{
     include: {
-      exercise: true
-    }
-  })
-  type ExerciseEvent = Prisma.ExerciseEventGetPayload<typeof _exerciseEvent>;
+      exercise: true;
+    };
+  }>;
 
   export let exerciseEvents: ExerciseEvent[];
   export let exercises: Exercise[];

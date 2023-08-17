@@ -1,8 +1,7 @@
-import type { PrismaClient, TrainingProgram } from '@prisma/client';
+import type { Prisma, PrismaClient, TrainingProgram } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
 import type { ExerciseGroupSchema } from './exerciseGroup';
-import type { TrainingProgramComplete } from './prisma';
 
 export const trainingProgramSchema = z.object({
   name: z.string().min(1),
@@ -516,7 +515,22 @@ export class TrainingProgramRepo {
   }
 }
 
-export function doesTrainingProgramHaveLegacyExercises(p: TrainingProgramComplete) {
+export function doesTrainingProgramHaveLegacyExercises(
+  p: Prisma.TrainingProgramGetPayload<{
+    include: {
+      days: {
+        include: {
+          exercises: true;
+          exerciseGroups: {
+            include: {
+              exercises: true;
+            };
+          };
+        };
+      };
+    };
+  }>
+) {
   for (const d of p.days) {
     if (
       d.exercises.find((e) => e.exerciseId == null) ||

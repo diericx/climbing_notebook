@@ -3,17 +3,20 @@
   import CalHeatmap from 'cal-heatmap';
   import Legend from 'cal-heatmap/plugins/Legend';
   import Tooltip from 'cal-heatmap/plugins/Tooltip';
-
   import 'cal-heatmap/cal-heatmap.css';
-
-  import type { ExerciseEvent, Metric } from '@prisma/client';
+  import type { ExerciseEvent, Metric, Prisma } from '@prisma/client';
   import type { CustomQueryResults } from '$lib/customQuery';
   import { onMount } from 'svelte';
-  import type { DatasetComplete } from '$lib/prisma';
   import type { DataGroupType, DataRecord } from 'cal-heatmap/src/options/Options';
 
+  type Dataset = Prisma.DatasetGetPayload<{
+    include: {
+      customQueries: true;
+    };
+  }>;
+
   export let customQueryResults: CustomQueryResults[];
-  export let datasets: DatasetComplete[];
+  export let datasets: Dataset[];
 
   let domain: String[] = [...datasets.map((d) => d.name), 'combo'];
   let chartData: DataRecord[];

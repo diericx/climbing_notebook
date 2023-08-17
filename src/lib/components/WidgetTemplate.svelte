@@ -3,7 +3,6 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
   import type { CustomQueryResults } from '$lib/customQuery';
-  import type { WidgetComplete } from '$lib/prisma';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import Chart from './Chart.svelte';

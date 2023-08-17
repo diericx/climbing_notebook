@@ -16,10 +16,9 @@
     PointElement,
   } from 'chart.js';
   import { evaluate } from 'mathjs';
-  import type { ExerciseEvent, Metric } from '@prisma/client';
+  import type { ExerciseEvent, Metric, Prisma } from '@prisma/client';
   import type { CustomQueryResults } from '$lib/customQuery';
   import { onMount } from 'svelte';
-  import type { DatasetComplete } from '$lib/prisma';
   ChartJS.register(
     Colors,
     TimeScale,
@@ -38,6 +37,7 @@
     x: string;
     y: number;
   };
+
   type ChartDataset = {
     label: string;
     data: ChartDataPoint[];
@@ -47,12 +47,19 @@
     backgroundColor: string;
   };
 
+  type Dataset = Prisma.DatasetGetPayload<{
+    include: {
+      customQueries: true;
+    };
+  }>;
+
   export let customQueryResults: CustomQueryResults[];
-  export let datasets: DatasetComplete[];
+  export let datasets: Dataset[];
 
   let equationErrorMessage: string | undefined = undefined;
 
   // Reactively update chart data
+  let chartDatasets: ChartDataset[];
   $: chartDatasets = [];
   $: chartData = { datasets: chartDatasets };
   $: {
@@ -98,7 +105,7 @@
                   seconds: e.seconds,
                 });
                 addDataPoint({ x: e.date.toISOString().split('T')[0], y: score });
-              } catch (e) {
+              } catch (e: any) {
                 equationErrorMessage = e.toString();
               }
             }
@@ -112,7 +119,7 @@
                   value: m.value,
                 });
                 addDataPoint({ x: m.date.toISOString().split('T')[0], y: score });
-              } catch (e) {
+              } catch (e: any) {
                 equationErrorMessage = e.toString();
               }
             }

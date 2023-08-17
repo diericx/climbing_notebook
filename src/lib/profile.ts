@@ -1,7 +1,6 @@
 import type { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
-import type { ProfileWithActiveTrainingProgram } from './prisma';
 
 export const profileSchema = z.object({
   goals: z.string().optional(),
@@ -73,13 +72,13 @@ export class ProfileRepo {
   async update(data: z.infer<ProfileSchema>, ownerId: string) {
     await this.getOneAndValidateOwner(ownerId);
 
-    return (await this.prisma.profile.update({
+    return await this.prisma.profile.update({
       data: {
         ...data,
       },
       where: {
         ownerId,
       },
-    })) as ProfileWithActiveTrainingProgram;
+    });
   }
 }

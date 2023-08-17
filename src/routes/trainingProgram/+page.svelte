@@ -1,6 +1,5 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
-  import type { TrainingProgramWithDays } from '$lib/prisma';
   import { doesTrainingProgramHaveLegacyExercises } from '$lib/trainingProgram';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
@@ -10,7 +9,7 @@
   export let data: PageData;
 
   $: profile = data.profile;
-  $: trainingPrograms = data.trainingPrograms as TrainingProgramWithDays[];
+  $: trainingPrograms = data.trainingPrograms;
 </script>
 
 <div>
