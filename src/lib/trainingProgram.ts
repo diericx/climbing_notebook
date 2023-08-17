@@ -12,7 +12,7 @@ export type TrainingProgramSchema = typeof trainingProgramSchema;
 export class TrainingProgramRepo {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async getOne(id: number, ownerId: string) {
+  async getOne(id: number) {
     const trainingProgram = await this.prisma.trainingProgram.findUnique({
       where: {
         id,
@@ -82,57 +82,11 @@ export class TrainingProgramRepo {
     if (trainingProgram == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
-    if (trainingProgram.ownerId != ownerId && !trainingProgram.isPublic) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this object.');
-    }
     return trainingProgram;
   }
 
   async getOneAndValidateOwner(id: number, ownerId: string) {
-    const trainingProgram = await this.prisma.trainingProgram.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        exerciseGroups: {
-          include: {
-            exercises: {
-              orderBy: {
-                name: 'asc',
-              },
-            },
-          },
-          orderBy: {
-            name: 'asc',
-          },
-        },
-        days: {
-          include: {
-            exercises: {
-              orderBy: {
-                name: 'asc',
-              },
-            },
-            exerciseGroups: {
-              orderBy: {
-                name: 'asc',
-              },
-              include: {
-                exercises: {
-                  orderBy: {
-                    name: 'asc',
-                  },
-                },
-              },
-            },
-          },
-          orderBy: {
-            // Note: ui depends on this being sorted in this way
-            dayOfTheWeek: 'asc',
-          },
-        },
-      },
-    });
+    const trainingProgram = await this.getOne(id);
     if (trainingProgram == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
@@ -143,7 +97,7 @@ export class TrainingProgramRepo {
   }
 
   async duplicate(id: number, ownerId: string) {
-    const program = await this.getOne(id, ownerId);
+    const program = await this.getOne(id);
 
     // Create the new program
     const newProgram = await this.prisma.trainingProgram.create({

@@ -17,7 +17,10 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   try {
     const trainingProgramRepo = new TrainingProgramRepo(prisma);
     const exerciseRepo = new ExerciseRepo(prisma);
-    const trainingProgram = await trainingProgramRepo.getOne(Number(id), user?.userId);
+    const trainingProgram = await trainingProgramRepo.getOneAndValidateOwner(
+      Number(id),
+      user?.userId
+    );
     const exercises = await exerciseRepo.get({
       _count: {
         select: {

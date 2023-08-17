@@ -13,7 +13,8 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 
   try {
     const trainingProgramRepo = new TrainingProgramRepo(prisma);
-    const trainingProgram = await trainingProgramRepo.getOne(Number(params.id), user?.userId);
+    const trainingProgram = await trainingProgramRepo.getOne(Number(params.id));
+    // If no user is signed in and the training program is not public, error out
     if (!trainingProgram.isPublic && !user) {
       throw error(403, 'Unauthorized');
     }
