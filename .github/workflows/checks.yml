@@ -27,6 +27,7 @@ jobs:
         uses: creyD/prettier_action@v4.3
         with:
           # This part is also where you can pass other options, for example:
-          prettier_options: --check .
+          dry: true
+          prettier_options: --check
           only_changed: True
           prettier_plugins: 'prettier-plugin-svelte'
