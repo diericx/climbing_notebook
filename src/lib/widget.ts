@@ -111,7 +111,7 @@ export const widgetInclude = {
 } satisfies Prisma.WidgetInclude;
 
 export class WidgetRepo {
-  constructor(private readonly prisma: PrismaClient) { }
+  constructor(private readonly prisma: PrismaClient) {}
   async new(data: z.infer<WidgetSchema>, ownerId: string) {
     return await this.prisma.widget.create({
       data: {
@@ -337,10 +337,10 @@ export class WidgetRepo {
                   exerciseId: undefined,
                   exercise: customQuery.exerciseId
                     ? {
-                      connect: {
-                        id: customQuery.exerciseId,
-                      },
-                    }
+                        connect: {
+                          id: customQuery.exerciseId,
+                        },
+                      }
                     : undefined,
                   conditions: {
                     create: customQuery.conditions.map((condition) => ({
