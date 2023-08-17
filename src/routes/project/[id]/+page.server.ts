@@ -14,7 +14,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
   const { user } = await locals.auth.validateUser();
   const repo = new ProjectRepo(prisma);
   try {
-    const project = await repo.getOne(params.id, user?.userId);
+    const project = await repo.getOneAndValidateOwner(params.id, user?.userId);
     // NOTE: we should create some sort of helper function for fetching batches of s3 object urls
     // once it is used more often that returns an object of this signature.
     const s3ObjectUrls: { [key: string]: string } = {};
@@ -110,7 +110,7 @@ export const actions: Actions = {
 
     const repo = new ProjectRepo(prisma);
     try {
-      const project = await repo.getOne(id, user?.userId);
+      const project = await repo.getOneAndValidateOwner(id, user?.userId);
 
       const file = formData.get('file');
       if (file instanceof File) {

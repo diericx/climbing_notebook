@@ -11,8 +11,7 @@ export type ProfileSchema = typeof profileSchema;
 export class ProfileRepo {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async getOneAndValidateOwner(ownerId: string) {
-    // Fetch
+  async getOne(ownerId: string) {
     const profile = await this.prisma.profile.findUnique({
       where: {
         ownerId: ownerId,
@@ -59,14 +58,15 @@ export class ProfileRepo {
     if (profile == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
+    return profile;
+  }
+
+  async getOneAndValidateOwner(ownerId: string) {
+    const profile = await this.getOne(ownerId);
     if (profile.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
     }
     return profile;
-  }
-
-  async getOne(ownerId: string) {
-    return this.getOneAndValidateOwner(ownerId);
   }
 
   async update(data: z.infer<ProfileSchema>, ownerId: string) {

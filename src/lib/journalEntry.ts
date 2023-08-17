@@ -76,7 +76,7 @@ export class JournalEntryRepo {
     })) as JournalEntry[];
   }
 
-  async getOne(id: number, ownerId: string) {
+  async getOne(id: number) {
     const journalEntry = await this.prisma.journalEntry.findUnique({
       where: {
         id,
@@ -85,6 +85,11 @@ export class JournalEntryRepo {
     if (journalEntry == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
+    return journalEntry;
+  }
+
+  async getOneAndValidateOwner(id: number, ownerId: string) {
+    const journalEntry = await this.getOne(id);
     if (journalEntry.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
     }

@@ -16,7 +16,7 @@ export type CalendarEventPartialSchema = typeof calendarEventPartialSchema;
 export class CalendarEventRepo {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async getOneAndValidateOwner(id: number, ownerId: string) {
+  async getOne(id: number) {
     const e = await this.prisma.calendarEvent.findUnique({
       where: {
         id: Number(id),
@@ -25,10 +25,15 @@ export class CalendarEventRepo {
     if (e == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
-    if (e.ownerId != ownerId) {
+    return e;
+  }
+
+  async getOneAndValidateOwner(id: number, ownerId: string) {
+    const calendarEvent = await this.getOne(id);
+    if (calendarEvent.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
     }
-    return e;
+    return calendarEvent;
   }
 
   async new(data: z.infer<CalendarEventSchema>, ownerId: string) {
@@ -51,10 +56,6 @@ export class CalendarEventRepo {
         dateStart: 'desc',
       },
     });
-  }
-
-  async getOne(id: number, ownerId: string) {
-    return this.getOneAndValidateOwner(id, ownerId);
   }
 
   async update(data: z.infer<CalendarEventPartialSchema>, id: number, ownerId: string) {

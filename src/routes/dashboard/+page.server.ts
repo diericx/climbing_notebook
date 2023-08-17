@@ -36,25 +36,22 @@ export const load: PageServerLoad = async ({ locals }) => {
     const journalEntries = await journalEntryRepo.get(user?.userId);
     const calendarEvents = await calendarEventRepo.get(user?.userId);
 
-    const widgets = await widgetRepo.get({
-      where: { ownerId: user?.userId, isTemplate: false },
-      include: {
-        owner: true,
-        trainingProgram: {
-          include: {
-            days: {
-              include: {
-                exercises: {
-                  include: {
-                    exercise: true,
-                  },
+    const widgets = await widgetRepo.getAllDashboardWidgetsForUser(user.userId, {
+      owner: true,
+      trainingProgram: {
+        include: {
+          days: {
+            include: {
+              exercises: {
+                include: {
+                  exercise: true,
                 },
-                exerciseGroups: {
-                  include: {
-                    exercises: {
-                      include: {
-                        exercise: true,
-                      },
+              },
+              exerciseGroups: {
+                include: {
+                  exercises: {
+                    include: {
+                      exercise: true,
                     },
                   },
                 },
@@ -62,17 +59,17 @@ export const load: PageServerLoad = async ({ locals }) => {
             },
           },
         },
-        datasets: {
-          include: {
-            customQueries: {
-              include: {
-                conditions: true,
-              },
+      },
+      datasets: {
+        include: {
+          customQueries: {
+            include: {
+              conditions: true,
             },
           },
-          orderBy: {
-            name: 'asc',
-          },
+        },
+        orderBy: {
+          name: 'asc',
         },
       },
     });

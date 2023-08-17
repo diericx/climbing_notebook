@@ -164,28 +164,6 @@ export class WidgetRepo {
     });
   }
 
-  async get<S extends Prisma.WidgetInclude>({
-    where,
-    include,
-    orderBy,
-  }: {
-    where: Prisma.WidgetWhereInput;
-    include: Prisma.Subset<S, Prisma.WidgetInclude>;
-    orderBy?: Prisma.WidgetOrderByWithRelationInput;
-  }) {
-    return await this.prisma.widget.findMany<{
-      include: S;
-      where: Prisma.WidgetWhereInput;
-      orderBy: Prisma.WidgetOrderByWithRelationInput;
-    }>({
-      where,
-      orderBy: orderBy || {
-        order: 'asc',
-      },
-      include,
-    });
-  }
-
   async getOne(id: string) {
     const widget = await this.prisma.widget.findUnique({
       where: {
@@ -207,6 +185,47 @@ export class WidgetRepo {
     }
 
     return widget;
+  }
+
+  async getAllPublishedOrOwnedTemplates<S extends Prisma.WidgetInclude>(
+    ownerId: string,
+    include: Prisma.Subset<S, Prisma.WidgetInclude>
+  ) {
+    return await this.prisma.widget.findMany({
+      where: {
+        // Show published widgets, or just user's widgets
+        OR: [
+          {
+            isTemplate: true,
+            ownerId: ownerId,
+          },
+          {
+            isTemplate: true,
+            isPublished: true,
+          },
+        ],
+      },
+      orderBy: {
+        useCount: 'desc',
+      },
+      include: include || {},
+    });
+  }
+
+  async getAllDashboardWidgetsForUser<S extends Prisma.WidgetInclude>(
+    ownerId: string,
+    include: Prisma.Subset<S, Prisma.WidgetInclude>
+  ) {
+    return await this.prisma.widget.findMany({
+      where: {
+        isTemplate: false,
+        ownerId: ownerId,
+      },
+      orderBy: {
+        useCount: 'desc',
+      },
+      include,
+    });
   }
 
   async update(data: z.infer<WidgetSchemaPartial>, id: string, ownerId: string) {
