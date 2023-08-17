@@ -9,7 +9,7 @@ import { superValidate } from 'sveltekit-superforms/server';
 export const actions: Actions = {
   edit: async ({ locals, params, request, url }) => {
     const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const id = Number(params.id);
     const form = await superValidate(formData, calendarEventSchema, {
       id: formData.get('_formId')?.toString(),
@@ -38,7 +38,7 @@ export const actions: Actions = {
   },
 
   delete: async ({ locals, url, params }) => {
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const id = Number(params.id);
 
     const repo = new CalendarEventRepo(prisma);

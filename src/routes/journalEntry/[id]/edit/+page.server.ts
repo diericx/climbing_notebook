@@ -7,7 +7,7 @@ import { prisma } from '$lib/prisma';
 import { APIError } from '$lib/errors';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-  const { user } = await locals.auth.validateUser();
+  const { user } = await locals.auth.validate();
   const id = Number(params.id);
 
   const repo = new JournalEntryRepo(prisma);

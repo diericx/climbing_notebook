@@ -9,7 +9,7 @@ import { superValidate } from 'sveltekit-superforms/server';
 export const actions: Actions = {
   new: async ({ request, url, locals }) => {
     const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const form = await superValidate(formData, calendarEventSchema, {
       id: formData.get('_formId')?.toString(),
     });

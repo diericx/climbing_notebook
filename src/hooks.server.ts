@@ -11,7 +11,7 @@ if (!dev) {
 export const handle: Handle = async ({ event, resolve }) => {
   event.locals.auth = auth.handleRequest(event);
 
-  const { user } = await event.locals.auth.validateUser();
+  const { user } = await event.locals.auth.validate();
   if (
     event.url.pathname.startsWith('/chart') ||
     event.url.pathname.startsWith('/exerciseEvent') ||

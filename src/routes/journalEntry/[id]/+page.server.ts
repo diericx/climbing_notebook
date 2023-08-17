@@ -8,7 +8,7 @@ import { superValidate } from 'sveltekit-superforms/server';
 
 export const actions: Actions = {
   edit: async ({ request, locals, params, url }) => {
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const form = await superValidate(request, journalEntrySchema);
     const id = Number(params.id);
 
@@ -35,7 +35,7 @@ export const actions: Actions = {
   },
 
   delete: async ({ locals, params, url }) => {
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const id = Number(params.id);
 
     const repo = new JournalEntryRepo(prisma);

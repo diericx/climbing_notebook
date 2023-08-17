@@ -10,7 +10,7 @@ import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
 export const actions: Actions = {
   edit: async ({ locals, request, url, params }) => {
     const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const trainingProgramId = Number(params.id);
     const exerciseGroupId = Number(params.groupId);
     const form = await superValidate(formData, exerciseGroupSchema, {
@@ -40,7 +40,7 @@ export const actions: Actions = {
   },
 
   delete: async ({ locals, url, params }) => {
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const trainingProgramId = Number(params.id);
     const exerciseGroupId = Number(params.groupId);
 
@@ -64,7 +64,7 @@ export const actions: Actions = {
 
   newExerciseEvent: async ({ locals, request, url, params }) => {
     const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const form = await superValidate(formData, exerciseEventSchema, {
       id: formData.get('_formId')?.toString(),
     });

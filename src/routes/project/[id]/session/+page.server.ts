@@ -9,7 +9,7 @@ import { APIError } from '$lib/errors';
 export const actions: Actions = {
   new: async ({ locals, request, url, params }) => {
     const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const id = params.id;
     const form = await superValidate(formData, projectSessionSchema, {
       id: formData.get('_formId')?.toString(),

@@ -9,7 +9,7 @@ import { TrainingProgramRepo, trainingProgramSchema } from '$lib/trainingProgram
 import { superValidate } from 'sveltekit-superforms/server';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
-  const { user } = await locals.auth.validateUser();
+  const { user } = await locals.auth.validate();
   if (!user) {
     throw redirect(302, '/login?redirectTo=' + url.toString());
   }
@@ -35,7 +35,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
 export const actions: Actions = {
   new: async ({ locals, request, url }) => {
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const form = await superValidate(request, trainingProgramSchema);
 
     if (!form.valid) {

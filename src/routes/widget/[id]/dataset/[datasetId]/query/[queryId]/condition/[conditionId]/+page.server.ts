@@ -9,7 +9,7 @@ import { customQueryConditionSchema, CustomQueryRepo } from '$lib/customQuery';
 export const actions: Actions = {
   update: async ({ request, locals, params, url }) => {
     const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const form = await superValidate(formData, customQueryConditionSchema, {
       id: formData.get('_formId')?.toString(),
     });
@@ -41,7 +41,7 @@ export const actions: Actions = {
   },
 
   delete: async ({ params, locals, url }) => {
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const queryId = params.queryId;
     const conditionId = params.conditionId;
 

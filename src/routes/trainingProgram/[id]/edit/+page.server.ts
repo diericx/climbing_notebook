@@ -7,7 +7,7 @@ import { APIError } from '$lib/errors';
 import { ExerciseRepo } from '$lib/exercise';
 
 export const load: PageServerLoad = async ({ locals, params, url }) => {
-  const { user } = await locals.auth.validateUser();
+  const { user } = await locals.auth.validate();
   if (!user) {
     throw redirect(302, '/login?redirectTo=' + url.toString());
   }

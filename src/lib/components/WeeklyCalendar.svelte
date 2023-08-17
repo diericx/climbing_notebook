@@ -2,7 +2,7 @@
   import CalExerciseEvent from '$lib/components/WeeklyCalendarExerciseEvent.svelte';
   import { daysFromToday, getDayWeekStartsMonday } from '$lib/utils';
   import { onMount } from 'svelte';
-  import type { User } from 'lucia-auth';
+  import type { User } from 'lucia';
   import type { Exercise, Prisma } from '@prisma/client';
 
   type TrainingProgram = Prisma.TrainingProgramGetPayload<{

@@ -9,7 +9,7 @@ import type { PageServerLoad } from './$types';
 import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
-  const { user } = await locals.auth.validateUser();
+  const { user } = await locals.auth.validate();
   if (!user) {
     throw redirect(302, '/login?redirectTo=' + url.toString());
   }
@@ -68,7 +68,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 export const actions: Actions = {
   new: async ({ locals, request }) => {
     const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const form = await superValidate(formData, widgetSchema, {
       id: formData.get('_formId')?.toString(),
     });

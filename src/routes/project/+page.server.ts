@@ -6,7 +6,7 @@ import { ProjectRepo, projectSchema } from '$lib/project';
 import { superValidate } from 'sveltekit-superforms/server';
 
 export const load: PageServerLoad = async ({ locals }) => {
-  const { user } = await locals.auth.validateUser();
+  const { user } = await locals.auth.validate();
   const repo = new ProjectRepo(prisma);
   let projects;
   try {
@@ -23,7 +23,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 export const actions: Actions = {
   new: async ({ request, url, locals }) => {
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const formData = await request.formData();
     const form = await superValidate(formData, projectSchema, {
       id: formData.get('_formId')?.toString(),

@@ -10,7 +10,7 @@ export const actions: Actions = {
   new: async ({ locals, request, url, params }) => {
     const formData = await request.formData();
     const id = params.id;
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
 
     const form = await superValidate(formData, datasetSchema, {
       id: formData.get('_formId')?.toString(),

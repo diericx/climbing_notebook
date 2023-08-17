@@ -12,7 +12,7 @@ import { TrainingProgramRepo } from '$lib/trainingProgram';
 import { MetricRepo } from '$lib/metric';
 
 export const load: PageServerLoad = async ({ locals }) => {
-  const { user } = await locals.auth.validateUser();
+  const { user } = await locals.auth.validate();
 
   const profileRepo = new ProfileRepo(prisma);
   const exerciseEventRepo = new ExerciseEventRepo(prisma);
@@ -45,7 +45,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
   edit: async ({ locals, request, url }) => {
     const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const form = await superValidate(formData, profileSchema, {
       id: formData.get('_formId')?.toString(),
     });

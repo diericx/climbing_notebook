@@ -8,7 +8,7 @@ import { APIError } from '$lib/errors';
 
 export const actions: Actions = {
   delete: async ({ locals, url, params }) => {
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const projectId = params.id;
     const sessionId = params.sessionId;
 
@@ -32,7 +32,7 @@ export const actions: Actions = {
 
   edit: async ({ locals, request, url, params }) => {
     const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const projectId = params.id;
     const sessionId = params.sessionId;
     const form = await superValidate(formData, projectSessionSchema, {

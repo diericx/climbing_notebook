@@ -8,7 +8,7 @@ import { setError, superValidate } from 'sveltekit-superforms/server';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
-  const { user } = await locals.auth.validateUser();
+  const { user } = await locals.auth.validate();
   const exerciseRepo = new ExerciseRepo(prisma);
   try {
     const exercises = await exerciseRepo.get();
@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
   new: async ({ locals, request, url }) => {
     const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const form = await superValidate(formData, exerciseSchema, {
       id: formData.get('_formId')?.toString(),
     });

@@ -8,7 +8,7 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-  const { user } = await locals.auth.validateUser();
+  const { user } = await locals.auth.validate();
   const widgetRepo = new WidgetRepo(prisma);
   const customQueryRepo = new CustomQueryRepo(prisma);
   const exerciseRepo = new ExerciseRepo(prisma);

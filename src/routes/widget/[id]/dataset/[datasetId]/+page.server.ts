@@ -9,7 +9,7 @@ import type { Actions } from './$types';
 
 export const actions: Actions = {
   delete: async ({ locals, url, params }) => {
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const widgetId = params.id;
     const datasetId = params.datasetId;
 
@@ -33,7 +33,7 @@ export const actions: Actions = {
 
   update: async ({ locals, request, url, params }) => {
     const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const form = await superValidate(formData, datasetSchema, {
       id: formData.get('_formId')?.toString(),
     });

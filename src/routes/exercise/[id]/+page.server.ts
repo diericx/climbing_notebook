@@ -9,7 +9,7 @@ import type { Actions } from './$types';
 export const actions: Actions = {
   edit: async ({ locals, request, url, params }) => {
     const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const form = await superValidate(formData, exerciseSchema, {
       id: formData.get('_formId')?.toString(),
     });

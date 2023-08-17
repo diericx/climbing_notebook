@@ -10,7 +10,7 @@ import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-  const { user } = await locals.auth.validateUser();
+  const { user } = await locals.auth.validate();
   const widgetRepo = new WidgetRepo(prisma);
   const customQueryRepo = new CustomQueryRepo(prisma);
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
@@ -62,7 +62,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 export const actions: Actions = {
   update: async ({ locals, request, url, params }) => {
     const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const form = await superValidate(formData, widgetSchema, {
       id: formData.get('_formId')?.toString(),
     });
@@ -91,7 +91,7 @@ export const actions: Actions = {
   },
 
   publish: async ({ locals, url, params }) => {
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const id = params.id;
 
     const repo = new WidgetRepo(prisma);
@@ -108,7 +108,7 @@ export const actions: Actions = {
   },
 
   hide: async ({ locals, url, params }) => {
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const id = params.id;
 
     const repo = new WidgetRepo(prisma);
@@ -126,7 +126,7 @@ export const actions: Actions = {
 
   delete: async ({ locals, url, params }) => {
     const id = params.id;
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
 
     const repo = new WidgetRepo(prisma);
     try {
@@ -149,7 +149,7 @@ export const actions: Actions = {
   // Create a new template from this widget
   newTemplate: async ({ locals, url, params, request }) => {
     const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const form = await superValidate(formData, widgetTemplateSchema, {
       id: formData.get('_formId')?.toString(),
     });
@@ -178,7 +178,7 @@ export const actions: Actions = {
   },
 
   addToMyDashboard: async ({ locals, url, params }) => {
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const id = params.id;
 
     const repo = new WidgetRepo(prisma);

@@ -8,7 +8,7 @@ import { superValidate } from 'sveltekit-superforms/server';
 
 export const actions: Actions = {
   delete: async ({ locals, params, request, url }) => {
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const rawFormData = Object.fromEntries((await request.formData()).entries());
     const id = Number(params.id) || Number(rawFormData.id);
 
@@ -32,7 +32,7 @@ export const actions: Actions = {
 
   edit: async ({ locals, params, request, url }) => {
     const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const id = Number(params.id);
     const form = await superValidate(formData, exerciseEventSchema, {
       id: formData.get('_formId')?.toString(),
@@ -63,7 +63,7 @@ export const actions: Actions = {
 
   setCompleted: async ({ locals, params, request }) => {
     const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const id = Number(params.id);
     const dateInput = formData.get('date')?.toString();
 

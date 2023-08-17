@@ -14,7 +14,7 @@ import { TrainingProgramRepo } from '$lib/trainingProgram';
 
 export const load: PageServerLoad = async ({ locals }) => {
   // Unprotected page, session may not exist
-  const { user } = await locals.auth.validateUser();
+  const { user } = await locals.auth.validate();
 
   const profileRepo = new ProfileRepo(prisma);
   const exerciseEventRepo = new ExerciseEventRepo(prisma);

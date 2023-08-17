@@ -11,7 +11,7 @@ import type { ExerciseEvent, Metric } from '@prisma/client';
 export const actions: Actions = {
   new: async ({ request, locals, params, url }) => {
     const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const form = await superValidate(formData, customQueryConditionSchema, {
       id: formData.get('_formId')?.toString(),
     });

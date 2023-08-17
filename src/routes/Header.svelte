@@ -1,5 +1,6 @@
 <script lang="ts">
-  import type { GlobalUserAttributes } from 'lucia-auth';
+  import type { User } from 'lucia';
+
   let showMenu = false;
 
   function toggleNavbar() {
@@ -10,7 +11,7 @@
     showMenu = false;
   }
 
-  export let user: GlobalUserAttributes | undefined;
+  export let user: User;
 </script>
 
 <header>

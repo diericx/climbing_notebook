@@ -7,7 +7,7 @@ import { ProfileRepo } from '$lib/profile';
 import { APIError } from '$lib/errors';
 
 export const load: PageServerLoad = async ({ locals }) => {
-  const { user } = await locals.auth.validateUser();
+  const { user } = await locals.auth.validate();
 
   const repo = new ProfileRepo(prisma);
   try {

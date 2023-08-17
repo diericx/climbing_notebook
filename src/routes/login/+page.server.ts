@@ -3,7 +3,7 @@ import { error, fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { loginSchema, signupSchema } from '$lib/user';
 import { auth } from '$lib/server/lucia';
-import { LuciaError } from 'lucia-auth';
+import { LuciaError } from 'lucia';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
 import { superValidate } from 'sveltekit-superforms/server';
@@ -28,7 +28,7 @@ export const actions: Actions = {
 
     try {
       const key = await auth.useKey('username', form.data.username, form.data.password);
-      const session = await auth.createSession(key.userId);
+      const session = await auth.createSession({ userId: key.userId, attributes: {} });
       locals.auth.setSession(session);
     } catch (e) {
       // Catch KNOWN duplicate username/provider id errors from both Lucia and the
@@ -69,7 +69,7 @@ export const actions: Actions = {
 
     try {
       const user = await auth.createUser({
-        primaryKey: {
+        key: {
           providerId: 'username',
           providerUserId: form.data.username,
           password: form.data.password,
@@ -87,7 +87,10 @@ export const actions: Actions = {
         },
       });
 
-      const session = await auth.createSession(user.userId);
+      const session = await auth.createSession({
+        userId: user.userId,
+        attributes: {},
+      });
       locals.auth.setSession(session);
     } catch (e) {
       // Catch KNOWN duplicate username/provider id errors from both Lucia and the

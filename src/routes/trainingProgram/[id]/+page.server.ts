@@ -9,7 +9,7 @@ import { superValidate } from 'sveltekit-superforms/server';
 import { exerciseGroupSchema } from '$lib/exerciseGroup';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
-  const { user } = await locals.auth.validateUser();
+  const { user } = await locals.auth.validate();
 
   try {
     const trainingProgramRepo = new TrainingProgramRepo(prisma);
@@ -30,7 +30,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 
 export const actions: Actions = {
   delete: async ({ locals, params, url }) => {
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const id = Number(params.id);
 
     const repo = new TrainingProgramRepo(prisma);
@@ -53,7 +53,7 @@ export const actions: Actions = {
   },
 
   duplicate: async ({ locals, url, params }) => {
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     if (!user) {
       throw redirect(302, '/login?redirectTo=' + url.toString());
     }
@@ -79,7 +79,7 @@ export const actions: Actions = {
 
   edit: async ({ locals, request, url, params }) => {
     const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const id = Number(params.id);
     const form = await superValidate(formData, trainingProgramSchema, {
       id: formData.get('_formId')?.toString(),
@@ -109,7 +109,7 @@ export const actions: Actions = {
 
   addExerciseGroup: async ({ locals, request, url, params }) => {
     const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const id = Number(params.id);
     const form = await superValidate(formData, exerciseGroupSchema, {
       id: formData.get('_formId')?.toString(),
@@ -139,7 +139,7 @@ export const actions: Actions = {
 
   deleteExerciseGroup: async ({ locals, request, url, params }) => {
     const rawFormData = Object.fromEntries((await request.formData()).entries());
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const id = Number(params.id);
     const exerciseGroupId = Number(rawFormData.exerciseGroupId);
 

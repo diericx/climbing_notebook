@@ -8,7 +8,7 @@ import { APIError } from '$lib/errors';
 import { superValidate } from 'sveltekit-superforms/server';
 
 export const load: PageServerLoad = async ({ locals }) => {
-  const { user } = await locals.auth.validateUser();
+  const { user } = await locals.auth.validate();
   const repo = new JournalEntryRepo(prisma);
   let journalEntries;
   try {
@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 export const actions: Actions = {
   new: async ({ request, url, locals }) => {
-    const { user } = await locals.auth.validateUser();
+    const { user } = await locals.auth.validate();
     const formData = await request.formData();
     const form = await superValidate(formData, journalEntrySchema, {
       id: formData.get('_formId')?.toString(),
