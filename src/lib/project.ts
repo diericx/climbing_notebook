@@ -51,8 +51,8 @@ export type ProjectSessionSchema = typeof projectSessionSchema;
 export class ProjectRepo {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async getOneAndValidateOwner(id: string, ownerId: string) {
-    const project = await this.prisma.project.findUnique({
+  async getOne(id: string) {
+    return await this.prisma.project.findUnique({
       where: {
         id: id,
       },
@@ -64,6 +64,10 @@ export class ProjectRepo {
         },
       },
     });
+  }
+
+  async getOneAndValidateOwner(id: string, ownerId: string) {
+    const project = await this.getOne(id);
     if (project == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
@@ -100,10 +104,6 @@ export class ProjectRepo {
         },
       },
     });
-  }
-
-  async getOne(id: string, ownerId: string) {
-    return this.getOneAndValidateOwner(id, ownerId);
   }
 
   async update(data: z.infer<ProjectPartialSchema>, id: string, ownerId: string) {
