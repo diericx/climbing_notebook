@@ -15,13 +15,7 @@
     <h1>New Journal Entry</h1>
     <hr />
 
-    <Form
-      debug={true}
-      resetForm={true}
-      schema={journalEntrySchema}
-      action="/journalEntry?/new"
-      let:superForm
-    >
+    <Form resetForm={true} schema={journalEntrySchema} action="/journalEntry?/new" let:superForm>
       <FormBodyJournalEntry {superForm} />
     </Form>
   </div>
