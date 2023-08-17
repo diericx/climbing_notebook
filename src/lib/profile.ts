@@ -12,7 +12,7 @@ export class ProfileRepo {
   constructor(private readonly prisma: PrismaClient) {}
 
   async getOne(ownerId: string) {
-    return await this.prisma.profile.findUnique({
+    const profile = await this.prisma.profile.findUnique({
       where: {
         ownerId: ownerId,
       },
@@ -55,13 +55,14 @@ export class ProfileRepo {
         },
       },
     });
+    if (profile == null) {
+      throw new APIError('NOT_FOUND', 'Resource not found');
+    }
+    return profile;
   }
 
   async getOneAndValidateOwner(ownerId: string) {
     const profile = await this.getOne(ownerId);
-    if (profile == null) {
-      throw new APIError('NOT_FOUND', 'Resource not found');
-    }
     if (profile.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
     }
