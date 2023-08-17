@@ -17,36 +17,17 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const widgetRepo = new WidgetRepo(prisma);
   const customQueryRepo = new CustomQueryRepo(prisma);
 
-  let widgets;
   try {
-    widgets = await widgetRepo.get({
-      where: {
-        // Show published widgets, or just user's widgets
-        OR: [
-          {
-            isTemplate: true,
-            ownerId: user.userId,
-          },
-          {
-            isTemplate: true,
-            isPublished: true,
-          },
-        ],
-      },
-      include: {
-        owner: true,
-        datasets: {
-          include: {
-            customQueries: {
-              include: {
-                conditions: true,
-              },
+    const widgets = await widgetRepo.getAllPublishedOrOwnedTemplates(user.userId, {
+      owner: true,
+      datasets: {
+        include: {
+          customQueries: {
+            include: {
+              conditions: true,
             },
           },
         },
-      },
-      orderBy: {
-        useCount: 'desc',
       },
     });
     // compile datasets for widgets
