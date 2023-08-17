@@ -1,8 +1,14 @@
 <script lang="ts">
-  import type { ExerciseGroupComplete } from '$lib/prisma';
   import Icon from '@iconify/svelte';
+  import type { Prisma } from '@prisma/client';
 
-  export let exerciseGroups: ExerciseGroupComplete[];
+  type ExerciseGroup = Prisma.ExerciseGroupGetPayload<{
+    include: {
+      exercises: true;
+    };
+  }>;
+
+  export let exerciseGroups: ExerciseGroup[];
 </script>
 
 <ul class="divide-y divide-gray-200 border-t border-b">

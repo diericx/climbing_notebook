@@ -1,13 +1,19 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
-  import type { CustomQueryComplete } from '$lib/prisma';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
-  import type { Exercise, Widget } from '@prisma/client';
+  import type { Exercise, Prisma, Widget } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
 
+  type CustomQuery = Prisma.CustomQueryGetPayload<{
+    include: {
+      exercise: true;
+      conditions: true;
+    };
+  }>;
+
   export let widget: Widget;
-  export let customQuery: CustomQueryComplete;
+  export let customQuery: CustomQuery;
   export let exercises: Exercise[];
 
   let className: string = '';

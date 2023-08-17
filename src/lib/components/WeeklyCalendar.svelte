@@ -1,12 +1,26 @@
 <script lang="ts">
-  import type { TrainingProgramWithDays } from '$lib/prisma';
   import CalExerciseEvent from '$lib/components/WeeklyCalendarExerciseEvent.svelte';
   import { daysFromToday, getDayWeekStartsMonday } from '$lib/utils';
   import { onMount } from 'svelte';
   import type { User } from 'lucia-auth';
-  import type { Exercise } from '@prisma/client';
+  import type { Exercise, Prisma } from '@prisma/client';
 
-  export let trainingProgram: TrainingProgramWithDays;
+  type TrainingProgram = Prisma.TrainingProgramGetPayload<{
+    include: {
+      days: {
+        include: {
+          exercises: true;
+          exerciseGroups: {
+            include: {
+              exercises: true;
+            };
+          };
+        };
+      };
+    };
+  }>;
+
+  export let trainingProgram: TrainingProgram;
   export let shouldScrollIntoView = false;
   export let disableActionButtons = false;
   export let showMarkedCompleted = true;

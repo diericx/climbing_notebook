@@ -11,13 +11,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2 # Check out the repository first.
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          # Make sure the actual branch is checked out when running on pull requests
+          ref: ${{ github.head_ref }}
+          # This is important to fetch the changes to the previous commit
+          fetch-depth: 0
       - uses: actions/setup-node@v3
         with:
           node-version: 18
           cache: 'npm'
-      - run: npm install prettier-plugin-svelte
-      - uses: actionsx/prettier@v2
+      - run: npm install --save-dev prettier-plugin-svelte
+      - name: Prettify check
+        uses: creyD/prettier_action@v4.3
         with:
-          # prettier CLI arguments.
-          args: --plugin=prettier-plugin-svelte  --check .
+          # This part is also where you can pass other options, for example:
+          dry: true
+          prettier_options: --check
+          only_changed: True
+          prettier_plugins: 'prettier-plugin-svelte'

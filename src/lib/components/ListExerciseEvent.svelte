@@ -3,10 +3,15 @@
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import { modalStore } from '@skeletonlabs/skeleton';
-  import type { ExerciseEventComplete } from '$lib/prisma';
-  import type { Exercise } from '@prisma/client';
+  import type { Prisma, Exercise } from '@prisma/client';
 
-  export let exerciseEvents: ExerciseEventComplete[];
+  type ExerciseEvent = Prisma.ExerciseEventGetPayload<{
+    include: {
+      exercise: true;
+    };
+  }>;
+
+  export let exerciseEvents: ExerciseEvent[];
   export let exercises: Exercise[];
   export let showDate = true;
   export let showDifficulty = true;

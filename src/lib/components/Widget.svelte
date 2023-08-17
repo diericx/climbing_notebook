@@ -1,21 +1,86 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
   import type { CustomQueryResults } from '$lib/customQuery';
-  import type { ProfileWithActiveTrainingProgram, WidgetComplete } from '$lib/prisma';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
-  import type { CalendarEvent, JournalEntry, TrainingProgram } from '@prisma/client';
+  import type { Prisma, CalendarEvent, JournalEntry, TrainingProgram } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
   import Calendar from './Calendar.svelte';
   import Chart from './Chart.svelte';
   import DailyCalendar from './DailyCalendar.svelte';
   import HeatmapCalendar from './HeatmapCalendar.svelte';
+  import CustomQuery from './CustomQuery.svelte';
 
-  export let widget: WidgetComplete;
+  // Generate partial prisma types
+  type Widget = Prisma.WidgetGetPayload<{
+    include: {
+      owner: true;
+      datasets: {
+        include: {
+          customQueries: {
+            include: {
+              conditions: true;
+            };
+          };
+        };
+      };
+      trainingProgram: {
+        include: {
+          days: {
+            include: {
+              exercises: {
+                include: {
+                  exercise: true;
+                };
+              };
+              exerciseGroups: {
+                include: {
+                  exercises: {
+                    include: {
+                      exercise: true;
+                    };
+                  };
+                };
+              };
+            };
+          };
+        };
+      };
+    };
+  }>;
+
+  type Profile = Prisma.ProfileGetPayload<{
+    include: {
+      activeTrainingProgram: {
+        include: {
+          days: {
+            include: {
+              exercises: {
+                include: {
+                  exercise: true;
+                };
+              };
+              exerciseGroups: {
+                include: {
+                  exercises: {
+                    include: {
+                      exercise: true;
+                    };
+                  };
+                };
+              };
+            };
+          };
+        };
+      };
+    };
+  }>;
+
+  export let widget: Widget;
   export let customQueryResults: CustomQueryResults[];
   export let calendarEvents: CalendarEvent[];
   export let journalEntries: JournalEntry[];
-  export let profile: ProfileWithActiveTrainingProgram;
+  export let profile: Profile;
   export let trainingPrograms: TrainingProgram[];
 </script>
 
@@ -90,7 +155,7 @@
       <HeatmapCalendar datasets={widget.datasets} {customQueryResults} />
     </div>
   {:else if widget.type == 'dailyExerciseCalendar'}
-    {#if widget.trainingProgram == null}
+    {#if widget.trainingProgram === null}
       {#if profile.activeTrainingProgram == null}
         <p class="text-gray-400 italic">
           This widget is set to use an active training program but no active training program was

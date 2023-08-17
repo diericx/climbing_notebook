@@ -3,14 +3,29 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
   import type { CustomQueryResults } from '$lib/customQuery';
-  import type { WidgetComplete } from '$lib/prisma';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import Chart from './Chart.svelte';
   import HeatmapCalendar from './HeatmapCalendar.svelte';
   import { Avatar, popup } from '@skeletonlabs/skeleton';
+  import type { Prisma } from '@prisma/client';
 
-  export let widget: WidgetComplete;
+  type Widget = Prisma.WidgetGetPayload<{
+    include: {
+      owner: true;
+      datasets: {
+        include: {
+          customQueries: {
+            include: {
+              conditions: true;
+            };
+          };
+        };
+      };
+    };
+  }>;
+
+  export let widget: Widget;
   export let customQueryResults: CustomQueryResults[];
   export let user: any;
 </script>
