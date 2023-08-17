@@ -76,12 +76,16 @@ export class JournalEntryRepo {
     })) as JournalEntry[];
   }
 
-  async getOne(id: number, ownerId: string) {
-    const journalEntry = await this.prisma.journalEntry.findUnique({
+  async getOne(id: number) {
+    return await this.prisma.journalEntry.findUnique({
       where: {
         id,
       },
     });
+  }
+
+  async getOneAndValidateOwner(id: number, ownerId: string) {
+    const journalEntry = await this.getOne(id);
     if (journalEntry == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
