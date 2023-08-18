@@ -11,10 +11,10 @@ import { CalendarEventRepo } from '$lib/calendarEvent';
 import { WidgetRepo } from '$lib/widget';
 import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
 import { TrainingProgramRepo } from '$lib/trainingProgram';
+import { getSessionOrRedirect } from '$lib/utils';
 
-export const load: PageServerLoad = async ({ locals }) => {
-  // Unprotected page, session may not exist
-  const { user } = await locals.auth.validate();
+export const load: PageServerLoad = async ({ locals, url }) => {
+  const { user } = await getSessionOrRedirect({ locals, url });
 
   const profileRepo = new ProfileRepo(prisma);
   const exerciseEventRepo = new ExerciseEventRepo(prisma);
