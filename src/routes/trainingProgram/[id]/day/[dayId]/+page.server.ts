@@ -6,11 +6,12 @@ import { APIError } from '$lib/errors';
 import { superValidate } from 'sveltekit-superforms/server';
 import { trainingProgramDaySchema } from '$lib/trainingProgramDay';
 import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
+import { getSessionOrRedirect } from '$lib/utils';
 
 export const actions: Actions = {
   connectExerciseGroup: async ({ locals, request, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
     const rawFormData = Object.fromEntries((await request.formData()).entries());
-    const { user } = await locals.auth.validate();
     const trainingProgramId = Number(params.id);
     const trainingProgramDayId = Number(params.dayId);
     const exerciseGroupId = Number(rawFormData.exerciseGroupId);
@@ -42,8 +43,8 @@ export const actions: Actions = {
   },
 
   disconnectExerciseGroup: async ({ locals, request, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
     const rawFormData = Object.fromEntries((await request.formData()).entries());
-    const { user } = await locals.auth.validate();
     const trainingProgramId = Number(params.id);
     const trainingProgramDayId = Number(params.dayId);
     const exerciseGroupId = Number(rawFormData.exerciseGroupId);
@@ -75,11 +76,11 @@ export const actions: Actions = {
   },
 
   edit: async ({ locals, request, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
     const formData = await request.formData();
     const form = await superValidate(formData, trainingProgramDaySchema, {
       id: formData.get('_formId')?.toString(),
     });
-    const { user } = await locals.auth.validate();
     const trainingProgramId = Number(params.id);
     const trainingProgramDayId = Number(params.dayId);
 
@@ -111,8 +112,8 @@ export const actions: Actions = {
   },
 
   newExerciseEvent: async ({ locals, request, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
     const formData = await request.formData();
-    const { user } = await locals.auth.validate();
     const dayId = params.dayId;
     const form = await superValidate(formData, exerciseEventSchema, {
       id: formData.get('_formId')?.toString(),

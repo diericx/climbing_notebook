@@ -1,4 +1,6 @@
+import { redirect } from '@sveltejs/kit';
 import 'fs';
+import type { Session } from 'lucia';
 import { z } from 'zod';
 export const huecoGrades: readonly [string, ...string[]] = [
   'V0',
@@ -274,4 +276,22 @@ export function boldQuery(str: string, queries: string[]) {
     result = newResult;
   }
   return result;
+}
+
+// Attempts to get the session from locals, and if it can't it will redirect
+// to login with a redirectTo value of the provided url or non if url is undefined
+export async function getSessionOrRedirect({ locals, url }: { locals: App.Locals; url?: URL }) {
+  const session = await locals.auth.validate();
+
+  // If the session is null, attempt to redirect
+  if (session === null) {
+    if (url === undefined) {
+      console.error('Cannot redirect because url was not provided.', new Error().stack);
+      throw redirect(302, '/login');
+    }
+    throw redirect(302, '/login?redirectTo=' + url.toString());
+  }
+
+  // The session definitely exists now, so return it
+  return session;
 }

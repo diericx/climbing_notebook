@@ -5,7 +5,7 @@
 
   export let data: PageData;
   $: trainingProgram = data.trainingProgram;
-  $: user = data.user;
+  $: session = data.session;
 </script>
 
 <div class="flex mb-8 items-center">
@@ -20,7 +20,7 @@
   </div>
 </div>
 <WeeklyCalendar
-  {user}
+  {session}
   {trainingProgram}
   shouldScrollIntoView={false}
   disableActionButtons={true}

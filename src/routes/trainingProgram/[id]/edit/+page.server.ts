@@ -3,14 +3,12 @@ import type { PageServerLoad } from './$types';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
 import { TrainingProgramRepo } from '$lib/trainingProgram';
-import { APIError } from '$lib/errors';
+import { APIError, throwAPIErrorAsHttpError } from '$lib/errors';
 import { ExerciseRepo } from '$lib/exercise';
+import { getSessionOrRedirect } from '$lib/utils';
 
 export const load: PageServerLoad = async ({ locals, params, url }) => {
-  const { user } = await locals.auth.validate();
-  if (!user) {
-    throw redirect(302, '/login?redirectTo=' + url.toString());
-  }
+  const { user } = await getSessionOrRedirect({ locals, url });
 
   const id = Number(params.id);
 
@@ -38,9 +36,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
     };
   } catch (e) {
     if (e instanceof APIError) {
-      throw error(404, {
-        message: 'Not found',
-      });
+      throwAPIErrorAsHttpError(e);
     }
     console.error(e);
     throw error(500, { message: SERVER_ERROR });

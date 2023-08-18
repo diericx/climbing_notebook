@@ -2,7 +2,7 @@
   import CalExerciseEvent from '$lib/components/WeeklyCalendarExerciseEvent.svelte';
   import { daysFromToday, getDayWeekStartsMonday } from '$lib/utils';
   import { onMount } from 'svelte';
-  import type { User } from 'lucia';
+  import type { Session } from 'lucia';
   import type { Exercise, Prisma } from '@prisma/client';
 
   type TrainingProgram = Prisma.TrainingProgramGetPayload<{
@@ -25,7 +25,7 @@
   export let disableActionButtons = false;
   export let showMarkedCompleted = true;
   export let showDuplicateBtn = false;
-  export let user: User | undefined;
+  export let session: Session | null;
   export let exercises: Exercise[];
 
   onMount(() => {
@@ -65,7 +65,7 @@
         </form>
       </div>
     {/if}
-    {#if user}
+    {#if session !== null}
       <div>
         <a class="btn btn-sm variant-ringed" href={`/trainingProgram/${trainingProgram.id}/edit`}
           >Edit this program</a
