@@ -6,10 +6,12 @@ import { datasetSchema, WidgetRepo } from '$lib/widget';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions } from './$types';
+import { getSessionOrRedirect } from '$lib/utils';
 
 export const actions: Actions = {
   delete: async ({ locals, url, params }) => {
-    const { user } = await locals.auth.validate();
+    const { user } = await getSessionOrRedirect({ locals, url });
+
     const widgetId = params.id;
     const datasetId = params.datasetId;
 
@@ -32,8 +34,9 @@ export const actions: Actions = {
   },
 
   update: async ({ locals, request, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+
     const formData = await request.formData();
-    const { user } = await locals.auth.validate();
     const form = await superValidate(formData, datasetSchema, {
       id: formData.get('_formId')?.toString(),
     });

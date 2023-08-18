@@ -8,11 +8,13 @@ import { customQueryConditionSchema, CustomQueryRepo, customQuerySchema } from '
 import type { PageServerLoad } from './$types';
 import type { ExerciseEvent, Metric } from '@prisma/client';
 import { evaluate } from 'mathjs';
+import { getSessionOrRedirect } from '$lib/utils';
 
 export const actions: Actions = {
   update: async ({ request, locals, params, url }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+
     const formData = await request.formData();
-    const { user } = await locals.auth.validate();
     const form = await superValidate(formData, customQuerySchema, {
       id: formData.get('_formId')?.toString(),
     });
@@ -68,7 +70,8 @@ export const actions: Actions = {
   },
 
   delete: async ({ params, locals, url }) => {
-    const { user } = await locals.auth.validate();
+    const { user } = await getSessionOrRedirect({ locals, url });
+
     const queryId = params.queryId;
 
     const repo = new CustomQueryRepo(prisma);

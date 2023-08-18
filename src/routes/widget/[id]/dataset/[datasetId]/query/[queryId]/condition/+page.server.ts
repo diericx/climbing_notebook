@@ -7,11 +7,13 @@ import { message, superValidate } from 'sveltekit-superforms/server';
 import { customQueryConditionSchema, CustomQueryRepo, customQuerySchema } from '$lib/customQuery';
 import type { PageServerLoad } from './$types';
 import type { ExerciseEvent, Metric } from '@prisma/client';
+import { getSessionOrRedirect } from '$lib/utils';
 
 export const actions: Actions = {
   new: async ({ request, locals, params, url }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+
     const formData = await request.formData();
-    const { user } = await locals.auth.validate();
     const form = await superValidate(formData, customQueryConditionSchema, {
       id: formData.get('_formId')?.toString(),
     });

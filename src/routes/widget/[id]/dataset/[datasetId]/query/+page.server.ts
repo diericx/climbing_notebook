@@ -6,11 +6,13 @@ import { SERVER_ERROR } from '$lib/helperTypes';
 import { message, setError, superValidate } from 'sveltekit-superforms/server';
 import { CustomQueryRepo, customQuerySchema } from '$lib/customQuery';
 import { evaluate } from 'mathjs';
+import { getSessionOrRedirect } from '$lib/utils';
 
 export const actions: Actions = {
   new: async ({ locals, request, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+
     const formData = await request.formData();
-    const { user } = await locals.auth.validate();
     const form = await superValidate(formData, customQuerySchema, {
       id: formData.get('_formId')?.toString(),
     });

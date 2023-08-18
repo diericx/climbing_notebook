@@ -7,12 +7,10 @@ import { setError, superValidate } from 'sveltekit-superforms/server';
 import { WidgetRepo, widgetSchema } from '$lib/widget';
 import type { PageServerLoad } from './$types';
 import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
+import { getSessionOrRedirect } from '$lib/utils';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
-  const { user } = await locals.auth.validate();
-  if (!user) {
-    throw redirect(302, '/login?redirectTo=' + url.toString());
-  }
+  const { user } = await getSessionOrRedirect({ locals, url });
 
   const widgetRepo = new WidgetRepo(prisma);
   const customQueryRepo = new CustomQueryRepo(prisma);
@@ -66,9 +64,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 };
 
 export const actions: Actions = {
-  new: async ({ locals, request }) => {
+  new: async ({ locals, request, url }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
     const formData = await request.formData();
-    const { user } = await locals.auth.validate();
     const form = await superValidate(formData, widgetSchema, {
       id: formData.get('_formId')?.toString(),
     });

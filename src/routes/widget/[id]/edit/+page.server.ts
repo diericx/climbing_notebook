@@ -6,9 +6,11 @@ import { TrainingProgramRepo } from '$lib/trainingProgram';
 import { WidgetRepo } from '$lib/widget';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+import { getSessionOrRedirect } from '$lib/utils';
 
-export const load: PageServerLoad = async ({ locals, params }) => {
-  const { user } = await locals.auth.validate();
+export const load: PageServerLoad = async ({ locals, params, url }) => {
+  const { user } = await getSessionOrRedirect({ locals, url });
+
   const widgetRepo = new WidgetRepo(prisma);
   const customQueryRepo = new CustomQueryRepo(prisma);
   const exerciseRepo = new ExerciseRepo(prisma);
