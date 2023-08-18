@@ -19,6 +19,7 @@
   export let showWidth = true;
   export let showDescription = false;
   export let showSimpleFields = false;
+  export let showGoToAdvancedEditorLink = true;
   export let trainingPrograms: TrainingProgram[] = [];
   export let allowedTypes: String[] = [
     'chart',
@@ -96,18 +97,16 @@
     <hr class="border-red-100 divider my-4" />
   {/if}
 
-  {#if $form.isTemplate}
-    <label>
-      <input
-        type="checkbox"
-        bind:checked={setsFieldEnabled}
-        on:change={() => {
-          $form.sets = $form.sets == null ? ($form.sets = 0) : ($form.sets = null);
-        }}
-      />
-      Enable Sets Field
-    </label>
-  {/if}
+  <label>
+    <input
+      type="checkbox"
+      bind:checked={setsFieldEnabled}
+      on:change={() => {
+        $form.sets = $form.sets == null ? ($form.sets = 0) : ($form.sets = null);
+      }}
+    />
+    Enable Sets Field
+  </label>
   {#if setsFieldEnabled}
     <NumberField
       class="w-20"
@@ -118,18 +117,16 @@
     />
   {/if}
 
-  {#if $form.isTemplate}
-    <label>
-      <input
-        type="checkbox"
-        bind:checked={repsFieldEnabled}
-        on:change={() => {
-          $form.reps = $form.reps == null ? ($form.reps = 0) : ($form.reps = null);
-        }}
-      />
-      Enable Reps Field
-    </label>
-  {/if}
+  <label>
+    <input
+      type="checkbox"
+      bind:checked={repsFieldEnabled}
+      on:change={() => {
+        $form.reps = $form.reps == null ? ($form.reps = 0) : ($form.reps = null);
+      }}
+    />
+    Enable Reps Field
+  </label>
   {#if repsFieldEnabled}
     <NumberField
       class="w-20"
@@ -140,18 +137,16 @@
     />
   {/if}
 
-  {#if $form.isTemplate}
-    <label>
-      <input
-        type="checkbox"
-        bind:checked={weightFieldEnabled}
-        on:change={() => {
-          $form.weight = $form.weight == null ? ($form.weight = 0) : ($form.weight = null);
-        }}
-      />
-      Enable weight Field
-    </label>
-  {/if}
+  <label>
+    <input
+      type="checkbox"
+      bind:checked={weightFieldEnabled}
+      on:change={() => {
+        $form.weight = $form.weight == null ? ($form.weight = 0) : ($form.weight = null);
+      }}
+    />
+    Enable weight Field
+  </label>
   {#if weightFieldEnabled}
     <NumberField
       class="w-20"
@@ -162,18 +157,16 @@
     />
   {/if}
 
-  {#if $form.isTemplate}
-    <label>
-      <input
-        type="checkbox"
-        bind:checked={minutesFieldEnabled}
-        on:change={() => {
-          $form.minutes = $form.minutes == null ? ($form.minutes = 0) : ($form.minutes = null);
-        }}
-      />
-      Enable minutes Field
-    </label>
-  {/if}
+  <label>
+    <input
+      type="checkbox"
+      bind:checked={minutesFieldEnabled}
+      on:change={() => {
+        $form.minutes = $form.minutes == null ? ($form.minutes = 0) : ($form.minutes = null);
+      }}
+    />
+    Enable minutes Field
+  </label>
   {#if minutesFieldEnabled}
     <NumberField
       class="w-20"
@@ -184,18 +177,16 @@
     />
   {/if}
 
-  {#if $form.isTemplate}
-    <label>
-      <input
-        type="checkbox"
-        bind:checked={secondsFieldEnabled}
-        on:change={() => {
-          $form.seconds = $form.seconds == null ? ($form.seconds = 0) : ($form.seconds = null);
-        }}
-      />
-      Enable seconds Field
-    </label>
-  {/if}
+  <label>
+    <input
+      type="checkbox"
+      bind:checked={secondsFieldEnabled}
+      on:change={() => {
+        $form.seconds = $form.seconds == null ? ($form.seconds = 0) : ($form.seconds = null);
+      }}
+    />
+    Enable seconds Field
+  </label>
   {#if secondsFieldEnabled}
     <NumberField
       class="w-20"
@@ -206,7 +197,7 @@
     />
   {/if}
 
-  {#if !$form.isTemplate}
+  {#if showGoToAdvancedEditorLink}
     <div class="mt-4">
       <a class="link" on:click={modalStore.close} href={`/widget/${widget.id}/edit`}
         >Go to advanced editor</a
