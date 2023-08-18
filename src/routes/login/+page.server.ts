@@ -92,7 +92,7 @@ export const actions: Actions = {
         attributes: {},
       });
       locals.auth.setSession(session);
-    } catch (e) {
+    } catch (e: any) {
       // Catch KNOWN duplicate username/provider id errors from both Lucia and the
       // propogated Prisma erros.
       if (
