@@ -279,7 +279,9 @@ export function boldQuery(str: string, queries: string[]) {
 }
 
 // Attempts to get the session from locals, and if it can't it will redirect
-// to login with a redirectTo value of the provided url or non if url is undefined
+// to login with a redirectTo value of the provided url or non if url is undefined.
+// It will redirect to the search param redirecToAuthFallback, or create it's own from
+// the provided url (url.pathname + url.search) if the former does not exist
 export async function getSessionOrRedirect({ locals, url }: { locals: App.Locals; url?: URL }) {
   const session = await locals.auth.validate();
 
@@ -289,7 +291,8 @@ export async function getSessionOrRedirect({ locals, url }: { locals: App.Locals
       console.error('Cannot redirect because url was not provided.', new Error().stack);
       throw redirect(302, '/login');
     }
-    throw redirect(302, '/login?redirectTo=' + url.pathname + url.search);
+    const redirectToAuthFallback = url.searchParams.get('redirectToAuthFallback');
+    throw redirect(302, `/login?redirectTo=${redirectToAuthFallback || url.pathname + url.search}`);
   }
 
   // The session definitely exists now, so return it
