@@ -289,7 +289,7 @@ export async function getSessionOrRedirect({ locals, url }: { locals: App.Locals
       console.error('Cannot redirect because url was not provided.', new Error().stack);
       throw redirect(302, '/login');
     }
-    throw redirect(302, '/login?redirectTo=' + url.toString());
+    throw redirect(302, '/login?redirectTo=' + url.pathname + url.search);
   }
 
   // The session definitely exists now, so return it

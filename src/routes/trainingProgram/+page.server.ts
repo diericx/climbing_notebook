@@ -7,12 +7,10 @@ import { APIError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { TrainingProgramRepo, trainingProgramSchema } from '$lib/trainingProgram';
 import { superValidate } from 'sveltekit-superforms/server';
+import { getSessionOrRedirect } from '$lib/utils';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
-  const { user } = await locals.auth.validate();
-  if (!user) {
-    throw redirect(302, '/login?redirectTo=' + url.toString());
-  }
+  const { user } = await getSessionOrRedirect({ locals, url });
 
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
   const profileRepo = new ProfileRepo(prisma);
@@ -35,7 +33,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
 export const actions: Actions = {
   new: async ({ locals, request, url }) => {
-    const { user } = await locals.auth.validate();
+    const { user } = await getSessionOrRedirect({ locals, url });
     const form = await superValidate(request, trainingProgramSchema);
 
     if (!form.valid) {

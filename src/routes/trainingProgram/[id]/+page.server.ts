@@ -8,6 +8,7 @@ import type { TrainingProgram } from '@prisma/client';
 import { superValidate } from 'sveltekit-superforms/server';
 import { exerciseGroupSchema } from '$lib/exerciseGroup';
 import { getSessionOrRedirect } from '$lib/utils';
+import { page } from '$app/stores';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
   const session = await locals.auth.validate();
