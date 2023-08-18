@@ -10,9 +10,10 @@ import { ExerciseEventRepo } from '$lib/exerciseEvent';
 import { JournalEntryRepo } from '$lib/journalEntry';
 import { TrainingProgramRepo } from '$lib/trainingProgram';
 import { MetricRepo } from '$lib/metric';
+import { getSessionOrRedirect } from '$lib/utils';
 
-export const load: PageServerLoad = async ({ locals }) => {
-  const { user } = await locals.auth.validate();
+export const load: PageServerLoad = async ({ locals, url }) => {
+  const { user } = await getSessionOrRedirect({ locals, url });
 
   const profileRepo = new ProfileRepo(prisma);
   const exerciseEventRepo = new ExerciseEventRepo(prisma);
@@ -44,8 +45,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 export const actions: Actions = {
   edit: async ({ locals, request, url }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+
     const formData = await request.formData();
-    const { user } = await locals.auth.validate();
     const form = await superValidate(formData, profileSchema, {
       id: formData.get('_formId')?.toString(),
     });
