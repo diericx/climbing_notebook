@@ -9,9 +9,11 @@ import { deleteFile, getMetadata, getPresignedUrl, uploadFile } from '$lib/aws/s
 import { v4 as uuidv4 } from 'uuid';
 import sharp from 'sharp';
 import { fileUploadSchema } from '$lib/file';
+import { getSessionOrRedirect } from '$lib/utils';
 
-export const load: PageServerLoad = async ({ locals, params }) => {
-  const { user } = await locals.auth.validate();
+export const load: PageServerLoad = async ({ locals, params, url }) => {
+  const { user } = await getSessionOrRedirect({ locals, url });
+
   const repo = new ProjectRepo(prisma);
   try {
     const project = await repo.getOneAndValidateOwner(params.id, user?.userId);
@@ -39,7 +41,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 
 export const actions: Actions = {
   delete: async ({ locals, url, params }) => {
-    const { user } = await locals.auth.validate();
+    const { user } = await getSessionOrRedirect({ locals, url });
     const id = params.id;
 
     const repo = new ProjectRepo(prisma);
@@ -67,8 +69,9 @@ export const actions: Actions = {
   },
 
   edit: async ({ locals, request, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+
     const formData = await request.formData();
-    const { user } = await locals.auth.validate();
     const id = params.id;
     const form = await superValidate(formData, projectPartialSchema, {
       id: formData.get('_formId')?.toString(),
@@ -97,8 +100,9 @@ export const actions: Actions = {
   },
 
   uploadImage: async ({ locals, request, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+
     const formData = await request.formData();
-    const { user } = await locals.auth.validate();
     const id = params.id;
     const form = await superValidate(formData, fileUploadSchema, {
       id: formData.get('_formId')?.toString(),
@@ -159,8 +163,9 @@ export const actions: Actions = {
   },
 
   deleteImage: async ({ locals, url, params, request }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+
     const formData = await request.formData();
-    const { user } = await locals.auth.validate();
     const form = await superValidate(formData, projectPartialSchema, {
       id: formData.get('_formId')?.toString(),
     });

@@ -5,11 +5,13 @@ import { SERVER_ERROR } from '$lib/helperTypes';
 import { ProjectRepo, projectSessionSchema } from '$lib/project';
 import { superValidate } from 'sveltekit-superforms/server';
 import { APIError } from '$lib/errors';
+import { getSessionOrRedirect } from '$lib/utils';
 
 export const actions: Actions = {
   new: async ({ locals, request, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+
     const formData = await request.formData();
-    const { user } = await locals.auth.validate();
     const id = params.id;
     const form = await superValidate(formData, projectSessionSchema, {
       id: formData.get('_formId')?.toString(),

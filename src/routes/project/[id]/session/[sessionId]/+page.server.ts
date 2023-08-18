@@ -5,10 +5,12 @@ import { SERVER_ERROR } from '$lib/helperTypes';
 import { ProjectRepo, projectSchema, projectSessionSchema } from '$lib/project';
 import { superValidate } from 'sveltekit-superforms/server';
 import { APIError } from '$lib/errors';
+import { getSessionOrRedirect } from '$lib/utils';
 
 export const actions: Actions = {
   delete: async ({ locals, url, params }) => {
-    const { user } = await locals.auth.validate();
+    const { user } = await getSessionOrRedirect({ locals, url });
+
     const projectId = params.id;
     const sessionId = params.sessionId;
 
@@ -31,8 +33,9 @@ export const actions: Actions = {
   },
 
   edit: async ({ locals, request, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+
     const formData = await request.formData();
-    const { user } = await locals.auth.validate();
     const projectId = params.id;
     const sessionId = params.sessionId;
     const form = await superValidate(formData, projectSessionSchema, {
