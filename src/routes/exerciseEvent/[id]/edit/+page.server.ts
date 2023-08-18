@@ -5,10 +5,11 @@ import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
 import { APIError } from '$lib/errors';
 import { prisma } from '$lib/prisma';
 import { superValidate } from 'sveltekit-superforms/server';
+import { getSessionOrRedirect } from '$lib/utils';
 
 export const actions: Actions = {
   deleteExerciseEvent: async ({ locals, params, url }) => {
-    const { user } = await locals.auth.validate();
+    const { user } = await getSessionOrRedirect({ locals, url });
     const id = Number(params.id);
 
     const repo = new ExerciseEventRepo(prisma);
@@ -30,8 +31,9 @@ export const actions: Actions = {
   },
 
   editExerciseEvent: async ({ locals, params, request, url }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+
     const formData = await request.formData();
-    const { user } = await locals.auth.validate();
     const id = Number(params.id);
     const form = await superValidate(formData, exerciseEventSchema, {
       id: formData.get('_formId')?.toString(),
@@ -59,9 +61,10 @@ export const actions: Actions = {
     return { form };
   },
 
-  setCompleted: async ({ locals, params, request }) => {
+  setCompleted: async ({ locals, params, request, url }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+
     const formData = await request.formData();
-    const { user } = await locals.auth.validate();
     const id = Number(params.id);
     const dateInput = formData.get('date')?.toString();
 

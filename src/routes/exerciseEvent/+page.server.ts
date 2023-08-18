@@ -8,9 +8,11 @@ import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
 import { ProfileRepo } from '$lib/profile';
 import { superValidate } from 'sveltekit-superforms/server';
 import { ExerciseRepo } from '$lib/exercise';
+import { getSessionOrRedirect } from '$lib/utils';
 
-export const load: PageServerLoad = async ({ locals }) => {
-  const { user } = await locals.auth.validate();
+export const load: PageServerLoad = async ({ locals, url }) => {
+  const { user } = await getSessionOrRedirect({ locals, url });
+
   const exerciseEventsRepo = new ExerciseEventRepo(prisma);
   const exerciseRepo = new ExerciseRepo(prisma);
   const profileRepo = new ProfileRepo(prisma);
