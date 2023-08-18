@@ -5,11 +5,13 @@ import { prisma } from '$lib/prisma';
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { superValidate } from 'sveltekit-superforms/server';
+import { getSessionOrRedirect } from '$lib/utils';
 
 export const actions: Actions = {
   new: async ({ request, url, locals }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+
     const formData = await request.formData();
-    const { user } = await locals.auth.validate();
     const form = await superValidate(formData, calendarEventSchema, {
       id: formData.get('_formId')?.toString(),
     });
