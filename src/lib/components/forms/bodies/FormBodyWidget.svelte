@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TrainingProgram, Widget } from '@prisma/client';
+  import type { Prisma, TrainingProgram, Widget } from '@prisma/client';
   import SelectField from '../fields/SelectField.svelte';
   import NumberField from '../fields/NumberField.svelte';
   import TextField from '../fields/TextField.svelte';
@@ -8,10 +8,23 @@
   import type { z } from 'zod';
   import TextArea from '../fields/TextArea.svelte';
   import { modalStore } from '@skeletonlabs/skeleton';
+  import { isSimpleFieldInUse } from '$lib/widget';
 
   // Form action to execute
   export let superForm: SuperForm<z.AnyZodObject, any>;
-  export let widget: Widget;
+  export let widget: Prisma.WidgetGetPayload<{
+    include: {
+      datasets: {
+        include: {
+          customQueries: {
+            include: {
+              conditions: true;
+            };
+          };
+        };
+      };
+    };
+  }>;
   export let showSubmitButton = true;
   export let showName = true;
   export let showType = true;
@@ -97,105 +110,144 @@
     <hr class="border-red-100 divider my-4" />
   {/if}
 
-  <label>
-    <input
-      type="checkbox"
-      bind:checked={setsFieldEnabled}
-      on:change={() => {
-        $form.sets = $form.sets == null ? ($form.sets = 0) : ($form.sets = null);
-      }}
-    />
-    Enable Sets Field
-  </label>
-  {#if setsFieldEnabled}
-    <NumberField
-      class="w-20"
-      name="sets"
-      field="sets"
-      label={$form.isTemplate ? 'Default Sets Value' : 'Sets'}
-      form={superForm}
-    />
-  {/if}
+  <div class="space-y-2">
+    <div>
+      <label class="font-bold">
+        <input
+          type="checkbox"
+          bind:checked={setsFieldEnabled}
+          disabled={isSimpleFieldInUse(widget, 'sets')}
+          on:change={() => {
+            $form.sets = $form.sets == null ? ($form.sets = 0) : ($form.sets = null);
+          }}
+        />
+        Enable Sets Field
+      </label>
+      {#if isSimpleFieldInUse(widget, 'sets')}
+        <p class="text-gray-400 mb-1">
+          You cannot disable this field because one or more query conditions depend on it
+        </p>
+      {/if}
+      {#if setsFieldEnabled}
+        <NumberField
+          class="w-20"
+          name="sets"
+          field="sets"
+          label={$form.isTemplate ? 'Default Sets Value' : 'Sets'}
+          form={superForm}
+        />
+      {/if}
+    </div>
 
-  <label>
-    <input
-      type="checkbox"
-      bind:checked={repsFieldEnabled}
-      on:change={() => {
-        $form.reps = $form.reps == null ? ($form.reps = 0) : ($form.reps = null);
-      }}
-    />
-    Enable Reps Field
-  </label>
-  {#if repsFieldEnabled}
-    <NumberField
-      class="w-20"
-      name="reps"
-      field="reps"
-      label={$form.isTemplate ? 'Default Reps Value' : 'Reps'}
-      form={superForm}
-    />
-  {/if}
+    <div>
+      <label class="font-bold">
+        <input
+          type="checkbox"
+          disabled={isSimpleFieldInUse(widget, 'reps')}
+          bind:checked={repsFieldEnabled}
+          on:change={() => {
+            $form.reps = $form.reps == null ? ($form.reps = 0) : ($form.reps = null);
+          }}
+        />
+        Enable Reps Field
+      </label>
+      {#if isSimpleFieldInUse(widget, 'reps')}
+        <p class="text-gray-400 mb-1">
+          You cannot disable this field because one or more query conditions depend on it
+        </p>
+      {/if}
+      {#if repsFieldEnabled}
+        <NumberField
+          class="w-20"
+          name="reps"
+          field="reps"
+          label={$form.isTemplate ? 'Default Reps Value' : 'Reps'}
+          form={superForm}
+        />
+      {/if}
+    </div>
 
-  <label>
-    <input
-      type="checkbox"
-      bind:checked={weightFieldEnabled}
-      on:change={() => {
-        $form.weight = $form.weight == null ? ($form.weight = 0) : ($form.weight = null);
-      }}
-    />
-    Enable weight Field
-  </label>
-  {#if weightFieldEnabled}
-    <NumberField
-      class="w-20"
-      name="weight"
-      field="weight"
-      label={$form.isTemplate ? 'Default Weight Value' : 'Weight'}
-      form={superForm}
-    />
-  {/if}
+    <div>
+      <label class="font-bold">
+        <input
+          type="checkbox"
+          bind:checked={weightFieldEnabled}
+          on:change={() => {
+            $form.weight = $form.weight == null ? ($form.weight = 0) : ($form.weight = null);
+          }}
+        />
+        Enable weight Field
+      </label>
+      {#if isSimpleFieldInUse(widget, 'weight')}
+        <p class="text-gray-400 mb-1">
+          You cannot disable this field because one or more query conditions depend on it
+        </p>
+      {/if}
+      {#if weightFieldEnabled}
+        <NumberField
+          class="w-20"
+          name="weight"
+          field="weight"
+          label={$form.isTemplate ? 'Default Weight Value' : 'Weight'}
+          form={superForm}
+        />
+      {/if}
+    </div>
 
-  <label>
-    <input
-      type="checkbox"
-      bind:checked={minutesFieldEnabled}
-      on:change={() => {
-        $form.minutes = $form.minutes == null ? ($form.minutes = 0) : ($form.minutes = null);
-      }}
-    />
-    Enable minutes Field
-  </label>
-  {#if minutesFieldEnabled}
-    <NumberField
-      class="w-20"
-      name="minutes"
-      field="minutes"
-      label={$form.isTemplate ? 'Default Minutes Value' : 'Minutes'}
-      form={superForm}
-    />
-  {/if}
+    <div>
+      <label class="font-bold">
+        <input
+          type="checkbox"
+          bind:checked={minutesFieldEnabled}
+          on:change={() => {
+            $form.minutes = $form.minutes == null ? ($form.minutes = 0) : ($form.minutes = null);
+          }}
+        />
+        Enable minutes Field
+      </label>
+      {#if isSimpleFieldInUse(widget, 'minutes')}
+        <p class="text-gray-400 mb-1">
+          You cannot disable this field because one or more query conditions depend on it
+        </p>
+      {/if}
+      {#if minutesFieldEnabled}
+        <NumberField
+          class="w-20"
+          name="minutes"
+          field="minutes"
+          label={$form.isTemplate ? 'Default Minutes Value' : 'Minutes'}
+          form={superForm}
+        />
+      {/if}
+    </div>
 
-  <label>
-    <input
-      type="checkbox"
-      bind:checked={secondsFieldEnabled}
-      on:change={() => {
-        $form.seconds = $form.seconds == null ? ($form.seconds = 0) : ($form.seconds = null);
-      }}
-    />
-    Enable seconds Field
-  </label>
-  {#if secondsFieldEnabled}
-    <NumberField
-      class="w-20"
-      name="seconds"
-      field="seconds"
-      label={$form.isTemplate ? 'Default Seconds Value' : 'Seconds'}
-      form={superForm}
-    />
-  {/if}
+    <div>
+      <label class="font-bold">
+        <input
+          type="checkbox"
+          bind:checked={secondsFieldEnabled}
+          on:change={() => {
+            $form.seconds = $form.seconds == null ? ($form.seconds = 0) : ($form.seconds = null);
+          }}
+        />
+        Enable seconds Field
+      </label>
+      {#if isSimpleFieldInUse(widget, 'seconds')}
+        <p class="text-gray-400 mb-1">
+          You cannot disable this field because one or more query conditions depend on it
+        </p>
+      {/if}
+      {#if secondsFieldEnabled}
+        <NumberField
+          class="w-20"
+          name="seconds"
+          field="seconds"
+          label={$form.isTemplate ? 'Default Seconds Value' : 'Seconds'}
+          form={superForm}
+        />
+      {/if}
+    </div>
+  </div>
 
   {#if showGoToAdvancedEditorLink}
     <div class="mt-4">
