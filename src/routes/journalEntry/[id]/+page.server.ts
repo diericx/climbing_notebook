@@ -5,10 +5,12 @@ import { JournalEntryRepo, journalEntrySchema } from '$lib/journalEntry';
 import { prisma } from '$lib/prisma';
 import { APIError } from '$lib/errors';
 import { superValidate } from 'sveltekit-superforms/server';
+import { getSessionOrRedirect } from '$lib/utils';
 
 export const actions: Actions = {
   edit: async ({ request, locals, params, url }) => {
-    const { user } = await locals.auth.validate();
+    const { user } = await getSessionOrRedirect({ locals, url });
+
     const form = await superValidate(request, journalEntrySchema);
     const id = Number(params.id);
 
@@ -35,7 +37,8 @@ export const actions: Actions = {
   },
 
   delete: async ({ locals, params, url }) => {
-    const { user } = await locals.auth.validate();
+    const { user } = await getSessionOrRedirect({ locals, url });
+
     const id = Number(params.id);
 
     const repo = new JournalEntryRepo(prisma);
