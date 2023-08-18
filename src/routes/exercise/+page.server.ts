@@ -6,9 +6,11 @@ import { Prisma } from '@prisma/client';
 import { error, fail, redirect, type Actions } from '@sveltejs/kit';
 import { setError, superValidate } from 'sveltekit-superforms/server';
 import type { PageServerLoad } from './$types';
+import { getSessionOrRedirect } from '$lib/utils';
 
-export const load: PageServerLoad = async ({ locals }) => {
-  const { user } = await locals.auth.validate();
+export const load: PageServerLoad = async ({ locals, url }) => {
+  const { user } = await getSessionOrRedirect({ locals, url });
+
   const exerciseRepo = new ExerciseRepo(prisma);
   try {
     const exercises = await exerciseRepo.get();
@@ -24,8 +26,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 export const actions: Actions = {
   new: async ({ locals, request, url }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+
     const formData = await request.formData();
-    const { user } = await locals.auth.validate();
     const form = await superValidate(formData, exerciseSchema, {
       id: formData.get('_formId')?.toString(),
     });
@@ -39,7 +42,7 @@ export const actions: Actions = {
       await repo.new(form.data, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return setError(form, null, 'An exercise with that name already exists');
+        return setError(form, 'An exercise with that name already exists');
       }
       if (e instanceof Prisma.PrismaClientKnownRequestError && e.code == 'P2002') {
         return setError(form, 'name', 'An exercise with that name already exists');
