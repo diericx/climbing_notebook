@@ -10,8 +10,8 @@ import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 import { getSessionOrRedirect } from '$lib/utils';
 
-export const load: PageServerLoad = async ({ locals, params }) => {
-  const { user } = await locals.auth.validate();
+export const load: PageServerLoad = async ({ locals, params, url }) => {
+  const { user } = await getSessionOrRedirect({ locals, url });
   const widgetRepo = new WidgetRepo(prisma);
   const customQueryRepo = new CustomQueryRepo(prisma);
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
