@@ -2,7 +2,7 @@ import type { Actions } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
-import { APIError } from '$lib/errors';
+import { APIError, throwAPIErrorAsHttpError } from '$lib/errors';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import { customQueryConditionSchema, CustomQueryRepo } from '$lib/customQuery';
 import { getSessionOrRedirect } from '$lib/utils';
@@ -27,9 +27,7 @@ export const actions: Actions = {
       await repo.updateCondition(form.data, queryId, conditionId, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return message(form, e.detail, {
-          status: 401,
-        });
+        throwAPIErrorAsHttpError(e);
       }
       console.error(e);
       throw error(500, { message: SERVER_ERROR });
@@ -52,8 +50,7 @@ export const actions: Actions = {
       await repo.deleteCondition(queryId, conditionId, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        console.error(e);
-        return fail(401, { message: e.detail });
+        throwAPIErrorAsHttpError(e);
       }
       console.error(e);
       throw error(500, { message: SERVER_ERROR });

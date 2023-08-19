@@ -2,7 +2,7 @@ import type { Actions } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
-import { APIError } from '$lib/errors';
+import { APIError, throwAPIErrorAsHttpError } from '$lib/errors';
 import { message, setError, superValidate } from 'sveltekit-superforms/server';
 import { customQueryConditionSchema, CustomQueryRepo, customQuerySchema } from '$lib/customQuery';
 import type { PageServerLoad } from './$types';
@@ -32,31 +32,31 @@ export const actions: Actions = {
     if (form.data.table == 'metric' && !form.data.metric) {
       return setError(form, 'metric', 'Metric is required');
     }
+    // Check if equation is valid
+    try {
+      if (form.data.table == 'exerciseEvent') {
+        evaluate(form.data.equation, {
+          sets: 0,
+          reps: 0,
+          weight: 0,
+          minutes: 0,
+          seconds: 0,
+        });
+      } else if (form.data.table == 'metric') {
+        evaluate(form.data.equation, {
+          value: 0,
+        });
+      }
+    } catch (e) {
+      return setError(form, 'equation', e.toString());
+    }
 
     const repo = new CustomQueryRepo(prisma);
     try {
-      // Check if equation is valid
-      try {
-        if (form.data.table == 'exerciseEvent') {
-          evaluate(form.data.equation, {
-            sets: 0,
-            reps: 0,
-            weight: 0,
-            minutes: 0,
-            seconds: 0,
-          });
-        } else if (form.data.table == 'metric') {
-          evaluate(form.data.equation, {
-            value: 0,
-          });
-        }
-      } catch (e) {
-        return setError(form, 'equation', e.toString());
-      }
       await repo.update(form.data, queryId, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form });
+        throwAPIErrorAsHttpError(e);
       }
       console.error(e);
       throw error(500, { message: SERVER_ERROR });
@@ -79,7 +79,7 @@ export const actions: Actions = {
       await repo.delete(queryId, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail });
+        throwAPIErrorAsHttpError(e);
       }
       console.error(e);
       throw error(500, { message: SERVER_ERROR });

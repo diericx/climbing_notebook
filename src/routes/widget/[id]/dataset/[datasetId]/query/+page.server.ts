@@ -1,7 +1,7 @@
 import type { Actions } from './$types';
 import { prisma } from '$lib/prisma';
 import { error, fail, redirect } from '@sveltejs/kit';
-import { APIError } from '$lib/errors';
+import { APIError, throwAPIErrorAsHttpError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { message, setError, superValidate } from 'sveltekit-superforms/server';
 import { CustomQueryRepo, customQuerySchema } from '$lib/customQuery';
@@ -30,32 +30,31 @@ export const actions: Actions = {
     if (form.data.table == 'metric' && !form.data.metric) {
       return setError(form, 'metric', 'Metric is required');
     }
+    // Check if equation is valid by attempting to solve the equation
+    try {
+      if (form.data.table == 'exerciseEvent') {
+        evaluate(form.data.equation, {
+          sets: 0,
+          reps: 0,
+          weight: 0,
+          minutes: 0,
+          seconds: 0,
+        });
+      } else if (form.data.table == 'metric') {
+        evaluate(form.data.equation, {
+          value: 0,
+        });
+      }
+    } catch (e: any) {
+      throw new APIError('INVALID_INPUT', e.toString());
+    }
 
     const repo = new CustomQueryRepo(prisma);
     try {
-      // Check if equation is valid
-      try {
-        if (form.data.table == 'exerciseEvent') {
-          evaluate(form.data.equation, {
-            sets: 0,
-            reps: 0,
-            weight: 0,
-            minutes: 0,
-            seconds: 0,
-          });
-        } else if (form.data.table == 'metric') {
-          evaluate(form.data.equation, {
-            value: 0,
-          });
-        }
-      } catch (e) {
-        return setError(form, 'equation', e.toString());
-      }
-
       await repo.new(form.data, datasetId, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form });
+        throwAPIErrorAsHttpError(e);
       }
       console.error(e);
       throw error(500, { message: SERVER_ERROR });

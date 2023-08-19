@@ -37,8 +37,11 @@
         onSuccess();
       }
     },
+    onError({ result }) {
+      $message = result.error.message;
+    },
   });
-  const { form, enhance, message, errors } = newSuperForm;
+  const { form, enhance, message } = newSuperForm;
 </script>
 
 {#if $message}

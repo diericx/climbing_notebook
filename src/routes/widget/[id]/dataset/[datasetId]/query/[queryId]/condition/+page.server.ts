@@ -2,7 +2,7 @@ import type { Actions } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
-import { APIError } from '$lib/errors';
+import { APIError, throwAPIErrorAsHttpError } from '$lib/errors';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import { customQueryConditionSchema, CustomQueryRepo, customQuerySchema } from '$lib/customQuery';
 import type { PageServerLoad } from './$types';
@@ -28,11 +28,7 @@ export const actions: Actions = {
       await repo.addCondition(form.data, queryId, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        if (e.message == 'NOT_FOUND') {
-          return message(form, 'Query not found for condition.', {
-            status: 401,
-          });
-        }
+        throwAPIErrorAsHttpError(e);
       }
       console.error(e);
       throw error(500, { message: SERVER_ERROR });

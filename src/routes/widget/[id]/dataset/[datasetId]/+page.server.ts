@@ -1,5 +1,5 @@
 import { CustomQueryRepo, customQuerySchema } from '$lib/customQuery';
-import { APIError } from '$lib/errors';
+import { APIError, throwAPIErrorAsHttpError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
 import { datasetSchema, WidgetRepo } from '$lib/widget';
@@ -20,7 +20,7 @@ export const actions: Actions = {
       await repo.deleteDataset(widgetId, datasetId, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail });
+        throwAPIErrorAsHttpError(e);
       }
       console.error(e);
       throw error(500, { message: SERVER_ERROR });
@@ -52,7 +52,7 @@ export const actions: Actions = {
       await repo.updateDataset(form.data, widgetId, datasetId, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form });
+        throwAPIErrorAsHttpError(e);
       }
       console.error(e);
       throw error(500, { message: SERVER_ERROR });
