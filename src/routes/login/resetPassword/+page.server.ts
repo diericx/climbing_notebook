@@ -7,7 +7,7 @@ import { error, fail, redirect } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals, url }) => {
+export const load: PageServerLoad = async ({ url }) => {
   const token = url.searchParams.get('token');
   if (token == undefined) {
     throw error(403, 'Invalid token');

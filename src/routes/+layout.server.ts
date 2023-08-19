@@ -2,7 +2,7 @@ import { ExerciseEventRepo } from '$lib/exerciseEvent';
 import { prisma } from '$lib/prisma';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals, url }) => {
+export const load: PageServerLoad = async ({ locals }) => {
   const session = await locals.auth.validate();
   if (session === null) {
     return {};

@@ -28,7 +28,7 @@ export const handle: Handle = async ({ event, resolve }) => {
       if (body.type == 'redirect') {
         return actionResult('redirect', body.location, 303);
       }
-    } catch (e: any) {}
+    } catch (e: unknown) {}
 
     // Redirect to the value in the url
     if (result.status == 200) {
@@ -42,7 +42,7 @@ export const handle: Handle = async ({ event, resolve }) => {
   return result;
 };
 
-export const handleError: HandleServerError = async ({ event, error }) => {
+export const handleError: HandleServerError = async ({ error }) => {
   // Effectively make APIError a known error
   if (error instanceof APIError) {
     let status = 401;

@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-  login: async ({ request, locals, url }) => {
+  login: async ({ request, locals }) => {
     const formData = await request.formData();
     const form = await superValidate(formData, loginSchema, {
       id: formData.get('_formId')?.toString(),
@@ -53,7 +53,7 @@ export const actions: Actions = {
     };
   },
 
-  register: async ({ request, locals, url }) => {
+  register: async ({ request, locals }) => {
     const formData = await request.formData();
     const form = await superValidate(formData, signupSchema, {
       id: formData.get('_formId')?.toString(),
