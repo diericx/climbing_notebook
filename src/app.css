@@ -199,10 +199,10 @@ pre {
   background-color: white;
 }
 
-input[type=checkbox][disabled]{
+input[type='checkbox'][disabled] {
   background-color: gray;
 }
 
-input[type=checkbox][disabled]:hover{
+input[type='checkbox'][disabled]:hover {
   background-color: gray;
 }

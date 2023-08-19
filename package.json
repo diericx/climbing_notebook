@@ -9,7 +9,7 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "test:unit": "vitest",
-    "lint": "prettier --plugin-search-dir . --check . && eslint .",
+    "lint": "prettier --plugin-search-dir . --check . && eslint . --ext .ts,.js",
     "format": "prettier --plugin-search-dir . --write .",
     "prisma-generate": "prisma generate",
     "ts-script-runner": "npx ts-node --esm"
