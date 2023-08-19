@@ -24,33 +24,6 @@ export const actions: Actions = {
       return fail(400, { form });
     }
 
-    // Run more complicated checks
-    // TODO: put this in the schema once superforms is updated
-    if (form.data.table == 'exerciseEvent' && !form.data.exerciseId) {
-      return setError(form, 'exerciseId', 'Exercise is required');
-    }
-    if (form.data.table == 'metric' && !form.data.metric) {
-      return setError(form, 'metric', 'Metric is required');
-    }
-    // Check if equation is valid
-    try {
-      if (form.data.table == 'exerciseEvent') {
-        evaluate(form.data.equation, {
-          sets: 0,
-          reps: 0,
-          weight: 0,
-          minutes: 0,
-          seconds: 0,
-        });
-      } else if (form.data.table == 'metric') {
-        evaluate(form.data.equation, {
-          value: 0,
-        });
-      }
-    } catch (e) {
-      return setError(form, 'equation', e.toString());
-    }
-
     const repo = new CustomQueryRepo(prisma);
     try {
       await repo.update(form.data, queryId, user?.userId);

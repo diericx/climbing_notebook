@@ -3,10 +3,8 @@ import { error, fail, redirect } from '@sveltejs/kit';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
 import { APIError, throwAPIErrorAsHttpError } from '$lib/errors';
-import { message, superValidate } from 'sveltekit-superforms/server';
+import { superValidate } from 'sveltekit-superforms/server';
 import { customQueryConditionSchema, CustomQueryRepo, customQuerySchema } from '$lib/customQuery';
-import type { PageServerLoad } from './$types';
-import type { ExerciseEvent, Metric } from '@prisma/client';
 import { getSessionOrRedirect } from '$lib/utils';
 
 export const actions: Actions = {

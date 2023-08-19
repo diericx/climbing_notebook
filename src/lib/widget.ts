@@ -20,6 +20,8 @@ const widgetSchemaBase = z.object({
 });
 export const widgetSchemaBasePartial = widgetSchemaBase.partial();
 
+// Split out the refinement function so we can reuse it to compose a partial schema
+// below
 function refinementFunc(
   val: z.infer<typeof widgetSchemaBase> | z.infer<typeof widgetSchemaBasePartial>,
   ctx: z.RefinementCtx
