@@ -43,18 +43,20 @@
   export let showMarkedCompleted = true;
   export let showDuplicateBtn = false;
   export let user: User | undefined;
-  export let exercises: Prisma.ExerciseGetPayload<{
-    select: {
-      _count: {
+  export let exercises:
+    | Prisma.ExerciseGetPayload<{
         select: {
-          exerciseEvents: true;
+          _count: {
+            select: {
+              exerciseEvents: true;
+            };
+          };
+          id: true;
+          name: true;
+          fieldsToShow: true;
         };
-      };
-      id: true;
-      name: true;
-      fieldsToShow: true;
-    };
-  }>[] | undefined = undefined;
+      }>[]
+    | undefined = undefined;
 
   onMount(() => {
     if (shouldScrollIntoView) {
