@@ -3,13 +3,12 @@
   import type { CustomQueryResults } from '$lib/customQuery';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
-  import type { Prisma, CalendarEvent, JournalEntry, TrainingProgram } from '@prisma/client';
+  import type { CalendarEvent, JournalEntry, Prisma, TrainingProgram } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
   import Calendar from './Calendar.svelte';
   import Chart from './Chart.svelte';
   import DailyCalendar from './DailyCalendar.svelte';
   import HeatmapCalendar from './HeatmapCalendar.svelte';
-  import CustomQuery from './CustomQuery.svelte';
 
   // Generate partial prisma types
   type Widget = Prisma.WidgetGetPayload<{

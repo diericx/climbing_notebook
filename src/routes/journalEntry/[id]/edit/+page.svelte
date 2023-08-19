@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { PageData } from './$types';
-  import FormBodyJournalEntry from '$lib/components/forms/bodies/FormBodyJournalEntry.svelte';
   import Form from '$lib/components/forms/Form.svelte';
+  import FormBodyJournalEntry from '$lib/components/forms/bodies/FormBodyJournalEntry.svelte';
   import { journalEntrySchema } from '$lib/journalEntry';
+  import type { PageData } from './$types';
 
   export let data: PageData;
 
@@ -16,7 +16,7 @@
       data={journalEntry}
       resetForm={true}
       schema={journalEntrySchema}
-      action={`/journalEntry/${journalEntry.id}?/edit`}
+      action={`/journalEntry/${journalEntry.id}?/edit&redirectTo=/`}
       let:superForm
     >
       <FormBodyJournalEntry {superForm} />

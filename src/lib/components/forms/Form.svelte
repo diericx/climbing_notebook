@@ -1,9 +1,9 @@
 <script lang="ts">
   import { page } from '$app/stores';
   import { superForm, superValidateSync } from 'sveltekit-superforms/client';
-  import type { z, ZodRawShape } from 'zod';
   import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
   import { v4 as uuidv4 } from 'uuid';
+  import type { ZodRawShape, z } from 'zod';
 
   export let schema: z.ZodObject<ZodRawShape>;
   export let data: any = {};
@@ -36,6 +36,9 @@
     onResult({ result }) {
       if ((result.type == 'success' || result.type == 'redirect') && onSuccess != undefined) {
         onSuccess();
+      }
+      if (result.type == 'redirect') {
+        console.log(result.location);
       }
     },
     onError({ result }) {

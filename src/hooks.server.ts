@@ -24,7 +24,9 @@ export const handle: Handle = async ({ event, resolve }) => {
   if (isFormAction) {
     // If the action itself threw a redirect, respect that instead of the one in the url
     try {
-      const body = await result.json();
+      // Clone the request so we can read the body while also allowing down stream functions
+      // to read as well
+      const body = await result.clone().json();
       if (body.type == 'redirect') {
         return actionResult('redirect', body.location, 303);
       }
@@ -34,6 +36,7 @@ export const handle: Handle = async ({ event, resolve }) => {
     if (result.status == 200) {
       const redirectTo = event.url.searchParams.get('redirectTo');
       if (redirectTo !== null) {
+        console.log('returning action result..');
         return actionResult('redirect', redirectTo, 303);
       }
     }
