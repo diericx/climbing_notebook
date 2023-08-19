@@ -32,6 +32,7 @@
   export let showWidth = true;
   export let showDescription = false;
   export let showSimpleFields = false;
+  export let showSimpleFieldCheckBoxes = true;
   export let showGoToAdvancedEditorLink = true;
   export let trainingPrograms: TrainingProgram[] = [];
   export let allowedTypes: String[] = [
@@ -112,21 +113,23 @@
 
   <div class="space-y-2">
     <div>
-      <label class="font-bold">
-        <input
-          type="checkbox"
-          bind:checked={setsFieldEnabled}
-          disabled={isSimpleFieldInUse(widget, 'sets')}
-          on:change={() => {
-            $form.sets = $form.sets == null ? ($form.sets = 0) : ($form.sets = null);
-          }}
-        />
-        Enable Sets Field
-      </label>
-      {#if isSimpleFieldInUse(widget, 'sets')}
-        <p class="text-gray-400 mb-1">
-          You cannot disable this field because one or more query conditions depend on it
-        </p>
+      {#if showSimpleFieldCheckBoxes}
+        <label class="font-bold">
+          <input
+            type="checkbox"
+            bind:checked={setsFieldEnabled}
+            disabled={isSimpleFieldInUse(widget, 'sets')}
+            on:change={() => {
+              $form.sets = $form.sets == null ? ($form.sets = 0) : ($form.sets = null);
+            }}
+          />
+          Enable Sets Field
+        </label>
+        {#if isSimpleFieldInUse(widget, 'sets')}
+          <p class="text-gray-400 mb-1">
+            You cannot disable this field because one or more query conditions depend on it
+          </p>
+        {/if}
       {/if}
       {#if setsFieldEnabled}
         <NumberField
@@ -140,21 +143,23 @@
     </div>
 
     <div>
-      <label class="font-bold">
-        <input
-          type="checkbox"
-          disabled={isSimpleFieldInUse(widget, 'reps')}
-          bind:checked={repsFieldEnabled}
-          on:change={() => {
-            $form.reps = $form.reps == null ? ($form.reps = 0) : ($form.reps = null);
-          }}
-        />
-        Enable Reps Field
-      </label>
-      {#if isSimpleFieldInUse(widget, 'reps')}
-        <p class="text-gray-400 mb-1">
-          You cannot disable this field because one or more query conditions depend on it
-        </p>
+      {#if showSimpleFieldCheckBoxes}
+        <label class="font-bold">
+          <input
+            type="checkbox"
+            disabled={isSimpleFieldInUse(widget, 'reps')}
+            bind:checked={repsFieldEnabled}
+            on:change={() => {
+              $form.reps = $form.reps == null ? ($form.reps = 0) : ($form.reps = null);
+            }}
+          />
+          Enable Reps Field
+        </label>
+        {#if isSimpleFieldInUse(widget, 'reps')}
+          <p class="text-gray-400 mb-1">
+            You cannot disable this field because one or more query conditions depend on it
+          </p>
+        {/if}
       {/if}
       {#if repsFieldEnabled}
         <NumberField
@@ -168,20 +173,22 @@
     </div>
 
     <div>
-      <label class="font-bold">
-        <input
-          type="checkbox"
-          bind:checked={weightFieldEnabled}
-          on:change={() => {
-            $form.weight = $form.weight == null ? ($form.weight = 0) : ($form.weight = null);
-          }}
-        />
-        Enable weight Field
-      </label>
-      {#if isSimpleFieldInUse(widget, 'weight')}
-        <p class="text-gray-400 mb-1">
-          You cannot disable this field because one or more query conditions depend on it
-        </p>
+      {#if showSimpleFieldCheckBoxes}
+        <label class="font-bold">
+          <input
+            type="checkbox"
+            bind:checked={weightFieldEnabled}
+            on:change={() => {
+              $form.weight = $form.weight == null ? ($form.weight = 0) : ($form.weight = null);
+            }}
+          />
+          Enable weight Field
+        </label>
+        {#if isSimpleFieldInUse(widget, 'weight')}
+          <p class="text-gray-400 mb-1">
+            You cannot disable this field because one or more query conditions depend on it
+          </p>
+        {/if}
       {/if}
       {#if weightFieldEnabled}
         <NumberField
@@ -195,20 +202,22 @@
     </div>
 
     <div>
-      <label class="font-bold">
-        <input
-          type="checkbox"
-          bind:checked={minutesFieldEnabled}
-          on:change={() => {
-            $form.minutes = $form.minutes == null ? ($form.minutes = 0) : ($form.minutes = null);
-          }}
-        />
-        Enable minutes Field
-      </label>
-      {#if isSimpleFieldInUse(widget, 'minutes')}
-        <p class="text-gray-400 mb-1">
-          You cannot disable this field because one or more query conditions depend on it
-        </p>
+      {#if showSimpleFieldCheckBoxes}
+        <label class="font-bold">
+          <input
+            type="checkbox"
+            bind:checked={minutesFieldEnabled}
+            on:change={() => {
+              $form.minutes = $form.minutes == null ? ($form.minutes = 0) : ($form.minutes = null);
+            }}
+          />
+          Enable minutes Field
+        </label>
+        {#if isSimpleFieldInUse(widget, 'minutes')}
+          <p class="text-gray-400 mb-1">
+            You cannot disable this field because one or more query conditions depend on it
+          </p>
+        {/if}
       {/if}
       {#if minutesFieldEnabled}
         <NumberField
@@ -222,20 +231,22 @@
     </div>
 
     <div>
-      <label class="font-bold">
-        <input
-          type="checkbox"
-          bind:checked={secondsFieldEnabled}
-          on:change={() => {
-            $form.seconds = $form.seconds == null ? ($form.seconds = 0) : ($form.seconds = null);
-          }}
-        />
-        Enable seconds Field
-      </label>
-      {#if isSimpleFieldInUse(widget, 'seconds')}
-        <p class="text-gray-400 mb-1">
-          You cannot disable this field because one or more query conditions depend on it
-        </p>
+      {#if showSimpleFieldCheckBoxes}
+        <label class="font-bold">
+          <input
+            type="checkbox"
+            bind:checked={secondsFieldEnabled}
+            on:change={() => {
+              $form.seconds = $form.seconds == null ? ($form.seconds = 0) : ($form.seconds = null);
+            }}
+          />
+          Enable seconds Field
+        </label>
+        {#if isSimpleFieldInUse(widget, 'seconds')}
+          <p class="text-gray-400 mb-1">
+            You cannot disable this field because one or more query conditions depend on it
+          </p>
+        {/if}
       {/if}
       {#if secondsFieldEnabled}
         <NumberField
