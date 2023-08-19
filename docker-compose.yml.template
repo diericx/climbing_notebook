@@ -1,0 +1,44 @@
+version: '3.9'
+services:
+  {{ .name }}:
+    image: {{ .image }} 
+      - traefik
+      - postgres
+    deploy:
+      labels:
+        - 'traefik.enable=true'
+        - 'traefik.http.routers.svelte.rule=Host(`{{ .host }}`)'
+        - 'traefik.http.routers.svelte.entrypoints=websecure'
+        - 'traefik.http.routers.svelte.tls.certresolver=letsencrypt'
+        - 'traefik.http.services.svelte.loadbalancer.server.port=3000'
+    secrets:
+      - source: {{ .db_url_secret}}
+        target: db_url
+        uid: '103'
+        gid: '103'
+        mode: 0440
+      - cn_prod_aws_access_key_id
+      - cn_prod_aws_secret_access_key
+    entrypoint:
+      [
+        '/bin/sh',
+        '-c',
+        'export BODY_SIZE_LIMIT=5000000; export DATABASE_URL=$$(cat /run/secrets/db_url) ; export AWS_ACCESS_KEY_ID=$$(cat /run/secrets/cn_prod_aws_access_key_id) ; export AWS_SECRET_ACCESS_KEY=$$(cat /run/secrets/cn_prod_aws_secret_access_key) ;node build',
+      ]
+
+
+secrets:
+  cn_staging_db_url:
+    external: true
+  cn_prod_db_url:
+    external: true
+  cn_prod_aws_access_key_id:
+    external: true
+  cn_prod_aws_secret_access_key:
+    external: true
+
+networks:
+  traefik:
+    external: true
+  postgres:
+    external: true
