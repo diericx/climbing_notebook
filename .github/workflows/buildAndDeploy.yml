@@ -73,7 +73,7 @@ jobs:
         with:
           template: docker-compose.yml.template
           vars: |
-            image: 279721711046.dkr.ecr.us-west-2.amazonaws.com/climbingnotebook:${{ steps.vars.outputs.sha_short }}
+            image: 279721711046.dkr.ecr.us-west-2.amazonaws.com/climbingnotebook:sha-${{ steps.vars.outputs.sha_short }}
             host: climbingnotebook.com
             db_url_secret: cn_prod_db_url
 
@@ -115,7 +115,7 @@ jobs:
         with:
           template: docker-compose.yml.template
           vars: |
-            image: 279721711046.dkr.ecr.us-west-2.amazonaws.com/climbingnotebook:${{ steps.vars.outputs.sha_short }}
+            image: 279721711046.dkr.ecr.us-west-2.amazonaws.com/climbingnotebook:sha-${{ steps.vars.outputs.sha_short }}
             host: staging.climbingnotebook.com
             db_url_secret: cn_staging_db_url
 
