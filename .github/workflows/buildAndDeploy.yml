@@ -99,7 +99,7 @@ jobs:
     name: Deploy Staging
     runs-on: self-hosted
     needs: build
-    if: startsWith( github.ref, 'refs/head/')
+    if: startsWith( github.ref, 'refs/heads/')
     steps:
       - name: Render template
         id: render_template
