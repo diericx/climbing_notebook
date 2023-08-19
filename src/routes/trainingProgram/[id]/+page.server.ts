@@ -13,21 +13,13 @@ import { page } from '$app/stores';
 export const load: PageServerLoad = async ({ locals, params }) => {
   const session = await locals.auth.validate();
 
-  try {
-    const trainingProgramRepo = new TrainingProgramRepo(prisma);
-    const trainingProgram = await trainingProgramRepo.getOne(Number(params.id));
-    // If no user is not signed in and the training program is not public, error out
-    if (!trainingProgram.isPublic && session === null) {
-      throw new APIError('INVALID_PERMISSIONS', 'This Training Program is private');
-    }
-    return { trainingProgram, session };
-  } catch (e) {
-    if (e instanceof APIError) {
-      throwAPIErrorAsHttpError(e);
-    }
-    console.error(e);
-    throw error(500, { message: SERVER_ERROR });
+  const trainingProgramRepo = new TrainingProgramRepo(prisma);
+  const trainingProgram = await trainingProgramRepo.getOne(Number(params.id));
+  // If no user is not signed in and the training program is not public, error out
+  if (!trainingProgram.isPublic && session === null) {
+    throw new APIError('INVALID_PERMISSIONS', 'This Training Program is private');
   }
+  return { trainingProgram, session };
 };
 
 export const actions: Actions = {
@@ -41,7 +33,7 @@ export const actions: Actions = {
       trainingProgram = await repo.delete(id, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail });
+        throwAPIErrorAsHttpError(e);
       }
       console.error(e);
       throw error(500, { message: SERVER_ERROR });
@@ -65,7 +57,7 @@ export const actions: Actions = {
       await repo.duplicate(Number(params.id), user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail });
+        throwAPIErrorAsHttpError(e);
       }
       console.error(e);
       throw error(500, { message: SERVER_ERROR });
@@ -95,7 +87,7 @@ export const actions: Actions = {
       await repo.update(form.data, id, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form });
+        throwAPIErrorAsHttpError(e);
       }
       console.error(e);
       throw error(500, { message: SERVER_ERROR });
@@ -125,7 +117,7 @@ export const actions: Actions = {
       await repo.addExerciseGroup(form.data, id, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form });
+        throwAPIErrorAsHttpError(e);
       }
       console.error(e);
       throw error(500, { message: SERVER_ERROR });
@@ -149,7 +141,7 @@ export const actions: Actions = {
       await repo.deleteExerciseGroup(id, user?.userId, exerciseGroupId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, trainingProgramFormData: rawFormData });
+        throwAPIErrorAsHttpError(e);
       }
       console.error(e);
       throw error(500, { message: SERVER_ERROR });

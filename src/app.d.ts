@@ -17,6 +17,10 @@ declare global {
     interface Locals {
       auth: import('lucia').AuthRequest;
     }
+    interface Error {
+      message: string;
+      status: number;
+    }
   }
 }
 

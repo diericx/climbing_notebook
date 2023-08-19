@@ -3,7 +3,7 @@ import type { PageServerLoad } from './$types';
 import { prisma } from '$lib/prisma';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { ProfileRepo } from '$lib/profile';
-import { APIError } from '$lib/errors';
+import { APIError, throwAPIErrorAsHttpError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { TrainingProgramRepo, trainingProgramSchema } from '$lib/trainingProgram';
 import { superValidate } from 'sveltekit-superforms/server';
@@ -24,7 +24,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     };
   } catch (e) {
     if (e instanceof APIError) {
-      throw error(401, { message: SERVER_ERROR });
+      throwAPIErrorAsHttpError(e);
     }
     console.error(e);
     throw error(500, { message: SERVER_ERROR });
@@ -45,7 +45,7 @@ export const actions: Actions = {
       await repo.new(form.data, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form });
+        throwAPIErrorAsHttpError(e);
       }
       console.error(e);
       throw error(500, { message: SERVER_ERROR });
