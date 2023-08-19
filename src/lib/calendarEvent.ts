@@ -1,6 +1,6 @@
 import type { PrismaClient } from '@prisma/client';
-import { APIError } from './errors';
 import { z } from 'zod';
+import { APIError } from './errors';
 
 export const calendarEventSchema = z.object({
   dateStart: z.date().default(new Date()),

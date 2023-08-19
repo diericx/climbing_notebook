@@ -101,6 +101,7 @@
               widget,
               showType: false,
               showSimpleFields: true,
+              showSimpleFieldCheckBoxes: false,
               trainingPrograms,
             },
           },

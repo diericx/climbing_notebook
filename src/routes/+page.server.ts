@@ -4,8 +4,8 @@ import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
   // Unprotected page, session may not exist
-  const { user } = await locals.auth.validateUser();
-  if (user) {
+  const session = await locals.auth.validate();
+  if (session !== null) {
     throw redirect(303, '/dashboard');
   }
 };

@@ -1,22 +1,17 @@
-import type { Actions } from './$types';
-import type { PageServerLoad } from './$types';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { APIError } from '$lib/errors';
+import { SERVER_ERROR } from '$lib/helperTypes';
 import { JournalEntryRepo, journalEntrySchema } from '$lib/journalEntry';
 import { prisma } from '$lib/prisma';
-import { SERVER_ERROR } from '$lib/helperTypes';
-import { APIError } from '$lib/errors';
+import { getSessionOrRedirect } from '$lib/utils';
+import { error, fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
+import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
-  const { user } = await locals.auth.validateUser();
+export const load: PageServerLoad = async ({ locals, url }) => {
+  const { user } = await getSessionOrRedirect({ locals, url });
+
   const repo = new JournalEntryRepo(prisma);
-  let journalEntries;
-  try {
-    journalEntries = await repo.get(user?.userId);
-  } catch (e) {
-    console.error(e);
-    throw error(500, { message: SERVER_ERROR });
-  }
+  let journalEntries = await repo.get(user?.userId);
 
   return {
     journalEntries,
@@ -25,7 +20,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 export const actions: Actions = {
   new: async ({ request, url, locals }) => {
-    const { user } = await locals.auth.validateUser();
+    const { user } = await getSessionOrRedirect({ locals, url });
+
     const formData = await request.formData();
     const form = await superValidate(formData, journalEntrySchema, {
       id: formData.get('_formId')?.toString(),
@@ -47,10 +43,6 @@ export const actions: Actions = {
       }
       console.error(e);
       throw error(500, { message: SERVER_ERROR });
-    }
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
     }
 
     return { form };

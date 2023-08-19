@@ -22,12 +22,6 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
-      - run: npm install --save-dev prettier-plugin-svelte
-      - name: Prettify check
-        uses: creyD/prettier_action@v4.3
-        with:
-          # This part is also where you can pass other options, for example:
-          dry: true
-          prettier_options: --check
-          only_changed: True
-          prettier_plugins: 'prettier-plugin-svelte'
+      - run: npm install --save-dev prettier-plugin-svelte eslint
+      - name: Full lint suite
+        run: npm run lint

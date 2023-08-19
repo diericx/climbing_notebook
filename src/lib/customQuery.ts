@@ -1,21 +1,61 @@
-import type { PrismaClient, CustomQuery, ExerciseEvent, Metric, Widget } from '@prisma/client';
+import type { CustomQuery, ExerciseEvent, Metric, PrismaClient, Widget } from '@prisma/client';
 import { Prisma } from '@prisma/client';
+import { evaluate } from 'mathjs';
 import { z } from 'zod';
 import { APIError } from './errors';
 
-export const customQuerySchema = z.object({
-  name: z.string().min(1, { message: 'Name is required' }),
-  table: z.enum(['metric', 'exerciseEvent']).default('exerciseEvent'),
-  equation: z.string().min(1, { message: 'Equation is required' }),
-  metric: z.string().nullish(),
-  exerciseId: z.string().nullish(),
-});
+export const customQuerySchema = z
+  .object({
+    name: z.string().min(1, { message: 'Name is required' }),
+    table: z.enum(['metric', 'exerciseEvent']).default('exerciseEvent'),
+    equation: z.string().min(1, { message: 'Equation is required' }),
+    metric: z.string().nullish(),
+    exerciseId: z.string().nullish(),
+  })
+  .superRefine((val, ctx) => {
+    if (val.table == 'exerciseEvent' && !val.exerciseId) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Exercise is required`,
+        path: ['exercise'],
+      });
+    }
+    if (val.table == 'metric' && !val.metric) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Metric is required`,
+        path: ['metric'],
+      });
+    }
+    // Check if equation is valid by attempting to solve the equation
+    try {
+      if (val.table == 'exerciseEvent') {
+        evaluate(val.equation, {
+          sets: 0,
+          reps: 0,
+          weight: 0,
+          minutes: 0,
+          seconds: 0,
+        });
+      } else if (val.table == 'metric') {
+        evaluate(val.equation, {
+          value: 0,
+        });
+      }
+    } catch (e: any) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: e.toString(),
+        path: ['equation'],
+      });
+    }
+  });
 export type CustomQuerySchema = typeof customQuerySchema;
 
 export const customQueryConditionSchema = z.object({
   column: z.string().min(1, { message: 'Column is required' }),
   condition: z.enum(['equals', 'contains']).default('contains'),
-  useWidgetField: z.boolean().default(false),
+  useWidgetField: z.boolean().default(false).optional(),
   widgetFieldToUse: z.string().nullish(),
   value: z.number(),
 });
@@ -67,6 +107,7 @@ export class CustomQueryRepo {
     // Get the widget
     const query = (await this.getOne(id, {
       dataset: { include: { widget: true } },
+      conditions: true,
     })) as QueryWithWidget;
 
     // Permissions: if it is not a template, only the owner can run the query
@@ -89,7 +130,7 @@ export class CustomQueryRepo {
             ...query.conditions.map((c) => ({
               [c.column]: {
                 [c.condition]: c.useWidgetField
-                  ? query.dataset.widget[c.column as keyof Widget]
+                  ? query.dataset.widget[c.widgetFieldToUse as keyof Widget]
                   : c.value,
               },
             })),

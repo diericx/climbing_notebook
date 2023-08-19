@@ -1,13 +1,12 @@
-import type { Actions } from './$types';
-import { error, fail, redirect } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
-import { loginSchema, signupSchema } from '$lib/user';
-import { auth } from '$lib/server/lucia';
-import { LuciaError } from 'lucia-auth';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
-import { superValidate } from 'sveltekit-superforms/server';
+import { auth } from '$lib/server/lucia';
+import { loginSchema, signupSchema } from '$lib/user';
 import { Prisma } from '@prisma/client';
+import { error, fail, redirect } from '@sveltejs/kit';
+import { LuciaError } from 'lucia';
+import { superValidate } from 'sveltekit-superforms/server';
+import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const session = await locals.auth.validate();
@@ -16,7 +15,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-  login: async ({ request, locals, url }) => {
+  login: async ({ request, locals }) => {
     const formData = await request.formData();
     const form = await superValidate(formData, loginSchema, {
       id: formData.get('_formId')?.toString(),
@@ -28,7 +27,7 @@ export const actions: Actions = {
 
     try {
       const key = await auth.useKey('username', form.data.username, form.data.password);
-      const session = await auth.createSession(key.userId);
+      const session = await auth.createSession({ userId: key.userId, attributes: {} });
       locals.auth.setSession(session);
     } catch (e) {
       // Catch KNOWN duplicate username/provider id errors from both Lucia and the
@@ -49,15 +48,12 @@ export const actions: Actions = {
       throw error(500, { message: SERVER_ERROR });
     }
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
     return {
       form,
     };
   },
 
-  register: async ({ request, locals, url }) => {
+  register: async ({ request, locals }) => {
     const formData = await request.formData();
     const form = await superValidate(formData, signupSchema, {
       id: formData.get('_formId')?.toString(),
@@ -69,7 +65,7 @@ export const actions: Actions = {
 
     try {
       const user = await auth.createUser({
-        primaryKey: {
+        key: {
           providerId: 'username',
           providerUserId: form.data.username,
           password: form.data.password,
@@ -87,9 +83,12 @@ export const actions: Actions = {
         },
       });
 
-      const session = await auth.createSession(user.userId);
+      const session = await auth.createSession({
+        userId: user.userId,
+        attributes: {},
+      });
       locals.auth.setSession(session);
-    } catch (e) {
+    } catch (e: any) {
       // Catch KNOWN duplicate username/provider id errors from both Lucia and the
       // propogated Prisma erros.
       if (
@@ -111,9 +110,6 @@ export const actions: Actions = {
       throw error(500, { message: SERVER_ERROR });
     }
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
     return {
       form,
     };

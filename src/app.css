@@ -198,3 +198,11 @@ pre {
 .ec-body {
   background-color: white;
 }
+
+input[type='checkbox'][disabled] {
+  background-color: gray;
+}
+
+input[type='checkbox'][disabled]:hover {
+  background-color: gray;
+}

@@ -1,16 +1,15 @@
-import { error, fail, redirect, type Actions } from '@sveltejs/kit';
-import { SERVER_ERROR } from '$lib/helperTypes';
+import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
+import { exerciseGroupSchema } from '$lib/exerciseGroup';
 import { prisma } from '$lib/prisma';
 import { TrainingProgramRepo } from '$lib/trainingProgram';
-import { APIError } from '$lib/errors';
+import { getSessionOrRedirect } from '$lib/utils';
+import { fail, type Actions } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
-import { exerciseGroupSchema } from '$lib/exerciseGroup';
-import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
 
 export const actions: Actions = {
   edit: async ({ locals, request, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
     const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
     const trainingProgramId = Number(params.id);
     const exerciseGroupId = Number(params.groupId);
     const form = await superValidate(formData, exerciseGroupSchema, {
@@ -22,49 +21,25 @@ export const actions: Actions = {
     }
 
     const repo = new TrainingProgramRepo(prisma);
-    try {
-      await repo.editExerciseGroup(form.data, trainingProgramId, exerciseGroupId, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form });
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
+    await repo.editExerciseGroup(form.data, trainingProgramId, exerciseGroupId, user?.userId);
 
     return { form };
   },
 
   delete: async ({ locals, url, params }) => {
-    const { user } = await locals.auth.validateUser();
+    const { user } = await getSessionOrRedirect({ locals, url });
     const trainingProgramId = Number(params.id);
     const exerciseGroupId = Number(params.groupId);
 
     const repo = new TrainingProgramRepo(prisma);
-    try {
-      await repo.deleteExerciseGroup(trainingProgramId, user?.userId, exerciseGroupId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        return fail(401, { message: e.detail });
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
+    await repo.deleteExerciseGroup(trainingProgramId, user?.userId, exerciseGroupId);
 
     return { success: true };
   },
 
   newExerciseEvent: async ({ locals, request, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
     const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
     const form = await superValidate(formData, exerciseEventSchema, {
       id: formData.get('_formId')?.toString(),
     });
@@ -76,19 +51,7 @@ export const actions: Actions = {
 
     form.data.exerciseGroupId = groupId;
     const repo = new ExerciseEventRepo(prisma);
-    try {
-      await repo.new(form.data, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form });
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
+    await repo.new(form.data, user?.userId);
 
     return { form };
   },

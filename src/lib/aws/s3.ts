@@ -1,10 +1,10 @@
 // Create S3 service object
 import {
-  PutObjectCommand,
   DeleteObjectCommand,
-  HeadObjectCommand,
-  S3Client,
   GetObjectCommand,
+  HeadObjectCommand,
+  PutObjectCommand,
+  S3Client,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 const client = new S3Client({ region: 'us-west-2' });
@@ -47,4 +47,4 @@ const getMetadata = async (key: string) => {
   return result.Metadata;
 };
 
-export { uploadFile, getPresignedUrl, deleteFile, getMetadata };
+export { deleteFile, getMetadata, getPresignedUrl, uploadFile };

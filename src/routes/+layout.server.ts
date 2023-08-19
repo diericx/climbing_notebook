@@ -1,9 +1,14 @@
-import type { PageServerLoad } from './$types';
-import { prisma } from '$lib/prisma';
 import { ExerciseEventRepo } from '$lib/exerciseEvent';
+import { prisma } from '$lib/prisma';
+import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
-  const { user } = await locals.auth.validateUser();
+  const session = await locals.auth.validate();
+  if (session === null) {
+    return {};
+  }
+  const { user } = session;
+
   const exerciseEventsRepo = new ExerciseEventRepo(prisma);
   let countOfExercisesThatNeedMigration = 0;
   if (user) {

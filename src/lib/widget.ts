@@ -1,4 +1,4 @@
-import type { PrismaClient, Prisma } from '@prisma/client';
+import type { Prisma, PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
 
@@ -20,6 +20,8 @@ const widgetSchemaBase = z.object({
 });
 export const widgetSchemaBasePartial = widgetSchemaBase.partial();
 
+// Split out the refinement function so we can reuse it to compose a partial schema
+// below
 function refinementFunc(
   val: z.infer<typeof widgetSchemaBase> | z.infer<typeof widgetSchemaBasePartial>,
   ctx: z.RefinementCtx
@@ -229,7 +231,18 @@ export class WidgetRepo {
   }
 
   async update(data: z.infer<WidgetSchemaPartial>, id: string, ownerId: string) {
-    await this.getOneAndValidateOwner(id, ownerId);
+    const widget = await this.getOneAndValidateOwner(id, ownerId);
+
+    // Check to make sure we aren't removing a field that is currently in use
+    if (
+      (data.sets === null && isSimpleFieldInUse(widget, 'sets')) ||
+      (data.reps === null && isSimpleFieldInUse(widget, 'reps')) ||
+      (data.minutes === null && isSimpleFieldInUse(widget, 'minutes')) ||
+      (data.seconds === null && isSimpleFieldInUse(widget, 'seconds')) ||
+      (data.weight === null && isSimpleFieldInUse(widget, 'weight'))
+    ) {
+      throw new APIError('INVALID_INPUT', 'There are conditions depending on this field');
+    }
 
     return await this.prisma.widget.update({
       data: {
@@ -377,4 +390,29 @@ export class WidgetRepo {
       }),
     ]);
   }
+}
+
+export function isSimpleFieldInUse(
+  widget: Prisma.WidgetGetPayload<{
+    include: {
+      datasets: {
+        include: {
+          customQueries: {
+            include: {
+              conditions: true;
+            };
+          };
+        };
+      };
+    };
+  }>,
+  field: string
+) {
+  return (
+    widget.datasets.find((d) =>
+      d.customQueries.find((q) =>
+        q.conditions.find((c) => c.useWidgetField === true && c.widgetFieldToUse === field)
+      )
+    ) !== undefined
+  );
 }

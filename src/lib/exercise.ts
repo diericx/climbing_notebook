@@ -85,7 +85,7 @@ export class ExerciseRepo {
     return exercise;
   }
 
-  async update(data: z.infer<ExerciseSchema>, id: string, userId: string) {
+  async update(data: z.infer<ExerciseSchema>, id: string) {
     return await this.prisma.exercise.update({
       data: {
         ...data,

@@ -1,7 +1,8 @@
-import type { Prisma, PrismaClient, TrainingProgram } from '@prisma/client';
+import type { Prisma, PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
 import type { ExerciseGroupSchema } from './exerciseGroup';
+import type { TrainingProgramDaySchema } from './trainingProgramDay';
 
 export const trainingProgramSchema = z.object({
   name: z.string().min(1),
@@ -440,7 +441,7 @@ export class TrainingProgramRepo {
   }
 
   async editTrainingProgramDay(
-    data: z.infer<TrainingProgramSchema>,
+    data: z.infer<TrainingProgramDaySchema>,
     trainingProgramId: number,
     trainingProgramDayId: number,
     ownerId: string

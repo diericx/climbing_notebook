@@ -1,17 +1,15 @@
-import type { Actions } from './$types';
-import { error, fail, redirect } from '@sveltejs/kit';
-import { SERVER_ERROR } from '$lib/helperTypes';
+import { CustomQueryRepo, customQueryConditionSchema } from '$lib/customQuery';
 import { prisma } from '$lib/prisma';
-import { APIError } from '$lib/errors';
-import { message, superValidate } from 'sveltekit-superforms/server';
-import { customQueryConditionSchema, CustomQueryRepo, customQuerySchema } from '$lib/customQuery';
-import type { PageServerLoad } from './$types';
-import type { ExerciseEvent, Metric } from '@prisma/client';
+import { getSessionOrRedirect } from '$lib/utils';
+import { fail } from '@sveltejs/kit';
+import { superValidate } from 'sveltekit-superforms/server';
+import type { Actions } from './$types';
 
 export const actions: Actions = {
   new: async ({ request, locals, params, url }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+
     const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
     const form = await superValidate(formData, customQueryConditionSchema, {
       id: formData.get('_formId')?.toString(),
     });
@@ -22,23 +20,7 @@ export const actions: Actions = {
     }
 
     const repo = new CustomQueryRepo(prisma);
-    try {
-      await repo.addCondition(form.data, queryId, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        if (e.message == 'NOT_FOUND') {
-          return message(form, 'Query not found for condition.', {
-            status: 401,
-          });
-        }
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
+    await repo.addCondition(form.data, queryId, user?.userId);
 
     return { form };
   },

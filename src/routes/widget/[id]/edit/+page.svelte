@@ -106,7 +106,9 @@
                   showName: false,
                   showWidth: false,
                   showSimpleFields: true,
+                  showGoToAdvancedEditorLink: false,
                   trainingPrograms,
+                  widget,
                 },
               },
             })}

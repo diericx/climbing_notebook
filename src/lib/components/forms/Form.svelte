@@ -13,10 +13,14 @@
   export let resetForm = false;
   export let debug = false;
 
-  // Add redirect data
-  if ($page.url.searchParams.has('redirectTo')) {
+  // Add redirect data from the page url only if the action doesn't already have a
+  // redirect embedded within
+  if ($page.url.searchParams.has('redirectTo') && !action.includes('&redirectTo=')) {
     action += '&redirectTo=' + $page.url.searchParams.get('redirectTo');
   }
+
+  // Add auth fallback redirect data
+  action += '&redirectToAuthFallback=' + $page.url.pathname + $page.url.search;
 
   // As we are just initializing the form with the provided data, disable errors.
   // Errors will come in after submit either from the server or from client.
@@ -34,8 +38,11 @@
         onSuccess();
       }
     },
+    onError({ result }) {
+      $message = result.error.message;
+    },
   });
-  const { form, enhance, message, errors } = newSuperForm;
+  const { form, enhance, message } = newSuperForm;
 </script>
 
 {#if $message}

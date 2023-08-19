@@ -1,49 +1,44 @@
-import type { Actions } from './$types';
-import type { PageServerLoad } from './$types';
-import { prisma } from '$lib/prisma';
-import { error, fail, redirect } from '@sveltejs/kit';
-import { APIError } from '$lib/errors';
-import { SERVER_ERROR } from '$lib/helperTypes';
-import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
-import { ProfileRepo } from '$lib/profile';
-import { superValidate } from 'sveltekit-superforms/server';
 import { ExerciseRepo } from '$lib/exercise';
+import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
+import { prisma } from '$lib/prisma';
+import { ProfileRepo } from '$lib/profile';
+import { getSessionOrRedirect } from '$lib/utils';
+import { fail } from '@sveltejs/kit';
+import { superValidate } from 'sveltekit-superforms/server';
+import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
-  const { user } = await locals.auth.validateUser();
+export const load: PageServerLoad = async ({ locals, url }) => {
+  const { user } = await getSessionOrRedirect({ locals, url });
+
   const exerciseEventsRepo = new ExerciseEventRepo(prisma);
   const exerciseRepo = new ExerciseRepo(prisma);
   const profileRepo = new ProfileRepo(prisma);
-  try {
-    const exerciseEvents = await exerciseEventsRepo.get(user?.userId);
-    const profile = await profileRepo.getOne(user?.userId);
-    const exercises = await exerciseRepo.get({
-      _count: {
-        select: {
-          exerciseEvents: true,
-        },
+  const exerciseEvents = await exerciseEventsRepo.get(user?.userId);
+  const profile = await profileRepo.getOne(user?.userId);
+  const exercises = await exerciseRepo.get({
+    _count: {
+      select: {
+        exerciseEvents: true,
       },
-      id: true,
-      name: true,
-      fieldsToShow: true,
-    });
+    },
+    id: true,
+    name: true,
+    fieldsToShow: true,
+  });
 
-    return {
-      exercises,
-      exerciseEvents,
-      profile,
-      user,
-    };
-  } catch (e) {
-    console.error(e);
-    throw error(500, { message: SERVER_ERROR });
-  }
+  return {
+    exercises,
+    exerciseEvents,
+    profile,
+    user,
+  };
 };
 
 export const actions: Actions = {
   new: async ({ locals, request, url }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+
     const formData = await request.formData();
-    const { user } = await locals.auth.validateUser();
     const form = await superValidate(formData, exerciseEventSchema, {
       id: formData.get('_formId')?.toString(),
     });
@@ -53,15 +48,7 @@ export const actions: Actions = {
     }
 
     const repo = new ExerciseEventRepo(prisma);
-    try {
-      await repo.new(form.data, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form });
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
+    await repo.new(form.data, user?.userId);
 
     const exerciseToMarkCompletedId = formData.get('exerciseToMarkCompletedId');
     const dateToMarkCompleted = formData.get('dateToMarkCompleted');
@@ -72,10 +59,6 @@ export const actions: Actions = {
         new Date(dateToMarkCompleted.toString()),
         true
       );
-    }
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
     }
 
     return { form };
