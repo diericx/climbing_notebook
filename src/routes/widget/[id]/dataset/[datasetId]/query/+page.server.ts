@@ -22,10 +22,6 @@ export const actions: Actions = {
     const repo = new CustomQueryRepo(prisma);
     await repo.new(form.data, datasetId, user?.userId);
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
     return { form };
   },
 };

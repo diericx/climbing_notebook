@@ -13,8 +13,9 @@
   export let resetForm = false;
   export let debug = false;
 
-  // Add redirect data
-  if ($page.url.searchParams.has('redirectTo')) {
+  // Add redirect data from the page url only if the action doesn't already have a
+  // redirect embedded within
+  if ($page.url.searchParams.has('redirectTo') && !action.includes('&redirectTo=')) {
     action += '&redirectTo=' + $page.url.searchParams.get('redirectTo');
   }
 

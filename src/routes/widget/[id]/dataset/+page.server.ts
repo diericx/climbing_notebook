@@ -23,10 +23,6 @@ export const actions: Actions = {
     const repo = new WidgetRepo(prisma);
     await repo.addDataset(form.data, id, user?.userId);
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
     return { form };
   },
 };

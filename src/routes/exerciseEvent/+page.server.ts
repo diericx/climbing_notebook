@@ -64,10 +64,6 @@ export const actions: Actions = {
       );
     }
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
     return { form };
   },
 };

@@ -15,10 +15,6 @@ export const actions: Actions = {
     const repo = new WidgetRepo(prisma);
     await repo.deleteDataset(widgetId, datasetId, user?.userId);
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
     return {};
   },
 
@@ -38,10 +34,6 @@ export const actions: Actions = {
 
     const repo = new WidgetRepo(prisma);
     await repo.updateDataset(form.data, widgetId, datasetId, user?.userId);
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
 
     return { form };
   },

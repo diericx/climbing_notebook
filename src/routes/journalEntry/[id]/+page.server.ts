@@ -21,10 +21,6 @@ export const actions: Actions = {
     const repo = new JournalEntryRepo(prisma);
     await repo.update(form.data, id, user?.userId);
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
     return { form };
   },
 
@@ -35,10 +31,6 @@ export const actions: Actions = {
 
     const repo = new JournalEntryRepo(prisma);
     await repo.delete(id, user?.userId);
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
 
     return { success: true };
   },

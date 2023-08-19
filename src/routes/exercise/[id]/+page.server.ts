@@ -23,10 +23,6 @@ export const actions: Actions = {
     const repo = new ExerciseRepo(prisma);
     await repo.update(form.data, params.id, user?.userId);
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
     return { form };
   },
 };

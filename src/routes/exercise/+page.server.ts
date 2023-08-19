@@ -42,9 +42,6 @@ export const actions: Actions = {
       throw e;
     }
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
     throw redirect(303, '/exercise');
   },
 };

@@ -49,9 +49,6 @@ export const actions: Actions = {
       throw error(500, { message: SERVER_ERROR });
     }
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
     return {
       form,
     };
@@ -114,9 +111,6 @@ export const actions: Actions = {
       throw error(500, { message: SERVER_ERROR });
     }
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
     return {
       form,
     };

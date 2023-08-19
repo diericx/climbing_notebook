@@ -48,10 +48,6 @@ export const actions: Actions = {
     // Delete the resource
     await repo.delete(id, user?.userId);
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
     return { success: true };
   },
 
@@ -70,10 +66,6 @@ export const actions: Actions = {
 
     const repo = new ProjectRepo(prisma);
     await repo.update(form.data, id, user?.userId);
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
 
     return { form };
   },
@@ -126,10 +118,6 @@ export const actions: Actions = {
       await repo.update({ imageS3ObjectKey: key }, id, user?.userId);
     }
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
     return { form };
   },
 
@@ -154,10 +142,6 @@ export const actions: Actions = {
     // Update the project
     const repo = new ProjectRepo(prisma);
     await repo.update({ imageS3ObjectKey: null }, id, user?.userId);
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
 
     return { form };
   },

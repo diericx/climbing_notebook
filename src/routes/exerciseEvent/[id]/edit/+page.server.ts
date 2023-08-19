@@ -15,10 +15,6 @@ export const actions: Actions = {
     const repo = new ExerciseEventRepo(prisma);
     await repo.delete(id, user?.userId);
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
     return { success: true };
   },
 
@@ -37,10 +33,6 @@ export const actions: Actions = {
 
     const repo = new ExerciseEventRepo(prisma);
     await repo.update(form.data, id, user?.userId);
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
 
     return { form };
   },

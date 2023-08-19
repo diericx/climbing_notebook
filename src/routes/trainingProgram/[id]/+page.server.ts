@@ -29,10 +29,6 @@ export const actions: Actions = {
     let trainingProgram: TrainingProgram;
     trainingProgram = await repo.delete(id, user?.userId);
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
     return { success: true, trainingProgram };
   },
 
@@ -44,10 +40,6 @@ export const actions: Actions = {
 
     const repo = new TrainingProgramRepo(prisma);
     await repo.duplicate(Number(params.id), user?.userId);
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
 
     return { success: true };
   },
@@ -67,10 +59,6 @@ export const actions: Actions = {
     const repo = new TrainingProgramRepo(prisma);
     await repo.update(form.data, id, user?.userId);
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
     return { form };
   },
 
@@ -89,10 +77,6 @@ export const actions: Actions = {
     const repo = new TrainingProgramRepo(prisma);
     await repo.addExerciseGroup(form.data, id, user?.userId);
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
     return { form };
   },
 
@@ -104,10 +88,6 @@ export const actions: Actions = {
 
     const repo = new TrainingProgramRepo(prisma);
     await repo.deleteExerciseGroup(id, user?.userId, exerciseGroupId);
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
 
     return { success: true };
   },

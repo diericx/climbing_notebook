@@ -66,10 +66,6 @@ export const actions: Actions = {
     const repo = new WidgetRepo(prisma);
     await repo.update(form.data, id, user?.userId);
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
     return { form };
   },
 
@@ -79,10 +75,6 @@ export const actions: Actions = {
 
     const repo = new WidgetRepo(prisma);
     await repo.update({ isPublished: true }, id, user?.userId);
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
   },
 
   hide: async ({ locals, url, params }) => {
@@ -91,10 +83,6 @@ export const actions: Actions = {
 
     const repo = new WidgetRepo(prisma);
     await repo.update({ isPublished: false }, id, user?.userId);
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
   },
 
   delete: async ({ locals, url, params }) => {
@@ -103,10 +91,6 @@ export const actions: Actions = {
 
     const repo = new WidgetRepo(prisma);
     await repo.delete(id, user?.userId);
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
 
     return {};
   },
@@ -128,10 +112,6 @@ export const actions: Actions = {
     const repo = new WidgetRepo(prisma);
     await repo.newTemplate(form.data, id, user?.userId);
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
     return { form };
   },
 
@@ -142,10 +122,6 @@ export const actions: Actions = {
 
     const repo = new WidgetRepo(prisma);
     await repo.duplicateTemplateAsDashboardWidget(id, user?.userId);
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
 
     return {};
   },

@@ -23,10 +23,6 @@ export const actions: Actions = {
     const repo = new TrainingProgramRepo(prisma);
     await repo.editExerciseGroup(form.data, trainingProgramId, exerciseGroupId, user?.userId);
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
     return { form };
   },
 
@@ -37,10 +33,6 @@ export const actions: Actions = {
 
     const repo = new TrainingProgramRepo(prisma);
     await repo.deleteExerciseGroup(trainingProgramId, user?.userId, exerciseGroupId);
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
 
     return { success: true };
   },
@@ -60,10 +52,6 @@ export const actions: Actions = {
     form.data.exerciseGroupId = groupId;
     const repo = new ExerciseEventRepo(prisma);
     await repo.new(form.data, user?.userId);
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
 
     return { form };
   },

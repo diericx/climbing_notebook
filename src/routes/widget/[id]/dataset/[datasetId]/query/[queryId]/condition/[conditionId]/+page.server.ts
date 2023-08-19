@@ -23,10 +23,6 @@ export const actions: Actions = {
     const repo = new CustomQueryRepo(prisma);
     await repo.updateCondition(form.data, queryId, conditionId, user?.userId);
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
     return { form };
   },
 
@@ -37,10 +33,6 @@ export const actions: Actions = {
 
     const repo = new CustomQueryRepo(prisma);
     await repo.deleteCondition(queryId, conditionId, user?.userId);
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
 
     return {};
   },

@@ -25,10 +25,6 @@ export const actions: Actions = {
       user?.userId
     );
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
     return { success: true };
   },
 
@@ -49,10 +45,6 @@ export const actions: Actions = {
       trainingProgramDayId,
       user?.userId
     );
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
 
     return { success: true };
   },
@@ -78,10 +70,6 @@ export const actions: Actions = {
       user?.userId
     );
 
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
-
     return { form };
   },
 
@@ -100,10 +88,6 @@ export const actions: Actions = {
     form.data.trainingProgramDayId = Number(dayId);
     const exerciseEventRepo = new ExerciseEventRepo(prisma);
     await exerciseEventRepo.new(form.data, user?.userId);
-
-    if (url.searchParams.has('redirectTo')) {
-      throw redirect(303, url.searchParams.get('redirectTo') || '/');
-    }
 
     return { form };
   },
