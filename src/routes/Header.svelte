@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Form from '$lib/components/forms/Form.svelte';
+  import { emptySchema } from '$lib/utils';
   import type { User } from 'lucia';
 
   let showMenu = false;
