@@ -63,13 +63,17 @@ jobs:
     needs: build
     if: startsWith( github.ref, 'refs/tags/releases/')
     steps:
+      - name: Set outputs
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
       - name: Render template
         id: render_template
         uses: chuhlomin/render-template@v1.7
         with:
           template: docker-compose.yml.template
           vars: |
-            image: 279721711046.dkr.ecr.us-west-2.amazonaws.com/climbingnotebook:${{ github.sha }}
+            image: 279721711046.dkr.ecr.us-west-2.amazonaws.com/climbingnotebook:${{ steps.vars.outputs.sha_short }}
             host: climbingnotebook.com
             db_url_secret: cn_prod_db_url
 
@@ -101,13 +105,17 @@ jobs:
     needs: build
     if: startsWith( github.ref, 'refs/heads/')
     steps:
+      - name: Set outputs
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
       - name: Render template
         id: render_template
         uses: chuhlomin/render-template@v1.7
         with:
           template: docker-compose.yml.template
           vars: |
-            image: 279721711046.dkr.ecr.us-west-2.amazonaws.com/climbingnotebook:${{ github.sha }}
+            image: 279721711046.dkr.ecr.us-west-2.amazonaws.com/climbingnotebook:${{ steps.vars.outputs.sha_short }}
             host: staging.climbingnotebook.com
             db_url_secret: cn_staging_db_url
 
