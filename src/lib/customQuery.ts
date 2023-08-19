@@ -52,13 +52,30 @@ export const customQuerySchema = z
   });
 export type CustomQuerySchema = typeof customQuerySchema;
 
-export const customQueryConditionSchema = z.object({
-  column: z.string().min(1, { message: 'Column is required' }),
-  condition: z.enum(['equals', 'contains']).default('contains'),
-  useWidgetField: z.boolean().default(false).optional(),
-  widgetFieldToUse: z.string().nullish(),
-  value: z.number(),
-});
+export const customQueryConditionSchema = z
+  .object({
+    column: z.string().min(1, { message: 'Column is required' }),
+    condition: z.enum(['equals', 'contains']).default('contains'),
+    useWidgetField: z.boolean().default(false).optional(),
+    widgetFieldToUse: z.string().nullish(),
+    value: z.number(),
+  })
+  .superRefine((val, ctx) => {
+    // If useWidgetField is set to false, set the widgetFieldToUse to null
+    // so that we don't have a potential dangling reference to a field on the
+    // widget that may possibly have been removed by another action
+    if (val.useWidgetField === false) {
+      val.widgetFieldToUse = null;
+    }
+
+    if (val.useWidgetField === true && val.widgetFieldToUse === null) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Must specify a widget field to use',
+        path: ['widgetFieldToUse'],
+      });
+    }
+  });
 export type CustomQueryConditionSchema = typeof customQueryConditionSchema;
 
 export type CustomQueryResults = {
