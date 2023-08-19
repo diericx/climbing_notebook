@@ -111,9 +111,9 @@ jobs:
             host: staging.climbingnotebook.com
             db_url_secret: cn_staging_db_url
 
-      - name: Test
-        run: |-
-          echo '${{ steps.render_template.outputs.result }}'
+      - name: Dump template
+        run: |
+          echo "${{ steps.render_template.outputs.result }}"
 
       - name: run commands to deploy
         uses: appleboy/ssh-action@v0.1.10
