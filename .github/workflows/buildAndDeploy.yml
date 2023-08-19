@@ -113,7 +113,7 @@ jobs:
 
       - name: Dump template
         run: |
-          echo "${{ steps.render_template.outputs.result }}"
+          echo '${{ steps.render_template.outputs.result }}'
 
       - name: run commands to deploy
         uses: appleboy/ssh-action@v0.1.10

@@ -8,7 +8,7 @@ services:
     deploy:
       labels:
         - 'traefik.enable=true'
-        - 'traefik.http.routers.svelte.rule=Host(`{{ .host }}`)'
+        - 'traefik.http.routers.svelte.rule=Host(\`{{ .host }}\`)'
         - 'traefik.http.routers.svelte.entrypoints=websecure'
         - 'traefik.http.routers.svelte.tls.certresolver=letsencrypt'
         - 'traefik.http.services.svelte.loadbalancer.server.port=3000'
