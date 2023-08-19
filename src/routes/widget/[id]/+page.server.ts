@@ -1,5 +1,5 @@
 import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
-import { APIError } from '$lib/errors';
+import { APIError, throwAPIErrorAsHttpError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
 import { TrainingProgramRepo } from '$lib/trainingProgram';
@@ -21,7 +21,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
     const widget = await widgetRepo.getOne(id);
     // This page is only for template widgets
     if (!widget.isTemplate) {
-      throw error(401, 'Only template widgets can be viewed individually');
+      throw new APIError('INVALID_INPUT', 'Only template widgets can be viewed individually');
     }
 
     const trainingPrograms = await trainingProgramRepo.get(user?.userId);
@@ -52,10 +52,10 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
       user,
     };
   } catch (e) {
-    console.error(e);
-    if (typeOf(e) == 'HttpError') {
-      throw e;
+    if (e instanceof APIError) {
+      throwAPIErrorAsHttpError(e);
     }
+    console.error(e);
     throw error(500, { message: SERVER_ERROR });
   }
 };
@@ -78,7 +78,7 @@ export const actions: Actions = {
       await repo.update(form.data, id, user?.userId);
     } catch (e) {
       if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form });
+        throwAPIErrorAsHttpError(e);
       }
       console.error(e);
       throw error(500, { message: SERVER_ERROR });

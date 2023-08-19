@@ -5,11 +5,13 @@ import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
+import { getSessionOrRedirect } from '$lib/utils';
 
 export const actions: Actions = {
   edit: async ({ locals, params, request, url }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+
     const formData = await request.formData();
-    const { user } = await locals.auth.validate();
     const id = Number(params.id);
     const form = await superValidate(formData, calendarEventSchema, {
       id: formData.get('_formId')?.toString(),
@@ -38,7 +40,7 @@ export const actions: Actions = {
   },
 
   delete: async ({ locals, url, params }) => {
-    const { user } = await locals.auth.validate();
+    const { user } = await getSessionOrRedirect({ locals, url });
     const id = Number(params.id);
 
     const repo = new CalendarEventRepo(prisma);

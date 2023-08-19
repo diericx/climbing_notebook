@@ -43,7 +43,7 @@ export const actions: Actions = {
   },
 
   delete: async ({ params, locals, url }) => {
-    const { user } = await locals.auth.validate();
+    const { user } = await getSessionOrRedirect({ locals, url });
     const queryId = params.queryId;
     const conditionId = params.conditionId;
 

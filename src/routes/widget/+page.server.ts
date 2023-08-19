@@ -1,7 +1,7 @@
 import type { Actions } from './$types';
 import { prisma } from '$lib/prisma';
 import { error, fail, redirect } from '@sveltejs/kit';
-import { APIError } from '$lib/errors';
+import { APIError, throwAPIErrorAsHttpError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { setError, superValidate } from 'sveltekit-superforms/server';
 import { WidgetRepo, widgetSchema } from '$lib/widget';
@@ -56,7 +56,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     };
   } catch (e) {
     if (e instanceof APIError) {
-      throw error(401, { message: e.detail });
+      throwAPIErrorAsHttpError(e);
     }
     console.error(e);
     throw error(500, { message: SERVER_ERROR });
