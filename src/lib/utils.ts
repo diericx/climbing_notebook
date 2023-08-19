@@ -191,7 +191,7 @@ export function matchMetricsInString(s: string) {
 }
 
 export function parseMetricStrings(s: string[]) {
-  return s.reduce((result, _s) => {
+  return s.reduce((result: { name: string; value: string }[], _s) => {
     const splitString = _s.trim().replace(/\s/g, '').split(':');
     if (splitString[1] != '') {
       result.push({
