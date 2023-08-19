@@ -13,7 +13,7 @@ services:
         - 'traefik.http.routers.svelte.tls.certresolver=letsencrypt'
         - 'traefik.http.services.svelte.loadbalancer.server.port=3000'
     secrets:
-      - source: {{ .db_url_secret}}
+      - source: {{ .db_url_secret }}
         target: db_url
         uid: '103'
         gid: '103'
