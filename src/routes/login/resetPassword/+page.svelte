@@ -1,4 +1,4 @@
-<script type="ts">
+<script lang="ts">
   import FormResetPassword from '$lib/components/forms/FormResetPassword.svelte';
 
   import type { PageData } from './$types';
