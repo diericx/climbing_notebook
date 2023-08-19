@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { PageData } from './$types';
-  import { Avatar } from '@skeletonlabs/skeleton';
   import WeeklyCalendar from '$lib/components/WeeklyCalendar.svelte';
+  import { Avatar } from '@skeletonlabs/skeleton';
+  import type { PageData } from './$types';
 
   export let data: PageData;
   $: trainingProgram = data.trainingProgram;
@@ -20,7 +20,7 @@
   </div>
 </div>
 <WeeklyCalendar
-  {session}
+  user={session?.user}
   {trainingProgram}
   shouldScrollIntoView={false}
   disableActionButtons={true}

@@ -1,8 +1,8 @@
 <script lang="ts">
   import CalExerciseEvent from '$lib/components/WeeklyCalendarExerciseEvent.svelte';
   import { daysFromToday, emptySchema, getDayWeekStartsMonday } from '$lib/utils';
-  import type { Exercise, Prisma } from '@prisma/client';
-  import type { Session } from 'lucia';
+  import type { Prisma } from '@prisma/client';
+  import type { User } from 'lucia';
   import { onMount } from 'svelte';
   import Form from './forms/Form.svelte';
 
@@ -10,10 +10,26 @@
     include: {
       days: {
         include: {
-          exercises: true;
+          exercises: {
+            include: {
+              exercise: {
+                select: {
+                  name: true;
+                };
+              };
+            };
+          };
           exerciseGroups: {
             include: {
-              exercises: true;
+              exercises: {
+                include: {
+                  exercise: {
+                    select: {
+                      name: true;
+                    };
+                  };
+                };
+              };
             };
           };
         };
@@ -26,8 +42,21 @@
   export let disableActionButtons = false;
   export let showMarkedCompleted = true;
   export let showDuplicateBtn = false;
-  export let session: Session | null;
-  export let exercises: Exercise[];
+  export let user: User | undefined;
+  export let exercises:
+    | Prisma.ExerciseGetPayload<{
+        select: {
+          _count: {
+            select: {
+              exerciseEvents: true;
+            };
+          };
+          id: true;
+          name: true;
+          fieldsToShow: true;
+        };
+      }>[]
+    | undefined = undefined;
 
   onMount(() => {
     if (shouldScrollIntoView) {
@@ -66,7 +95,7 @@
         </Form>
       </div>
     {/if}
-    {#if session !== null}
+    {#if user !== null}
       <div>
         <a class="btn btn-sm variant-ringed" href={`/trainingProgram/${trainingProgram.id}/edit`}
           >Edit this program</a

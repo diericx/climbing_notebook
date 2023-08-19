@@ -241,16 +241,6 @@ export function daysFromToday(i: number) {
   return d;
 }
 
-export function getSecretFromFile(path: string): string | undefined {
-  fs.readFile(path, 'utf8', (err, data) => {
-    if (err) {
-      console.error(err);
-      return undefined;
-    }
-    return data;
-  });
-}
-
 export function camelToTitle(source: string): string {
   const result = source.replace(/([A-Z])/g, ' $1');
   return result.charAt(0).toUpperCase() + result.slice(1);

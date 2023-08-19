@@ -45,7 +45,7 @@ export class ExerciseRepo {
     });
   }
 
-  async get(select?: Prisma.ExerciseSelect) {
+  async get<S extends Prisma.ExerciseSelect>(select?: Prisma.Subset<S, Prisma.ExerciseSelect>) {
     // Fetch all
     if (select) {
       return await this.prisma.exercise.findMany({

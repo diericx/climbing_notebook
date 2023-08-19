@@ -23,5 +23,9 @@ jobs:
           node-version: 18
           cache: 'npm'
       - run: npm install --save-dev prettier-plugin-svelte eslint
-      - name: Full lint suite
-        run: npm run lint
+      - name: Prettier
+        run: npm run prettier-check
+      - name: Eslint
+        run: npm run eslint-check
+      - name: Typescript
+        run: npm run typescript-check
