@@ -15,15 +15,7 @@ export const actions: Actions = {
     const sessionId = params.sessionId;
 
     const repo = new ProjectRepo(prisma);
-    try {
-      await repo.deleteSession(projectId, sessionId, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        return fail(401, { message: e.detail });
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
+    await repo.deleteSession(projectId, sessionId, user?.userId);
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
@@ -47,15 +39,7 @@ export const actions: Actions = {
     }
 
     const repo = new ProjectRepo(prisma);
-    try {
-      await repo.updateSession(form.data, projectId, sessionId, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form });
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
+    await repo.updateSession(form.data, projectId, sessionId, user?.userId);
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');

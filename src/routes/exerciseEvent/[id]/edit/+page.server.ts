@@ -13,15 +13,7 @@ export const actions: Actions = {
     const id = Number(params.id);
 
     const repo = new ExerciseEventRepo(prisma);
-    try {
-      await repo.delete(id, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        return fail(401, { message: e.detail });
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
+    await repo.delete(id, user?.userId);
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
@@ -44,15 +36,7 @@ export const actions: Actions = {
     }
 
     const repo = new ExerciseEventRepo(prisma);
-    try {
-      await repo.update(form.data, id, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form });
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
+    await repo.update(form.data, id, user?.userId);
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
@@ -76,15 +60,7 @@ export const actions: Actions = {
     const date = new Date(dateInput);
 
     const repo = new ExerciseEventRepo(prisma);
-    try {
-      await repo.setCompleted(id, user?.userId, date, isCompleted);
-    } catch (e) {
-      if (e instanceof APIError) {
-        return fail(401, { message: e.detail });
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
+    await repo.setCompleted(id, user?.userId, date, isCompleted);
 
     return { success: true };
   },

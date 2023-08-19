@@ -10,13 +10,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const { user } = await getSessionOrRedirect({ locals, url });
 
   const repo = new ProjectRepo(prisma);
-  let projects;
-  try {
-    projects = await repo.get(user?.userId);
-  } catch (e) {
-    console.error(e);
-    throw error(500, { message: SERVER_ERROR });
-  }
+  let projects = await repo.get(user?.userId);
 
   return {
     projects,
@@ -37,12 +31,7 @@ export const actions: Actions = {
     }
 
     const repo = new ProjectRepo(prisma);
-    try {
-      await repo.new(form.data, user?.userId);
-    } catch (e) {
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
+    await repo.new(form.data, user?.userId);
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');

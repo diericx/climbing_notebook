@@ -22,15 +22,7 @@ export const actions: Actions = {
     }
 
     const repo = new ProjectRepo(prisma);
-    try {
-      await repo.addSession(form.data, id, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form });
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
+    await repo.addSession(form.data, id, user?.userId);
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');

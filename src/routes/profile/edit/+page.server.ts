@@ -11,16 +11,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const { user } = await getSessionOrRedirect({ locals, url });
 
   const repo = new ProfileRepo(prisma);
-  try {
-    const profile = await repo.getOne(user?.userId);
-    return {
-      profile,
-    };
-  } catch (e) {
-    if (e instanceof APIError) {
-      return fail(401, { message: e.detail });
-    }
-    console.error(e);
-    throw error(500, { message: SERVER_ERROR });
-  }
+  const profile = await repo.getOne(user?.userId);
+  return {
+    profile,
+  };
 };

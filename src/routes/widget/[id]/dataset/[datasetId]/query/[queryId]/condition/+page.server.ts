@@ -1,8 +1,6 @@
 import type { Actions } from './$types';
-import { error, fail, redirect } from '@sveltejs/kit';
-import { SERVER_ERROR } from '$lib/helperTypes';
+import { fail, redirect } from '@sveltejs/kit';
 import { prisma } from '$lib/prisma';
-import { APIError, throwAPIErrorAsHttpError } from '$lib/errors';
 import { superValidate } from 'sveltekit-superforms/server';
 import { customQueryConditionSchema, CustomQueryRepo, customQuerySchema } from '$lib/customQuery';
 import { getSessionOrRedirect } from '$lib/utils';
@@ -22,15 +20,7 @@ export const actions: Actions = {
     }
 
     const repo = new CustomQueryRepo(prisma);
-    try {
-      await repo.addCondition(form.data, queryId, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        throwAPIErrorAsHttpError(e);
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
+    await repo.addCondition(form.data, queryId, user?.userId);
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');

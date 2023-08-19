@@ -13,16 +13,8 @@ export const load: PageServerLoad = async ({ locals, params }) => {
   const id = Number(params.id);
 
   const repo = new JournalEntryRepo(prisma);
-  try {
-    const journalEntry = await repo.getOneAndValidateOwner(id, user?.userId);
-    return {
-      journalEntry,
-    };
-  } catch (e) {
-    if (e instanceof APIError) {
-      throw error(404, { message: 'Not found' });
-    }
-    console.error(e);
-    throw error(500, { message: SERVER_ERROR });
-  }
+  const journalEntry = await repo.getOneAndValidateOwner(id, user?.userId);
+  return {
+    journalEntry,
+  };
 };

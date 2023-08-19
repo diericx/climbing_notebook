@@ -16,30 +16,25 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const exerciseEventsRepo = new ExerciseEventRepo(prisma);
   const exerciseRepo = new ExerciseRepo(prisma);
   const profileRepo = new ProfileRepo(prisma);
-  try {
-    const exerciseEvents = await exerciseEventsRepo.get(user?.userId);
-    const profile = await profileRepo.getOne(user?.userId);
-    const exercises = await exerciseRepo.get({
-      _count: {
-        select: {
-          exerciseEvents: true,
-        },
+  const exerciseEvents = await exerciseEventsRepo.get(user?.userId);
+  const profile = await profileRepo.getOne(user?.userId);
+  const exercises = await exerciseRepo.get({
+    _count: {
+      select: {
+        exerciseEvents: true,
       },
-      id: true,
-      name: true,
-      fieldsToShow: true,
-    });
+    },
+    id: true,
+    name: true,
+    fieldsToShow: true,
+  });
 
-    return {
-      exercises,
-      exerciseEvents,
-      profile,
-      user,
-    };
-  } catch (e) {
-    console.error(e);
-    throw error(500, { message: SERVER_ERROR });
-  }
+  return {
+    exercises,
+    exerciseEvents,
+    profile,
+    user,
+  };
 };
 
 export const actions: Actions = {
@@ -56,15 +51,7 @@ export const actions: Actions = {
     }
 
     const repo = new ExerciseEventRepo(prisma);
-    try {
-      await repo.new(form.data, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form });
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
+    await repo.new(form.data, user?.userId);
 
     const exerciseToMarkCompletedId = formData.get('exerciseToMarkCompletedId');
     const dateToMarkCompleted = formData.get('dateToMarkCompleted');

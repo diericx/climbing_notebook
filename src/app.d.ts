@@ -19,7 +19,7 @@ declare global {
     }
     interface Error {
       message: string;
-      status: number;
+      status?: number;
     }
   }
 }

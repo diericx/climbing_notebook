@@ -21,15 +21,7 @@ export const actions: Actions = {
     }
 
     const repo = new CalendarEventRepo(prisma);
-    try {
-      await repo.new(form.data, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form });
-      }
-      console.error(e);
-      return fail(500, { message: SERVER_ERROR, form });
-    }
+    await repo.new(form.data, user?.userId);
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');

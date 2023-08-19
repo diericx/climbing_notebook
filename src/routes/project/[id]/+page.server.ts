@@ -15,28 +15,23 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const { user } = await getSessionOrRedirect({ locals, url });
 
   const repo = new ProjectRepo(prisma);
-  try {
-    const project = await repo.getOneAndValidateOwner(params.id, user?.userId);
-    // NOTE: we should create some sort of helper function for fetching batches of s3 object urls
-    // once it is used more often that returns an object of this signature.
-    const s3ObjectUrls: { [key: string]: string } = {};
-    if (project.imageS3ObjectKey) {
-      s3ObjectUrls[project.imageS3ObjectKey] = await getPresignedUrl(project.imageS3ObjectKey);
-    }
-    const s3ObjectMetadatas: { [key: string]: Record<string, string> | undefined } = {};
-    if (project.imageS3ObjectKey) {
-      s3ObjectMetadatas[project.imageS3ObjectKey] = await getMetadata(project.imageS3ObjectKey);
-    }
-
-    return {
-      project,
-      s3ObjectUrls,
-      s3ObjectMetadatas,
-    };
-  } catch (e) {
-    console.error(e);
-    throw error(500, { message: SERVER_ERROR });
+  const project = await repo.getOneAndValidateOwner(params.id, user?.userId);
+  // NOTE: we should create some sort of helper function for fetching batches of s3 object urls
+  // once it is used more often that returns an object of this signature.
+  const s3ObjectUrls: { [key: string]: string } = {};
+  if (project.imageS3ObjectKey) {
+    s3ObjectUrls[project.imageS3ObjectKey] = await getPresignedUrl(project.imageS3ObjectKey);
   }
+  const s3ObjectMetadatas: { [key: string]: Record<string, string> | undefined } = {};
+  if (project.imageS3ObjectKey) {
+    s3ObjectMetadatas[project.imageS3ObjectKey] = await getMetadata(project.imageS3ObjectKey);
+  }
+
+  return {
+    project,
+    s3ObjectUrls,
+    s3ObjectMetadatas,
+  };
 };
 
 export const actions: Actions = {
@@ -45,21 +40,13 @@ export const actions: Actions = {
     const id = params.id;
 
     const repo = new ProjectRepo(prisma);
-    try {
-      const project = await repo.getOneAndValidateOwner(id, user?.userId);
-      // Delete any attached files
-      if (project.imageS3ObjectKey) {
-        await deleteFile(project.imageS3ObjectKey);
-      }
-      // Delete the resource
-      await repo.delete(id, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        return fail(401, { message: e.detail });
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
+    const project = await repo.getOneAndValidateOwner(id, user?.userId);
+    // Delete any attached files
+    if (project.imageS3ObjectKey) {
+      await deleteFile(project.imageS3ObjectKey);
     }
+    // Delete the resource
+    await repo.delete(id, user?.userId);
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
@@ -82,15 +69,7 @@ export const actions: Actions = {
     }
 
     const repo = new ProjectRepo(prisma);
-    try {
-      await repo.update(form.data, id, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form });
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
+    await repo.update(form.data, id, user?.userId);
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
@@ -113,46 +92,38 @@ export const actions: Actions = {
     }
 
     const repo = new ProjectRepo(prisma);
-    try {
-      const project = await repo.getOneAndValidateOwner(id, user?.userId);
+    const project = await repo.getOneAndValidateOwner(id, user?.userId);
 
-      const file = formData.get('file');
-      if (file instanceof File) {
-        // File is required
-        if (file.size == 0) {
-          return setError(form, 'file', 'No file was selected to upload');
-        }
-        // File type restriction
-        if (file.type != 'image/jpeg' && file.type != 'image/png') {
-          return setError(form, 'file', 'File type not supported.');
-        }
-
-        const image = sharp(Buffer.from(await file.arrayBuffer()));
-        const imageMetadata = await image.metadata();
-        // Max file size of 5MB
-        if (file.size > 1024 * 1024 * 5) {
-          return setError(form, 'file', 'File exceeds maximum file size (5MB)');
-        }
-        // Delete existing file if it exists
-        if (project.imageS3ObjectKey) {
-          await deleteFile(project.imageS3ObjectKey);
-        }
-        // Upload file
-        const key = `project/${project.id}/images/${uuidv4()}.${file.name.split('.').pop()}`;
-        await uploadFile(key, file, {
-          width: imageMetadata.width?.toString() || '0',
-          height: imageMetadata.height?.toString() || '0',
-        });
-
-        // Update the project
-        await repo.update({ imageS3ObjectKey: key }, id, user?.userId);
+    const file = formData.get('file');
+    if (file instanceof File) {
+      // File is required
+      if (file.size == 0) {
+        return setError(form, 'file', 'No file was selected to upload');
       }
-    } catch (e) {
-      if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form });
+      // File type restriction
+      if (file.type != 'image/jpeg' && file.type != 'image/png') {
+        return setError(form, 'file', 'File type not supported.');
       }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
+
+      const image = sharp(Buffer.from(await file.arrayBuffer()));
+      const imageMetadata = await image.metadata();
+      // Max file size of 5MB
+      if (file.size > 1024 * 1024 * 5) {
+        return setError(form, 'file', 'File exceeds maximum file size (5MB)');
+      }
+      // Delete existing file if it exists
+      if (project.imageS3ObjectKey) {
+        await deleteFile(project.imageS3ObjectKey);
+      }
+      // Upload file
+      const key = `project/${project.id}/images/${uuidv4()}.${file.name.split('.').pop()}`;
+      await uploadFile(key, file, {
+        width: imageMetadata.width?.toString() || '0',
+        height: imageMetadata.height?.toString() || '0',
+      });
+
+      // Update the project
+      await repo.update({ imageS3ObjectKey: key }, id, user?.userId);
     }
 
     if (url.searchParams.has('redirectTo')) {
@@ -182,15 +153,7 @@ export const actions: Actions = {
 
     // Update the project
     const repo = new ProjectRepo(prisma);
-    try {
-      await repo.update({ imageS3ObjectKey: null }, id, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        return fail(401, { message: e.detail });
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
+    await repo.update({ imageS3ObjectKey: null }, id, user?.userId);
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');

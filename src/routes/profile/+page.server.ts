@@ -20,27 +20,20 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const journalEntryRepo = new JournalEntryRepo(prisma);
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
   const metricsRepo = new MetricRepo(prisma);
-  try {
-    const profile = await profileRepo.getOne(user?.userId);
-    const exerciseEvents = await exerciseEventRepo.get(user?.userId);
-    const journalEntries = await journalEntryRepo.get(user?.userId);
-    const trainingPrograms = await trainingProgramRepo.get(user?.userId);
-    const metrics = await metricsRepo.get(user?.userId);
-    return {
-      profile,
-      exerciseEvents,
-      journalEntries,
-      trainingPrograms,
-      metrics,
-      user,
-    };
-  } catch (e) {
-    if (e instanceof APIError) {
-      return fail(401, { message: e.detail });
-    }
-    console.error(e);
-    throw error(500, { message: SERVER_ERROR });
-  }
+
+  const profile = await profileRepo.getOne(user?.userId);
+  const exerciseEvents = await exerciseEventRepo.get(user?.userId);
+  const journalEntries = await journalEntryRepo.get(user?.userId);
+  const trainingPrograms = await trainingProgramRepo.get(user?.userId);
+  const metrics = await metricsRepo.get(user?.userId);
+  return {
+    profile,
+    exerciseEvents,
+    journalEntries,
+    trainingPrograms,
+    metrics,
+    user,
+  };
 };
 
 export const actions: Actions = {
@@ -57,15 +50,7 @@ export const actions: Actions = {
     }
 
     const repo = new ProfileRepo(prisma);
-    try {
-      await repo.update(form.data, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form });
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
+    await repo.update(form.data, user?.userId);
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');

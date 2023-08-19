@@ -1,8 +1,6 @@
-import { error, fail, redirect, type Actions } from '@sveltejs/kit';
-import { SERVER_ERROR } from '$lib/helperTypes';
+import { fail, redirect, type Actions } from '@sveltejs/kit';
 import { prisma } from '$lib/prisma';
 import { TrainingProgramRepo } from '$lib/trainingProgram';
-import { APIError, throwAPIErrorAsHttpError } from '$lib/errors';
 import { superValidate } from 'sveltekit-superforms/server';
 import { exerciseGroupSchema } from '$lib/exerciseGroup';
 import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
@@ -23,15 +21,7 @@ export const actions: Actions = {
     }
 
     const repo = new TrainingProgramRepo(prisma);
-    try {
-      await repo.editExerciseGroup(form.data, trainingProgramId, exerciseGroupId, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        return fail(401, { message: e.detail, form });
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
+    await repo.editExerciseGroup(form.data, trainingProgramId, exerciseGroupId, user?.userId);
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
@@ -46,15 +36,7 @@ export const actions: Actions = {
     const exerciseGroupId = Number(params.groupId);
 
     const repo = new TrainingProgramRepo(prisma);
-    try {
-      await repo.deleteExerciseGroup(trainingProgramId, user?.userId, exerciseGroupId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        return fail(401, { message: e.detail });
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
+    await repo.deleteExerciseGroup(trainingProgramId, user?.userId, exerciseGroupId);
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
@@ -77,15 +59,7 @@ export const actions: Actions = {
 
     form.data.exerciseGroupId = groupId;
     const repo = new ExerciseEventRepo(prisma);
-    try {
-      await repo.new(form.data, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        throwAPIErrorAsHttpError(e);
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
+    await repo.new(form.data, user?.userId);
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');

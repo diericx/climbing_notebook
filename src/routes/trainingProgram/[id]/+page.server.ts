@@ -1,14 +1,12 @@
-import { error, fail, redirect, type Actions } from '@sveltejs/kit';
+import { fail, redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
 import { TrainingProgramRepo, trainingProgramSchema } from '$lib/trainingProgram';
-import { APIError, throwAPIErrorAsHttpError } from '$lib/errors';
+import { APIError } from '$lib/errors';
 import type { TrainingProgram } from '@prisma/client';
 import { superValidate } from 'sveltekit-superforms/server';
 import { exerciseGroupSchema } from '$lib/exerciseGroup';
 import { getSessionOrRedirect } from '$lib/utils';
-import { page } from '$app/stores';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
   const session = await locals.auth.validate();
@@ -29,15 +27,7 @@ export const actions: Actions = {
 
     const repo = new TrainingProgramRepo(prisma);
     let trainingProgram: TrainingProgram;
-    try {
-      trainingProgram = await repo.delete(id, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        throwAPIErrorAsHttpError(e);
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
+    trainingProgram = await repo.delete(id, user?.userId);
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
@@ -53,15 +43,7 @@ export const actions: Actions = {
     }
 
     const repo = new TrainingProgramRepo(prisma);
-    try {
-      await repo.duplicate(Number(params.id), user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        throwAPIErrorAsHttpError(e);
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
+    await repo.duplicate(Number(params.id), user?.userId);
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
@@ -83,15 +65,7 @@ export const actions: Actions = {
     }
 
     const repo = new TrainingProgramRepo(prisma);
-    try {
-      await repo.update(form.data, id, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        throwAPIErrorAsHttpError(e);
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
+    await repo.update(form.data, id, user?.userId);
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
@@ -113,15 +87,7 @@ export const actions: Actions = {
     }
 
     const repo = new TrainingProgramRepo(prisma);
-    try {
-      await repo.addExerciseGroup(form.data, id, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        throwAPIErrorAsHttpError(e);
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
+    await repo.addExerciseGroup(form.data, id, user?.userId);
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
@@ -137,15 +103,7 @@ export const actions: Actions = {
     const exerciseGroupId = Number(rawFormData.exerciseGroupId);
 
     const repo = new TrainingProgramRepo(prisma);
-    try {
-      await repo.deleteExerciseGroup(id, user?.userId, exerciseGroupId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        throwAPIErrorAsHttpError(e);
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
+    await repo.deleteExerciseGroup(id, user?.userId, exerciseGroupId);
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');

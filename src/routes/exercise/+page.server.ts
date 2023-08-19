@@ -12,16 +12,11 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const { user } = await getSessionOrRedirect({ locals, url });
 
   const exerciseRepo = new ExerciseRepo(prisma);
-  try {
-    const exercises = await exerciseRepo.get();
-    return {
-      exercises,
-      user,
-    };
-  } catch (e) {
-    console.error(e);
-    throw error(500, { message: SERVER_ERROR });
-  }
+  const exercises = await exerciseRepo.get();
+  return {
+    exercises,
+    user,
+  };
 };
 
 export const actions: Actions = {
@@ -41,14 +36,10 @@ export const actions: Actions = {
     try {
       await repo.new(form.data, user?.userId);
     } catch (e) {
-      if (e instanceof APIError) {
-        return setError(form, 'An exercise with that name already exists');
-      }
       if (e instanceof Prisma.PrismaClientKnownRequestError && e.code == 'P2002') {
         return setError(form, 'name', 'An exercise with that name already exists');
       }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
+      throw e;
     }
 
     if (url.searchParams.has('redirectTo')) {

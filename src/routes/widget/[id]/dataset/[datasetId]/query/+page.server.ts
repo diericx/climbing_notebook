@@ -1,11 +1,8 @@
 import type { Actions } from './$types';
 import { prisma } from '$lib/prisma';
-import { error, fail, redirect } from '@sveltejs/kit';
-import { APIError, throwAPIErrorAsHttpError } from '$lib/errors';
-import { SERVER_ERROR } from '$lib/helperTypes';
-import { message, setError, superValidate } from 'sveltekit-superforms/server';
+import { fail, redirect } from '@sveltejs/kit';
+import { superValidate } from 'sveltekit-superforms/server';
 import { CustomQueryRepo, customQuerySchema } from '$lib/customQuery';
-import { evaluate } from 'mathjs';
 import { getSessionOrRedirect } from '$lib/utils';
 
 export const actions: Actions = {
@@ -23,15 +20,7 @@ export const actions: Actions = {
     }
 
     const repo = new CustomQueryRepo(prisma);
-    try {
-      await repo.new(form.data, datasetId, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        throwAPIErrorAsHttpError(e);
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
+    await repo.new(form.data, datasetId, user?.userId);
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');

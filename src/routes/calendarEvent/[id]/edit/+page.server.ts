@@ -11,18 +11,10 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
 
   const id = Number(params.id);
 
-  try {
-    const repo = new CalendarEventRepo(prisma);
-    const calendarEvent = await repo.getOneAndValidateOwner(id, user.userId);
+  const repo = new CalendarEventRepo(prisma);
+  const calendarEvent = await repo.getOneAndValidateOwner(id, user.userId);
 
-    return {
-      calendarEvent,
-    };
-  } catch (e) {
-    if (e instanceof APIError) {
-      throw error(401, { message: e.detail });
-    }
-    console.error(e);
-    throw error(500, { message: SERVER_ERROR });
-  }
+  return {
+    calendarEvent,
+  };
 };

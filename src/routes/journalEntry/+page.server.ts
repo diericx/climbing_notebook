@@ -12,13 +12,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const { user } = await getSessionOrRedirect({ locals, url });
 
   const repo = new JournalEntryRepo(prisma);
-  let journalEntries;
-  try {
-    journalEntries = await repo.get(user?.userId);
-  } catch (e) {
-    console.error(e);
-    throw error(500, { message: SERVER_ERROR });
-  }
+  let journalEntries = await repo.get(user?.userId);
 
   return {
     journalEntries,

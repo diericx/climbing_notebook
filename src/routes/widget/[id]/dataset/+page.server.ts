@@ -1,8 +1,6 @@
-import { APIError, throwAPIErrorAsHttpError } from '$lib/errors';
-import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
 import { datasetSchema, WidgetRepo } from '$lib/widget';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions } from './$types';
 import { getSessionOrRedirect } from '$lib/utils';
@@ -23,15 +21,7 @@ export const actions: Actions = {
     }
 
     const repo = new WidgetRepo(prisma);
-    try {
-      await repo.addDataset(form.data, id, user?.userId);
-    } catch (e) {
-      if (e instanceof APIError) {
-        throwAPIErrorAsHttpError(e);
-      }
-      console.error(e);
-      throw error(500, { message: SERVER_ERROR });
-    }
+    await repo.addDataset(form.data, id, user?.userId);
 
     if (url.searchParams.has('redirectTo')) {
       throw redirect(303, url.searchParams.get('redirectTo') || '/');
