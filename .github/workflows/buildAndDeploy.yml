@@ -67,7 +67,7 @@ jobs:
         id: render_template
         uses: chuhlomin/render-template@v1.7
         with:
-          template: docker-compose.template.yml
+          template: docker-compose.yml.template
           vars: |
             image: 279721711046.dkr.ecr.us-west-2.amazonaws.com/climbingnotebook:${{ github.sha }}
             host: climbingnotebook.com
@@ -105,7 +105,7 @@ jobs:
         id: render_template
         uses: chuhlomin/render-template@v1.7
         with:
-          template: docker-compose.template.yml
+          template: docker-compose.yml.template
           vars: |
             image: 279721711046.dkr.ecr.us-west-2.amazonaws.com/climbingnotebook:${{ github.sha }}
             host: staging.climbingnotebook.com
