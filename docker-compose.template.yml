@@ -1,19 +1,18 @@
 version: '3.9'
 services:
-  svelte-prod:
-    image: 279721711046.dkr.ecr.us-west-2.amazonaws.com/climbingnotebook:sha-8efaa1f
-    networks:
+  {{ .name }}:
+    image: {{ .image }} 
       - traefik
       - postgres
     deploy:
       labels:
         - 'traefik.enable=true'
-        - 'traefik.http.routers.svelte.rule=Host(`climbingnotebook.com`)'
+        - 'traefik.http.routers.svelte.rule=Host(`{{ .host }}`)'
         - 'traefik.http.routers.svelte.entrypoints=websecure'
         - 'traefik.http.routers.svelte.tls.certresolver=letsencrypt'
         - 'traefik.http.services.svelte.loadbalancer.server.port=3000'
     secrets:
-      - source: cn_prod_db_url
+      - source: {{ .db_url_secret}}
         target: db_url
         uid: '103'
         gid: '103'
