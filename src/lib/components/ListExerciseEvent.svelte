@@ -1,7 +1,7 @@
 <script lang="ts">
   import { confirmDelete, emptySchema } from '$lib/utils';
   import Icon from '@iconify/svelte';
-  import type { Exercise, Prisma } from '@prisma/client';
+  import type { Prisma } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
   import Form from './forms/Form.svelte';
 
@@ -12,7 +12,18 @@
   }>;
 
   export let exerciseEvents: ExerciseEvent[];
-  export let exercises: Exercise[];
+  export let exercises: Prisma.ExerciseGetPayload<{
+    select: {
+      _count: {
+        select: {
+          exerciseEvents: true;
+        };
+      };
+      id: true;
+      name: true;
+      fieldsToShow: true;
+    };
+  }>[];
   export let showDate = true;
   export let showDifficulty = true;
   export let showActionBtns = true;

@@ -142,6 +142,7 @@ export class ProjectRepo {
         sessions: {
           create: {
             ...data,
+            // sent: data.sent || false,
             owner: {
               connect: {
                 id: ownerId,

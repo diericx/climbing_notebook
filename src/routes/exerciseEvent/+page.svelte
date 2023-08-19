@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { PageData } from './$types';
 
-  import { isDateInTheSameDayAsToday } from '$lib/utils';
   import ListExerciseEvent from '$lib/components/ListExerciseEvent.svelte';
   import WeeklyCalendar from '$lib/components/WeeklyCalendar.svelte';
+  import { isDateInTheSameDayAsToday } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import { modalStore } from '@skeletonlabs/skeleton';
 

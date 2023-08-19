@@ -1,19 +1,27 @@
 <script lang="ts">
   import { emptySchema } from '$lib/utils';
-  import type { Exercise, Prisma } from '@prisma/client';
+  import type { Prisma } from '@prisma/client';
   import type { PopupSettings } from '@skeletonlabs/skeleton';
   import { modalStore, popup } from '@skeletonlabs/skeleton';
   import Form from './forms/Form.svelte';
 
   // Generate partial prisma types
-  type ExerciseEvent = Prisma.ExerciseEventGetPayload<{
+  export let exerciseEvent: Prisma.ExerciseEventGetPayload<{
     include: {
-      exercise: true;
+      exercise: {
+        select: {
+          name: true;
+        };
+      };
     };
   }>;
-
-  export let exerciseEvent: ExerciseEvent;
-  export let exercises: Exercise[] | undefined = undefined;
+  export let exercises:
+    | Prisma.ExerciseGetPayload<{
+        select: {
+          name: true;
+        };
+      }>[]
+    | undefined = undefined;
   export let date: Date;
   export let disableActionButtons = false;
   export let showMarkedCompleted = true;

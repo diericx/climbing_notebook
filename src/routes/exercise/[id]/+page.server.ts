@@ -7,7 +7,7 @@ import type { Actions } from './$types';
 
 export const actions: Actions = {
   edit: async ({ locals, request, url, params }) => {
-    const { user } = await getSessionOrRedirect({ locals, url });
+    await getSessionOrRedirect({ locals, url });
 
     const formData = await request.formData();
     const form = await superValidate(formData, exerciseSchema, {
@@ -19,7 +19,7 @@ export const actions: Actions = {
     }
 
     const repo = new ExerciseRepo(prisma);
-    await repo.update(form.data, params.id, user?.userId);
+    await repo.update(form.data, params.id);
 
     return { form };
   },
