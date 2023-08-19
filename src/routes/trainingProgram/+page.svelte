@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { enhance } from '$app/forms';
+  import Form from '$lib/components/forms/Form.svelte';
   import { doesTrainingProgramHaveLegacyExercises } from '$lib/trainingProgram';
-  import { confirmDelete } from '$lib/utils';
+  import { confirmDelete, emptySchema } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import { modalStore, popup } from '@skeletonlabs/skeleton';
   import type { PageData } from './$types';
@@ -88,7 +88,7 @@
                   {/if}
                 </section>
                 <footer class="card-footer">
-                  <form method="POST" action={`/profile?/edit`} use:enhance>
+                  <Form schema={emptySchema} action={`/profile?/edit`}>
                     <input type="hidden" name="activeTrainingProgramId" value={p.id} />
                     <button
                       class="btn btn-sm variant-ringed justify-start"
@@ -100,7 +100,7 @@
                     >
                       Activate
                     </button>
-                  </form>
+                  </Form>
                 </footer>
               </a>
             </div>
@@ -128,19 +128,19 @@
                     </a>
                   </li>
                   <li>
-                    <form
-                      method="POST"
+                    <Form
+                      schema={emptySchema}
                       action={`/trainingProgram/${p.id}?/duplicate&redirectTo=/trainingProgram`}
                     >
                       <button class="btn btn-sm w-full justify-start"> Duplicate </button>
-                    </form>
+                    </Form>
                   </li>
                   <li>
-                    <form method="POST" action={`/trainingProgram/${p.id}?/delete`} use:enhance>
+                    <Form schema={emptySchema} action={`/trainingProgram/${p.id}?/delete`}>
                       <button class="btn btn-sm w-full justify-start" on:click={confirmDelete}>
                         <span> Delete </span>
                       </button>
-                    </form>
+                    </Form>
                   </li>
                 </ul>
               </nav>

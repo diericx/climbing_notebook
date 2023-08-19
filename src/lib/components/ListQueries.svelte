@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { enhance } from '$app/forms';
-  import { confirmDelete } from '$lib/utils';
+  import { confirmDelete, emptySchema } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { CustomQuery } from '@prisma/client';
+  import Form from './forms/Form.svelte';
 
   export let queries: CustomQuery[];
 </script>
@@ -24,12 +24,12 @@
             <div>
               <a class="btn btn-sm variant-ringed" href={`/query/${query.id}`}>Show</a>
             </div>
-            <form class="inline" use:enhance method="POST" action={`/query/${query.id}?/delete`}>
+            <Form class="inline" schema={emptySchema} action={`/query/${query.id}?/delete`}>
               <button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
                 <Icon icon="mdi:trash-outline" height="18" />
                 <span class="ml-1 mr-1"> Delete </span>
               </button>
-            </form>
+            </Form>
           </div>
         </div>
       </li>

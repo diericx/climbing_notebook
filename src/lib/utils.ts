@@ -1,5 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 import 'fs';
+import { z } from 'zod';
 export const huecoGrades: readonly [string, ...string[]] = [
   'V0',
   'V1',
@@ -296,3 +297,5 @@ export async function getSessionOrRedirect({ locals, url }: { locals: App.Locals
   // The session definitely exists now, so return it
   return session;
 }
+
+export const emptySchema = z.object({});

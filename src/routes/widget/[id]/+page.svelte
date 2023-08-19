@@ -1,10 +1,12 @@
 <script lang="ts">
-  import Icon from '@iconify/svelte';
-  import { Avatar } from '@skeletonlabs/skeleton';
-  import type { PageData } from './$types';
   import Chart from '$lib/components/Chart.svelte';
   import Dataset from '$lib/components/Dataset.svelte';
   import HeatmapCalendar from '$lib/components/HeatmapCalendar.svelte';
+  import Form from '$lib/components/forms/Form.svelte';
+  import { emptySchema } from '$lib/utils';
+  import Icon from '@iconify/svelte';
+  import { Avatar } from '@skeletonlabs/skeleton';
+  import type { PageData } from './$types';
 
   export let data: PageData;
   const { user } = data;
@@ -21,12 +23,12 @@
   </div>
   <div class="mb-1 flex space-x-2">
     <div>
-      <form method="POST" action={`/widget/${widget.id}?/addToMyDashboard&redirectTo=/`}>
+      <Form schema={emptySchema} action={`/widget/${widget.id}?/addToMyDashboard&redirectTo=/`}>
         <button class="btn btn-sm variant-filled" value="Set Active">
           <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
           <span>Add To My Dashboard</span>
         </button>
-      </form>
+      </Form>
     </div>
     {#if isOwner}
       <div>

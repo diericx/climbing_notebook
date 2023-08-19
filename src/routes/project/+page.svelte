@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { PageData } from './$types';
+  import Form from '$lib/components/forms/Form.svelte';
+  import { confirmDelete, emptySchema } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import { modalStore } from '@skeletonlabs/skeleton';
-  import { enhance } from '$app/forms';
-  import { confirmDelete } from '$lib/utils';
+  import type { PageData } from './$types';
   export let data: PageData;
 
   $: projects = data.projects;
@@ -46,17 +46,12 @@
               </b>
             </h2>
 
-            <form
-              method="POST"
-              action={`/project/${project.id}?/delete`}
-              class="inline"
-              use:enhance
-            >
+            <Form class="inline" schema={emptySchema} action={`/project/${project.id}?/delete`}>
               <button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
                 <Icon icon="mdi:trash-outline" height="18" />
                 Delete
               </button>
-            </form>
+            </Form>
           </div>
         </header>
         <section class="p-4">

@@ -1,6 +1,6 @@
 import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
 import { prisma } from '$lib/prisma';
-import { getSessionOrRedirect } from '$lib/utils';
+import { emptySchema, getSessionOrRedirect } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions } from './$types';
@@ -8,14 +8,17 @@ import type { Actions } from './$types';
 export const actions: Actions = {
   delete: async ({ locals, params, request, url }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
+    const formData = await request.formData();
+    const form = await superValidate(formData, emptySchema, {
+      id: formData.get('_formId')?.toString(),
+    });
 
-    const rawFormData = Object.fromEntries((await request.formData()).entries());
-    const id = Number(params.id) || Number(rawFormData.id);
+    const id = Number(params.id);
 
     const repo = new ExerciseEventRepo(prisma);
     await repo.delete(id, user?.userId);
 
-    return { success: true };
+    return { form };
   },
 
   edit: async ({ locals, params, request, url }) => {

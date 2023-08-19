@@ -1,13 +1,12 @@
 <script lang="ts">
-  import type { PageData } from './$types';
-  import Icon from '@iconify/svelte';
-  import { FileDropzone, modalStore } from '@skeletonlabs/skeleton';
-  import { enhance } from '$app/forms';
-  import { confirmDelete } from '$lib/utils';
   import Image from '$lib/components/Image.svelte';
-  import FormBodyFileUpload from '$lib/components/forms/bodies/FormBodyFileUpload.svelte';
   import Form from '$lib/components/forms/Form.svelte';
+  import FormBodyFileUpload from '$lib/components/forms/bodies/FormBodyFileUpload.svelte';
   import { fileUploadSchema } from '$lib/file';
+  import { confirmDelete, emptySchema } from '$lib/utils';
+  import Icon from '@iconify/svelte';
+  import { modalStore } from '@skeletonlabs/skeleton';
+  import type { PageData } from './$types';
   export let data: PageData;
 
   $: s3ObjectUrls = data.s3ObjectUrls;
@@ -47,18 +46,13 @@
   </p>
   <b>Image</b>
   {#if project.imageS3ObjectKey}
-    <form
-      use:enhance
-      method="POST"
-      action={`/project/${project.id}?/deleteImage`}
-      class="flex-initial"
-    >
+    <Form class="flex-initial" schema={emptySchema} action={`/project/${project.id}?/deleteImage`}>
       <input type="hidden" name="key" value={project.imageS3ObjectKey} />
       <button on:click={confirmDelete} class="btn btn-sm variant-ringed">
         <Icon icon="mdi:trash-outline" height="18" />
         <span class="ml-1 mr-1"> Delete Image </span>
       </button>
-    </form>
+    </Form>
     <Image
       src={s3ObjectUrls[project.imageS3ObjectKey]}
       width={s3ObjectMetadatas[project.imageS3ObjectKey]?.width || '0'}
@@ -117,17 +111,16 @@
               <Icon icon="material-symbols:edit-outline" height="18" />
               <span>Edit Session</span>
             </button>
-            <form
-              method="POST"
-              action={`/project/${project.id}/session/${session.id}?/delete`}
+            <Form
               class="inline"
-              use:enhance
+              schema={emptySchema}
+              action={`/project/${project.id}/session/${session.id}?/delete`}
             >
               <button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
                 <Icon icon="mdi:trash-outline" height="18" />
                 Delete
               </button>
-            </form>
+            </Form>
           </div>
         </div>
         <div class="flex">

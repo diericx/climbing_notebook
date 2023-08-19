@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { enhance } from '$app/forms';
-  import { confirmDelete } from '$lib/utils';
+  import { confirmDelete, emptySchema } from '$lib/utils';
   import Icon from '@iconify/svelte';
+  import type { Exercise, Prisma, Widget } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
   import CustomQuery from './CustomQuery.svelte';
-  import type { Exercise, Prisma, Widget } from '@prisma/client';
+  import Form from './forms/Form.svelte';
 
   type Dataset = Prisma.DatasetGetPayload<{
     include: {
@@ -55,9 +55,8 @@
             <Icon icon="material-symbols:edit-outline" height="18" />
             <span>Edit</span>
           </button>
-          <form
-            use:enhance
-            method="POST"
+          <Form
+            schema={emptySchema}
             action={`/widget/${dataset.widgetId}/dataset/${dataset.id}?/delete`}
             class="flex-initial"
           >
@@ -65,7 +64,7 @@
               <Icon icon="mdi:trash-outline" height="18" />
               <span class="ml-1 mr-1"> Delete </span>
             </button>
-          </form>
+          </Form>
         </div>
       {/if}
     </div>

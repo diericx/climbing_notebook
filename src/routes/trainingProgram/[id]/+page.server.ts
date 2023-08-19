@@ -2,7 +2,7 @@ import { APIError } from '$lib/errors';
 import { exerciseGroupSchema } from '$lib/exerciseGroup';
 import { prisma } from '$lib/prisma';
 import { TrainingProgramRepo, trainingProgramSchema } from '$lib/trainingProgram';
-import { getSessionOrRedirect } from '$lib/utils';
+import { emptySchema, getSessionOrRedirect } from '$lib/utils';
 import type { TrainingProgram } from '@prisma/client';
 import { fail, redirect, type Actions } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
@@ -82,13 +82,18 @@ export const actions: Actions = {
 
   deleteExerciseGroup: async ({ locals, request, url, params }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
-    const rawFormData = Object.fromEntries((await request.formData()).entries());
+    const formData = await request.formData();
+    const form = await superValidate(formData, emptySchema, {
+      id: formData.get('_formId')?.toString(),
+    });
+
+    const rawFormData = Object.fromEntries(formData.entries());
     const id = Number(params.id);
     const exerciseGroupId = Number(rawFormData.exerciseGroupId);
 
     const repo = new TrainingProgramRepo(prisma);
     await repo.deleteExerciseGroup(id, user?.userId, exerciseGroupId);
 
-    return { success: true };
+    return { form };
   },
 };

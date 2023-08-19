@@ -2,14 +2,20 @@ import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
 import { prisma } from '$lib/prisma';
 import { TrainingProgramRepo } from '$lib/trainingProgram';
 import { trainingProgramDaySchema } from '$lib/trainingProgramDay';
-import { getSessionOrRedirect } from '$lib/utils';
+import { emptySchema, getSessionOrRedirect } from '$lib/utils';
 import { fail, type Actions } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 
 export const actions: Actions = {
   connectExerciseGroup: async ({ locals, request, url, params }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
-    const rawFormData = Object.fromEntries((await request.formData()).entries());
+
+    const formData = await request.formData();
+    const form = await superValidate(formData, emptySchema, {
+      id: formData.get('_formId')?.toString(),
+    });
+
+    const rawFormData = Object.fromEntries(formData.entries());
     const trainingProgramId = Number(params.id);
     const trainingProgramDayId = Number(params.dayId);
     const exerciseGroupId = Number(rawFormData.exerciseGroupId);
@@ -25,12 +31,18 @@ export const actions: Actions = {
       user?.userId
     );
 
-    return { success: true };
+    console.log('got here...');
+    return { form };
   },
 
   disconnectExerciseGroup: async ({ locals, request, url, params }) => {
+    const formData = await request.formData();
+    const form = await superValidate(formData, emptySchema, {
+      id: formData.get('_formId')?.toString(),
+    });
+
     const { user } = await getSessionOrRedirect({ locals, url });
-    const rawFormData = Object.fromEntries((await request.formData()).entries());
+    const rawFormData = Object.fromEntries(formData.entries());
     const trainingProgramId = Number(params.id);
     const trainingProgramDayId = Number(params.dayId);
     const exerciseGroupId = Number(rawFormData.exerciseGroupId);
@@ -46,7 +58,7 @@ export const actions: Actions = {
       user?.userId
     );
 
-    return { success: true };
+    return { form };
   },
 
   edit: async ({ locals, request, url, params }) => {

@@ -36,7 +36,6 @@ export const handle: Handle = async ({ event, resolve }) => {
     if (result.status == 200) {
       const redirectTo = event.url.searchParams.get('redirectTo');
       if (redirectTo !== null) {
-        console.log('returning action result..');
         return actionResult('redirect', redirectTo, 303);
       }
     }

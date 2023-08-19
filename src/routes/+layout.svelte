@@ -1,36 +1,36 @@
 <script lang="ts">
-  import type { PageData } from './$types';
-  import NProgress from 'nprogress';
   import { AppBar, AppShell, Modal, type ModalComponent } from '@skeletonlabs/skeleton';
+  import NProgress from 'nprogress';
+  import type { PageData } from './$types';
   // Your selected Skeleton theme:
   import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
   // This contains the bulk of Skeletons required styles:
-  import '@skeletonlabs/skeleton/styles/skeleton.css';
-  import '../app.css';
-  import 'nprogress/nprogress.css';
   import { navigating } from '$app/stores';
-  import { popup } from '@skeletonlabs/skeleton';
-  import type { PopupSettings } from '@skeletonlabs/skeleton';
-  import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
-  import { storePopup } from '@skeletonlabs/skeleton';
-  import FormModalExerciseEvent from '$lib/components/modals/formModals/FormModalExerciseEvent.svelte';
-  import FormModalExerciseGroup from '$lib/components/modals/formModals/FormModalExerciseGroup.svelte';
-  import FormModalTrainingProgram from '$lib/components/modals/formModals/FormModalTrainingProgram.svelte';
-  import FormModalTrainingProgramDay from '$lib/components/modals/formModals/FormModalTrainingProgramDay.svelte';
-  import FormModalCalendarEvent from '$lib/components/modals/formModals/FormModalCalendarEvent.svelte';
-  import FormModalCustomQuery from '$lib/components/modals/formModals/FormModalCustomQuery.svelte';
-  import FormModalCustomQueryCondition from '$lib/components/modals/formModals/FormModalCustomQueryCondition.svelte';
-  import FormModalWidget from '$lib/components/modals/formModals/FormModalWidget.svelte';
-  import FormModalDataset from '$lib/components/modals/formModals/FormModalDataset.svelte';
-  import FormModalProject from '$lib/components/modals/formModals/FormModalProject.svelte';
-  import FormModalProjectSession from '$lib/components/modals/formModals/FormModalProjectSession.svelte';
-  import FormModalExercise from '$lib/components/modals/formModals/FormModalExercise.svelte';
-  import FormModalWidgetTemplate from '$lib/components/modals/formModals/FormModalWidgetTemplate.svelte';
+  import Form from '$lib/components/forms/Form.svelte';
   import ModalCalendarEvent from '$lib/components/modals/ModalCalendarEvent.svelte';
   import ModalJournalEntry from '$lib/components/modals/ModalJournalEntry.svelte';
   import ModalShareTrainingProgram from '$lib/components/modals/ModalShareTrainingProgram.svelte';
-  import { Drawer, drawerStore } from '@skeletonlabs/skeleton';
+  import FormModalCalendarEvent from '$lib/components/modals/formModals/FormModalCalendarEvent.svelte';
+  import FormModalCustomQuery from '$lib/components/modals/formModals/FormModalCustomQuery.svelte';
+  import FormModalCustomQueryCondition from '$lib/components/modals/formModals/FormModalCustomQueryCondition.svelte';
+  import FormModalDataset from '$lib/components/modals/formModals/FormModalDataset.svelte';
+  import FormModalExercise from '$lib/components/modals/formModals/FormModalExercise.svelte';
+  import FormModalExerciseEvent from '$lib/components/modals/formModals/FormModalExerciseEvent.svelte';
+  import FormModalExerciseGroup from '$lib/components/modals/formModals/FormModalExerciseGroup.svelte';
+  import FormModalProject from '$lib/components/modals/formModals/FormModalProject.svelte';
+  import FormModalProjectSession from '$lib/components/modals/formModals/FormModalProjectSession.svelte';
+  import FormModalTrainingProgram from '$lib/components/modals/formModals/FormModalTrainingProgram.svelte';
+  import FormModalTrainingProgramDay from '$lib/components/modals/formModals/FormModalTrainingProgramDay.svelte';
+  import FormModalWidget from '$lib/components/modals/formModals/FormModalWidget.svelte';
+  import FormModalWidgetTemplate from '$lib/components/modals/formModals/FormModalWidgetTemplate.svelte';
+  import { emptySchema } from '$lib/utils';
+  import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
   import Icon from '@iconify/svelte';
+  import type { PopupSettings } from '@skeletonlabs/skeleton';
+  import { Drawer, drawerStore, popup, storePopup } from '@skeletonlabs/skeleton';
+  import '@skeletonlabs/skeleton/styles/skeleton.css';
+  import 'nprogress/nprogress.css';
+  import '../app.css';
 
   storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
@@ -230,9 +230,9 @@
         <a href="/profile"> Profile </a>
       </li>
       <li class="listbox-item">
-        <form method="POST" action="/?/signout">
+        <Form schema={emptySchema} action="/?/signout">
           <button class="w-full" style="margin-top: 0px">Logout</button>
-        </form>
+        </Form>
       </li>
     </ul>
   </nav>

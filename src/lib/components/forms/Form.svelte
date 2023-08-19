@@ -5,6 +5,8 @@
   import { v4 as uuidv4 } from 'uuid';
   import type { ZodRawShape, z } from 'zod';
 
+  let className = '';
+
   export let schema: z.ZodObject<ZodRawShape>;
   export let data: any = {};
   export let id: string = uuidv4();
@@ -12,6 +14,8 @@
   export let action = '';
   export let resetForm = false;
   export let debug = false;
+  export { className as class };
+  export let formElement: HTMLFormElement | undefined = undefined;
 
   // Add redirect data from the page url only if the action doesn't already have a
   // redirect embedded within
@@ -52,7 +56,7 @@
   <div class="invalid">{$message}</div>
 {/if}
 
-<form method="POST" {action} use:enhance {id} class="form">
+<form bind:this={formElement} method="POST" {action} use:enhance {id} class={`form ${className}`}>
   <input type="hidden" name="_formId" value={id} />
   <slot superForm={newSuperForm} />
 </form>

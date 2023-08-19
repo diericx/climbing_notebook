@@ -105,9 +105,9 @@
               </a>
 
               <div class="hidden md:inline">|</div>
-              <form method="POST" action="/?/signout">
+              <Form schema={emptySchema} action="/?/signout">
                 <button class="border-0 shadow-none" style="margin-top: 0px">Logout</button>
-              </form>
+              </Form>
             {:else}
               <a
                 href="/login"

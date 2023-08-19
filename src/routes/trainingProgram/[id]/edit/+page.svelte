@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { PageData } from './$types';
-  import { enhance } from '$app/forms';
-  import Icon from '@iconify/svelte';
   import ListExerciseEvent from '$lib/components/ListExerciseEvent.svelte';
   import ListExerciseGroup from '$lib/components/ListExerciseGroup.svelte';
-  import { confirmDelete } from '$lib/utils';
+  import Form from '$lib/components/forms/Form.svelte';
+  import { confirmDelete, emptySchema } from '$lib/utils';
+  import Icon from '@iconify/svelte';
   import { modalStore } from '@skeletonlabs/skeleton';
+  import type { PageData } from './$types';
 
   export let data: PageData;
   let scrollY: number;
@@ -116,9 +116,8 @@
                 <Icon icon="material-symbols:edit-outline" height="18" />
                 <span>Edit</span>
               </button>
-              <form
-                use:enhance
-                method="POST"
+              <Form
+                schema={emptySchema}
                 action={`/trainingProgram/${trainingProgram.id}/group/${group.id}?/delete`}
                 class="flex-initial"
               >
@@ -127,7 +126,7 @@
                   <Icon icon="mdi:trash-outline" height="18" />
                   <span class="ml-1 mr-1"> Delete </span>
                 </button>
-              </form>
+              </Form>
             </div>
           </div>
           <div />
@@ -207,11 +206,10 @@
         <div class="mb-12">
           <div class="flex w-full justify-between items-end">
             <div class="font-bold text-lg">Exercise Groups</div>
-            <form
-              use:enhance
-              method="POST"
-              action={`/trainingProgram/${trainingProgram.id}/day/${day.id}/?/connectExerciseGroup`}
+            <Form
               class="flex items-end"
+              schema={emptySchema}
+              action={`/trainingProgram/${trainingProgram.id}/day/${day.id}/?/connectExerciseGroup`}
             >
               <input type="hidden" value={day.id} name="trainingProgramDayId" />
               <select name="exerciseGroupId" class="pr-8 py-1">
@@ -228,13 +226,12 @@
                 <Icon icon="fluent:plug-connected-add-20-regular" height="18" />
                 <span class="ml-1 mr-1"> Connect</span>
               </button>
-            </form>
+            </Form>
           </div>
           <ListExerciseGroup exerciseGroups={day.exerciseGroups}>
             <div slot="buttons" let:group>
-              <form
-                use:enhance
-                method="POST"
+              <Form
+                schema={emptySchema}
                 action={`/trainingProgram/${trainingProgram.id}/day/${day.id}/?/disconnectExerciseGroup`}
               >
                 <input type="hidden" value={group.id} name="exerciseGroupId" />
@@ -242,7 +239,7 @@
                   <Icon icon="fluent:plug-disconnected-20-regular" height="18" />
                   <span class="ml-1 mr-1"> Disconnect </span>
                 </button>
-              </form>
+              </Form>
             </div>
           </ListExerciseGroup>
         </div>
