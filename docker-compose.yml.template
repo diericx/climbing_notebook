@@ -1,6 +1,6 @@
 version: '3.9'
 services:
-  svelte:
+  {{ .name }}:
     image: {{ .image }} 
     networks:
       - traefik
@@ -8,10 +8,10 @@ services:
     deploy:
       labels:
         - 'traefik.enable=true'
-        - 'traefik.http.routers.svelte.rule=Host(\`{{ .host }}\`)'
-        - 'traefik.http.routers.svelte.entrypoints=websecure'
-        - 'traefik.http.routers.svelte.tls.certresolver=letsencrypt'
-        - 'traefik.http.services.svelte.loadbalancer.server.port=3000'
+        - 'traefik.http.routers.{{ .name }}.rule=Host(\`{{ .host }}\`)'
+        - 'traefik.http.routers.{{ .name }}.entrypoints=websecure'
+        - 'traefik.http.routers.{{ .name }}.tls.certresolver=letsencrypt'
+        - 'traefik.http.services.{{ .name }}.loadbalancer.server.port=3000'
     secrets:
       - source: {{ .db_url_secret }}
         target: db_url
