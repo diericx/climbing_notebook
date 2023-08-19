@@ -1,17 +1,14 @@
-import { APIError } from '$lib/errors';
+import { CalendarEventRepo } from '$lib/calendarEvent';
+import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
 import { ExerciseEventRepo } from '$lib/exerciseEvent';
-import { SERVER_ERROR } from '$lib/helperTypes';
+import { JournalEntryRepo } from '$lib/journalEntry';
 import { MetricRepo } from '$lib/metric';
 import { prisma } from '$lib/prisma';
 import { ProfileRepo } from '$lib/profile';
-import { error } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
-import { JournalEntryRepo } from '$lib/journalEntry';
-import { CalendarEventRepo } from '$lib/calendarEvent';
-import { WidgetRepo } from '$lib/widget';
-import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
 import { TrainingProgramRepo } from '$lib/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
+import { WidgetRepo } from '$lib/widget';
+import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
   const { user } = await getSessionOrRedirect({ locals, url });

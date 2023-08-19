@@ -1,7 +1,5 @@
 import { redirect } from '@sveltejs/kit';
 import 'fs';
-import type { Session } from 'lucia';
-import { z } from 'zod';
 export const huecoGrades: readonly [string, ...string[]] = [
   'V0',
   'V1',

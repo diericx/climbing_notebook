@@ -1,11 +1,9 @@
-import type { Actions } from './$types';
-import { error, fail, redirect } from '@sveltejs/kit';
-import { SERVER_ERROR } from '$lib/helperTypes';
 import { JournalEntryRepo, journalEntrySchema } from '$lib/journalEntry';
 import { prisma } from '$lib/prisma';
-import { APIError } from '$lib/errors';
-import { superValidate } from 'sveltekit-superforms/server';
 import { getSessionOrRedirect } from '$lib/utils';
+import { fail } from '@sveltejs/kit';
+import { superValidate } from 'sveltekit-superforms/server';
+import type { Actions } from './$types';
 
 export const actions: Actions = {
   edit: async ({ request, locals, params, url }) => {

@@ -1,5 +1,5 @@
-import { prisma } from '../lib/prisma.js';
 import { createRequire } from 'module';
+import { prisma } from '../lib/prisma.js';
 const require = createRequire(import.meta.url);
 const exercises = require('./exercises_seed.json');
 

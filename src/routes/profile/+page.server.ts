@@ -1,16 +1,13 @@
-import { APIError } from '$lib/errors';
-import { SERVER_ERROR } from '$lib/helperTypes';
-import { prisma } from '$lib/prisma';
-import { ProfileRepo, profileSchema } from '$lib/profile';
-import { redirect, error, fail } from '@sveltejs/kit';
-import type { Actions } from './$types';
-import { superValidate } from 'sveltekit-superforms/server';
-import type { PageServerLoad } from './$types';
 import { ExerciseEventRepo } from '$lib/exerciseEvent';
 import { JournalEntryRepo } from '$lib/journalEntry';
-import { TrainingProgramRepo } from '$lib/trainingProgram';
 import { MetricRepo } from '$lib/metric';
+import { prisma } from '$lib/prisma';
+import { ProfileRepo, profileSchema } from '$lib/profile';
+import { TrainingProgramRepo } from '$lib/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
+import { fail } from '@sveltejs/kit';
+import { superValidate } from 'sveltekit-superforms/server';
+import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
   const { user } = await getSessionOrRedirect({ locals, url });

@@ -1,10 +1,7 @@
-import type { PageServerLoad } from './$types';
 import { CalendarEventRepo } from '$lib/calendarEvent';
-import { APIError } from '$lib/errors';
-import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
-import { error } from '@sveltejs/kit';
 import { getSessionOrRedirect } from '$lib/utils';
+import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params, url }) => {
   const { user } = await getSessionOrRedirect({ locals, url });

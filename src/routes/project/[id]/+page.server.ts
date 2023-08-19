@@ -1,15 +1,13 @@
-import type { Actions, PageServerLoad } from './$types';
-import { error, fail, redirect } from '@sveltejs/kit';
-import { prisma } from '$lib/prisma';
-import { SERVER_ERROR } from '$lib/helperTypes';
-import { projectPartialSchema, ProjectRepo } from '$lib/project';
-import { setError, superValidate } from 'sveltekit-superforms/server';
-import { APIError } from '$lib/errors';
 import { deleteFile, getMetadata, getPresignedUrl, uploadFile } from '$lib/aws/s3';
-import { v4 as uuidv4 } from 'uuid';
-import sharp from 'sharp';
 import { fileUploadSchema } from '$lib/file';
+import { prisma } from '$lib/prisma';
+import { ProjectRepo, projectPartialSchema } from '$lib/project';
 import { getSessionOrRedirect } from '$lib/utils';
+import { fail } from '@sveltejs/kit';
+import sharp from 'sharp';
+import { setError, superValidate } from 'sveltekit-superforms/server';
+import { v4 as uuidv4 } from 'uuid';
+import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params, url }) => {
   const { user } = await getSessionOrRedirect({ locals, url });

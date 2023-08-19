@@ -1,11 +1,10 @@
-import type { Actions } from './$types';
+import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
 import { prisma } from '$lib/prisma';
+import { getSessionOrRedirect } from '$lib/utils';
+import { WidgetRepo, widgetSchema } from '$lib/widget';
 import { fail, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
-import { WidgetRepo, widgetSchema } from '$lib/widget';
-import type { PageServerLoad } from './$types';
-import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
-import { getSessionOrRedirect } from '$lib/utils';
+import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
   const { user } = await getSessionOrRedirect({ locals, url });

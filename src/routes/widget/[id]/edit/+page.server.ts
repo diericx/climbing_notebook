@@ -2,9 +2,9 @@ import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
 import { ExerciseRepo } from '$lib/exercise';
 import { prisma } from '$lib/prisma';
 import { TrainingProgramRepo } from '$lib/trainingProgram';
+import { getSessionOrRedirect } from '$lib/utils';
 import { WidgetRepo } from '$lib/widget';
 import type { PageServerLoad } from './$types';
-import { getSessionOrRedirect } from '$lib/utils';
 
 export const load: PageServerLoad = async ({ locals, params, url }) => {
   const { user } = await getSessionOrRedirect({ locals, url });

@@ -26,4 +26,4 @@ const createSendEmailCommand = (
   });
 };
 
-export { sesClient, createSendEmailCommand };
+export { createSendEmailCommand, sesClient };

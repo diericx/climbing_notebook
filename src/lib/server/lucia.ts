@@ -1,9 +1,9 @@
 // lib/server/lucia.ts
-import { lucia } from 'lucia';
-import { sveltekit } from 'lucia/middleware';
-import { prisma as prismaAdapter } from '@lucia-auth/adapter-prisma';
 import { dev } from '$app/environment';
 import { prisma } from '$lib/prisma';
+import { prisma as prismaAdapter } from '@lucia-auth/adapter-prisma';
+import { lucia } from 'lucia';
+import { sveltekit } from 'lucia/middleware';
 
 export const auth = lucia({
   adapter: prismaAdapter(prisma, {

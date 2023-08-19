@@ -1,8 +1,8 @@
-import type { PrismaClient, CustomQuery, ExerciseEvent, Metric, Widget } from '@prisma/client';
+import type { CustomQuery, ExerciseEvent, Metric, PrismaClient, Widget } from '@prisma/client';
 import { Prisma } from '@prisma/client';
+import { evaluate } from 'mathjs';
 import { z } from 'zod';
 import { APIError } from './errors';
-import { evaluate } from 'mathjs';
 
 export const customQuerySchema = z
   .object({

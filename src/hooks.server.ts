@@ -1,10 +1,10 @@
+import { dev } from '$app/environment';
 import { auth } from '$lib/server/lucia';
 import type { Handle, HandleServerError } from '@sveltejs/kit';
-import { dev } from '$app/environment';
 import { actionResult } from 'sveltekit-superforms/server';
 
+import { APIError } from '$lib/errors';
 import segfaultHandler from 'node-segfault-handler';
-import { APIError, throwAPIErrorAsHttpError } from '$lib/errors';
 
 if (!dev) {
   segfaultHandler.registerHandler();

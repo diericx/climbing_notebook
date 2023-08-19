@@ -1,7 +1,6 @@
-import type { PageServerLoad } from './$types';
-import { prisma } from '$lib/prisma';
 import { ExerciseEventRepo } from '$lib/exerciseEvent';
-import { redirect } from '@sveltejs/kit';
+import { prisma } from '$lib/prisma';
+import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
   const session = await locals.auth.validate();

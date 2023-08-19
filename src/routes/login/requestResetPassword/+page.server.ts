@@ -1,11 +1,11 @@
-import type { Actions } from './$types';
-import { fail, redirect } from '@sveltejs/kit';
-import { requestPasswordResetSchema } from '$lib/user';
-import { message, superValidate } from 'sveltekit-superforms/server';
+import { createSendEmailCommand, sesClient } from '$lib/aws/ses';
+import { APIError } from '$lib/errors';
 import { PasswordResetRepo } from '$lib/passwordReset';
 import { prisma } from '$lib/prisma';
-import { APIError } from '$lib/errors';
-import { createSendEmailCommand, sesClient } from '$lib/aws/ses';
+import { requestPasswordResetSchema } from '$lib/user';
+import { fail, redirect } from '@sveltejs/kit';
+import { message, superValidate } from 'sveltekit-superforms/server';
+import type { Actions } from './$types';
 
 export const actions: Actions = {
   requestResetPassword: async ({ request }) => {

@@ -1,11 +1,11 @@
-import type { Actions, PageServerLoad } from './$types';
-import { error, fail, redirect } from '@sveltejs/kit';
-import { resetPasswordSchema } from '$lib/user';
-import { message, superValidate } from 'sveltekit-superforms/server';
+import { SERVER_ERROR } from '$lib/helperTypes';
 import { PasswordResetRepo } from '$lib/passwordReset';
 import { prisma } from '$lib/prisma';
 import { auth } from '$lib/server/lucia';
-import { SERVER_ERROR } from '$lib/helperTypes';
+import { resetPasswordSchema } from '$lib/user';
+import { error, fail, redirect } from '@sveltejs/kit';
+import { message, superValidate } from 'sveltekit-superforms/server';
+import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
   const token = url.searchParams.get('token');

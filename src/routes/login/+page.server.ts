@@ -1,13 +1,12 @@
-import type { Actions } from './$types';
-import { error, fail, redirect } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
-import { loginSchema, signupSchema } from '$lib/user';
-import { auth } from '$lib/server/lucia';
-import { LuciaError } from 'lucia';
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
-import { superValidate } from 'sveltekit-superforms/server';
+import { auth } from '$lib/server/lucia';
+import { loginSchema, signupSchema } from '$lib/user';
 import { Prisma } from '@prisma/client';
+import { error, fail, redirect } from '@sveltejs/kit';
+import { LuciaError } from 'lucia';
+import { superValidate } from 'sveltekit-superforms/server';
+import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const session = await locals.auth.validate();

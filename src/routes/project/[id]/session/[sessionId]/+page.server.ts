@@ -1,11 +1,9 @@
-import type { Actions, PageServerLoad } from './$types';
-import { error, fail, redirect } from '@sveltejs/kit';
 import { prisma } from '$lib/prisma';
-import { SERVER_ERROR } from '$lib/helperTypes';
-import { ProjectRepo, projectSchema, projectSessionSchema } from '$lib/project';
-import { superValidate } from 'sveltekit-superforms/server';
-import { APIError } from '$lib/errors';
+import { ProjectRepo, projectSessionSchema } from '$lib/project';
 import { getSessionOrRedirect } from '$lib/utils';
+import { fail } from '@sveltejs/kit';
+import { superValidate } from 'sveltekit-superforms/server';
+import type { Actions } from './$types';
 
 export const actions: Actions = {
   delete: async ({ locals, url, params }) => {

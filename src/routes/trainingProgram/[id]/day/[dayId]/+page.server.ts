@@ -1,10 +1,10 @@
-import { fail, redirect, type Actions } from '@sveltejs/kit';
+import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
 import { prisma } from '$lib/prisma';
 import { TrainingProgramRepo } from '$lib/trainingProgram';
-import { superValidate } from 'sveltekit-superforms/server';
 import { trainingProgramDaySchema } from '$lib/trainingProgramDay';
-import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
 import { getSessionOrRedirect } from '$lib/utils';
+import { fail, type Actions } from '@sveltejs/kit';
+import { superValidate } from 'sveltekit-superforms/server';
 
 export const actions: Actions = {
   connectExerciseGroup: async ({ locals, request, url, params }) => {

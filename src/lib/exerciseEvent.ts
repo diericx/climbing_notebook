@@ -1,4 +1,4 @@
-import type { ExerciseEvent, PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
 import { isDateInTheSameWeekAsToday } from './utils';
