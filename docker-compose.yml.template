@@ -24,7 +24,7 @@ services:
       [
         '/bin/sh',
         '-c',
-        'export BODY_SIZE_LIMIT=5000000; export DATABASE_URL=\\\$\\\$(cat /run/secrets/db_url) ; export AWS_ACCESS_KEY_ID=\\\$\\\$(cat /run/secrets/cn_prod_aws_access_key_id) ; export AWS_SECRET_ACCESS_KEY=\\\$\\\$(cat /run/secrets/cn_prod_aws_secret_access_key) ;node build',
+        'export BODY_SIZE_LIMIT=5000000; export DATABASE_URL=\\$\\$(cat /run/secrets/db_url) ; export AWS_ACCESS_KEY_ID=\\$\\$(cat /run/secrets/cn_prod_aws_access_key_id) ; export AWS_SECRET_ACCESS_KEY=\\$\\$(cat /run/secrets/cn_prod_aws_secret_access_key) ;node build',
       ]
 
 
