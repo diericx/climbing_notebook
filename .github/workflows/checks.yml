@@ -27,5 +27,5 @@ jobs:
         run: npm run prettier-check
       - name: Eslint
         run: npm run eslint-check
-      - name: TSC
+      - name: Typescript
         run: npm run typescript-check
