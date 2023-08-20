@@ -1,9 +1,8 @@
 <script lang="ts">
-  import { emptySchema } from '$lib/utils';
+  import { enhance } from '$app/forms';
   import type { Prisma } from '@prisma/client';
   import type { PopupSettings } from '@skeletonlabs/skeleton';
   import { modalStore, popup } from '@skeletonlabs/skeleton';
-  import Form from './forms/Form.svelte';
 
   // Generate partial prisma types
   export let exerciseEvent: Prisma.ExerciseEventGetPayload<{
@@ -49,10 +48,11 @@
   class="col rounded-md border p-2 mb-2 leading-5 bg-white {isMarkedCompleted ? 'opacity-50' : ''}"
 >
   <div class="flex items-center">
-    <Form
-      schema={emptySchema}
-      bind:formElement={formForIsMarkedCompleted}
+    <form
+      bind:this={formForIsMarkedCompleted}
       action={`/exerciseEvent/${exerciseEvent.id}/edit?/setCompleted`}
+      use:enhance
+      method="POST"
     >
       <input type="hidden" name="date" value={date} />
       <input
@@ -69,7 +69,7 @@
         }}
         class="w-4 h-4 mr-2 rounded-full border-gray-400 text-green-600 disabled:text-green-300 focus:ring-red-200"
       />
-    </Form>
+    </form>
     {exerciseEvent.exercise?.name || exerciseEvent.name}
   </div>
   <div class="mt-1 text-sm text-gray-500">

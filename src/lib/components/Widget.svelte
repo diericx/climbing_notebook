@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { CustomQueryResults } from '$lib/customQuery';
-  import { confirmDelete, emptySchema } from '$lib/utils';
+  import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { CalendarEvent, JournalEntry, Prisma, TrainingProgram } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
@@ -8,7 +8,7 @@
   import Chart from './Chart.svelte';
   import DailyCalendar from './DailyCalendar.svelte';
   import HeatmapCalendar from './HeatmapCalendar.svelte';
-  import Form from './forms/Form.svelte';
+  import FormButton from './forms/FormButton.svelte';
 
   // Generate partial prisma types
   type Widget = Prisma.WidgetGetPayload<{
@@ -109,13 +109,14 @@
       <Icon icon="material-symbols:edit-outline" height="18" />
       <span>Edit</span>
     </button>
-    <Form schema={emptySchema} action={`/widget/${widget.id}?/delete`}>
-      <input type="hidden" name="id" value={widget.id} />
-      <button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
-        <Icon icon="mdi:trash-outline" height="18" />
-        Delete
-      </button>
-    </Form>
+    <FormButton
+      action={`/widget/${widget.id}?/delete`}
+      class="btn btn-sm variant-ringed"
+      onClick={confirmDelete}
+    >
+      <Icon icon="mdi:trash-outline" height="18" />
+      Delete
+    </FormButton>
   </div>
 
   {#if widget.type == 'chart'}

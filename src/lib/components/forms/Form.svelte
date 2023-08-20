@@ -26,6 +26,9 @@
   // Add auth fallback redirect data
   action += '&redirectToAuthFallback=' + $page.url.pathname + $page.url.search;
 
+  // Add identifier for superform
+  action += '&formType=superForm';
+
   // As we are just initializing the form with the provided data, disable errors.
   // Errors will come in after submit either from the server or from client.
   const newSuperForm = superForm(superValidateSync(data, schema, { errors: false }), {

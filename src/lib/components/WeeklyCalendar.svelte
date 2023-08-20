@@ -1,10 +1,10 @@
 <script lang="ts">
   import CalExerciseEvent from '$lib/components/WeeklyCalendarExerciseEvent.svelte';
-  import { daysFromToday, emptySchema, getDayWeekStartsMonday } from '$lib/utils';
+  import { daysFromToday, getDayWeekStartsMonday } from '$lib/utils';
   import type { Prisma } from '@prisma/client';
   import type { User } from 'lucia';
   import { onMount } from 'svelte';
-  import Form from './forms/Form.svelte';
+  import FormButton from './forms/FormButton.svelte';
 
   type TrainingProgram = Prisma.TrainingProgramGetPayload<{
     include: {
@@ -85,14 +85,12 @@
   <div class="flex">
     {#if showDuplicateBtn}
       <div class="mr-2">
-        <Form
-          schema={emptySchema}
+        <FormButton
           action={`/trainingProgram/${trainingProgram.id}?/duplicate&redirectTo=/trainingProgram`}
+          class="btn btn-sm variant-ringed"
         >
-          <button class="btn btn-sm variant-ringed" value="Set Active">
-            Duplicate this program
-          </button>
-        </Form>
+          Duplicate this program
+        </FormButton>
       </div>
     {/if}
     {#if user !== null}
