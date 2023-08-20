@@ -2,13 +2,12 @@
 
 <script lang="ts">
   import type { CustomQueryResults } from '$lib/customQuery';
-  import { confirmDelete, emptySchema } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
   import { Avatar, popup } from '@skeletonlabs/skeleton';
   import Chart from './Chart.svelte';
   import HeatmapCalendar from './HeatmapCalendar.svelte';
-  import Form from './forms/Form.svelte';
+  import FormButton from './forms/FormButton.svelte';
 
   type Widget = Prisma.WidgetGetPayload<{
     include: {
@@ -62,21 +61,16 @@
           </button>
 
           {#if widget.ownerId != user.userId}
-            <Form
-              schema={emptySchema}
+            <FormButton
               action={`/widget/${widget.id}?/addToMyDashboard&redirectTo=/`}
+              class="btn btn-sm variant-filled"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
             >
-              <button
-                class="btn btn-sm variant-filled"
-                value="Set Active"
-                on:click={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-                <span>Add To My Dashboard</span>
-              </button>
-            </Form>
+              <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
+              <span>Add To My Dashboard</span>
+            </FormButton>
           {/if}
         </div>
         <div class="mb-2">
@@ -142,29 +136,22 @@
       </li>
       <li>
         {#if widget.isPublished}
-          <Form schema={emptySchema} action={`/widget/${widget.id}?/hide`}>
-            <button class="btn btn-sm">
-              <Icon icon="mdi:hide-outline" height="18" />
-              <span> Hide </span>
-            </button>
-          </Form>
+          <FormButton action={`/widget/${widget.id}?/hide`} class="btn btn-sm">
+            <Icon icon="mdi:hide-outline" height="18" />
+            <span> Hide </span>
+          </FormButton>
         {:else}
-          <Form schema={emptySchema} action={`/widget/${widget.id}?/publish`}>
-            <button class="btn btn-sm">
-              <Icon icon="majesticons:share-line" height="18" />
-              <span> Publish </span>
-            </button>
-          </Form>
+          <FormButton action={`/widget/${widget.id}?/publish`} class="btn btn-sm">
+            <Icon icon="majesticons:share-line" height="18" />
+            <span> Publish </span>
+          </FormButton>
         {/if}
       </li>
       <li>
-        <Form schema={emptySchema} action={`/widget/${widget.id}?/delete`}>
-          <input type="hidden" name="id" value={widget.id} />
-          <button class="btn btn-sm" on:click={confirmDelete}>
-            <Icon icon="mdi:trash-outline" height="18" />
-            <span> Delete </span>
-          </button>
-        </Form>
+        <FormButton action={`/widget/${widget.id}?/delete`} class="btn btn-sm">
+          <Icon icon="mdi:trash-outline" height="18" />
+          <span> Delete </span>
+        </FormButton>
       </li>
     </ul>
   </nav>

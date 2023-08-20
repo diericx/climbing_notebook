@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Form from '$lib/components/forms/Form.svelte';
-  import { confirmDelete, emptySchema } from '$lib/utils';
+  import FormButton from '$lib/components/forms/FormButton.svelte';
+  import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { PageData } from './$types';
 
@@ -46,12 +46,14 @@
               <span>Edit</span>
             </a>
             {#if user.userId == exercise.createdByAuthUserId}
-              <Form class="inline" schema={emptySchema} action={`/exercise/${exercise.id}?/delete`}>
-                <button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
-                  <Icon icon="mdi:trash-outline" height="18" />
-                  <span class="ml-1 mr-1"> Delete </span>
-                </button>
-              </Form>
+              <FormButton
+                action={`/exercise/${exercise.id}?/delete`}
+                class="btn btn-sm variant-ringed"
+              >
+                <Icon icon="mdi:trash-outline" height="18" />
+                <span class="ml-1 mr-1"> Delete </span>
+                onClick={confirmDelete}
+              </FormButton>
             {/if}
           </slot>
         </div>

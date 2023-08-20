@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { confirmDelete, emptySchema } from '$lib/utils';
+  import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
-  import Form from './forms/Form.svelte';
+  import FormButton from './forms/FormButton.svelte';
 
   type ExerciseEvent = Prisma.ExerciseEventGetPayload<{
     include: {
@@ -86,16 +86,14 @@
                 <Icon icon="material-symbols:edit-outline" height="18" />
                 <span>Edit</span>
               </button>
-              <Form
-                class="inline"
-                schema={emptySchema}
+              <FormButton
                 action={`/exerciseEvent/${exerciseEvent.id}?/delete`}
+                class="btn btn-sm variant-ringed"
+                onClick={confirmDelete}
               >
-                <button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
-                  <Icon icon="mdi:trash-outline" height="18" />
-                  <span class="ml-1 mr-1"> Delete </span>
-                </button>
-              </Form>
+                <Icon icon="mdi:trash-outline" height="18" />
+                <span class="ml-1 mr-1"> Delete </span>
+              </FormButton>
             </slot>
           {/if}
         </div>

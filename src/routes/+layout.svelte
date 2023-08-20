@@ -6,7 +6,7 @@
   import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
   // This contains the bulk of Skeletons required styles:
   import { navigating } from '$app/stores';
-  import Form from '$lib/components/forms/Form.svelte';
+  import FormButton from '$lib/components/forms/FormButton.svelte';
   import ModalCalendarEvent from '$lib/components/modals/ModalCalendarEvent.svelte';
   import ModalJournalEntry from '$lib/components/modals/ModalJournalEntry.svelte';
   import ModalShareTrainingProgram from '$lib/components/modals/ModalShareTrainingProgram.svelte';
@@ -23,7 +23,6 @@
   import FormModalTrainingProgramDay from '$lib/components/modals/formModals/FormModalTrainingProgramDay.svelte';
   import FormModalWidget from '$lib/components/modals/formModals/FormModalWidget.svelte';
   import FormModalWidgetTemplate from '$lib/components/modals/formModals/FormModalWidgetTemplate.svelte';
-  import { emptySchema } from '$lib/utils';
   import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
   import Icon from '@iconify/svelte';
   import type { PopupSettings } from '@skeletonlabs/skeleton';
@@ -230,9 +229,7 @@
         <a href="/profile"> Profile </a>
       </li>
       <li class="listbox-item">
-        <Form schema={emptySchema} action="/?/signout">
-          <button class="w-full" style="margin-top: 0px">Logout</button>
-        </Form>
+        <FormButton action="/?/signout" class="w-full mt-0">Logout</FormButton>
       </li>
     </ul>
   </nav>

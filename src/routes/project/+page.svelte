@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Form from '$lib/components/forms/Form.svelte';
-  import { confirmDelete, emptySchema } from '$lib/utils';
+  import FormButton from '$lib/components/forms/FormButton.svelte';
+  import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import { modalStore } from '@skeletonlabs/skeleton';
   import type { PageData } from './$types';
@@ -46,12 +46,14 @@
               </b>
             </h2>
 
-            <Form class="inline" schema={emptySchema} action={`/project/${project.id}?/delete`}>
-              <button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
-                <Icon icon="mdi:trash-outline" height="18" />
-                Delete
-              </button>
-            </Form>
+            <FormButton
+              action={`/project/${project.id}?/delete`}
+              class="btn btn-sm variant-ringed"
+              onClick={confirmDelete}
+            >
+              <Icon icon="mdi:trash-outline" height="18" />
+              Delete
+            </FormButton>
           </div>
         </header>
         <section class="p-4">
