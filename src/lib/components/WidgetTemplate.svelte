@@ -2,6 +2,7 @@
 
 <script lang="ts">
   import type { CustomQueryResults } from '$lib/customQuery';
+  import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
   import { Avatar, popup } from '@skeletonlabs/skeleton';
@@ -148,7 +149,11 @@
         {/if}
       </li>
       <li>
-        <FormButton action={`/widget/${widget.id}?/delete`} class="btn btn-sm">
+        <FormButton
+          action={`/widget/${widget.id}?/delete`}
+          class="btn btn-sm"
+          onClick={confirmDelete}
+        >
           <Icon icon="mdi:trash-outline" height="18" />
           <span> Delete </span>
         </FormButton>

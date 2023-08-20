@@ -22,8 +22,6 @@ export const handle: Handle = async ({ event, resolve }) => {
   // For form actions only, if there is a redirectTo search param, on success redirect
   // to that location
   if (isFormAction) {
-    const formType = event.url.searchParams.get('formType');
-
     // Redirect to the value in the url
     if (result.status == 200) {
       // If the action itself threw a redirect, respect that instead of the one in the url
@@ -33,27 +31,12 @@ export const handle: Handle = async ({ event, resolve }) => {
         const body = await result.clone().json();
 
         if (body.type == 'redirect') {
-          // Handle form action redirect
-          if (formType == 'superForm') {
-            return actionResult('redirect', body.location, 303);
-          } else {
-            return new Response('redirect', {
-              status: 303,
-              headers: { Location: body.location },
-            });
-          }
+          return actionResult('redirect', body.location, 303);
         } else if (body.type == 'success') {
           // Handle link redirect
           const redirectTo = event.url.searchParams.get('redirectTo');
           if (redirectTo !== null) {
-            if (formType == 'superForm') {
-              return actionResult('redirect', redirectTo, 303);
-            } else {
-              return new Response('redirect', {
-                status: 303,
-                headers: { Location: redirectTo },
-              });
-            }
+            return actionResult('redirect', redirectTo, 303);
           }
         } else {
           // No redirect on failure

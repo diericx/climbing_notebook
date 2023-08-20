@@ -4,7 +4,7 @@ import { prisma } from '$lib/prisma';
 import { TrainingProgramRepo, trainingProgramSchema } from '$lib/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
 import type { TrainingProgram } from '@prisma/client';
-import { fail, redirect, type Actions } from '@sveltejs/kit';
+import { fail, type Actions } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { PageServerLoad } from './$types';
 
@@ -34,12 +34,9 @@ export const actions: Actions = {
 
   duplicate: async ({ locals, url, params }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
-    if (!user) {
-      throw redirect(302, '/login?redirectTo=' + url.toString());
-    }
 
     const repo = new TrainingProgramRepo(prisma);
-    await repo.duplicate(Number(params.id), user?.userId);
+    await repo.duplicate(Number(params.id), user.userId);
 
     return { success: true };
   },
