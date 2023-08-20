@@ -11,7 +11,6 @@
 
 <form
   {action}
-  use:enhance
   method="POST"
   class="inline"
   use:enhance={() => {
