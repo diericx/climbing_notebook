@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
@@ -88,6 +89,7 @@
               <FormButton
                 action={`/exerciseEvent/${exerciseEvent.id}?/delete`}
                 class="btn btn-sm variant-ringed"
+                onClick={confirmDelete}
               >
                 <Icon icon="mdi:trash-outline" height="18" />
                 <span class="ml-1 mr-1"> Delete </span>
