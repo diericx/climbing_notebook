@@ -53,6 +53,7 @@
         <FormButton
           action={`/widget/${widget.id}/dataset/${customQuery.datasetId}/query/${customQuery.id}?/delete`}
           class="btn btn-sm variant-ringed"
+          onClick={confirmDelete}
         >
           <Icon icon="mdi:trash-outline" height="18" />
           <span class="ml-1 mr-1"> Delete </span>
