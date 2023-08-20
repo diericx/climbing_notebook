@@ -45,18 +45,20 @@ export class ExerciseRepo {
     });
   }
 
-  async get<S extends Prisma.ExerciseSelect>(select?: Prisma.Subset<S, Prisma.ExerciseSelect>) {
-    // Fetch all
-    if (select) {
-      return await this.prisma.exercise.findMany({
-        orderBy: {
-          exerciseEvents: {
-            _count: 'desc',
-          },
+  async getSelect<S extends Prisma.ExerciseSelect>(
+    select: Prisma.Subset<S, Prisma.ExerciseSelect>
+  ) {
+    return await this.prisma.exercise.findMany({
+      orderBy: {
+        exerciseEvents: {
+          _count: 'desc',
         },
-        select: select,
-      });
-    }
+      },
+      select: select,
+    });
+  }
+
+  async get() {
     return await this.prisma.exercise.findMany({
       orderBy: {
         exerciseEvents: {

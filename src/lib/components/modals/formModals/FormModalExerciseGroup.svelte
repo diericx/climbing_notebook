@@ -1,7 +1,7 @@
 <script lang="ts">
+  import { exerciseGroupSchema } from '$lib/exerciseGroup';
   import FormBodyExerciseGroup from '../../forms/bodies/FormBodyExerciseGroup.svelte';
   import FormModal from './FormModal.svelte';
-  import { exerciseGroupSchema } from '$lib/exerciseGroup';
 </script>
 
 <FormModal schema={exerciseGroupSchema} let:superForm let:formProps>

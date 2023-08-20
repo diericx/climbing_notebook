@@ -1,13 +1,16 @@
 <script lang="ts">
+  import type { ZodValidation } from 'sveltekit-superforms';
+
   import { page } from '$app/stores';
   import { superForm, superValidateSync } from 'sveltekit-superforms/client';
   import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
   import { v4 as uuidv4 } from 'uuid';
-  import type { ZodRawShape, z } from 'zod';
+  import type { AnyZodObject } from 'zod';
 
   let className = '';
 
-  export let schema: z.ZodObject<ZodRawShape>;
+  export let schema: ZodValidation<AnyZodObject>;
+
   export let data: any = {};
   export let id: string = uuidv4();
   export let onSuccess: (() => void) | undefined = undefined;

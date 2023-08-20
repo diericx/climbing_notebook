@@ -200,9 +200,9 @@ pre {
 }
 
 input[type='checkbox'][disabled] {
-  background-color: gray;
+  @apply bg-gray-300;
 }
 
 input[type='checkbox'][disabled]:hover {
-  background-color: gray;
+  @apply bg-gray-300;
 }

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { modalStore } from '@skeletonlabs/skeleton';
   import type { JournalEntry } from '@prisma/client';
+  import { modalStore } from '@skeletonlabs/skeleton';
   let journalEntry = $modalStore[0]?.meta?.data as JournalEntry;
 </script>
 

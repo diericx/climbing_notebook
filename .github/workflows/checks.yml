@@ -29,3 +29,5 @@ jobs:
         run: npm run eslint-check
       - name: Typescript
         run: npm run typescript-check
+      - name: Svelte
+        run: npm i svelte-check

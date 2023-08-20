@@ -4,8 +4,8 @@
   // import {slide} from 'svelte/transition';
 
   // Types
-  import type { AutocompleteOption } from '@skeletonlabs/skeleton';
   import { boldQuery } from '$lib/utils';
+  import type { AutocompleteOption } from '@skeletonlabs/skeleton';
 
   // Event Dispatcher
   type AutocompleteEvent = {
@@ -49,15 +49,6 @@
   export let regionButton = 'w-full';
   /** Provide arbitrary classes to empty message. */
   export let regionEmpty = 'text-center';
-  // TODO: These are slated to be removed!
-  /** DEPRECATED: replace with allowlist */
-  export let whitelist: unknown[] = [];
-  /** DEPRECATED: replace with denylist */
-  export let blacklist: unknown[] = [];
-  /** DEPRECATED: Set the animation duration. Use zero to disable. */
-  export let duration = 200;
-  // Silence warning about unused props:
-  const deprecated = [whitelist, blacklist, duration];
 
   // Local
   $: listedOptions = options;

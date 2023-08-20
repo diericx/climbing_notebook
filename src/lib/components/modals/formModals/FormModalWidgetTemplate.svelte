@@ -1,7 +1,7 @@
 <script lang="ts">
-  import FormModal from './FormModal.svelte';
   import { widgetTemplateSchema } from '$lib/widget';
   import FormBodyWidgetTemplate from '../../forms/bodies/FormBodyWidgetTemplate.svelte';
+  import FormModal from './FormModal.svelte';
 </script>
 
 <FormModal schema={widgetTemplateSchema} let:superForm let:formProps>

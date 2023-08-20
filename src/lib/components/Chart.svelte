@@ -1,24 +1,24 @@
 <script lang="ts">
-  import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm';
-  import { Chart } from 'svelte-chartjs';
+  // @ts-nocheck
+  import type { CustomQueryResults } from '$lib/customQuery';
+  import type { ExerciseEvent, Metric, Prisma } from '@prisma/client';
   import {
+    BarController,
+    BarElement,
     Chart as ChartJS,
     Colors,
-    Tooltip,
     Legend,
-    Title,
-    TimeScale,
-    LinearScale,
     LineController,
-    BarController,
     LineElement,
-    BarElement,
+    LinearScale,
     PointElement,
+    TimeScale,
+    Title,
+    Tooltip,
   } from 'chart.js';
   import { evaluate } from 'mathjs';
-  import type { ExerciseEvent, Metric, Prisma } from '@prisma/client';
-  import type { CustomQueryResults } from '$lib/customQuery';
   import { onMount } from 'svelte';
+  import { Chart } from 'svelte-chartjs';
   ChartJS.register(
     Colors,
     TimeScale,

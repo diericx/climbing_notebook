@@ -1,13 +1,15 @@
 <script lang="ts">
-  import type dayjs from 'dayjs';
-  import CalHeatmap from 'cal-heatmap';
-  import Legend from 'cal-heatmap/plugins/Legend';
-  import Tooltip from 'cal-heatmap/plugins/Tooltip';
-  import 'cal-heatmap/cal-heatmap.css';
-  import type { ExerciseEvent, Metric, Prisma } from '@prisma/client';
   import type { CustomQueryResults } from '$lib/customQuery';
-  import { onMount } from 'svelte';
+  import type { ExerciseEvent, Metric, Prisma } from '@prisma/client';
+  import { default as CalHeatmap } from 'cal-heatmap';
+  import 'cal-heatmap/cal-heatmap.css';
+  // @ts-ignore
+  import Legend from 'cal-heatmap/plugins/Legend';
+  // @ts-ignore
+  import Tooltip from 'cal-heatmap/plugins/Tooltip';
   import type { DataGroupType, DataRecord } from 'cal-heatmap/src/options/Options';
+  import type dayjs from 'dayjs';
+  import { onMount } from 'svelte';
 
   type Dataset = Prisma.DatasetGetPayload<{
     include: {
@@ -75,6 +77,7 @@
         range: 1,
         // This is a use case called 'ordinal domain' but does not look like the
         // type safety is implemented.
+        // @ts-ignore
         scale: { color: { type: 'ordinal', scheme: 'tableau10', domain } },
         domain: {
           type: 'year',

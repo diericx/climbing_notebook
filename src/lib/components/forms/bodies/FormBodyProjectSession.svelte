@@ -1,10 +1,10 @@
 <script lang="ts">
-  import Checkbox from '../fields/Checkbox.svelte';
-  import DateField from '../fields/DateField.svelte';
-  import TextArea from '../fields/TextArea.svelte';
-  import SubmitButton from '../fields/SubmitButton.svelte';
   import type { SuperForm } from 'sveltekit-superforms/client';
   import type { z } from 'zod';
+  import Checkbox from '../fields/Checkbox.svelte';
+  import DateField from '../fields/DateField.svelte';
+  import SubmitButton from '../fields/SubmitButton.svelte';
+  import TextArea from '../fields/TextArea.svelte';
 
   export let superForm: SuperForm<z.AnyZodObject, any>;
   export let showSubmitButton = true;

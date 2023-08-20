@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const profileRepo = new ProfileRepo(prisma);
   const exerciseEvents = await exerciseEventsRepo.get(user?.userId);
   const profile = await profileRepo.getOne(user?.userId);
-  const exercises = await exerciseRepo.get({
+  const exercises = await exerciseRepo.getSelect({
     _count: {
       select: {
         exerciseEvents: true,
