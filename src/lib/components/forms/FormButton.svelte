@@ -4,6 +4,7 @@
   export let action: string;
   let className: string = '';
   export { className as class };
+  export let disabled = false;
   export let onClick: ((event: MouseEvent) => void) | undefined = undefined;
   export let onSuccess: (() => void) | undefined = undefined;
 </script>
@@ -26,7 +27,7 @@
   }}
 >
   <slot name="form" />
-  <button class={className} on:click={onClick || undefined}>
+  <button class={className} on:click={onClick || undefined} {disabled}>
     <slot />
   </button>
 </form>

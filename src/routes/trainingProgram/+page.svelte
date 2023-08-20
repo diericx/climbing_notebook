@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Form from '$lib/components/forms/Form.svelte';
+  import FormButton from '$lib/components/forms/FormButton.svelte';
   import { doesTrainingProgramHaveLegacyExercises } from '$lib/trainingProgram';
-  import { confirmDelete, emptySchema } from '$lib/utils';
+  import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import { modalStore, popup } from '@skeletonlabs/skeleton';
   import type { PageData } from './$types';
@@ -88,19 +88,20 @@
                   {/if}
                 </section>
                 <footer class="card-footer">
-                  <Form schema={emptySchema} action={`/profile?/edit`}>
-                    <input type="hidden" name="activeTrainingProgramId" value={p.id} />
-                    <button
-                      class="btn btn-sm variant-ringed justify-start"
-                      value="Activate"
-                      disabled={profile?.activeTrainingProgramId == p.id}
-                      on:click={(e) => {
-                        e.stopPropagation();
-                      }}
-                    >
-                      Activate
-                    </button>
-                  </Form>
+                  <FormButton
+                    action={`/profile?/edit`}
+                    class="btn btn-sm variant-ringed justify-start"
+                    disabled={profile?.activeTrainingProgramId == p.id}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <div slot="form">
+                      <input type="hidden" name="activeTrainingProgramId" value={p.id} />
+                    </div>
+
+                    Activate
+                  </FormButton>
                 </footer>
               </a>
             </div>
@@ -128,19 +129,21 @@
                     </a>
                   </li>
                   <li>
-                    <Form
-                      schema={emptySchema}
+                    <FormButton
                       action={`/trainingProgram/${p.id}?/duplicate&redirectTo=/trainingProgram`}
+                      class="btn btn-sm w-full justify-start"
                     >
-                      <button class="btn btn-sm w-full justify-start"> Duplicate </button>
-                    </Form>
+                      Duplicate
+                    </FormButton>
                   </li>
                   <li>
-                    <Form schema={emptySchema} action={`/trainingProgram/${p.id}?/delete`}>
-                      <button class="btn btn-sm w-full justify-start" on:click={confirmDelete}>
-                        <span> Delete </span>
-                      </button>
-                    </Form>
+                    <FormButton
+                      action={`/trainingProgram/${p.id}?/delete`}
+                      class="btn btn-sm w-full justify-start"
+                      onClick={confirmDelete}
+                    >
+                      <span> Delete </span>
+                    </FormButton>
                   </li>
                 </ul>
               </nav>

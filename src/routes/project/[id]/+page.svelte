@@ -1,9 +1,10 @@
 <script lang="ts">
   import Image from '$lib/components/Image.svelte';
   import Form from '$lib/components/forms/Form.svelte';
+  import FormButton from '$lib/components/forms/FormButton.svelte';
   import FormBodyFileUpload from '$lib/components/forms/bodies/FormBodyFileUpload.svelte';
   import { fileUploadSchema } from '$lib/file';
-  import { confirmDelete, emptySchema } from '$lib/utils';
+  import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import { modalStore } from '@skeletonlabs/skeleton';
   import type { PageData } from './$types';
@@ -46,13 +47,17 @@
   </p>
   <b>Image</b>
   {#if project.imageS3ObjectKey}
-    <Form class="flex-initial" schema={emptySchema} action={`/project/${project.id}?/deleteImage`}>
-      <input type="hidden" name="key" value={project.imageS3ObjectKey} />
-      <button on:click={confirmDelete} class="btn btn-sm variant-ringed">
-        <Icon icon="mdi:trash-outline" height="18" />
-        <span class="ml-1 mr-1"> Delete Image </span>
-      </button>
-    </Form>
+    <FormButton
+      action={`/project/${project.id}?/deleteImage`}
+      class="btn btn-sm variant-ringed"
+      onClick={confirmDelete}
+    >
+      <slot name="form">
+        <input type="hidden" name="key" value={project.imageS3ObjectKey} />
+      </slot>
+      <Icon icon="mdi:trash-outline" height="18" />
+      <span class="ml-1 mr-1"> Delete Image </span>
+    </FormButton>
     <Image
       src={s3ObjectUrls[project.imageS3ObjectKey]}
       width={s3ObjectMetadatas[project.imageS3ObjectKey]?.width || '0'}
@@ -111,16 +116,14 @@
               <Icon icon="material-symbols:edit-outline" height="18" />
               <span>Edit Session</span>
             </button>
-            <Form
-              class="inline"
-              schema={emptySchema}
+            <FormButton
               action={`/project/${project.id}/session/${session.id}?/delete`}
+              class="btn btn-sm variant-ringed"
+              onClick={confirmDelete}
             >
-              <button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
-                <Icon icon="mdi:trash-outline" height="18" />
-                Delete
-              </button>
-            </Form>
+              <Icon icon="mdi:trash-outline" height="18" />
+              Delete
+            </FormButton>
           </div>
         </div>
         <div class="flex">

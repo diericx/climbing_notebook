@@ -1,8 +1,9 @@
 <script lang="ts">
   import Form from '$lib/components/forms/Form.svelte';
+  import FormButton from '$lib/components/forms/FormButton.svelte';
   import FormBodyJournalEntry from '$lib/components/forms/bodies/FormBodyJournalEntry.svelte';
   import { journalEntrySchema } from '$lib/journalEntry';
-  import { confirmDelete, emptySchema } from '$lib/utils';
+  import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { PageData } from './$types';
 
@@ -40,12 +41,14 @@
                 <Icon icon="material-symbols:edit-outline" height="18" />
                 Edit
               </a>
-              <Form class="inline" schema={emptySchema} action={`/journalEntry/${item.id}?/delete`}>
-                <button class="btn btn-sm variant-ringed" on:click={confirmDelete}>
-                  <Icon icon="mdi:trash-outline" height="18" />
-                  Delete
-                </button>
-              </Form>
+              <FormButton
+                action={`/journalEntry/${item.id}?/delete`}
+                class="btn btn-sm variant-ringed"
+                onClick={confirmDelete}
+              >
+                <Icon icon="mdi:trash-outline" height="18" />
+                Delete
+              </FormButton>
             </div>
           </div>
           <div class="flex">

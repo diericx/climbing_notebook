@@ -1,6 +1,5 @@
 <script lang="ts">
-  import Form from '$lib/components/forms/Form.svelte';
-  import { emptySchema } from '$lib/utils';
+  import FormButton from '$lib/components/forms/FormButton.svelte';
   import type { User } from 'lucia';
 
   let showMenu = false;
@@ -107,9 +106,7 @@
               </a>
 
               <div class="hidden md:inline">|</div>
-              <Form schema={emptySchema} action="/?/signout">
-                <button class="border-0 shadow-none" style="margin-top: 0px">Logout</button>
-              </Form>
+              <FormButton action="/?/signout" class="border-0 shadow-none mt-0">Logout</FormButton>
             {:else}
               <a
                 href="/login"

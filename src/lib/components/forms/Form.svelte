@@ -44,9 +44,6 @@
       if ((result.type == 'success' || result.type == 'redirect') && onSuccess != undefined) {
         onSuccess();
       }
-      if (result.type == 'redirect') {
-        console.log(result.location);
-      }
     },
     onError({ result }) {
       $message = result.error.message;

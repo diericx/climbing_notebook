@@ -23,25 +23,30 @@ export const handle: Handle = async ({ event, resolve }) => {
   // to that location
   if (isFormAction) {
     const formType = event.url.searchParams.get('formType');
-    // If the action itself threw a redirect, respect that instead of the one in the url
-    try {
-      // Clone the request so we can read the body while also allowing down stream functions
-      // to read as well
-      const body = await result.clone().json();
-      if (body.type == 'redirect') {
-        if (formType == 'superForm') {
-          return actionResult('redirect', body.location, 303);
-        } else {
-          return new Response('redirect', {
-            status: 303,
-            headers: { Location: body.location },
-          });
-        }
-      }
-    } catch (e: unknown) {}
 
     // Redirect to the value in the url
     if (result.status == 200) {
+      // If the action itself threw a redirect, respect that instead of the one in the url
+      try {
+        // Clone the request so we can read the body while also allowing down stream functions
+        // to read as well
+        const body = await result.clone().json();
+
+        if (body.type == 'redirect') {
+          if (formType == 'superForm') {
+            return actionResult('redirect', body.location, 303);
+          } else {
+            return new Response('redirect', {
+              status: 303,
+              headers: { Location: body.location },
+            });
+          }
+        } else {
+          return result;
+        }
+      } catch (e: unknown) {}
+
+      // TODO: Does this actually get reached at any point in form actions?
       const redirectTo = event.url.searchParams.get('redirectTo');
       if (redirectTo !== null) {
         if (formType == 'superForm') {

@@ -2,8 +2,7 @@
   import Chart from '$lib/components/Chart.svelte';
   import Dataset from '$lib/components/Dataset.svelte';
   import HeatmapCalendar from '$lib/components/HeatmapCalendar.svelte';
-  import Form from '$lib/components/forms/Form.svelte';
-  import { emptySchema } from '$lib/utils';
+  import FormButton from '$lib/components/forms/FormButton.svelte';
   import Icon from '@iconify/svelte';
   import { Avatar } from '@skeletonlabs/skeleton';
   import type { PageData } from './$types';
@@ -23,12 +22,13 @@
   </div>
   <div class="mb-1 flex space-x-2">
     <div>
-      <Form schema={emptySchema} action={`/widget/${widget.id}?/addToMyDashboard&redirectTo=/`}>
-        <button class="btn btn-sm variant-filled" value="Set Active">
-          <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-          <span>Add To My Dashboard</span>
-        </button>
-      </Form>
+      <FormButton
+        action={`/widget/${widget.id}?/addToMyDashboard&redirectTo=/`}
+        class="btn btn-sm variant-filled"
+      >
+        <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
+        <span>Add To My Dashboard</span>
+      </FormButton>
     </div>
     {#if isOwner}
       <div>
