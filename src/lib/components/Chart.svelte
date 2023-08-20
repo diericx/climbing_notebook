@@ -16,6 +16,7 @@
     Title,
     Tooltip,
   } from 'chart.js';
+  import 'chartjs-adapter-dayjs-4/dist/chartjs-adapter-dayjs-4.esm';
   import { evaluate } from 'mathjs';
   import { onMount } from 'svelte';
   import { Chart } from 'svelte-chartjs';
