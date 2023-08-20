@@ -212,6 +212,7 @@
               class="flex items-end"
               action={`/trainingProgram/${trainingProgram.id}/day/${day.id}/?/connectExerciseGroup`}
               use:enhance
+              method="POST"
             >
               <input type="hidden" value={day.id} name="trainingProgramDayId" />
               <select name="exerciseGroupId" class="pr-8 py-1">
