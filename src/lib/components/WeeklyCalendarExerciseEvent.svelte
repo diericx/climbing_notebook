@@ -51,7 +51,11 @@
     <form
       bind:this={formForIsMarkedCompleted}
       action={`/exerciseEvent/${exerciseEvent.id}/edit?/setCompleted`}
-      use:enhance
+      use:enhance={() => {
+        return async ({ update }) => {
+          update({ reset: false });
+        };
+      }}
       method="POST"
     >
       <input type="hidden" name="date" value={date} />
