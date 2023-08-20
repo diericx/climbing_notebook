@@ -16,7 +16,7 @@
 
 <div class="flex justify-between">
   <div>
-    <h1 class="font-bold">{widget.name}</h1>
+    <h1 class="font-bold">Editing {widget.name}</h1>
   </div>
   <div class="mb-1">
     <button

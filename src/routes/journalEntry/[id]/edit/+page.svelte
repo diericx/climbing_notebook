@@ -16,7 +16,7 @@
       data={journalEntry}
       resetForm={true}
       schema={journalEntrySchema}
-      action={`/journalEntry/${journalEntry.id}?/edit&redirectTo=/`}
+      action={`/journalEntry/${journalEntry.id}?/edit&redirectTo/journalEntry`}
       let:superForm
     >
       <FormBodyJournalEntry {superForm} />

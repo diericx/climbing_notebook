@@ -30,7 +30,7 @@
   <div class="mb-12 flex items-center justify-between">
     <div>
       <h1 class="font-bold inline">
-        {trainingProgram.name}
+        Editing {trainingProgram.name}
       </h1>
       <p>
         <b>Public: </b>
