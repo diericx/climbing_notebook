@@ -33,6 +33,7 @@ export const handle: Handle = async ({ event, resolve }) => {
         const body = await result.clone().json();
 
         if (body.type == 'redirect') {
+          // Handle form action redirect
           if (formType == 'superForm') {
             return actionResult('redirect', body.location, 303);
           } else {
@@ -41,22 +42,25 @@ export const handle: Handle = async ({ event, resolve }) => {
               headers: { Location: body.location },
             });
           }
+        } else if (body.type == 'success') {
+          // Handle link redirect
+          const redirectTo = event.url.searchParams.get('redirectTo');
+          if (redirectTo !== null) {
+            if (formType == 'superForm') {
+              return actionResult('redirect', redirectTo, 303);
+            } else {
+              return new Response('redirect', {
+                status: 303,
+                headers: { Location: redirectTo },
+              });
+            }
+          }
         } else {
+          // No redirect on failure
           return result;
         }
-      } catch (e: unknown) {}
-
-      // TODO: Does this actually get reached at any point in form actions?
-      const redirectTo = event.url.searchParams.get('redirectTo');
-      if (redirectTo !== null) {
-        if (formType == 'superForm') {
-          return actionResult('redirect', redirectTo, 303);
-        } else {
-          return new Response('redirect', {
-            status: 303,
-            headers: { Location: redirectTo },
-          });
-        }
+      } catch (e: unknown) {
+        return result;
       }
     }
   }
