@@ -29,7 +29,6 @@ export const handle: Handle = async ({ event, resolve }) => {
       // to read as well
       const body = await result.clone().json();
       if (body.type == 'redirect') {
-        console.log('redirect found here...', formType);
         if (formType == 'superForm') {
           return actionResult('redirect', body.location, 303);
         } else {

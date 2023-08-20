@@ -31,7 +31,6 @@ export const actions: Actions = {
       user?.userId
     );
 
-    console.log('got here...');
     return { form };
   },
 
