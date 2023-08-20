@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { PageData } from './$types';
   import { json2csv } from 'json-2-csv';
+  import type { PageData } from './$types';
 
   export let data: PageData;
-  const { profile, user, metrics, exerciseEvents, journalEntries, trainingPrograms } = data;
+  const { profile, user, metrics, exerciseEvents, journalEntries } = data;
 
-  function downloadAsJson(resources, name) {
+  function downloadAsJson(resources: any, name: string) {
     var a = window.document.createElement('a');
     a.href = window.URL.createObjectURL(
       new Blob([JSON.stringify(resources)], { type: 'text/json' })
@@ -20,7 +20,7 @@
     document.body.removeChild(a);
   }
 
-  async function downloadAsCsv(resources, name) {
+  async function downloadAsCsv(resources: any, name: string) {
     const csv = await json2csv(resources);
     var a = window.document.createElement('a');
     a.href = window.URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));

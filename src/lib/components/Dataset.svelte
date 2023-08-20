@@ -1,26 +1,32 @@
 <script lang="ts">
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
-  import type { Exercise, Prisma, Widget } from '@prisma/client';
+  import type { Prisma } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
   import CustomQuery from './CustomQuery.svelte';
   import FormButton from './forms/FormButton.svelte';
 
-  type Dataset = Prisma.DatasetGetPayload<{
+  export let dataset: Prisma.DatasetGetPayload<{
     include: {
       customQueries: {
         include: {
-          exercise: true;
           conditions: true;
+          exercise: {
+            select: {
+              name: true;
+            };
+          };
         };
       };
     };
   }>;
-
-  export let dataset: Dataset;
-  export let widget: Widget;
+  export let widget: Prisma.WidgetGetPayload<{}>;
   // Optional for view only use case
-  export let exercises: Exercise[] = [];
+  export let exercises: Prisma.ExerciseGetPayload<{
+    select: {
+      name: true;
+    };
+  }>[] = [];
 
   let className: string = '';
   export { className as class };

@@ -1,11 +1,10 @@
 <script lang="ts">
-  import type { CustomQuery } from '@prisma/client';
-  import TextField from '../fields/TextField.svelte';
-  import SelectField from '../fields/SelectField.svelte';
-  import ColorField from '../fields/ColorField.svelte';
-  import SubmitButton from '../fields/SubmitButton.svelte';
   import type { SuperForm } from 'sveltekit-superforms/client';
   import type { z } from 'zod';
+  import ColorField from '../fields/ColorField.svelte';
+  import SelectField from '../fields/SelectField.svelte';
+  import SubmitButton from '../fields/SubmitButton.svelte';
+  import TextField from '../fields/TextField.svelte';
 
   export let superForm: SuperForm<z.AnyZodObject, any>;
 

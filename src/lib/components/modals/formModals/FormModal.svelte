@@ -1,10 +1,12 @@
 <script lang="ts">
+  import type { ZodValidation } from 'sveltekit-superforms';
+
   import { modalStore } from '@skeletonlabs/skeleton';
-  import type { ZodRawShape, z } from 'zod';
   import Form from '../../forms/Form.svelte';
   import SubmitButton from '../../forms/fields/SubmitButton.svelte';
 
-  export let schema: z.ZodObject<ZodRawShape>;
+  type T = $$Generic<AnyZodObject>;
+  export let schema: ZodValidation<T>;
 
   let meta = $modalStore[0]?.meta || {};
   const { title, description, action, data, debug, formProps } = meta;

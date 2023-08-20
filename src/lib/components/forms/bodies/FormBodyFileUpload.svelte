@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { FileDropzone } from '@skeletonlabs/skeleton';
   import Icon from '@iconify/svelte';
-  import SubmitButton from '../fields/SubmitButton.svelte';
+  import { FileDropzone } from '@skeletonlabs/skeleton';
   import type { SuperForm } from 'sveltekit-superforms/client';
   import type { z } from 'zod';
+  import SubmitButton from '../fields/SubmitButton.svelte';
 
   export let superForm: SuperForm<z.AnyZodObject, any>;
   export let showSubmitButton = true;

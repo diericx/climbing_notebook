@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { PageData } from './$types';
-  import { modalStore } from '@skeletonlabs/skeleton';
-  import Icon from '@iconify/svelte';
   import Widget from '$lib/components/Widget.svelte';
+  import Icon from '@iconify/svelte';
+  import { modalStore } from '@skeletonlabs/skeleton';
+  import type { PageData } from './$types';
 
   export let data: PageData;
   $: profile = data.profile;

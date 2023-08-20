@@ -1,13 +1,24 @@
 <script lang="ts">
-  import TextField from '../fields/TextField.svelte';
-  import SelectField from '../fields/SelectField.svelte';
-  import SubmitButton from '../fields/SubmitButton.svelte';
+  import type { Prisma } from '@prisma/client';
   import type { SuperForm } from 'sveltekit-superforms/client';
   import type { z } from 'zod';
-  import type { Exercise } from '@prisma/client';
   import Autocomplete from '../fields/Autocomplete.svelte';
+  import SelectField from '../fields/SelectField.svelte';
+  import SubmitButton from '../fields/SubmitButton.svelte';
+  import TextField from '../fields/TextField.svelte';
 
-  export let exercises: Exercise[];
+  export let exercises: Prisma.ExerciseGetPayload<{
+    select: {
+      _count: {
+        select: {
+          exerciseEvents: true;
+        };
+      };
+      id: true;
+      name: true;
+      fieldsToShow: true;
+    };
+  }>[];
   export let superForm: SuperForm<z.AnyZodObject, any>;
   export let showSubmitButton = true;
   export let showEquation = true;

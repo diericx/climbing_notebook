@@ -7,7 +7,11 @@
 
   type ExerciseEvent = Prisma.ExerciseEventGetPayload<{
     include: {
-      exercise: true;
+      exercise: {
+        select: {
+          name: true;
+        };
+      };
     };
   }>;
 

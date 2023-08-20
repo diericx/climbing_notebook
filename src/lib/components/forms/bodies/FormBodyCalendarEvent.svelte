@@ -1,12 +1,13 @@
 <script lang="ts">
-  import TextArea from '../fields/TextArea.svelte';
-  import DateField from '../fields/DateField.svelte';
-  import TextField from '../fields/TextField.svelte';
-  import SubmitButton from '../fields/SubmitButton.svelte';
+  import type { ZodValidation } from 'sveltekit-superforms';
   import type { SuperForm } from 'sveltekit-superforms/client';
-  import type { z } from 'zod';
+  import type { AnyZodObject } from 'zod';
+  import DateField from '../fields/DateField.svelte';
+  import SubmitButton from '../fields/SubmitButton.svelte';
+  import TextArea from '../fields/TextArea.svelte';
+  import TextField from '../fields/TextField.svelte';
 
-  export let superForm: SuperForm<z.AnyZodObject, any>;
+  export let superForm: SuperForm<ZodValidation<AnyZodObject>, unknown>;
   export let showSubmitButton = true;
 </script>
 

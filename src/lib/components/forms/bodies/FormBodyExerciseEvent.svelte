@@ -1,16 +1,27 @@
 <script lang="ts">
-  import type { Exercise, ExerciseEvent } from '@prisma/client';
-  import TextArea from '../fields/TextArea.svelte';
-  import DateField from '../fields/DateField.svelte';
-  import NumberField from '../fields/NumberField.svelte';
-  import Autocomplete from '../fields/Autocomplete.svelte';
-  import SubmitButton from '../fields/SubmitButton.svelte';
+  import type { ExerciseEvent, Prisma } from '@prisma/client';
   import type { SuperForm } from 'sveltekit-superforms/client';
   import type { z } from 'zod';
+  import Autocomplete from '../fields/Autocomplete.svelte';
+  import DateField from '../fields/DateField.svelte';
+  import NumberField from '../fields/NumberField.svelte';
+  import SubmitButton from '../fields/SubmitButton.svelte';
+  import TextArea from '../fields/TextArea.svelte';
 
   export let superForm: SuperForm<z.AnyZodObject, any>;
 
-  export let exercises: Exercise[];
+  export let exercises: Prisma.ExerciseGetPayload<{
+    select: {
+      _count: {
+        select: {
+          exerciseEvents: true;
+        };
+      };
+      id: true;
+      name: true;
+      fieldsToShow: true;
+    };
+  }>[];
   export let dateToMarkCompleted: Date | undefined = undefined;
   export let exerciseToMarkCompleted: ExerciseEvent | undefined = undefined;
   export let showDifficulty = true;

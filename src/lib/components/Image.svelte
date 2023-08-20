@@ -7,10 +7,10 @@
 
   let loading = true;
 
-  const createLoadObserver = (handler) => {
+  const createLoadObserver = (handler: any) => {
     let waiting = 0;
 
-    const onload = (el) => {
+    const onload = (el: HTMLElement) => {
       waiting++;
       el.addEventListener('load', () => {
         waiting--;

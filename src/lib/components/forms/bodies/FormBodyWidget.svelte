@@ -1,14 +1,14 @@
 <script lang="ts">
-  import type { Prisma, TrainingProgram, Widget } from '@prisma/client';
-  import SelectField from '../fields/SelectField.svelte';
-  import NumberField from '../fields/NumberField.svelte';
-  import TextField from '../fields/TextField.svelte';
-  import SubmitButton from '../fields/SubmitButton.svelte';
+  import { isSimpleFieldInUse } from '$lib/widget';
+  import type { Prisma, TrainingProgram } from '@prisma/client';
+  import { modalStore } from '@skeletonlabs/skeleton';
   import type { SuperForm } from 'sveltekit-superforms/client';
   import type { z } from 'zod';
+  import NumberField from '../fields/NumberField.svelte';
+  import SelectField from '../fields/SelectField.svelte';
+  import SubmitButton from '../fields/SubmitButton.svelte';
   import TextArea from '../fields/TextArea.svelte';
-  import { modalStore } from '@skeletonlabs/skeleton';
-  import { isSimpleFieldInUse } from '$lib/widget';
+  import TextField from '../fields/TextField.svelte';
 
   // Form action to execute
   export let superForm: SuperForm<z.AnyZodObject, any>;

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { clipboard, modalStore } from '@skeletonlabs/skeleton';
   import type { TrainingProgram } from '@prisma/client';
+  import { clipboard, modalStore } from '@skeletonlabs/skeleton';
   let trainingProgram = $modalStore[0]?.meta?.trainingProgram as TrainingProgram;
   const publicUrl = `https://climbingnotebook.com/trainingProgram/${trainingProgram.id}`;
 </script>

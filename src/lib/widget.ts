@@ -2,7 +2,7 @@ import type { Prisma, PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
 
-const widgetSchemaBase = z.object({
+export const widgetSchemaBase = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
   description: z.string().nullish(),
   width: z.enum(['half', 'full']).default('half'),
@@ -62,6 +62,11 @@ export const widgetInclude = {
       customQueries: {
         include: {
           conditions: true,
+          exercise: {
+            select: {
+              name: true,
+            },
+          },
         },
       },
     },

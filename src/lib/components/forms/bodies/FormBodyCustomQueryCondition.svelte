@@ -1,12 +1,11 @@
 <script lang="ts">
   import type { CustomQuery, Widget } from '@prisma/client';
-  import TextField from '../fields/TextField.svelte';
-  import SelectField from '../fields/SelectField.svelte';
-  import SubmitButton from '../fields/SubmitButton.svelte';
   import type { SuperForm } from 'sveltekit-superforms/client';
   import type { z } from 'zod';
   import Checkbox from '../fields/Checkbox.svelte';
   import NumberField from '../fields/NumberField.svelte';
+  import SelectField from '../fields/SelectField.svelte';
+  import SubmitButton from '../fields/SubmitButton.svelte';
 
   // Parent widget is required in order to fill in the values for
   // simple editor field selection

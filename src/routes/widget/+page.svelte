@@ -1,8 +1,8 @@
 <script lang="ts">
   import WidgetTemplate from '$lib/components/WidgetTemplate.svelte';
+  import Icon from '@iconify/svelte';
   import { modalStore } from '@skeletonlabs/skeleton';
   import type { PageData } from './$types';
-  import Icon from '@iconify/svelte';
 
   export let data: PageData;
   const { user } = data;
@@ -11,7 +11,6 @@
   $: shouldApplyFilterMadeByMe = false;
   $: shouldApplyFilterChart = false;
   $: shouldApplyFilterHeatmap = false;
-  $: widgetsToShow = widgets;
 
   // Apply filters
   $: {

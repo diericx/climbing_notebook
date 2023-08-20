@@ -1,10 +1,10 @@
 <script lang="ts">
+  import Chart from '$lib/components/Chart.svelte';
+  import Dataset from '$lib/components/Dataset.svelte';
   import { camelToTitle } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import { modalStore } from '@skeletonlabs/skeleton';
   import type { PageData } from './$types';
-  import Chart from '$lib/components/Chart.svelte';
-  import Dataset from '$lib/components/Dataset.svelte';
 
   export let data: PageData;
   $: widget = data.widget;

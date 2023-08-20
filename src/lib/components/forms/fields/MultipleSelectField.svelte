@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { z, AnyZodObject } from 'zod';
+  import { camelToTitle } from '$lib/utils';
   import type { FormPathLeaves, ZodValidation } from 'sveltekit-superforms';
   import type { SuperForm } from 'sveltekit-superforms/client';
   import { formFieldProxy } from 'sveltekit-superforms/client';
-  import { camelToTitle } from '$lib/utils';
+  import type { AnyZodObject, z } from 'zod';
 
   type T = $$Generic<AnyZodObject>;
 
@@ -12,7 +12,7 @@
   export let label: string | undefined = undefined;
   export let options: string[];
 
-  const { path, value, errors, constraints } = formFieldProxy(form, field);
+  const { path, value, errors } = formFieldProxy(form, field);
 </script>
 
 <label>

@@ -1,21 +1,21 @@
 <script lang="ts">
   import { camelToTitle } from '$lib/utils';
-  import { popup, type PopupSettings } from '@skeletonlabs/skeleton';
   import type { AutocompleteOption } from '@skeletonlabs/skeleton';
-  import type { FieldPath, UnwrapEffects } from 'sveltekit-superforms';
+  import { popup, type PopupSettings } from '@skeletonlabs/skeleton';
+  import type { FormPathLeaves, ZodValidation } from 'sveltekit-superforms';
   import type { SuperForm } from 'sveltekit-superforms/client';
   import { formFieldProxy } from 'sveltekit-superforms/client';
-  import type { z, AnyZodObject } from 'zod';
+  import type { AnyZodObject, z } from 'zod';
   import Autocomplete from './skeleton/Autocomplete.svelte';
 
   type T = $$Generic<AnyZodObject>;
 
-  export let form: SuperForm<UnwrapEffects<T>, unknown>;
-  export let field: keyof z.infer<T> | FieldPath<z.infer<T>>;
+  export let form: SuperForm<ZodValidation<T>, unknown>;
+  export let field: FormPathLeaves<z.infer<T>>;
   export let label: string | undefined = undefined;
   export let options: AutocompleteOption[];
 
-  const { path, value, errors, constraints } = formFieldProxy(form, field);
+  const { path, value, errors } = formFieldProxy(form, field);
 
   let searchValue = '';
   let popupSettings: PopupSettings = {

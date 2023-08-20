@@ -1,8 +1,12 @@
 <script lang="ts">
+  // @ts-ignore
   import Calendar from '@event-calendar/core';
-  import TimeGrid from '@event-calendar/time-grid';
+  // @ts-ignore
   import DayGrid from '@event-calendar/day-grid';
+  // @ts-ignore
   import Interraction from '@event-calendar/interaction';
+  // @ts-ignore
+  import TimeGrid from '@event-calendar/time-grid';
   import type { CalendarEvent, JournalEntry } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
 

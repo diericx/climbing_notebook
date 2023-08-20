@@ -1,10 +1,10 @@
 <script lang="ts">
   import { profileSchema } from '$lib/profile';
   import type { Profile } from '@prisma/client';
-  import Form from './Form.svelte';
-  import TextArea from './fields/TextArea.svelte';
   import { v4 as uuidv4 } from 'uuid';
+  import Form from './Form.svelte';
   import SubmitButton from './fields/SubmitButton.svelte';
+  import TextArea from './fields/TextArea.svelte';
 
   // Form action to execute
   export let action = '';
