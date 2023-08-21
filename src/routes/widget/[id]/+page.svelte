@@ -71,6 +71,48 @@
 {/if}
 
 {#if widget.type == 'chart' || widget.type == 'heatmapCalendar'}
+  <div class="mb-8">
+    <div class="flex justify-between">
+      <div>
+        <h2>Simple Editor Fields</h2>
+      </div>
+    </div>
+    <hr />
+
+    <div class="rounded-lg px-4 pb-4 pt-3 border mb-4 bg-white">
+      {#if widget.sets == null && widget.reps == null && widget.weight == null && widget.minutes == null && widget.seconds == null}
+        <div class="flex items-center">
+          <p class="text-gray-400 inline-block align-middle">No simple editor fields</p>
+        </div>
+      {/if}
+      <p>
+        {#if widget.sets != null}
+          <b>sets </b>
+        {/if}
+      </p>
+      <p>
+        {#if widget.reps != null}
+          <b>reps </b>
+        {/if}
+      </p>
+      <p>
+        {#if widget.weight != null}
+          <b>weight </b>
+        {/if}
+      </p>
+      <p>
+        {#if widget.minutes != null}
+          <b>minutes </b>
+        {/if}
+      </p>
+      <p>
+        {#if widget.seconds != null}
+          <b>seconds </b>
+        {/if}
+      </p>
+    </div>
+  </div>
+
   <div class="flex justify-between">
     <div>
       <h2>Datasets</h2>
