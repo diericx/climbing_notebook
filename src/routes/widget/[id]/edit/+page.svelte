@@ -29,6 +29,8 @@
             meta: {
               action: `/widget/${widget.id}?/newTemplate&redirectTo=/widget`,
               title: 'New Community Widget Template',
+              description:
+                'To share widgets you create a Community Widget which will be a duplicate of this one on your dashboard.',
             },
           })}
       >

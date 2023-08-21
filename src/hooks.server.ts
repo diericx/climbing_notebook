@@ -1,10 +1,10 @@
 import { dev } from '$app/environment';
 import { auth } from '$lib/server/lucia';
 import type { Handle, HandleServerError } from '@sveltejs/kit';
-import { actionResult } from 'sveltekit-superforms/server';
 
 import { APIError } from '$lib/errors';
 import segfaultHandler from 'node-segfault-handler';
+import { actionResult } from 'sveltekit-superforms/server';
 
 if (!dev) {
   segfaultHandler.registerHandler();
@@ -30,17 +30,22 @@ export const handle: Handle = async ({ event, resolve }) => {
         // to read as well
         const body = await result.clone().json();
 
-        if (body.type == 'redirect') {
-          return actionResult('redirect', body.location, 303);
-        } else if (body.type == 'success') {
+        if (body.type == 'success') {
           // Handle link redirect
           const redirectTo = event.url.searchParams.get('redirectTo');
           if (redirectTo !== null) {
-            return actionResult('redirect', redirectTo, 303);
+            // Create new response
+            const newResult = actionResult('redirect', redirectTo, {
+              status: 303,
+            });
+            // Append cookies from previous response for things like auth
+            for (const pair of result.headers.entries()) {
+              if (pair[0] == 'set-cookie') {
+                newResult.headers.append('set-cookie', pair[1]);
+              }
+            }
+            return newResult;
           }
-        } else {
-          // No redirect on failure
-          return result;
         }
       } catch (e: unknown) {
         return result;

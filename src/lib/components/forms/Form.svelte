@@ -41,6 +41,7 @@
     delayMs: 300,
     timeoutMs: 10000,
     onResult({ result }) {
+      // Handle onSuccess callback
       if ((result.type == 'success' || result.type == 'redirect') && onSuccess != undefined) {
         onSuccess();
       }
