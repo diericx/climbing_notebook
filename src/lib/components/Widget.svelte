@@ -83,63 +83,66 @@
   export let trainingPrograms: TrainingProgram[];
 </script>
 
-<div class="card card-hover p-4">
-  <a href={`/widget/${widget.id}/edit`}>
-    <div class="w-full flex justify-end mb-4">
-      <div class="font-bold w-full">{widget.name}</div>
-      <button
-        class={`btn !bg-transparent justify-between`}
-        use:popup={{
-          event: 'focus-click',
-          target: widget.id,
-          placement: 'bottom-end',
-        }}
-        on:click={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-        }}
-      >
-        <Icon icon="fe:elipsis-h" height="18" />
-      </button>
-    </div>
+<div class="card p-4">
+  <div class="w-full flex justify-end mb-4">
+    <div class="font-bold w-full">{widget.name}</div>
+    <button
+      class={`btn !bg-transparent justify-between`}
+      use:popup={{
+        event: 'focus-click',
+        target: widget.id,
+        placement: 'bottom-end',
+      }}
+      on:click={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+      }}
+    >
+      <Icon icon="fe:elipsis-h" height="18" />
+    </button>
+  </div>
 
-    {#if widget.type == 'chart'}
-      {#if widget.datasets.length == 0}
-        <p class="text-gray-400 italic">
-          Widget is not fully configured yet. Edit the widget to finish configuration.
-        </p>
-      {:else}
+  {#if widget.type == 'chart'}
+    {#if widget.datasets.length == 0}
+      <p class="text-gray-400 italic">
+        Widget is not fully configured yet. Edit the widget to finish configuration.
+      </p>
+    {:else}
+      <div class="h-80">
         <Chart datasets={widget.datasets} {customQueryResults} />
-      {/if}
-    {:else if widget.type == 'calendar'}
-      <div>
-        <div class="flex justify-start mb-2">
-          <button
-            class="btn btn-sm variant-filled"
-            on:click={() =>
-              modalStore.trigger({
-                type: 'component',
-                component: 'formModalCalendarEvent',
-                meta: {
-                  action: `/calendarEvent?/new`,
-                  title: 'New Calendar Event',
-                },
-              })}
-          >
-            <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-            <span>New Calendar Event</span>
-          </button>
-        </div>
+      </div>
+    {/if}
+  {:else if widget.type == 'calendar'}
+    <div>
+      <div class="flex justify-start mb-2">
+        <button
+          class="btn btn-sm variant-filled"
+          on:click={() => {
+            modalStore.trigger({
+              type: 'component',
+              component: 'formModalCalendarEvent',
+              meta: {
+                action: `/calendarEvent?/new`,
+                title: 'New Calendar Event',
+              },
+            });
+          }}
+        >
+          <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
+          <span>New Calendar Event</span>
+        </button>
+      </div>
 
-        <div>
-          <Calendar calendarEvents={calendarEvents || []} journalEntries={journalEntries || []} />
-        </div>
-      </div>
-    {:else if widget.type == 'heatmapCalendar'}
       <div>
-        <HeatmapCalendar datasets={widget.datasets} {customQueryResults} />
+        <Calendar calendarEvents={calendarEvents || []} journalEntries={journalEntries || []} />
       </div>
-    {:else if widget.type == 'dailyExerciseCalendar'}
+    </div>
+  {:else if widget.type == 'heatmapCalendar'}
+    <div>
+      <HeatmapCalendar datasets={widget.datasets} {customQueryResults} />
+    </div>
+  {:else if widget.type == 'dailyExerciseCalendar'}
+    <div class="h-80">
       {#if widget.trainingProgram === null}
         {#if profile.activeTrainingProgram == null}
           <p class="text-gray-400 italic">
@@ -152,8 +155,8 @@
       {:else}
         <DailyCalendar trainingProgram={widget.trainingProgram || profile.activeTrainingProgram} />
       {/if}
-    {/if}
-  </a>
+    </div>
+  {/if}
 </div>
 
 <div class="card shadow-xl py-2 z-50" data-popup={widget.id}>

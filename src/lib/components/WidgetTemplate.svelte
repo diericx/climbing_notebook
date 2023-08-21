@@ -83,7 +83,7 @@
       </div>
       <hr class="border-gray-200 divider my-4 mb-2" />
     </div>
-    <div>
+    <div class="h-full">
       {#if widget.type == 'chart'}
         {#if widget.datasets.length == 0}
           <p class="text-gray-400 italic">

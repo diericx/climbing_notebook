@@ -141,7 +141,7 @@
   });
 </script>
 
-<div class="w-full" style="position: relative">
+<div class="w-full h-full" style="position: relative">
   {#if equationErrorMessage}
     <div class="overflow-scroll">
       <div class="invalid">Equation error: {equationErrorMessage}</div>
@@ -153,6 +153,7 @@
     data={chartData}
     options={{
       responsive: true,
+      maintainAspectRatio: false,
       interaction: {
         mode: 'point',
       },

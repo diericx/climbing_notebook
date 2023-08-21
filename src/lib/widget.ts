@@ -229,7 +229,7 @@ export class WidgetRepo {
         ownerId: ownerId,
       },
       orderBy: {
-        useCount: 'desc',
+        order: 'asc',
       },
       include,
     });
