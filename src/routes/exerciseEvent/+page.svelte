@@ -32,8 +32,8 @@
   });
 </script>
 
-<div class="pb-6">
-  <h2>Active Training Program</h2>
+<div class="mb-14">
+  <h3>Active Training Program</h3>
   <div>
     {#if !activeTrainingProgram}
       <p class="text-gray-400">
@@ -52,7 +52,7 @@
   </div>
 </div>
 
-<div class="pt-8">
+<div class="mb-7">
   <div class="flex justify-between">
     <h2>Today</h2>
     <button
@@ -79,6 +79,6 @@
 </div>
 
 <div class="pt-8">
-  <h2>History</h2>
+  <h2 class="mb-3">History</h2>
   <ListExerciseEvent {exercises} exerciseEvents={pastExerciseEvents} />
 </div>

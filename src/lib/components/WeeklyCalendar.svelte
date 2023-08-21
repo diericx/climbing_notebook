@@ -79,7 +79,7 @@
 
 <div class="flex justify-between mb-3 items-end">
   <div>
-    <h2 class="font-bold">{trainingProgram.name}</h2>
+    <h1 class="font-bold">{trainingProgram.name}</h1>
   </div>
 
   <div class="flex">

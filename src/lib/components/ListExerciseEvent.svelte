@@ -33,9 +33,9 @@
   export let showActionBtns = true;
 </script>
 
-<ul class="list">
+<ul class="list space-y-2">
   {#each exerciseEvents as exerciseEvent}
-    <li class="card bg-white py-3 px-2 md:px-4 mb-2">
+    <li class="card bg-white py-3 px-2 md:px-4">
       <div class="flex items-center md:space-x-3">
         <div class="mr-2">
           <Icon icon="healthicons:exercise-weights" width="35" />

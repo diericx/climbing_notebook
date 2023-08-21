@@ -10,10 +10,9 @@
   export let data: PageData;
 </script>
 
-<div class="grid grid-cols-1">
+<div class="grid grid-cols-1 mb-10">
   <div>
-    <h1>New Journal Entry</h1>
-    <hr />
+    <h1 class="mb-3">New Journal Entry</h1>
 
     <Form resetForm={true} schema={journalEntrySchema} action="/journalEntry?/new" let:superForm>
       <FormBodyJournalEntry {superForm} />
@@ -21,13 +20,12 @@
   </div>
 </div>
 
-<div class="pt-8">
-  <h1>Entries</h1>
-  <hr />
+<div>
+  <h1 class="mb-3">Entries</h1>
 
-  <ul class="list">
+  <ul class="list space-y-2">
     {#each data.journalEntries as item}
-      <li class="card p-4 mb-4">
+      <li class="card p-4">
         <div>
           <div class="flex w-full justify-between">
             <div>
@@ -39,7 +37,7 @@
                 href={`/journalEntry/${item.id}/edit?redirectTo=/journalEntry`}
               >
                 <Icon icon="material-symbols:edit-outline" height="18" />
-                Edit
+                <span>Edit</span>
               </a>
               <FormButton
                 action={`/journalEntry/${item.id}?/delete`}
@@ -47,7 +45,7 @@
                 onClick={confirmDelete}
               >
                 <Icon icon="mdi:trash-outline" height="18" />
-                Delete
+                <span>Delete</span>
               </FormButton>
             </div>
           </div>

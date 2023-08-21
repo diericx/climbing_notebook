@@ -11,7 +11,7 @@
 
 <div class="grid grid-cols-1">
   <div>
-    <h2>Edit Journal Entry</h2>
+    <h1 class="mb-3">Edit Journal Entry</h1>
     <Form
       data={journalEntry}
       resetForm={true}
