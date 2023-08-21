@@ -1,6 +1,6 @@
 import { ExerciseRepo } from '$lib/exercise';
 import { prisma } from '$lib/prisma';
-import { TrainingProgramRepo } from '$lib/trainingProgram';
+import { TrainingCycleRepo } from '$lib/trainingCycle';
 import { getSessionOrRedirect } from '$lib/utils';
 import type { PageServerLoad } from './$types';
 
@@ -9,12 +9,9 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
 
   const id = Number(params.id);
 
-  const trainingProgramRepo = new TrainingProgramRepo(prisma);
+  const trainingCycleRepo = new TrainingCycleRepo(prisma);
   const exerciseRepo = new ExerciseRepo(prisma);
-  const trainingProgram = await trainingProgramRepo.getOneAndValidateOwner(
-    Number(id),
-    user?.userId
-  );
+  const trainingCycle = await trainingCycleRepo.getOneAndValidateOwner(Number(id), user?.userId);
   const exercises = await exerciseRepo.getSelect({
     _count: {
       select: {
@@ -27,7 +24,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   });
 
   return {
-    trainingProgram,
+    trainingCycle,
     exercises,
   };
 };

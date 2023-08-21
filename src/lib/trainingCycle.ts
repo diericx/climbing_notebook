@@ -2,19 +2,19 @@ import type { Prisma, PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
 import type { ExerciseGroupSchema } from './exerciseGroup';
-import type { TrainingProgramDaySchema } from './trainingProgramDay';
+import type { TrainingCycleDaySchema } from './trainingCycleDay';
 
-export const trainingProgramSchema = z.object({
+export const trainingCycleSchema = z.object({
   name: z.string().min(1),
   isPublic: z.boolean().optional().default(false),
 });
-export type TrainingProgramSchema = typeof trainingProgramSchema;
+export type TrainingCycleSchema = typeof trainingCycleSchema;
 
-export class TrainingProgramRepo {
+export class TrainingCycleRepo {
   constructor(private readonly prisma: PrismaClient) {}
 
   async getOne(id: number) {
-    const trainingProgram = await this.prisma.trainingProgram.findUnique({
+    const trainingCycle = await this.prisma.trainingCycle.findUnique({
       where: {
         id,
       },
@@ -80,25 +80,25 @@ export class TrainingProgramRepo {
         },
       },
     });
-    if (trainingProgram == null) {
+    if (trainingCycle == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
-    return trainingProgram;
+    return trainingCycle;
   }
 
   async getOneAndValidateOwner(id: number, ownerId: string) {
-    const trainingProgram = await this.getOne(id);
-    if (trainingProgram.ownerId != ownerId) {
+    const trainingCycle = await this.getOne(id);
+    if (trainingCycle.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this object.');
     }
-    return trainingProgram;
+    return trainingCycle;
   }
 
   async duplicate(id: number, ownerId: string) {
     const program = await this.getOne(id);
 
     // Create the new program
-    const newProgram = await this.prisma.trainingProgram.create({
+    const newProgram = await this.prisma.trainingCycle.create({
       data: {
         name: program.name + ' Duplicate',
         ownerId,
@@ -113,7 +113,7 @@ export class TrainingProgramRepo {
                   ...e,
                   ownerId: undefined,
                   exerciseGroupId: undefined,
-                  trainingProgramDayId: undefined,
+                  trainingCycleDayId: undefined,
                   exerciseId: undefined,
                   id: undefined,
                   exercise:
@@ -152,8 +152,8 @@ export class TrainingProgramRepo {
         data: {
           ...g,
           id: undefined,
-          trainingProgramId: undefined,
-          trainingProgram: {
+          trainingCycleId: undefined,
+          trainingCycle: {
             connect: {
               id: newProgram.id,
             },
@@ -169,7 +169,7 @@ export class TrainingProgramRepo {
               ...e,
               ownerId: undefined,
               exerciseGroupId: undefined,
-              trainingProgramDayId: undefined,
+              trainingCycleDayId: undefined,
               exerciseId: undefined,
               id: undefined,
               exercise:
@@ -195,7 +195,7 @@ export class TrainingProgramRepo {
       for (const i in program.days) {
         const day = program.days[i];
         if (day.exerciseGroups.find((_g) => _g.id == g.id) != undefined) {
-          await this.prisma.trainingProgram.update({
+          await this.prisma.trainingCycle.update({
             where: {
               id: newProgram.id,
             },
@@ -219,8 +219,8 @@ export class TrainingProgramRepo {
     }
   }
 
-  async new(data: z.infer<TrainingProgramSchema>, ownerId: string) {
-    return await this.prisma.trainingProgram.create({
+  async new(data: z.infer<TrainingCycleSchema>, ownerId: string) {
+    return await this.prisma.trainingCycle.create({
       data: {
         name: data.name,
         ownerId,
@@ -239,7 +239,7 @@ export class TrainingProgramRepo {
 
   async get(ownerId: string) {
     // Fetch all
-    return await this.prisma.trainingProgram.findMany({
+    return await this.prisma.trainingCycle.findMany({
       where: {
         ownerId,
       },
@@ -288,9 +288,9 @@ export class TrainingProgramRepo {
     });
   }
 
-  async update(data: z.infer<TrainingProgramSchema>, id: number, ownerId: string) {
+  async update(data: z.infer<TrainingCycleSchema>, id: number, ownerId: string) {
     // Get current training program
-    const trainingProgram = await this.prisma.trainingProgram.findUnique({
+    const trainingCycle = await this.prisma.trainingCycle.findUnique({
       where: {
         id,
       },
@@ -298,15 +298,15 @@ export class TrainingProgramRepo {
         days: true,
       },
     });
-    if (trainingProgram == null) {
+    if (trainingCycle == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
-    if (trainingProgram.ownerId != ownerId) {
+    if (trainingCycle.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
     }
 
     // Update training program
-    return this.prisma.trainingProgram.update({
+    return this.prisma.trainingCycle.update({
       where: {
         id,
       },
@@ -319,7 +319,7 @@ export class TrainingProgramRepo {
   async delete(id: number, ownerId: string) {
     await this.getOneAndValidateOwner(id, ownerId);
 
-    return await this.prisma.trainingProgram.delete({
+    return await this.prisma.trainingCycle.delete({
       where: {
         id,
       },
@@ -328,7 +328,7 @@ export class TrainingProgramRepo {
 
   async addExerciseGroup(exerciseGroup: z.infer<ExerciseGroupSchema>, id: number, ownerId: string) {
     await this.getOneAndValidateOwner(id, ownerId);
-    return await this.prisma.trainingProgram.update({
+    return await this.prisma.trainingCycle.update({
       where: {
         id,
       },
@@ -350,14 +350,14 @@ export class TrainingProgramRepo {
 
   async editExerciseGroup(
     exerciseGroup: z.infer<ExerciseGroupSchema>,
-    trainingProgramId: number,
+    trainingCycleId: number,
     exerciseGroupId: number,
     ownerId: string
   ) {
-    await this.getOneAndValidateOwner(trainingProgramId, ownerId);
-    return await this.prisma.trainingProgram.update({
+    await this.getOneAndValidateOwner(trainingCycleId, ownerId);
+    return await this.prisma.trainingCycle.update({
       where: {
-        id: trainingProgramId,
+        id: trainingCycleId,
       },
       data: {
         exerciseGroups: {
@@ -376,7 +376,7 @@ export class TrainingProgramRepo {
 
   async deleteExerciseGroup(id: number, ownerId: string, exerciseGroupId: number) {
     await this.getOneAndValidateOwner(id, ownerId);
-    return await this.prisma.trainingProgram.update({
+    return await this.prisma.trainingCycle.update({
       where: {
         id,
       },
@@ -391,21 +391,21 @@ export class TrainingProgramRepo {
   }
 
   async connectExerciseGroupToDay(
-    trainingProgramId: number,
+    trainingCycleId: number,
     groupId: number,
-    trainingProgramDayId: number,
+    trainingCycleDayId: number,
     ownerId: string
   ) {
-    await this.getOneAndValidateOwner(trainingProgramId, ownerId);
-    return await this.prisma.trainingProgram.update({
+    await this.getOneAndValidateOwner(trainingCycleId, ownerId);
+    return await this.prisma.trainingCycle.update({
       where: {
-        id: trainingProgramId,
+        id: trainingCycleId,
       },
       data: {
         days: {
           update: {
             where: {
-              id: trainingProgramDayId,
+              id: trainingCycleDayId,
             },
             data: {
               exerciseGroups: {
@@ -419,21 +419,21 @@ export class TrainingProgramRepo {
   }
 
   async disconnectExerciseGroupFromDay(
-    trainingProgramId: number,
+    trainingCycleId: number,
     groupId: number,
-    trainingProgramDayId: number,
+    trainingCycleDayId: number,
     ownerId: string
   ) {
-    await this.getOneAndValidateOwner(trainingProgramId, ownerId);
-    return await this.prisma.trainingProgram.update({
+    await this.getOneAndValidateOwner(trainingCycleId, ownerId);
+    return await this.prisma.trainingCycle.update({
       where: {
-        id: trainingProgramId,
+        id: trainingCycleId,
       },
       data: {
         days: {
           update: {
             where: {
-              id: trainingProgramDayId,
+              id: trainingCycleDayId,
             },
             data: {
               exerciseGroups: {
@@ -446,22 +446,22 @@ export class TrainingProgramRepo {
     });
   }
 
-  async editTrainingProgramDay(
-    data: z.infer<TrainingProgramDaySchema>,
-    trainingProgramId: number,
-    trainingProgramDayId: number,
+  async editTrainingCycleDay(
+    data: z.infer<TrainingCycleDaySchema>,
+    trainingCycleId: number,
+    trainingCycleDayId: number,
     ownerId: string
   ) {
-    await this.getOneAndValidateOwner(trainingProgramId, ownerId);
-    return await this.prisma.trainingProgram.update({
+    await this.getOneAndValidateOwner(trainingCycleId, ownerId);
+    return await this.prisma.trainingCycle.update({
       where: {
-        id: trainingProgramId,
+        id: trainingCycleId,
       },
       data: {
         days: {
           update: {
             where: {
-              id: trainingProgramDayId,
+              id: trainingCycleDayId,
             },
             data: {
               ...data,
@@ -473,8 +473,8 @@ export class TrainingProgramRepo {
   }
 }
 
-export function doesTrainingProgramHaveLegacyExercises(
-  p: Prisma.TrainingProgramGetPayload<{
+export function doesTrainingCycleHaveLegacyExercises(
+  p: Prisma.TrainingCycleGetPayload<{
     include: {
       days: {
         include: {

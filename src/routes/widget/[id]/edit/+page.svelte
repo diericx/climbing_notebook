@@ -8,7 +8,7 @@
 
   export let data: PageData;
   $: widget = data.widget;
-  $: trainingPrograms = data.trainingPrograms;
+  $: trainingCycles = data.trainingCycles;
   $: customQueryResults = data.customQueryResults;
   $: datasets = widget.datasets;
   $: exercises = data.exercises;
@@ -58,7 +58,7 @@
         {#if widget.type == 'dailyExerciseCalendar'}
           <p>
             <b>Training Program:</b>
-            {widget.trainingProgram?.name || 'Active Training Program'}
+            {widget.trainingCycle?.name || 'Active Training Program'}
           </p>
         {/if}
       </div>
@@ -77,7 +77,7 @@
                   showType: false,
                   showDescription: widget.isTemplate,
                   showOrder: !widget.isTemplate,
-                  trainingPrograms,
+                  trainingCycles,
                 },
               },
             })}
@@ -172,7 +172,7 @@
                     showWidth: false,
                     showSimpleFields: true,
                     showGoToAdvancedEditorLink: false,
-                    trainingPrograms,
+                    trainingCycles,
                     widget,
                   },
                 },

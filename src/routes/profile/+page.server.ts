@@ -3,7 +3,7 @@ import { JournalEntryRepo } from '$lib/journalEntry';
 import { MetricRepo } from '$lib/metric';
 import { prisma } from '$lib/prisma';
 import { ProfileRepo, profileSchema } from '$lib/profile';
-import { TrainingProgramRepo } from '$lib/trainingProgram';
+import { TrainingCycleRepo } from '$lib/trainingCycle';
 import { getSessionOrRedirect } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
@@ -15,19 +15,19 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const profileRepo = new ProfileRepo(prisma);
   const exerciseEventRepo = new ExerciseEventRepo(prisma);
   const journalEntryRepo = new JournalEntryRepo(prisma);
-  const trainingProgramRepo = new TrainingProgramRepo(prisma);
+  const trainingCycleRepo = new TrainingCycleRepo(prisma);
   const metricsRepo = new MetricRepo(prisma);
 
   const profile = await profileRepo.getOne(user?.userId);
   const exerciseEvents = await exerciseEventRepo.get(user?.userId);
   const journalEntries = await journalEntryRepo.get(user?.userId);
-  const trainingPrograms = await trainingProgramRepo.get(user?.userId);
+  const trainingCycles = await trainingCycleRepo.get(user?.userId);
   const metrics = await metricsRepo.get(user?.userId);
   return {
     profile,
     exerciseEvents,
     journalEntries,
-    trainingPrograms,
+    trainingCycles,
     metrics,
     user,
   };

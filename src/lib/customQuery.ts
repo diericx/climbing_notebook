@@ -158,7 +158,7 @@ export class CustomQueryRepo {
           // in an admittedly confusing double negative way
           NOT: [
             {
-              trainingProgramDayId: {
+              trainingCycleDayId: {
                 not: null,
               },
             },

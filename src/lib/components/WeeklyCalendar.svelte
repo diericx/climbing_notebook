@@ -6,7 +6,7 @@
   import { onMount } from 'svelte';
   import FormButton from './forms/FormButton.svelte';
 
-  type TrainingProgram = Prisma.TrainingProgramGetPayload<{
+  type TrainingCycle = Prisma.TrainingCycleGetPayload<{
     include: {
       days: {
         include: {
@@ -37,7 +37,7 @@
     };
   }>;
 
-  export let trainingProgram: TrainingProgram;
+  export let trainingCycle: TrainingCycle;
   export let shouldScrollIntoView = false;
   export let disableActionButtons = false;
   export let showMarkedCompleted = true;
@@ -79,14 +79,14 @@
 
 <div class="flex justify-between mb-3 items-end">
   <div>
-    <h1 class="font-bold">{trainingProgram.name}</h1>
+    <h1 class="font-bold">{trainingCycle.name}</h1>
   </div>
 
   <div class="flex">
     {#if showDuplicateBtn}
       <div class="mr-2">
         <FormButton
-          action={`/trainingProgram/${trainingProgram.id}?/duplicate&redirectTo=/trainingProgram`}
+          action={`/trainingCycle/${trainingCycle.id}?/duplicate&redirectTo=/trainingCycle`}
           class="btn btn-sm variant-ringed"
         >
           Duplicate this program
@@ -95,7 +95,7 @@
     {/if}
     {#if user !== null}
       <div>
-        <a class="btn btn-sm variant-ringed" href={`/trainingProgram/${trainingProgram.id}/edit`}
+        <a class="btn btn-sm variant-ringed" href={`/trainingCycle/${trainingCycle.id}/edit`}
           >Edit this program</a
         >
       </div>
@@ -107,7 +107,7 @@
   <div style="width: 1500px">
     <div class="row">
       <div class="grid grid-cols-7">
-        {#each trainingProgram.days as day, i}
+        {#each trainingCycle.days as day, i}
           <div id={daysOfTheWeek[i].toString()} class="px-2">
             <div
               class="text-center px-2 mb-3 {i == todayDayOfTheWeek

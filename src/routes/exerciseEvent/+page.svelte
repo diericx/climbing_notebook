@@ -8,7 +8,7 @@
   import { modalStore } from '@skeletonlabs/skeleton';
 
   export let data: PageData;
-  $: activeTrainingProgram = data.profile?.activeTrainingProgram;
+  $: activeTrainingCycle = data.profile?.activeTrainingCycle;
   $: exerciseEvents = data.exerciseEvents;
   $: user = data.user;
   $: exercises = data.exercises;
@@ -35,9 +35,9 @@
 <div class="mb-14">
   <h3>Active Training Program</h3>
   <div>
-    {#if !activeTrainingProgram}
+    {#if !activeTrainingCycle}
       <p class="text-gray-400">
-        You don't have an active training program! Go to the <a class="link" href="/trainingProgram"
+        You don't have an active training program! Go to the <a class="link" href="/trainingCycle"
           >Training Programs</a
         > page to create and set one.
       </p>
@@ -45,7 +45,7 @@
       <WeeklyCalendar
         {exercises}
         {user}
-        trainingProgram={activeTrainingProgram}
+        trainingCycle={activeTrainingCycle}
         showDuplicateBtn={false}
       />
     {/if}

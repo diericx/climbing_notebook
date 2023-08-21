@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { TrainingProgram } from '@prisma/client';
+  import type { TrainingCycle } from '@prisma/client';
   import { clipboard, modalStore } from '@skeletonlabs/skeleton';
-  let trainingProgram = $modalStore[0]?.meta?.trainingProgram as TrainingProgram;
-  const publicUrl = `https://climbingnotebook.com/trainingProgram/${trainingProgram.id}`;
+  let trainingCycle = $modalStore[0]?.meta?.trainingCycle as TrainingCycle;
+  const publicUrl = `https://climbingnotebook.com/trainingCycle/${trainingCycle.id}`;
 </script>
 
 <div class="card w-modal">
@@ -10,7 +10,7 @@
     <h2 class="font-bold">Share Training Program</h2>
   </header>
   <section class="p-4">
-    {#if !trainingProgram.isPublic}
+    {#if !trainingCycle.isPublic}
       <div
         class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-2"
         role="alert"

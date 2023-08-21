@@ -14,7 +14,7 @@ export const widgetSchemaBase = z.object({
   weight: z.number().nullish(),
   seconds: z.number().nullish(),
   minutes: z.number().nullish(),
-  trainingProgramId: z.number().nullish(),
+  trainingCycleId: z.number().nullish(),
   parentId: z.string().nullish(),
   isPublished: z.boolean().optional(),
 });
@@ -74,7 +74,7 @@ export const widgetInclude = {
       name: 'asc',
     },
   },
-  trainingProgram: {
+  trainingCycle: {
     include: {
       exerciseGroups: {
         include: {
@@ -138,8 +138,8 @@ export class WidgetRepo {
         ...data,
         owner: undefined,
         id: undefined,
-        trainingProgramId: undefined,
-        trainingProgram: undefined,
+        trainingCycleId: undefined,
+        trainingCycle: undefined,
         isTemplate: true,
         isPublished: true,
         datasets: {
@@ -349,8 +349,8 @@ export class WidgetRepo {
         data: {
           ...sourceWidget,
           id: undefined,
-          trainingProgramId: undefined,
-          trainingProgram: undefined,
+          trainingCycleId: undefined,
+          trainingCycle: undefined,
           ownerId: undefined,
           parentId: sourceWidget.id,
           isTemplate: false,

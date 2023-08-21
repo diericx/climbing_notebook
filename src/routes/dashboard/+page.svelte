@@ -10,7 +10,7 @@
   $: calendarEvents = data.calendarEvents;
   $: widgets = data.widgets;
   $: customQueryResults = data.customQueryResults;
-  $: trainingPrograms = data.trainingPrograms;
+  $: trainingCycles = data.trainingCycles;
 </script>
 
 <div class="mb-16">
@@ -59,7 +59,7 @@
               action: `/widget?/new`,
               title: 'New Widget',
               formProps: {
-                trainingPrograms: trainingPrograms,
+                trainingCycles: trainingCycles,
               },
             },
           })}
@@ -93,7 +93,7 @@
           {calendarEvents}
           {journalEntries}
           {profile}
-          {trainingPrograms}
+          {trainingCycles}
         />
       </div>
     {/each}

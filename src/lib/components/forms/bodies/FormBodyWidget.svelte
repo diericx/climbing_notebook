@@ -1,6 +1,6 @@
 <script lang="ts">
   import { isSimpleFieldInUse } from '$lib/widget';
-  import type { Prisma, TrainingProgram } from '@prisma/client';
+  import type { Prisma, TrainingCycle } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
   import type { SuperForm } from 'sveltekit-superforms/client';
   import type { z } from 'zod';
@@ -34,7 +34,7 @@
   export let showSimpleFields = false;
   export let showSimpleFieldCheckBoxes = true;
   export let showGoToAdvancedEditorLink = true;
-  export let trainingPrograms: TrainingProgram[] = [];
+  export let trainingCycles: TrainingCycle[] = [];
   export let allowedTypes: String[] = [
     'chart',
     'calendar',
@@ -93,15 +93,15 @@
 
 {#if $form.type == 'dailyExerciseCalendar'}
   <SelectField
-    name="trainingProgramId"
-    field="trainingProgramId"
+    name="trainingCycleId"
+    field="trainingCycleId"
     label="Training Program"
     form={superForm}
   >
     <option value={null}> Active Training Program </option>
     <option disabled>---------</option>
-    {#each trainingPrograms as trainingProgram}
-      <option value={trainingProgram.id}> {trainingProgram.name} </option>
+    {#each trainingCycles as trainingCycle}
+      <option value={trainingCycle.id}> {trainingCycle.name} </option>
     {/each}
   </SelectField>
 {/if}

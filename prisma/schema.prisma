@@ -54,9 +54,9 @@ model ExerciseGroup {
 
   name                String
   exercises           ExerciseEvent[]
-  trainingProgram     TrainingProgram?     @relation(fields: [trainingProgramId], references: [id])
-  trainingProgramId   Int?                 @map("training_program_id")
-  trainingProgramDays TrainingProgramDay[]
+  trainingCycle     TrainingCycle?     @relation(fields: [trainingCycleId], references: [id])
+  trainingCycleId   Int?                 @map("training_cycle_id")
+  trainingCycleDays TrainingCycleDay[]
 
   @@map("exercise_group")
 }
@@ -105,8 +105,8 @@ model ExerciseEvent {
   markedCompletions    DateTime[]
   exerciseGroup        ExerciseGroup?      @relation(fields: [exerciseGroupId], references: [id], onDelete: Cascade)
   exerciseGroupId      Int?
-  trainingProgramDay   TrainingProgramDay? @relation(fields: [trainingProgramDayId], references: [id], onDelete: Cascade)
-  trainingProgramDayId Int?
+  trainingCycleDay   TrainingCycleDay? @relation(fields: [trainingCycleDayId], references: [id], onDelete: Cascade)
+  trainingCycleDayId Int?
   exerciseId           String?             @map("exercise_id")
 
   @@map("exercise_event")
@@ -119,7 +119,7 @@ model ExerciseEventCompletion {
   @@map("exercise_event_completion")
 }
 
-model TrainingProgramDay {
+model TrainingCycleDay {
   id         Int      @id @default(autoincrement())
   createdAt  DateTime @default(now()) @map("created_at")
   assignedBy String   @map("assigned_by")
@@ -127,15 +127,15 @@ model TrainingProgramDay {
   dayOfTheWeek Int
   description  String
 
-  trainingProgramId Int             @map("training_program_id")
-  trainingProgram   TrainingProgram @relation(fields: [trainingProgramId], references: [id], onDelete: Cascade)
+  trainingCycleId Int             @map("training_cycle_id")
+  trainingCycle   TrainingCycle @relation(fields: [trainingCycleId], references: [id], onDelete: Cascade)
   exerciseGroups    ExerciseGroup[]
   exercises         ExerciseEvent[]
 
-  @@map("training_program_day")
+  @@map("training_cycle_day")
 }
 
-model TrainingProgram {
+model TrainingCycle {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
   name      String
@@ -143,12 +143,12 @@ model TrainingProgram {
 
   ownerId        String               @map("owner_id")
   owner          AuthUser             @relation(fields: [ownerId], references: [id])
-  days           TrainingProgramDay[]
+  days           TrainingCycleDay[]
   exerciseGroups ExerciseGroup[]
   profile        Profile[]
   Widget         Widget[]
 
-  @@map("training_program")
+  @@map("training_cycle")
 }
 
 model Metric {
@@ -185,8 +185,8 @@ model Profile {
   goals                   String?
   ownerId                 String           @unique @map("owner_id")
   owner                   AuthUser         @relation(fields: [ownerId], references: [id])
-  activeTrainingProgramId Int?             @map("active_training_program_id")
-  activeTrainingProgram   TrainingProgram? @relation(fields: [activeTrainingProgramId], references: [id])
+  activeTrainingCycleId Int?             @map("active_training_cycle_id")
+  activeTrainingCycle   TrainingCycle? @relation(fields: [activeTrainingCycleId], references: [id])
 
   @@map("profile")
 }
@@ -267,12 +267,12 @@ model Widget {
   // For chart and calendar heatmap type
   datasets        Dataset[]
   // For exercise event calendars
-  trainingProgram TrainingProgram? @relation(fields: [trainingProgramId], references: [id], onDelete: Cascade)
+  trainingCycle TrainingCycle? @relation(fields: [trainingCycleId], references: [id], onDelete: Cascade)
 
   createdAt         DateTime @default(now()) @map("created_at")
   ownerId           String   @map("owner_id")
   owner             AuthUser @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  trainingProgramId Int?     @map("training_program_id")
+  trainingCycleId Int?     @map("training_cycle_id")
 
   @@map("widget")
 }
@@ -303,7 +303,7 @@ model AuthUser {
   journalEntry      JournalEntry[]
   exerciseEvents    ExerciseEvent[]
   profile           Profile?
-  trainingProgram   TrainingProgram[]
+  trainingCycle   TrainingCycle[]
   exerciseGroup     ExerciseGroup[]
   metric            Metric[]
   calendarEvent     CalendarEvent[]

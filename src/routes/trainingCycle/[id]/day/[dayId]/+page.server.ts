@@ -1,7 +1,7 @@
 import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
 import { prisma } from '$lib/prisma';
-import { TrainingProgramRepo } from '$lib/trainingProgram';
-import { trainingProgramDaySchema } from '$lib/trainingProgramDay';
+import { TrainingCycleRepo } from '$lib/trainingCycle';
+import { trainingCycleDaySchema } from '$lib/trainingCycleDay';
 import { getSessionOrRedirect } from '$lib/utils';
 import { fail, type Actions } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
@@ -10,18 +10,18 @@ export const actions: Actions = {
   connectExerciseGroup: async ({ locals, request, url, params }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
     const rawFormData = Object.fromEntries((await request.formData()).entries());
-    const trainingProgramId = Number(params.id);
-    const trainingProgramDayId = Number(params.dayId);
+    const trainingCycleId = Number(params.id);
+    const trainingCycleDayId = Number(params.dayId);
     const exerciseGroupId = Number(rawFormData.exerciseGroupId);
     if (isNaN(exerciseGroupId)) {
-      return fail(401, { message: 'Invalid exercise group', trainingProgramFormData: rawFormData });
+      return fail(401, { message: 'Invalid exercise group', trainingCycleFormData: rawFormData });
     }
 
-    const repo = new TrainingProgramRepo(prisma);
+    const repo = new TrainingCycleRepo(prisma);
     await repo.connectExerciseGroupToDay(
-      trainingProgramId,
+      trainingCycleId,
       exerciseGroupId,
-      trainingProgramDayId,
+      trainingCycleDayId,
       user?.userId
     );
 
@@ -31,18 +31,18 @@ export const actions: Actions = {
   disconnectExerciseGroup: async ({ locals, request, url, params }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
     const rawFormData = Object.fromEntries((await request.formData()).entries());
-    const trainingProgramId = Number(params.id);
-    const trainingProgramDayId = Number(params.dayId);
+    const trainingCycleId = Number(params.id);
+    const trainingCycleDayId = Number(params.dayId);
     const exerciseGroupId = Number(rawFormData.exerciseGroupId);
     if (isNaN(exerciseGroupId)) {
-      return fail(401, { message: 'Invalid exercise group', trainingProgramFormData: rawFormData });
+      return fail(401, { message: 'Invalid exercise group', trainingCycleFormData: rawFormData });
     }
 
-    const repo = new TrainingProgramRepo(prisma);
+    const repo = new TrainingCycleRepo(prisma);
     await repo.disconnectExerciseGroupFromDay(
-      trainingProgramId,
+      trainingCycleId,
       exerciseGroupId,
-      trainingProgramDayId,
+      trainingCycleDayId,
       user?.userId
     );
 
@@ -52,23 +52,18 @@ export const actions: Actions = {
   edit: async ({ locals, request, url, params }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
     const formData = await request.formData();
-    const form = await superValidate(formData, trainingProgramDaySchema, {
+    const form = await superValidate(formData, trainingCycleDaySchema, {
       id: formData.get('_formId')?.toString(),
     });
-    const trainingProgramId = Number(params.id);
-    const trainingProgramDayId = Number(params.dayId);
+    const trainingCycleId = Number(params.id);
+    const trainingCycleDayId = Number(params.dayId);
 
     if (!form.valid) {
       return fail(400, { form });
     }
 
-    const repo = new TrainingProgramRepo(prisma);
-    await repo.editTrainingProgramDay(
-      form.data,
-      trainingProgramId,
-      trainingProgramDayId,
-      user?.userId
-    );
+    const repo = new TrainingCycleRepo(prisma);
+    await repo.editTrainingCycleDay(form.data, trainingCycleId, trainingCycleDayId, user?.userId);
 
     return { form };
   },
@@ -85,7 +80,7 @@ export const actions: Actions = {
       return fail(400, { form });
     }
 
-    form.data.trainingProgramDayId = Number(dayId);
+    form.data.trainingCycleDayId = Number(dayId);
     const exerciseEventRepo = new ExerciseEventRepo(prisma);
     await exerciseEventRepo.new(form.data, user?.userId);
 
