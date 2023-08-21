@@ -70,6 +70,9 @@
   function drawerOpen(): void {
     drawerStore.open({});
   }
+  function drawerClose(): void {
+    drawerStore.close();
+  }
 
   let popupCombobox: PopupSettings = {
     event: 'focus-click',
@@ -109,25 +112,25 @@
 
         {#each item.children as child}
           <div>
-            <a
-              class="btn rounded-md pl-3 text-gray-500 text-sm font hover:variant-soft-primary w-full mx-2"
-              href={child.url}
-            >
-              <span class="w-full text-left">
+            <a class="" href={child.url}>
+              <button
+                class="btn rounded-md pl-3 text-gray-500 text-sm font hover:variant-soft-primary w-full mx-2 justify-start"
+                on:click={drawerClose}
+              >
                 {child.title}
-              </span>
+              </button>
             </a>
           </div>
         {/each}
       {:else}
         <div>
-          <a
-            class="btn rounded-md pl-3 text-gray-500 text-sm font hover:variant-soft-primary w-full mx-2"
-            href={item.url}
-          >
-            <span class="w-full text-left">
+          <a href={item.url}>
+            <button
+              class="btn rounded-md pl-3 text-gray-500 text-sm font hover:variant-soft-primary w-full mx-2 justify-start"
+              on:click={drawerClose}
+            >
               {item.title}
-            </span>
+            </button>
           </a>
         </div>
       {/if}
