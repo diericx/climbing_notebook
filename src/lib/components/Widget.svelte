@@ -2,7 +2,7 @@
   import type { CustomQueryResults } from '$lib/customQuery';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
-  import type { CalendarEvent, JournalEntry, Prisma, TrainingProgram } from '@prisma/client';
+  import type { CalendarEvent, JournalEntry, Prisma, TrainingCycle } from '@prisma/client';
   import { modalStore, popup } from '@skeletonlabs/skeleton';
   import Calendar from './Calendar.svelte';
   import Chart from './Chart.svelte';
@@ -23,7 +23,7 @@
           };
         };
       };
-      trainingProgram: {
+      trainingCycle: {
         include: {
           days: {
             include: {
@@ -50,7 +50,7 @@
 
   type Profile = Prisma.ProfileGetPayload<{
     include: {
-      activeTrainingProgram: {
+      activeTrainingCycle: {
         include: {
           days: {
             include: {
@@ -80,7 +80,7 @@
   export let calendarEvents: CalendarEvent[];
   export let journalEntries: JournalEntry[];
   export let profile: Profile;
-  export let trainingPrograms: TrainingProgram[];
+  export let trainingCycles: TrainingCycle[];
 </script>
 
 <div class="card p-4">
@@ -143,17 +143,17 @@
     </div>
   {:else if widget.type == 'dailyExerciseCalendar'}
     <div class="h-80">
-      {#if widget.trainingProgram === null}
-        {#if profile.activeTrainingProgram == null}
+      {#if widget.trainingCycle === null}
+        {#if profile.activeTrainingCycle == null}
           <p class="text-gray-400 italic">
             This widget is set to use an active training program but no active training program was
             found.
           </p>
         {:else}
-          <DailyCalendar trainingProgram={profile.activeTrainingProgram} />
+          <DailyCalendar trainingCycle={profile.activeTrainingCycle} />
         {/if}
       {:else}
-        <DailyCalendar trainingProgram={widget.trainingProgram || profile.activeTrainingProgram} />
+        <DailyCalendar trainingCycle={widget.trainingCycle || profile.activeTrainingCycle} />
       {/if}
     </div>
   {/if}
@@ -178,7 +178,7 @@
                   showType: false,
                   showSimpleFields: true,
                   showSimpleFieldCheckBoxes: false,
-                  trainingPrograms,
+                  trainingCycles,
                 },
               },
             })}

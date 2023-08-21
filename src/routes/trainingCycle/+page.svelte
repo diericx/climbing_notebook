@@ -1,6 +1,6 @@
 <script lang="ts">
   import FormButton from '$lib/components/forms/FormButton.svelte';
-  import { doesTrainingProgramHaveLegacyExercises } from '$lib/trainingProgram';
+  import { doesTrainingCycleHaveLegacyExercises } from '$lib/trainingCycle';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import { modalStore, popup } from '@skeletonlabs/skeleton';
@@ -9,7 +9,7 @@
   export let data: PageData;
 
   $: profile = data.profile;
-  $: trainingPrograms = data.trainingPrograms;
+  $: trainingCycles = data.trainingCycles;
 </script>
 
 <div>
@@ -22,9 +22,9 @@
           on:click={() =>
             modalStore.trigger({
               type: 'component',
-              component: 'formModalTrainingProgram',
+              component: 'formModalTrainingCycle',
               meta: {
-                action: `/trainingProgram?/new`,
+                action: `/trainingCycle?/new`,
                 title: 'New Training Program',
               },
             })}
@@ -36,16 +36,16 @@
     </div>
 
     <div>
-      {#if trainingPrograms.length == 0}
+      {#if trainingCycles.length == 0}
         <p class="text-gray-400 italic">You have no training programs.</p>
       {:else}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {#each trainingPrograms as p}
+          {#each trainingCycles as p}
             <div class="block card card-hover">
               <a
                 style="height: 100%;"
                 class="flex flex-col justify-between"
-                href={`/trainingProgram/${p.id}`}
+                href={`/trainingCycle/${p.id}`}
               >
                 <header class="card-header">
                   <div class="flex justify-between">
@@ -77,11 +77,11 @@
                 </header>
                 <section class="p-4">
                   <p class="text-gray-400">
-                    {profile?.activeTrainingProgramId == p.id ? 'Active' : 'Inactive'}
+                    {profile?.activeTrainingCycleId == p.id ? 'Active' : 'Inactive'}
                     <br />
                     {p.isPublic ? 'Public' : 'Private'}
                   </p>
-                  {#if doesTrainingProgramHaveLegacyExercises(p)}
+                  {#if doesTrainingCycleHaveLegacyExercises(p)}
                     <p class="text-red-500">
                       Contains legacy exercises. Edit the exercises in this program to migrate.
                     </p>
@@ -91,13 +91,13 @@
                   <FormButton
                     action={`/profile?/edit`}
                     class="btn btn-sm variant-ringed justify-start"
-                    disabled={profile?.activeTrainingProgramId == p.id}
+                    disabled={profile?.activeTrainingCycleId == p.id}
                     onClick={(e) => {
                       e.stopPropagation();
                     }}
                   >
                     <div slot="form">
-                      <input type="hidden" name="activeTrainingProgramId" value={p.id} />
+                      <input type="hidden" name="activeTrainingCycleId" value={p.id} />
                     </div>
 
                     Activate
@@ -114,9 +114,9 @@
                       on:click={() =>
                         modalStore.trigger({
                           type: 'component',
-                          component: 'modalShareTrainingProgram',
+                          component: 'modalShareTrainingCycle',
                           meta: {
-                            trainingProgram: p,
+                            trainingCycle: p,
                           },
                         })}
                     >
@@ -124,13 +124,13 @@
                     </button>
                   </li>
                   <li>
-                    <a class="btn btn-sm justify-start" href="/trainingProgram/{p.id}/edit">
+                    <a class="btn btn-sm justify-start" href="/trainingCycle/{p.id}/edit">
                       <span> Edit </span>
                     </a>
                   </li>
                   <li>
                     <FormButton
-                      action={`/trainingProgram/${p.id}?/duplicate&redirectTo=/trainingProgram`}
+                      action={`/trainingCycle/${p.id}?/duplicate&redirectTo=/trainingCycle`}
                       class="btn btn-sm w-full justify-start"
                     >
                       Duplicate
@@ -138,7 +138,7 @@
                   </li>
                   <li>
                     <FormButton
-                      action={`/trainingProgram/${p.id}?/delete`}
+                      action={`/trainingCycle/${p.id}?/delete`}
                       class="btn btn-sm w-full justify-start"
                       onClick={confirmDelete}
                     >

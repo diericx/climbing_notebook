@@ -5,7 +5,7 @@ import { JournalEntryRepo } from '$lib/journalEntry';
 import { MetricRepo } from '$lib/metric';
 import { prisma } from '$lib/prisma';
 import { ProfileRepo } from '$lib/profile';
-import { TrainingProgramRepo } from '$lib/trainingProgram';
+import { TrainingCycleRepo } from '$lib/trainingCycle';
 import { getSessionOrRedirect } from '$lib/utils';
 import { WidgetRepo } from '$lib/widget';
 import type { PageServerLoad } from './$types';
@@ -20,7 +20,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const calendarEventRepo = new CalendarEventRepo(prisma);
   const widgetRepo = new WidgetRepo(prisma);
   const customQueryRepo = new CustomQueryRepo(prisma);
-  const trainingProgramRepo = new TrainingProgramRepo(prisma);
+  const trainingCycleRepo = new TrainingCycleRepo(prisma);
 
   const profile = await profileRepo.getOne(user?.userId);
   // Get exercise events in the past month for the charts
@@ -34,7 +34,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
   const widgets = await widgetRepo.getAllDashboardWidgetsForUser(user.userId, {
     owner: true,
-    trainingProgram: {
+    trainingCycle: {
       include: {
         days: {
           include: {
@@ -70,7 +70,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     },
   });
 
-  const trainingPrograms = await trainingProgramRepo.get(user?.userId);
+  const trainingCycles = await trainingCycleRepo.get(user?.userId);
 
   // compile datasets for widgets
   const customQueryResults: CustomQueryResults[] = [];
@@ -103,6 +103,6 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     calendarEvents,
     widgets,
     customQueryResults,
-    trainingPrograms,
+    trainingCycles,
   };
 };

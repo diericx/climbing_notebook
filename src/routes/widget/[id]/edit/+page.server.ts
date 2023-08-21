@@ -1,7 +1,7 @@
 import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
 import { ExerciseRepo } from '$lib/exercise';
 import { prisma } from '$lib/prisma';
-import { TrainingProgramRepo } from '$lib/trainingProgram';
+import { TrainingCycleRepo } from '$lib/trainingCycle';
 import { getSessionOrRedirect } from '$lib/utils';
 import { WidgetRepo } from '$lib/widget';
 import type { PageServerLoad } from './$types';
@@ -12,13 +12,13 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const widgetRepo = new WidgetRepo(prisma);
   const customQueryRepo = new CustomQueryRepo(prisma);
   const exerciseRepo = new ExerciseRepo(prisma);
-  const trainingProgramRepo = new TrainingProgramRepo(prisma);
+  const trainingCycleRepo = new TrainingCycleRepo(prisma);
   const id = params.id;
 
   // Editing can only be done by the owner
   const widget = await widgetRepo.getOneAndValidateOwner(id, user?.userId);
 
-  const trainingPrograms = await trainingProgramRepo.get(user?.userId);
+  const trainingCycles = await trainingCycleRepo.get(user?.userId);
   // compile datasets for widgets
   const customQueryResults: CustomQueryResults[] = [];
   // Go through each widget and fetch cooresponding query results
@@ -52,7 +52,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
 
   return {
     widget,
-    trainingPrograms,
+    trainingCycles,
     customQueryResults,
     exercises,
   };

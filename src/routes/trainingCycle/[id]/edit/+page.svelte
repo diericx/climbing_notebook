@@ -10,7 +10,7 @@
 
   export let data: PageData;
   let scrollY: number;
-  $: trainingProgram = data.trainingProgram;
+  $: trainingCycle = data.trainingCycle;
   $: exercises = data.exercises;
 
   let daysOfTheWeek = [
@@ -30,7 +30,7 @@
   <div class="mb-12 flex items-center justify-between">
     <div>
       <h1 class="font-bold inline">
-        Editing {trainingProgram.name}
+        Editing {trainingCycle.name}
       </h1>
     </div>
 
@@ -40,9 +40,9 @@
         on:click={() =>
           modalStore.trigger({
             type: 'component',
-            component: 'modalShareTrainingProgram',
+            component: 'modalShareTrainingCycle',
             meta: {
-              trainingProgram,
+              trainingCycle,
             },
           })}
       >
@@ -61,11 +61,11 @@
         <div>
           <p>
             <b>Name: </b>
-            {trainingProgram.name}
+            {trainingCycle.name}
           </p>
           <p>
             <b>Public: </b>
-            {trainingProgram.isPublic ? 'yes' : 'no'}
+            {trainingCycle.isPublic ? 'yes' : 'no'}
           </p>
         </div>
         <div>
@@ -74,10 +74,10 @@
             on:click={() =>
               modalStore.trigger({
                 type: 'component',
-                component: 'formModalTrainingProgram',
+                component: 'formModalTrainingCycle',
                 meta: {
-                  data: trainingProgram,
-                  action: `/trainingProgram/${trainingProgram.id}?/edit`,
+                  data: trainingCycle,
+                  action: `/trainingCycle/${trainingCycle.id}?/edit`,
                   title: 'Edit Training Program',
                 },
               })}
@@ -100,7 +100,7 @@
             type: 'component',
             component: 'formModalExerciseGroup',
             meta: {
-              action: `/trainingProgram/${trainingProgram.id}?/addExerciseGroup`,
+              action: `/trainingCycle/${trainingCycle.id}?/addExerciseGroup`,
               title: 'Add Group',
             },
           })}
@@ -111,7 +111,7 @@
     </div>
     <hr class="mb-2" />
 
-    {#each trainingProgram.exerciseGroups as group}
+    {#each trainingCycle.exerciseGroups as group}
       <div class="rounded-lg px-4 pb-4 pt-3 border mb-4 bg-white">
         <div class="flex items-center">
           <div class="flex mb-7 w-full justify-between">
@@ -126,7 +126,7 @@
                     component: 'formModalExerciseGroup',
                     meta: {
                       data: group,
-                      action: `/trainingProgram/${trainingProgram.id}/group/${group.id}?/edit`,
+                      action: `/trainingCycle/${trainingCycle.id}/group/${group.id}?/edit`,
                       title: 'Edit Group',
                     },
                   })}
@@ -135,7 +135,7 @@
                 <span>Edit</span>
               </button>
               <FormButton
-                action={`/trainingProgram/${trainingProgram.id}/group/${group.id}?/delete`}
+                action={`/trainingCycle/${trainingCycle.id}/group/${group.id}?/delete`}
                 onClick={confirmDelete}
                 class="btn btn-sm variant-ringed"
               >
@@ -161,7 +161,7 @@
                   type: 'component',
                   component: 'formModalExerciseEvent',
                   meta: {
-                    action: `/trainingProgram/${trainingProgram.id}/group/${group.id}?/newExerciseEvent`,
+                    action: `/trainingCycle/${trainingCycle.id}/group/${group.id}?/newExerciseEvent`,
                     title: 'Add Exercise',
                     formProps: {
                       showDate: false,
@@ -190,7 +190,7 @@
   <hr class="mb-2" />
 
   <div>
-    {#each trainingProgram.days as day, i}
+    {#each trainingCycle.days as day, i}
       <div class="bg-white rounded-lg px-4 pt-3 pb-3 mb-10 border">
         <div class="flex mb-4 justify-between">
           <div class="mr-2">
@@ -207,10 +207,10 @@
               on:click={() =>
                 modalStore.trigger({
                   type: 'component',
-                  component: 'formModalTrainingProgramDay',
+                  component: 'formModalTrainingCycleDay',
                   meta: {
                     data: day,
-                    action: `/trainingProgram/${trainingProgram.id}/day/${day.id}?/edit`,
+                    action: `/trainingCycle/${trainingCycle.id}/day/${day.id}?/edit`,
                     title: 'Edit Day',
                   },
                 })}
@@ -227,13 +227,13 @@
 
             <form
               class="flex items-end"
-              action={`/trainingProgram/${trainingProgram.id}/day/${day.id}/?/connectExerciseGroup`}
+              action={`/trainingCycle/${trainingCycle.id}/day/${day.id}/?/connectExerciseGroup`}
               use:enhance
               method="POST"
             >
-              <input type="hidden" value={day.id} name="trainingProgramDayId" />
+              <input type="hidden" value={day.id} name="trainingCycleDayId" />
               <select name="exerciseGroupId" class="pr-8 py-1">
-                {#each trainingProgram.exerciseGroups as group}
+                {#each trainingCycle.exerciseGroups as group}
                   <option
                     value={group.id}
                     disabled={day.exerciseGroups.find((_g) => _g.id == group.id) != undefined}
@@ -251,7 +251,7 @@
           <ListExerciseGroup exerciseGroups={day.exerciseGroups}>
             <div slot="buttons" let:group>
               <FormButton
-                action={`/trainingProgram/${trainingProgram.id}/day/${day.id}/?/disconnectExerciseGroup`}
+                action={`/trainingCycle/${trainingCycle.id}/day/${day.id}/?/disconnectExerciseGroup`}
                 class="btn btn-sm variant-ringed"
               >
                 <div slot="form">
@@ -274,7 +274,7 @@
                 type: 'component',
                 component: 'formModalExerciseEvent',
                 meta: {
-                  action: `/trainingProgram/${trainingProgram.id}/day/${day.id}?/newExerciseEvent`,
+                  action: `/trainingCycle/${trainingCycle.id}/day/${day.id}?/newExerciseEvent`,
                   title: 'Add Exercise',
                   formProps: {
                     showDate: false,

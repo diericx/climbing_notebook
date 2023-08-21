@@ -1,7 +1,7 @@
 import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
 import { APIError } from '$lib/errors';
 import { prisma } from '$lib/prisma';
-import { TrainingProgramRepo } from '$lib/trainingProgram';
+import { TrainingCycleRepo } from '$lib/trainingCycle';
 import { getSessionOrRedirect } from '$lib/utils';
 import { WidgetRepo, widgetSchema, widgetTemplateSchema } from '$lib/widget';
 import { fail } from '@sveltejs/kit';
@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const { user } = await getSessionOrRedirect({ locals, url });
   const widgetRepo = new WidgetRepo(prisma);
   const customQueryRepo = new CustomQueryRepo(prisma);
-  const trainingProgramRepo = new TrainingProgramRepo(prisma);
+  const trainingCycleRepo = new TrainingCycleRepo(prisma);
   const id = params.id;
 
   const widget = await widgetRepo.getOne(id);
@@ -21,7 +21,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
     throw new APIError('INVALID_INPUT', 'Only template widgets can be viewed individually');
   }
 
-  const trainingPrograms = await trainingProgramRepo.get(user?.userId);
+  const trainingCycles = await trainingCycleRepo.get(user?.userId);
   // compile datasets for widgets
   const customQueryResults: CustomQueryResults[] = [];
   // Go through each widget and fetch cooresponding query results
@@ -44,7 +44,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
 
   return {
     widget,
-    trainingPrograms,
+    trainingCycles,
     customQueryResults,
     user,
   };

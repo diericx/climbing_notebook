@@ -4,7 +4,7 @@ import { APIError } from './errors';
 
 export const profileSchema = z.object({
   goals: z.string().optional(),
-  activeTrainingProgramId: z.number().nullish().optional(),
+  activeTrainingCycleId: z.number().nullish().optional(),
 });
 export type ProfileSchema = typeof profileSchema;
 
@@ -17,7 +17,7 @@ export class ProfileRepo {
         ownerId: ownerId,
       },
       include: {
-        activeTrainingProgram: {
+        activeTrainingCycle: {
           include: {
             days: {
               include: {

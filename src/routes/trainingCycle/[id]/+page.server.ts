@@ -1,9 +1,9 @@
 import { APIError } from '$lib/errors';
 import { exerciseGroupSchema } from '$lib/exerciseGroup';
 import { prisma } from '$lib/prisma';
-import { TrainingProgramRepo, trainingProgramSchema } from '$lib/trainingProgram';
+import { TrainingCycleRepo, trainingCycleSchema } from '$lib/trainingCycle';
 import { getSessionOrRedirect } from '$lib/utils';
-import type { TrainingProgram } from '@prisma/client';
+import type { TrainingCycle } from '@prisma/client';
 import { fail, type Actions } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { PageServerLoad } from './$types';
@@ -11,13 +11,13 @@ import type { PageServerLoad } from './$types';
 export const load: PageServerLoad = async ({ locals, params }) => {
   const session = await locals.auth.validate();
 
-  const trainingProgramRepo = new TrainingProgramRepo(prisma);
-  const trainingProgram = await trainingProgramRepo.getOne(Number(params.id));
+  const trainingCycleRepo = new TrainingCycleRepo(prisma);
+  const trainingCycle = await trainingCycleRepo.getOne(Number(params.id));
   // If no user is not signed in and the training program is not public, error out
-  if (!trainingProgram.isPublic && session === null) {
+  if (!trainingCycle.isPublic && session === null) {
     throw new APIError('INVALID_PERMISSIONS', 'This Training Program is private');
   }
-  return { trainingProgram, session };
+  return { trainingCycle, session };
 };
 
 export const actions: Actions = {
@@ -25,17 +25,17 @@ export const actions: Actions = {
     const { user } = await getSessionOrRedirect({ locals, url });
     const id = Number(params.id);
 
-    const repo = new TrainingProgramRepo(prisma);
-    let trainingProgram: TrainingProgram;
-    trainingProgram = await repo.delete(id, user?.userId);
+    const repo = new TrainingCycleRepo(prisma);
+    let trainingCycle: TrainingCycle;
+    trainingCycle = await repo.delete(id, user?.userId);
 
-    return { success: true, trainingProgram };
+    return { success: true, trainingCycle };
   },
 
   duplicate: async ({ locals, url, params }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
 
-    const repo = new TrainingProgramRepo(prisma);
+    const repo = new TrainingCycleRepo(prisma);
     await repo.duplicate(Number(params.id), user.userId);
 
     return { success: true };
@@ -45,7 +45,7 @@ export const actions: Actions = {
     const { user } = await getSessionOrRedirect({ locals, url });
     const formData = await request.formData();
     const id = Number(params.id);
-    const form = await superValidate(formData, trainingProgramSchema, {
+    const form = await superValidate(formData, trainingCycleSchema, {
       id: formData.get('_formId')?.toString(),
     });
 
@@ -53,7 +53,7 @@ export const actions: Actions = {
       return fail(400, { form });
     }
 
-    const repo = new TrainingProgramRepo(prisma);
+    const repo = new TrainingCycleRepo(prisma);
     await repo.update(form.data, id, user?.userId);
 
     return { form };
@@ -71,7 +71,7 @@ export const actions: Actions = {
       return fail(400, { form });
     }
 
-    const repo = new TrainingProgramRepo(prisma);
+    const repo = new TrainingCycleRepo(prisma);
     await repo.addExerciseGroup(form.data, id, user?.userId);
 
     return { form };
@@ -83,7 +83,7 @@ export const actions: Actions = {
     const id = Number(params.id);
     const exerciseGroupId = Number(rawFormData.exerciseGroupId);
 
-    const repo = new TrainingProgramRepo(prisma);
+    const repo = new TrainingCycleRepo(prisma);
     await repo.deleteExerciseGroup(id, user?.userId, exerciseGroupId);
 
     return {};

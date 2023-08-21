@@ -78,7 +78,7 @@
             >
             <a
               class="px-3 text-gray-600 hover:text-blue-400"
-              href="/trainingProgram"
+              href="/trainingCycle"
               on:click={closeNavbar}>Training Programs</a
             >
             <div style="position: relative">

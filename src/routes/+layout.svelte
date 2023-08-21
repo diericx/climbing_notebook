@@ -9,7 +9,7 @@
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import ModalCalendarEvent from '$lib/components/modals/ModalCalendarEvent.svelte';
   import ModalJournalEntry from '$lib/components/modals/ModalJournalEntry.svelte';
-  import ModalShareTrainingProgram from '$lib/components/modals/ModalShareTrainingProgram.svelte';
+  import ModalShareTrainingCycle from '$lib/components/modals/ModalShareTrainingCycle.svelte';
   import FormModalCalendarEvent from '$lib/components/modals/formModals/FormModalCalendarEvent.svelte';
   import FormModalCustomQuery from '$lib/components/modals/formModals/FormModalCustomQuery.svelte';
   import FormModalCustomQueryCondition from '$lib/components/modals/formModals/FormModalCustomQueryCondition.svelte';
@@ -19,8 +19,8 @@
   import FormModalExerciseGroup from '$lib/components/modals/formModals/FormModalExerciseGroup.svelte';
   import FormModalProject from '$lib/components/modals/formModals/FormModalProject.svelte';
   import FormModalProjectSession from '$lib/components/modals/formModals/FormModalProjectSession.svelte';
-  import FormModalTrainingProgram from '$lib/components/modals/formModals/FormModalTrainingProgram.svelte';
-  import FormModalTrainingProgramDay from '$lib/components/modals/formModals/FormModalTrainingProgramDay.svelte';
+  import FormModalTrainingCycle from '$lib/components/modals/formModals/FormModalTrainingCycle.svelte';
+  import FormModalTrainingCycleDay from '$lib/components/modals/formModals/FormModalTrainingCycleDay.svelte';
   import FormModalWidget from '$lib/components/modals/formModals/FormModalWidget.svelte';
   import FormModalWidgetTemplate from '$lib/components/modals/formModals/FormModalWidgetTemplate.svelte';
   import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
@@ -52,8 +52,8 @@
   const modalComponentRegistry: Record<string, ModalComponent> = {
     formModalExerciseEvent: { ref: FormModalExerciseEvent },
     formModalExerciseGroup: { ref: FormModalExerciseGroup },
-    formModalTrainingProgram: { ref: FormModalTrainingProgram },
-    formModalTrainingProgramDay: { ref: FormModalTrainingProgramDay },
+    formModalTrainingCycle: { ref: FormModalTrainingCycle },
+    formModalTrainingCycleDay: { ref: FormModalTrainingCycleDay },
     formModalCalendarEvent: { ref: FormModalCalendarEvent },
     formModalCustomQuery: { ref: FormModalCustomQuery },
     formModalCustomQueryCondition: { ref: FormModalCustomQueryCondition },
@@ -65,7 +65,7 @@
     formModalExercise: { ref: FormModalExercise },
     modalCalendarEvent: { ref: ModalCalendarEvent },
     modalJournalEntry: { ref: ModalJournalEntry },
-    modalShareTrainingProgram: { ref: ModalShareTrainingProgram },
+    modalShareTrainingCycle: { ref: ModalShareTrainingCycle },
   };
   function drawerOpen(): void {
     drawerStore.open({});
@@ -88,7 +88,7 @@
       title: 'Training',
       children: [
         { title: 'Exercise Log', url: '/exerciseEvent' },
-        { title: 'Training Programs', url: '/trainingProgram' },
+        { title: 'Training Programs', url: '/trainingCycle' },
         { title: 'Journal', url: '/journalEntry' },
       ],
     },
@@ -247,7 +247,7 @@
         <a href="/exerciseEvent"> Exercise Log </a>
       </li>
       <li class="listbox-item">
-        <a href="/trainingProgram"> Training Programs </a>
+        <a href="/trainingCycle"> Training Programs </a>
       </li>
       <li class="listbox-item">
         <a href="/journalEntry"> Journal </a>

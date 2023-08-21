@@ -110,7 +110,7 @@
               data: {
                 ...exerciseEvent,
                 exerciseGroupId: null,
-                trainingProgramDayId: null,
+                trainingCycleDayId: null,
                 date: new Date(),
               },
               formProps: {

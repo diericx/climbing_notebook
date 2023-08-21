@@ -4,7 +4,7 @@
   import type { Prisma } from '@prisma/client';
 
   // Define prisma types
-  type TrainingProgram = Prisma.TrainingProgramGetPayload<{
+  type TrainingCycle = Prisma.TrainingCycleGetPayload<{
     include: {
       days: {
         include: {
@@ -27,12 +27,12 @@
     };
   }>;
 
-  export let trainingProgram: TrainingProgram;
+  export let trainingCycle: TrainingCycle;
 
   const todayDayOfTheWeek = getDayWeekStartsMonday(new Date());
   let daysOfTheWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-  const day = trainingProgram.days[todayDayOfTheWeek];
+  const day = trainingCycle.days[todayDayOfTheWeek];
 </script>
 
 <div class="overflow-scroll">

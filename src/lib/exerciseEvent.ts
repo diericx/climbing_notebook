@@ -13,7 +13,7 @@ export const exerciseEventSchema = z.object({
   minutes: z.number().default(0),
   difficulty: z.number().default(0).nullish(),
   notes: z.string().nullish(),
-  trainingProgramDayId: z.number().nullish(),
+  trainingCycleDayId: z.number().nullish(),
   exerciseGroupId: z.number().nullish(),
   exerciseId: z.string().min(1, { message: 'Exercise is required' }),
 });
@@ -56,16 +56,16 @@ export class ExerciseEventRepo {
         );
       }
     }
-    if (data.trainingProgramDayId) {
-      const trainingProgramDay = await this.prisma.trainingProgramDay.findUnique({
+    if (data.trainingCycleDayId) {
+      const trainingCycleDay = await this.prisma.trainingCycleDay.findUnique({
         where: {
-          id: data.trainingProgramDayId,
+          id: data.trainingCycleDayId,
         },
         include: {
-          trainingProgram: true,
+          trainingCycle: true,
         },
       });
-      if (trainingProgramDay == null || trainingProgramDay.trainingProgram.ownerId != ownerId) {
+      if (trainingCycleDay == null || trainingCycleDay.trainingCycle.ownerId != ownerId) {
         throw new APIError(
           'INVALID_PERMISSIONS',
           'You do not have permission to edit this object.'
@@ -86,7 +86,7 @@ export class ExerciseEventRepo {
     return await this.prisma.exerciseEvent.findMany({
       where: {
         ownerId: ownerId,
-        trainingProgramDay: null,
+        trainingCycleDay: null,
         exerciseGroup: null,
         date: {
           lte: dateMax ? new Date(dateMax) : undefined,
