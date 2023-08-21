@@ -16,23 +16,31 @@
 <div class="mb-16">
   <div class="flex justify-between mb-2">
     <h1 class="inline">Your Goals</h1>
-    <a class="btn btn-sm variant-ringed" href={`/profile/edit?redirectTo=/`}>
-      <Icon icon="material-symbols:edit-outline" height="18" />
-      <span>Edit</span>
-    </a>
   </div>
 
   <hr />
-  {#if !profile.goals || profile.goals == ''}
-    <p class="text-gray-400">
-      You haven't set any goals yet! Edit your <a href={`/profile/edit?redirectTo=/`}>Profile</a> set
-      some.
-    </p>
-  {:else}
-    <div class="card p-4 whitespace-pre-wrap">
-      {profile.goals}
+
+  <div class="rounded-lg px-4 pb-4 pt-3 border mb-4 bg-white">
+    <div class="flex justify-between">
+      <div class="flex items-center">
+        {#if !profile.goals || profile.goals == ''}
+          <p class="text-gray-400">
+            You haven't set any goals yet! Edit your <a href={`/profile/edit?redirectTo=/`}
+              >Profile</a
+            > set some.
+          </p>
+        {:else}
+          {profile.goals}
+        {/if}
+      </div>
+      <div>
+        <a class="btn btn-sm variant-ringed" href={`/profile/edit?redirectTo=/`}>
+          <Icon icon="material-symbols:edit-outline" height="18" />
+          <span>Edit</span>
+        </a>
+      </div>
     </div>
-  {/if}
+  </div>
 </div>
 
 <div>

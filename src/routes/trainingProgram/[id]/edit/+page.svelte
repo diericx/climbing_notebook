@@ -32,10 +32,6 @@
       <h1 class="font-bold inline">
         Editing {trainingProgram.name}
       </h1>
-      <p>
-        <b>Public: </b>
-        {trainingProgram.isPublic ? 'yes' : 'no'}
-      </p>
     </div>
 
     <div class="flex">
@@ -53,23 +49,44 @@
         <Icon icon="mdi:share" height="18" />
         <span>Share</span>
       </button>
+    </div>
+  </div>
 
-      <button
-        class="btn btn-sm variant-ringed"
-        on:click={() =>
-          modalStore.trigger({
-            type: 'component',
-            component: 'formModalTrainingProgram',
-            meta: {
-              data: trainingProgram,
-              action: `/trainingProgram/${trainingProgram.id}?/edit`,
-              title: 'Edit Training Program',
-            },
-          })}
-      >
-        <Icon icon="material-symbols:edit-outline" height="18" />
-        <span>Edit</span>
-      </button>
+  <div class="mb-10">
+    <div class="text-xl">Details</div>
+    <hr class="mb-2" />
+
+    <div class="rounded-lg px-4 pb-4 pt-3 border mb-4 bg-white">
+      <div class="flex justify-between">
+        <div>
+          <p>
+            <b>Name: </b>
+            {trainingProgram.name}
+          </p>
+          <p>
+            <b>Public: </b>
+            {trainingProgram.isPublic ? 'yes' : 'no'}
+          </p>
+        </div>
+        <div>
+          <button
+            class="btn btn-sm variant-ringed"
+            on:click={() =>
+              modalStore.trigger({
+                type: 'component',
+                component: 'formModalTrainingProgram',
+                meta: {
+                  data: trainingProgram,
+                  action: `/trainingProgram/${trainingProgram.id}?/edit`,
+                  title: 'Edit Training Program',
+                },
+              })}
+          >
+            <Icon icon="material-symbols:edit-outline" height="18" />
+            <span>Edit</span>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
