@@ -54,7 +54,7 @@
 </script>
 
 {#if $message}
-  <div class="invalid">{$message}</div>
+  <div class="invalid px-4">{$message}</div>
 {/if}
 
 <form bind:this={formElement} method="POST" {action} use:enhance {id} class={`form ${className}`}>

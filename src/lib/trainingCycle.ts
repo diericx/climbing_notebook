@@ -327,7 +327,15 @@ export class TrainingCycleRepo {
   }
 
   async addExerciseGroup(exerciseGroup: z.infer<ExerciseGroupSchema>, id: number, ownerId: string) {
-    await this.getOneAndValidateOwner(id, ownerId);
+    const trainingCycle = await this.getOneAndValidateOwner(id, ownerId);
+
+    // Group names must be unique
+    trainingCycle.exerciseGroups.forEach((g) => {
+      if (exerciseGroup.name.toLocaleLowerCase() == g.name.toLocaleLowerCase()) {
+        throw new APIError('INVALID_INPUT', 'Group with that name already exists.');
+      }
+    });
+
     return await this.prisma.trainingCycle.update({
       where: {
         id,
@@ -354,7 +362,15 @@ export class TrainingCycleRepo {
     exerciseGroupId: number,
     ownerId: string
   ) {
-    await this.getOneAndValidateOwner(trainingCycleId, ownerId);
+    const trainingCycle = await this.getOneAndValidateOwner(exerciseGroup.id, ownerId);
+
+    // Group names must be unique
+    trainingCycle.exerciseGroups.forEach((g) => {
+      if (exerciseGroup.name.toLocaleLowerCase() == g.name.toLocaleLowerCase()) {
+        throw new APIError('INVALID_INPUT', 'Group with that name already exists.');
+      }
+    });
+
     return await this.prisma.trainingCycle.update({
       where: {
         id: trainingCycleId,
