@@ -79,7 +79,7 @@
             <a
               class="px-3 text-gray-600 hover:text-blue-400"
               href="/trainingCycle"
-              on:click={closeNavbar}>Training Programs</a
+              on:click={closeNavbar}>Training Cycles</a
             >
             <div style="position: relative">
               <a

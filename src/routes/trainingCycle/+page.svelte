@@ -15,7 +15,7 @@
 <div>
   <div>
     <div class="flex justify-between mb-4">
-      <h1>Your Programs</h1>
+      <h1>Training Cycles</h1>
       <div>
         <button
           class="btn btn-sm variant-filled"
@@ -35,20 +35,27 @@
       </div>
     </div>
 
+    <p class="mb-8 text-gray-400">
+      Here you can create shared Training Cycles that will be available to all of your <a
+        class="link"
+        href="/trainingProgram">Training Programs</a
+      > as well as any widgets.
+    </p>
+
     <div>
       {#if trainingCycles.length == 0}
         <p class="text-gray-400 italic">You have no training programs.</p>
       {:else}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 gap-4">
           {#each trainingCycles as p}
             <div class="block card card-hover">
               <a
                 style="height: 100%;"
                 class="flex flex-col justify-between"
-                href={`/trainingCycle/${p.id}`}
+                href={`/trainingCycle/${p.id}/edit`}
               >
-                <header class="card-header">
-                  <div class="flex justify-between">
+                <div class="my-4 mx-4">
+                  <div class="flex justify-between items-center">
                     <h2>
                       <b>
                         {p.name}
@@ -74,55 +81,19 @@
                       </div>
                     </div>
                   </div>
-                </header>
-                <section class="p-4">
-                  <p class="text-gray-400">
-                    {profile?.activeTrainingCycleId == p.id ? 'Active' : 'Inactive'}
-                    <br />
-                    {p.isPublic ? 'Public' : 'Private'}
-                  </p>
-                  {#if doesTrainingCycleHaveLegacyExercises(p)}
+                </div>
+                {#if doesTrainingCycleHaveLegacyExercises(p)}
+                  <section class="p-4">
                     <p class="text-red-500">
                       Contains legacy exercises. Edit the exercises in this program to migrate.
                     </p>
-                  {/if}
-                </section>
-                <footer class="card-footer">
-                  <FormButton
-                    action={`/profile?/edit`}
-                    class="btn btn-sm variant-ringed justify-start"
-                    disabled={profile?.activeTrainingCycleId == p.id}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <div slot="form">
-                      <input type="hidden" name="activeTrainingCycleId" value={p.id} />
-                    </div>
-
-                    Activate
-                  </FormButton>
-                </footer>
+                  </section>
+                {/if}
               </a>
             </div>
             <div id={p.id.toString()} class="card shadow-xl py-2" data-popup={p.id.toString()}>
               <nav class="list-nav">
                 <ul>
-                  <li>
-                    <button
-                      class="btn btn-sm w-full justify-start"
-                      on:click={() =>
-                        modalStore.trigger({
-                          type: 'component',
-                          component: 'modalShareTrainingCycle',
-                          meta: {
-                            trainingCycle: p,
-                          },
-                        })}
-                    >
-                      <span>Share</span>
-                    </button>
-                  </li>
                   <li>
                     <a class="btn btn-sm justify-start" href="/trainingCycle/{p.id}/edit">
                       <span> Edit </span>

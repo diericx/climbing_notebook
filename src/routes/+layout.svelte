@@ -88,7 +88,7 @@
       title: 'Training',
       children: [
         { title: 'Exercise Log', url: '/exerciseEvent' },
-        { title: 'Training Programs', url: '/trainingCycle' },
+        { title: 'Training Cycles', url: '/trainingCycle' },
         { title: 'Journal', url: '/journalEntry' },
       ],
     },
