@@ -25,12 +25,12 @@
               component: 'formModalTrainingCycle',
               meta: {
                 action: `/trainingCycle?/new`,
-                title: 'New Training Program',
+                title: 'New Training Cycle',
               },
             })}
         >
           <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-          <span>New Program</span>
+          <span>New Cycle</span>
         </button>
       </div>
     </div>

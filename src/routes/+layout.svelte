@@ -21,6 +21,7 @@
   import FormModalProjectSession from '$lib/components/modals/formModals/FormModalProjectSession.svelte';
   import FormModalTrainingCycle from '$lib/components/modals/formModals/FormModalTrainingCycle.svelte';
   import FormModalTrainingCycleDay from '$lib/components/modals/formModals/FormModalTrainingCycleDay.svelte';
+  import FormModalTrainingProgram from '$lib/components/modals/formModals/FormModalTrainingProgram.svelte';
   import FormModalWidget from '$lib/components/modals/formModals/FormModalWidget.svelte';
   import FormModalWidgetTemplate from '$lib/components/modals/formModals/FormModalWidgetTemplate.svelte';
   import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
@@ -63,6 +64,7 @@
     formModalProject: { ref: FormModalProject },
     formModalProjectSession: { ref: FormModalProjectSession },
     formModalExercise: { ref: FormModalExercise },
+    formModalTrainingProgram: { ref: FormModalTrainingProgram },
     modalCalendarEvent: { ref: ModalCalendarEvent },
     modalJournalEntry: { ref: ModalJournalEntry },
     modalShareTrainingCycle: { ref: ModalShareTrainingCycle },
@@ -88,6 +90,7 @@
       title: 'Training',
       children: [
         { title: 'Exercise Log', url: '/exerciseEvent' },
+        { title: 'Training Programs', url: '/trainingProgram' },
         { title: 'Training Cycles', url: '/trainingCycle' },
         { title: 'Journal', url: '/journalEntry' },
       ],
@@ -233,24 +236,6 @@
       </li>
       <li class="listbox-item">
         <FormButton action="/?/signout" class="w-full mt-0">Logout</FormButton>
-      </li>
-    </ul>
-  </nav>
-  <div class="arrow bg-surface-100-800-token" />
-</div>
-
-<!-- TRAINING POPUP  -->
-<div class="card w-48 shadow-xl py-2 z-50" data-popup="training">
-  <nav class="list-nav">
-    <ul>
-      <li class="listbox-item">
-        <a href="/exerciseEvent"> Exercise Log </a>
-      </li>
-      <li class="listbox-item">
-        <a href="/trainingCycle"> Training Programs </a>
-      </li>
-      <li class="listbox-item">
-        <a href="/journalEntry"> Journal </a>
       </li>
     </ul>
   </nav>
