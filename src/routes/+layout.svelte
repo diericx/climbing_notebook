@@ -22,6 +22,7 @@
   import FormModalTrainingCycle from '$lib/components/modals/formModals/FormModalTrainingCycle.svelte';
   import FormModalTrainingCycleDay from '$lib/components/modals/formModals/FormModalTrainingCycleDay.svelte';
   import FormModalTrainingProgram from '$lib/components/modals/formModals/FormModalTrainingProgram.svelte';
+  import FormModalTrainingProgramScheduledSlot from '$lib/components/modals/formModals/FormModalTrainingProgramScheduledSlot.svelte';
   import FormModalWidget from '$lib/components/modals/formModals/FormModalWidget.svelte';
   import FormModalWidgetTemplate from '$lib/components/modals/formModals/FormModalWidgetTemplate.svelte';
   import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
@@ -65,6 +66,7 @@
     formModalProjectSession: { ref: FormModalProjectSession },
     formModalExercise: { ref: FormModalExercise },
     formModalTrainingProgram: { ref: FormModalTrainingProgram },
+    formModalTrainingProgramScheduledSlot: { ref: FormModalTrainingProgramScheduledSlot },
     modalCalendarEvent: { ref: ModalCalendarEvent },
     modalJournalEntry: { ref: ModalJournalEntry },
     modalShareTrainingCycle: { ref: ModalShareTrainingCycle },

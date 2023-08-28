@@ -4,12 +4,16 @@
   import { v4 as uuidv4 } from 'uuid';
   const id = uuidv4();
 
-  export let href: string;
+  export let href: string = '';
   export let showElipses = true;
 </script>
 
-<div class="block card card-hover">
-  <a style="height: 100%;" class="flex flex-col justify-between p-4" {href}>
+<div class={`block card ${href === '' ? '' : 'card-hover'}`}>
+  <a
+    style="height: 100%;"
+    class="flex flex-col justify-between p-4"
+    href={href === '' ? undefined : href}
+  >
     <div class="flex justify-between items-center">
       <div>
         <slot name="title" />

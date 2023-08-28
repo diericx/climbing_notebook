@@ -1,12 +1,19 @@
-import { PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
 
 export const trainingProgramSchema = z.object({
-  name: z.string().min(1),
-  description: z.string().min(1),
+  name: z.string().min(1, 'Name is required'),
+  description: z.string().min(1, 'Description is required'),
 });
 export type TrainingProgramSchema = typeof trainingProgramSchema;
+
+export const trainingProgramScheduledSlotSchema = z.object({
+  duration: z.number().min(1, 'Duration must be greater than 0'),
+  order: z.number(),
+  trainingCycleId: z.number(),
+});
+export type TrainingProgramScheduledSlotSchema = typeof trainingProgramScheduledSlotSchema;
 
 export class TrainingProgramRepo {
   constructor(private readonly prisma: PrismaClient) {}
@@ -20,6 +27,9 @@ export class TrainingProgramRepo {
         trainingProgramScheduledSlots: {
           orderBy: {
             order: 'asc',
+          },
+          include: {
+            trainingCycles: true,
           },
         },
         trainingCycles: true,
@@ -86,6 +96,77 @@ export class TrainingProgramRepo {
       },
       data: {
         ...data,
+      },
+    });
+  }
+
+  async addTrainingProgramScheduledSlot(
+    data: z.infer<TrainingProgramScheduledSlotSchema>,
+    id: string,
+    ownerId: string
+  ) {
+    // Get current training program
+    const trainingProgram = await this.prisma.trainingProgram.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (trainingProgram == null) {
+      throw new APIError('NOT_FOUND', 'Resource not found');
+    }
+    if (trainingProgram.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
+    }
+
+    // Update training program
+    const { trainingCycleId, ...rest } = data;
+    return this.prisma.trainingProgram.update({
+      where: {
+        id,
+      },
+      data: {
+        trainingProgramScheduledSlots: {
+          create: {
+            ...rest,
+            trainingCycles: {
+              connect: {
+                id: trainingCycleId,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  async deleteTrainingProgramScheduledSlot(
+    trainingPrgramId: string,
+    trainingProgramScheduledSlotId: string,
+    ownerId: string
+  ) {
+    // Get current training program
+    const trainingProgram = await this.prisma.trainingProgram.findUnique({
+      where: {
+        id: trainingPrgramId,
+      },
+    });
+    if (trainingProgram == null) {
+      throw new APIError('NOT_FOUND', 'Resource not found');
+    }
+    if (trainingProgram.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
+    }
+
+    return this.prisma.trainingProgram.update({
+      data: {
+        trainingProgramScheduledSlots: {
+          delete: {
+            id: trainingProgramScheduledSlotId,
+          },
+        },
+      },
+      where: {
+        id: trainingPrgramId,
       },
     });
   }

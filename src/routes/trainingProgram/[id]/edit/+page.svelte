@@ -106,7 +106,58 @@
   </div>
 </div>
 
-<div class="mb-10">
-  <div class="text-xl">Scheduling</div>
-  <hr class="mb-2" />
+<div class="mb-12">
+  <div class="mb-2 flex justify-between">
+    <div>
+      <div class="text-xl">Scheduling</div>
+    </div>
+    <div>
+      <button
+        class="btn btn-sm variant-filled"
+        on:click={() =>
+          modalStore.trigger({
+            type: 'component',
+            component: 'formModalTrainingProgramScheduledSlot',
+            meta: {
+              action: `/trainingProgram/${trainingProgram.id}?/addTrainingProgramScheduledSlot`,
+              title: 'Add Slot',
+              formProps: {
+                trainingCycles: trainingProgram.trainingCycles,
+                order: 0,
+              },
+            },
+          })}
+      >
+        <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
+        <span>Add Slot</span>
+      </button>
+    </div>
+  </div>
+  <hr />
+  <div>
+    {#if trainingProgram.trainingProgramScheduledSlots.length == 0}
+      <p class="text-gray-400 italic">No scheduled slots.</p>
+    {:else}
+      <List>
+        {#each trainingProgram.trainingProgramScheduledSlots as s}
+          <ListItem>
+            <div slot="title">
+              Duration: {s.duration}
+              <br />
+              Cycle: {s.trainingCycles[0].name}
+            </div>
+            <div slot="popup-buttons">
+              <FormButton
+                action={`/trainingProgram/${trainingProgram.id}/scheduledSlot/${s.id}?/delete`}
+                class="btn btn-sm w-full justify-start"
+                onClick={confirmDelete}
+              >
+                <span> Delete </span>
+              </FormButton>
+            </div>
+          </ListItem>
+        {/each}
+      </List>
+    {/if}
+  </div>
 </div>

@@ -1,6 +1,10 @@
 import { prisma } from '$lib/prisma';
 import { TrainingCycleRepo, trainingCycleSchema } from '$lib/trainingCycle';
-import { TrainingProgramRepo, trainingProgramSchema } from '$lib/trainingProgram';
+import {
+  TrainingProgramRepo,
+  trainingProgramScheduledSlotSchema,
+  trainingProgramSchema,
+} from '$lib/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
 import type { TrainingProgram } from '@prisma/client';
 import { fail } from '@sveltejs/kit';
@@ -59,6 +63,24 @@ export const actions: Actions = {
 
     const repo = new TrainingCycleRepo(prisma);
     await repo.new(form.data, user?.userId, id);
+
+    return { form };
+  },
+
+  addTrainingProgramScheduledSlot: async ({ locals, request, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+    const formData = await request.formData();
+    const id = params.id;
+    const form = await superValidate(formData, trainingProgramScheduledSlotSchema, {
+      id: formData.get('_formId')?.toString(),
+    });
+
+    if (!form.valid) {
+      return fail(400, { form });
+    }
+
+    const repo = new TrainingProgramRepo(prisma);
+    await repo.addTrainingProgramScheduledSlot(form.data, id, user?.userId);
 
     return { form };
   },
