@@ -1,7 +1,8 @@
 import { prisma } from '$lib/prisma';
-import { TrainingProgramRepo } from '$lib/trainingProgram';
+import { TrainingProgramRepo, trainingProgramScheduledSlotSchema } from '$lib/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
+import { superValidate } from 'sveltekit-superforms/client';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params, url }) => {
@@ -13,6 +14,28 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
 };
 
 export const actions: Actions = {
+  update: async ({ locals, request, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+    const formData = await request.formData();
+    const form = await superValidate(formData, trainingProgramScheduledSlotSchema, {
+      id: formData.get('_formId')?.toString(),
+    });
+
+    if (!form.valid) {
+      return fail(400, { form });
+    }
+
+    const repo = new TrainingProgramRepo(prisma);
+    await repo.updateTrainingProgramScheduledSlot(
+      form.data,
+      params.id,
+      params.scheduledSlotId,
+      user?.userId
+    );
+
+    return { form };
+  },
+
   delete: async ({ locals, params, url }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
     const trainingProgramId = params.id;

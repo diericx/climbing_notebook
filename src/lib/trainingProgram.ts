@@ -225,6 +225,60 @@ export class TrainingProgramRepo {
     return await this.prisma.$transaction([...decrementOrderOfSubsequentSlots, deleteSlot]);
   }
 
+  async updateTrainingProgramScheduledSlot(
+    data: z.infer<TrainingProgramScheduledSlotSchema>,
+    trainingProgramId: string,
+    slotId: string,
+    ownerId: string
+  ) {
+    // Get current training program
+    const trainingProgram = await this.prisma.trainingProgram.findUnique({
+      where: {
+        id: trainingProgramId,
+      },
+    });
+    if (trainingProgram == null) {
+      throw new APIError('NOT_FOUND', 'Resource not found');
+    }
+    if (trainingProgram.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
+    }
+
+    const trainingProgramScheduledSlot = await this.prisma.trainingProgramScheduledSlot.findUnique({
+      where: {
+        id: slotId,
+      },
+      include: {
+        trainingCycles: true,
+      },
+    });
+    if (trainingProgramScheduledSlot == null) {
+      throw new APIError('NOT_FOUND', 'Resource not found');
+    }
+
+    // NOTE: cannot update order with this function
+    const { trainingCycleId, ...rest } = data;
+    const slot = await this.prisma.trainingProgramScheduledSlot.update({
+      data: {
+        ...rest,
+        order: undefined,
+        trainingCycles: {
+          disconnect: {
+            id: trainingProgramScheduledSlot.trainingCycles[0]?.id,
+          },
+          connect: {
+            id: trainingCycleId,
+          },
+        },
+      },
+      where: {
+        id: slotId,
+      },
+    });
+
+    return slot;
+  }
+
   async moveTrainingProgramScheduledSlot(
     trainingPrgramId: string,
     trainingProgramScheduledSlotId: string,
@@ -263,9 +317,6 @@ export class TrainingProgramRepo {
       throw new APIError('INVALID_INPUT', 'Invalid order');
     }
 
-    //   |     )
-    // 1 2 3 4 5 6
-
     // Move all the slots that come after this slot down
     const decrementOrderOfSubsequentSlots = trainingProgram.trainingProgramScheduledSlots
       .filter((s) => s.order > trainingProgramScheduledSlot.order && s.order <= order)
@@ -280,7 +331,7 @@ export class TrainingProgramRepo {
         })
       );
 
-    // Move all the slots that come after this slot forward
+    // Move all the slots that come before this slot forward
     const incrementOrderOfSubsequentSlots = trainingProgram.trainingProgramScheduledSlots
       .filter((s) => s.order < trainingProgramScheduledSlot.order && s.order >= order)
       .map((s) =>

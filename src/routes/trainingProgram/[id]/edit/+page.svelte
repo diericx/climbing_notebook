@@ -9,6 +9,9 @@
 
   export let data: PageData;
   $: trainingProgram = data.trainingProgram;
+
+  // used in ui while counting up the weeks
+  let weeks = 0;
 </script>
 
 <h1 class="mb-12 font-bold">Editing {trainingProgram.name}</h1>
@@ -84,11 +87,9 @@
         {#each trainingProgram.trainingCycles as c}
           <ListItem href={`/trainingCycle/${c.id}/edit`}>
             <div slot="title">
-              <h2>
-                <b>
-                  {c.name}
-                </b>
-              </h2>
+              <div class="text-xl font-bold">
+                {c.name}
+              </div>
             </div>
             <div slot="popup-buttons">
               <FormButton
@@ -138,48 +139,88 @@
     {#if trainingProgram.trainingProgramScheduledSlots.length == 0}
       <p class="text-gray-400 italic">No scheduled slots.</p>
     {:else}
-      <List>
-        {#each trainingProgram.trainingProgramScheduledSlots as s}
-          <ListItem>
-            <div slot="title">
-              Duration: {s.duration}
-              <br />
-              Cycle: {s.trainingCycles[0].name}
-            </div>
-            <div slot="popup-buttons">
-              {#if s.order != 0}
-                <FormButton
-                  action={`/trainingProgram/${trainingProgram.id}/scheduledSlot/${s.id}/?/move`}
-                  class="btn btn-sm w-full justify-start"
-                >
-                  <div slot="form">
-                    <input type="hidden" name="order" value={s.order - 1} />
+      <div class="relative border-l border-gray-200">
+        <List>
+          {#each trainingProgram.trainingProgramScheduledSlots as s}
+            {@const weeks = trainingProgram.trainingProgramScheduledSlots
+              .map((_s) => (_s.order < s.order ? _s.duration : 0))
+              .reduce((acc, cur) => acc + cur, 0)}
+            <div class="ml-3">
+              <div
+                class="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -left-1.5 border border-white dark:border-gray-900 dark:bg-gray-700"
+              />
+              <div class="text-gray-300">Week {weeks + 1}</div>
+              <ListItem>
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M1 5h12m0 0L9 1m4 4L9 9"
+                />
+                <div slot="title">
+                  <div class="text-xl font-bold">
+                    {s.trainingCycles[0].name}
                   </div>
-                  <span> Move Up </span>
-                </FormButton>
-              {/if}
-              {#if s.order != trainingProgram.trainingProgramScheduledSlots.length - 1}
-                <FormButton
-                  action={`/trainingProgram/${trainingProgram.id}/scheduledSlot/${s.id}/?/move`}
-                  class="btn btn-sm w-full justify-start"
-                >
-                  <div slot="form">
-                    <input type="hidden" name="order" value={s.order + 1} />
-                  </div>
-                  <span> Move Down </span>
-                </FormButton>
-              {/if}
-              <FormButton
-                action={`/trainingProgram/${trainingProgram.id}/scheduledSlot/${s.id}?/delete`}
-                class="btn btn-sm w-full justify-start"
-                onClick={confirmDelete}
-              >
-                <span> Delete </span>
-              </FormButton>
+                  {s.duration} week{s.duration == 1 ? '' : 's'}
+                </div>
+                <div slot="popup-buttons">
+                  <button
+                    class="btn btn-sm w-full justify-start"
+                    on:click={() =>
+                      modalStore.trigger({
+                        type: 'component',
+                        component: 'formModalTrainingProgramScheduledSlot',
+                        meta: {
+                          data: {
+                            ...s,
+                            trainingCycleId: s.trainingCycles[0]?.id,
+                          },
+                          action: `/trainingProgram/${trainingProgram.id}/scheduledSlot/${s.id}?/update`,
+                          title: 'Edit Slot',
+                          formProps: {
+                            trainingCycles: trainingProgram.trainingCycles,
+                          },
+                        },
+                      })}
+                  >
+                    <span>Edit</span>
+                  </button>
+                  {#if s.order != 0}
+                    <FormButton
+                      action={`/trainingProgram/${trainingProgram.id}/scheduledSlot/${s.id}/?/move`}
+                      class="btn btn-sm w-full justify-start"
+                    >
+                      <div slot="form">
+                        <input type="hidden" name="order" value={s.order - 1} />
+                      </div>
+                      <span> Move Up </span>
+                    </FormButton>
+                  {/if}
+                  {#if s.order != trainingProgram.trainingProgramScheduledSlots.length - 1}
+                    <FormButton
+                      action={`/trainingProgram/${trainingProgram.id}/scheduledSlot/${s.id}/?/move`}
+                      class="btn btn-sm w-full justify-start"
+                    >
+                      <div slot="form">
+                        <input type="hidden" name="order" value={s.order + 1} />
+                      </div>
+                      <span> Move Down </span>
+                    </FormButton>
+                  {/if}
+                  <FormButton
+                    action={`/trainingProgram/${trainingProgram.id}/scheduledSlot/${s.id}?/delete`}
+                    class="btn btn-sm w-full justify-start"
+                    onClick={confirmDelete}
+                  >
+                    <span> Delete </span>
+                  </FormButton>
+                </div>
+              </ListItem>
             </div>
-          </ListItem>
-        {/each}
-      </List>
+          {/each}
+        </List>
+      </div>
     {/if}
   </div>
 </div>
