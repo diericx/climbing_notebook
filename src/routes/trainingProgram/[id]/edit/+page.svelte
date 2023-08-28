@@ -81,14 +81,13 @@
       <List>
         {#each trainingProgram.trainingCycles as c}
           <ListItem href={`/trainingCycle/${c.id}/edit`} showElipses={false}>
-            <div slot="content">
+            <div slot="title">
               <h2>
                 <b>
                   {c.name}
                 </b>
               </h2>
             </div>
-            <div slot="popup-buttons" />
           </ListItem>
         {/each}
       </List>

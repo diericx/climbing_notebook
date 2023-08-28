@@ -45,7 +45,7 @@
     <List>
       {#each trainingPrograms as p}
         <ListItem href={`/trainingProgram/${p.id}/edit`}>
-          <div slot="content">
+          <div slot="title">
             <h2>
               <b>
                 {p.name}

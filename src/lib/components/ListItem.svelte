@@ -9,10 +9,10 @@
 </script>
 
 <div class="block card card-hover">
-  <a style="height: 100%;" class="flex flex-col justify-between" {href}>
+  <a style="height: 100%;" class="flex flex-col justify-between p-4" {href}>
     <div class="flex justify-between items-center">
-      <div class="my-4 mx-4">
-        <slot name="content" />
+      <div>
+        <slot name="title" />
       </div>
       <div class={`flex ${showElipses ? '' : 'hidden'}`}>
         <div>
@@ -32,6 +32,9 @@
           </button>
         </div>
       </div>
+    </div>
+    <div class="h-full">
+      <slot name="content" />
     </div>
   </a>
 </div>
