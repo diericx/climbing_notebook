@@ -1,4 +1,4 @@
-import type { Prisma, PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
 
@@ -8,10 +8,6 @@ export const trainingProgramSchema = z.object({
 });
 export type TrainingProgramSchema = typeof trainingProgramSchema;
 
-const defaultInclude: Prisma.TrainingProgramInclude = {
-  trainingProgramActivations: true,
-};
-
 export class TrainingProgramRepo {
   constructor(private readonly prisma: PrismaClient) {}
 
@@ -20,7 +16,10 @@ export class TrainingProgramRepo {
       where: {
         id,
       },
-      include: defaultInclude,
+      include: {
+        trainingProgramActivations: true,
+        trainingCycles: true,
+      },
     });
     if (trainingProgram == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
@@ -55,7 +54,10 @@ export class TrainingProgramRepo {
       orderBy: {
         createdAt: 'desc',
       },
-      include: defaultInclude,
+      include: {
+        trainingCycles: true,
+        trainingProgramActivations: true,
+      },
     });
   }
 

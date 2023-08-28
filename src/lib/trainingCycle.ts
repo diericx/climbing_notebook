@@ -219,11 +219,12 @@ export class TrainingCycleRepo {
     }
   }
 
-  async new(data: z.infer<TrainingCycleSchema>, ownerId: string) {
+  async new(data: z.infer<TrainingCycleSchema>, ownerId: string, trainingProgramId?: string) {
     return await this.prisma.trainingCycle.create({
       data: {
         name: data.name,
         ownerId,
+        trainingProgramId,
         days: {
           create: Array.from(Array(7)).map((_, i) => {
             return {

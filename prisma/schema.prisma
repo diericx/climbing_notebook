@@ -144,6 +144,7 @@ model TrainingProgram {
   ownerId                    String                      @map("owner_id")
   owner                      AuthUser                    @relation(fields: [ownerId], references: [id])
   trainingProgramActivations TrainingProgramActivation[]
+  trainingCycles             TrainingCycle[]
 
   @@map("training_program")
 }
@@ -169,6 +170,9 @@ model TrainingCycle {
   createdAt DateTime @default(now()) @map("created_at")
   name      String
   isPublic  Boolean  @default(false) @map("is_public")
+
+  trainingProgramId String?
+  trainingProgram   TrainingProgram? @relation(fields: [trainingProgramId], references: [id])
 
   ownerId                       String                         @map("owner_id")
   owner                         AuthUser                       @relation(fields: [ownerId], references: [id])
