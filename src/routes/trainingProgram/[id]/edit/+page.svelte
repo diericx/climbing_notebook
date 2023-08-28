@@ -1,4 +1,6 @@
 <script lang="ts">
+  import List from '$lib/components/List.svelte';
+  import ListItem from '$lib/components/ListItem.svelte';
   import Icon from '@iconify/svelte';
   import { modalStore } from '@skeletonlabs/skeleton';
   import type { PageData } from './$types';
@@ -76,27 +78,20 @@
     {#if trainingProgram.trainingCycles.length == 0}
       <p class="text-gray-400 italic">You have no training programs.</p>
     {:else}
-      <div class="grid grid-cols-1 gap-4">
+      <List>
         {#each trainingProgram.trainingCycles as c}
-          <div class="block card card-hover">
-            <a
-              style="height: 100%;"
-              class="flex flex-col justify-between"
-              href={`/trainingCycle/${c.id}/edit`}
-            >
-              <div class="my-4 mx-4">
-                <div class="flex justify-between items-center">
-                  <h2>
-                    <b>
-                      {c.name}
-                    </b>
-                  </h2>
-                </div>
-              </div>
-            </a>
-          </div>
+          <ListItem href={`/trainingCycle/${c.id}/edit`} showElipses={false}>
+            <div slot="content">
+              <h2>
+                <b>
+                  {c.name}
+                </b>
+              </h2>
+            </div>
+            <div slot="popup-buttons" />
+          </ListItem>
         {/each}
-      </div>
+      </List>
     {/if}
   </div>
 </div>
