@@ -1,4 +1,4 @@
-import type { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
 
@@ -110,6 +110,9 @@ export class TrainingProgramRepo {
       where: {
         id,
       },
+      include: {
+        trainingProgramScheduledSlots: true,
+      },
     });
     if (trainingProgram == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
@@ -118,9 +121,30 @@ export class TrainingProgramRepo {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
     }
 
+    // Cannot add a slot with an order less than 0 or beyond the current size.
+    // e.g. when length is 0, order must be 0. When length is 3, max is 3 (placing it
+    // at the end)
+    if (data.order > trainingProgram.trainingProgramScheduledSlots.length || data.order < 0) {
+      throw new APIError('INVALID_INPUT', 'Invalid order');
+    }
+
+    // Move all the slots that come after this slot forward
+    const incrementOrderOfSubsequentSlots = trainingProgram.trainingProgramScheduledSlots
+      .filter((s) => s.order >= data.order)
+      .map((s) =>
+        this.prisma.trainingProgramScheduledSlot.update({
+          where: {
+            id: s.id,
+          },
+          data: {
+            order: s.order + 1,
+          },
+        })
+      );
+
     // Update training program
     const { trainingCycleId, ...rest } = data;
-    return this.prisma.trainingProgram.update({
+    const createNewSlot = this.prisma.trainingProgram.update({
       where: {
         id,
       },
@@ -137,6 +161,8 @@ export class TrainingProgramRepo {
         },
       },
     });
+
+    return await this.prisma.$transaction([...incrementOrderOfSubsequentSlots, createNewSlot]);
   }
 
   async deleteTrainingProgramScheduledSlot(
@@ -149,6 +175,9 @@ export class TrainingProgramRepo {
       where: {
         id: trainingPrgramId,
       },
+      include: {
+        trainingProgramScheduledSlots: true,
+      },
     });
     if (trainingProgram == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
@@ -157,7 +186,30 @@ export class TrainingProgramRepo {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
     }
 
-    return this.prisma.trainingProgram.update({
+    const trainingProgramScheduledSlot = await this.prisma.trainingProgramScheduledSlot.findUnique({
+      where: {
+        id: trainingProgramScheduledSlotId,
+      },
+    });
+    if (trainingProgramScheduledSlot == null) {
+      throw new APIError('NOT_FOUND', 'Resource not found');
+    }
+
+    // Move all the slots that come after this slot down
+    const decrementOrderOfSubsequentSlots = trainingProgram.trainingProgramScheduledSlots
+      .filter((s) => s.order >= trainingProgramScheduledSlot.order)
+      .map((s) =>
+        this.prisma.trainingProgramScheduledSlot.update({
+          where: {
+            id: s.id,
+          },
+          data: {
+            order: s.order - 1,
+          },
+        })
+      );
+
+    const deleteSlot = this.prisma.trainingProgram.update({
       data: {
         trainingProgramScheduledSlots: {
           delete: {
@@ -169,6 +221,93 @@ export class TrainingProgramRepo {
         id: trainingPrgramId,
       },
     });
+
+    return await this.prisma.$transaction([...decrementOrderOfSubsequentSlots, deleteSlot]);
+  }
+
+  async moveTrainingProgramScheduledSlot(
+    trainingPrgramId: string,
+    trainingProgramScheduledSlotId: string,
+    order: number,
+    ownerId: string
+  ) {
+    // Get current training program
+    const trainingProgram = await this.prisma.trainingProgram.findUnique({
+      where: {
+        id: trainingPrgramId,
+      },
+      include: {
+        trainingProgramScheduledSlots: true,
+      },
+    });
+    if (trainingProgram == null) {
+      throw new APIError('NOT_FOUND', 'Resource not found');
+    }
+    if (trainingProgram.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
+    }
+
+    const trainingProgramScheduledSlot = await this.prisma.trainingProgramScheduledSlot.findUnique({
+      where: {
+        id: trainingProgramScheduledSlotId,
+      },
+    });
+    if (trainingProgramScheduledSlot == null) {
+      throw new APIError('NOT_FOUND', 'Resource not found');
+    }
+
+    // Cannot add a slot with an order less than 0 or beyond the current size.
+    // e.g. when length is 0, order must be 0. When length is 3, max is 3 (placing it
+    // at the end)
+    if (order > trainingProgram.trainingProgramScheduledSlots.length || order < 0) {
+      throw new APIError('INVALID_INPUT', 'Invalid order');
+    }
+
+    //   |     )
+    // 1 2 3 4 5 6
+
+    // Move all the slots that come after this slot down
+    const decrementOrderOfSubsequentSlots = trainingProgram.trainingProgramScheduledSlots
+      .filter((s) => s.order > trainingProgramScheduledSlot.order && s.order <= order)
+      .map((s) =>
+        this.prisma.trainingProgramScheduledSlot.update({
+          where: {
+            id: s.id,
+          },
+          data: {
+            order: s.order - 1,
+          },
+        })
+      );
+
+    // Move all the slots that come after this slot forward
+    const incrementOrderOfSubsequentSlots = trainingProgram.trainingProgramScheduledSlots
+      .filter((s) => s.order < trainingProgramScheduledSlot.order && s.order >= order)
+      .map((s) =>
+        this.prisma.trainingProgramScheduledSlot.update({
+          where: {
+            id: s.id,
+          },
+          data: {
+            order: s.order + 1,
+          },
+        })
+      );
+
+    const moveSlot = this.prisma.trainingProgramScheduledSlot.update({
+      data: {
+        order,
+      },
+      where: {
+        id: trainingProgramScheduledSlot.id,
+      },
+    });
+
+    return await this.prisma.$transaction([
+      ...decrementOrderOfSubsequentSlots,
+      ...incrementOrderOfSubsequentSlots,
+      moveSlot,
+    ]);
   }
 
   async delete(id: string, ownerId: string) {

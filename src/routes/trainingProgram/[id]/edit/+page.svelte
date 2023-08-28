@@ -147,6 +147,28 @@
               Cycle: {s.trainingCycles[0].name}
             </div>
             <div slot="popup-buttons">
+              {#if s.order != 0}
+                <FormButton
+                  action={`/trainingProgram/${trainingProgram.id}/scheduledSlot/${s.id}/?/move`}
+                  class="btn btn-sm w-full justify-start"
+                >
+                  <div slot="form">
+                    <input type="hidden" name="order" value={s.order - 1} />
+                  </div>
+                  <span> Move Up </span>
+                </FormButton>
+              {/if}
+              {#if s.order != trainingProgram.trainingProgramScheduledSlots.length - 1}
+                <FormButton
+                  action={`/trainingProgram/${trainingProgram.id}/scheduledSlot/${s.id}/?/move`}
+                  class="btn btn-sm w-full justify-start"
+                >
+                  <div slot="form">
+                    <input type="hidden" name="order" value={s.order + 1} />
+                  </div>
+                  <span> Move Down </span>
+                </FormButton>
+              {/if}
               <FormButton
                 action={`/trainingProgram/${trainingProgram.id}/scheduledSlot/${s.id}?/delete`}
                 class="btn btn-sm w-full justify-start"
