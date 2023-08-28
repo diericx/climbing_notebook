@@ -9,9 +9,9 @@
   $: trainingProgram = data.trainingProgram;
 </script>
 
-<h1 class="mb-10">Editing {trainingProgram.name}</h1>
+<h1 class="mb-12 font-bold">Editing {trainingProgram.name}</h1>
 
-<div class="mb-10">
+<div class="mb-12">
   <div class="text-xl">Details</div>
   <hr class="mb-2" />
 
@@ -49,7 +49,7 @@
   </div>
 </div>
 
-<div class="mb-10">
+<div class="mb-12">
   <div class="mb-2 flex justify-between">
     <div>
       <div class="text-xl">Training Cycles</div>
