@@ -17,7 +17,11 @@ export class TrainingProgramRepo {
         id,
       },
       include: {
-        trainingProgramActivations: true,
+        trainingProgramScheduledSlots: {
+          orderBy: {
+            order: 'asc',
+          },
+        },
         trainingCycles: true,
       },
     });

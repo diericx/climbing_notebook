@@ -141,10 +141,11 @@ model TrainingProgram {
   name        String
   description String
 
-  ownerId                    String                      @map("owner_id")
-  owner                      AuthUser                    @relation(fields: [ownerId], references: [id])
-  trainingProgramActivations TrainingProgramActivation[]
-  trainingCycles             TrainingCycle[]
+  ownerId                       String                         @map("owner_id")
+  owner                         AuthUser                       @relation(fields: [ownerId], references: [id])
+  trainingProgramActivations    TrainingProgramActivation[]
+  trainingCycles                TrainingCycle[]
+  trainingProgramScheduledSlots TrainingProgramScheduledSlot[]
 
   @@map("training_program")
 }
@@ -155,14 +156,20 @@ model TrainingProgramScheduledSlot {
   duration  Int
   order     Int
 
-  trainingCycles TrainingCycle[]
+  trainingProgramId String          @map("training_program_id")
+  trainingProgram   TrainingProgram @relation(fields: [trainingProgramId], references: [id], onDelete: Cascade)
+  trainingCycles    TrainingCycle[]
+
+  @@map("training_program_scheduled_slot")
 }
 
 model TrainingProgramActivation {
   id                String          @id @default(cuid())
   startDate         DateTime        @default(now()) @map("start_date")
   trainingProgramId String          @map("training_program_id")
-  trainingProgram   TrainingProgram @relation(fields: [trainingProgramId], references: [id])
+  trainingProgram   TrainingProgram @relation(fields: [trainingProgramId], references: [id], onDelete: Cascade)
+
+  @@map("training_program_activation")
 }
 
 model TrainingCycle {
@@ -171,8 +178,8 @@ model TrainingCycle {
   name      String
   isPublic  Boolean  @default(false) @map("is_public")
 
-  trainingProgramId String?
-  trainingProgram   TrainingProgram? @relation(fields: [trainingProgramId], references: [id])
+  trainingProgramId String?          @map("training_program_id")
+  trainingProgram   TrainingProgram? @relation(fields: [trainingProgramId], references: [id], onDelete: Cascade)
 
   ownerId                       String                         @map("owner_id")
   owner                         AuthUser                       @relation(fields: [ownerId], references: [id])

@@ -1,6 +1,8 @@
 <script lang="ts">
   import List from '$lib/components/List.svelte';
   import ListItem from '$lib/components/ListItem.svelte';
+  import FormButton from '$lib/components/forms/FormButton.svelte';
+  import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import { modalStore } from '@skeletonlabs/skeleton';
   import type { PageData } from './$types';
@@ -80,13 +82,22 @@
     {:else}
       <List>
         {#each trainingProgram.trainingCycles as c}
-          <ListItem href={`/trainingCycle/${c.id}/edit`} showElipses={false}>
+          <ListItem href={`/trainingCycle/${c.id}/edit`}>
             <div slot="title">
               <h2>
                 <b>
                   {c.name}
                 </b>
               </h2>
+            </div>
+            <div slot="popup-buttons">
+              <FormButton
+                action={`/trainingCycle/${c.id}?/delete`}
+                class="btn btn-sm w-full justify-start"
+                onClick={confirmDelete}
+              >
+                <span> Delete </span>
+              </FormButton>
             </div>
           </ListItem>
         {/each}
