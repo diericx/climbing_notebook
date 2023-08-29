@@ -20,6 +20,7 @@ export class TrainingCycleRepo {
       },
       include: {
         owner: true,
+        trainingProgramScheduledSlots: true,
         exerciseGroups: {
           include: {
             exercises: {
@@ -319,7 +320,13 @@ export class TrainingCycleRepo {
   }
 
   async delete(id: number, ownerId: string) {
-    await this.getOneAndValidateOwner(id, ownerId);
+    const trainingCycle = await this.getOneAndValidateOwner(id, ownerId);
+    if (trainingCycle.trainingProgramScheduledSlots.length != 0) {
+      throw new APIError(
+        'INVALID_INPUT',
+        'Training Cycle cannot be deleted because it is scheduled in one or more Training Programs'
+      );
+    }
 
     return await this.prisma.trainingCycle.delete({
       where: {

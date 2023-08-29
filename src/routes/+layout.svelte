@@ -5,7 +5,7 @@
   // Your selected Skeleton theme:
   import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
   // This contains the bulk of Skeletons required styles:
-  import { navigating } from '$app/stores';
+  import { navigating, page } from '$app/stores';
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import ModalCalendarEvent from '$lib/components/modals/ModalCalendarEvent.svelte';
   import ModalJournalEntry from '$lib/components/modals/ModalJournalEntry.svelte';
@@ -31,12 +31,15 @@
   import { Drawer, drawerStore, popup, storePopup } from '@skeletonlabs/skeleton';
   import '@skeletonlabs/skeleton/styles/skeleton.css';
   import 'nprogress/nprogress.css';
+  import { getFlash } from 'sveltekit-flash-message';
   import '../app.css';
 
   storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
   export let data: PageData;
   $: countOfExercisesThatNeedMigration = data.countOfExercisesThatNeedMigration;
+
+  const flash = getFlash(page);
 
   NProgress.configure({
     minimum: 0.16,
@@ -224,6 +227,15 @@
 
   <div class="container mx-auto px-3">
     <main class="pt-8 pb-10">
+      {#if $flash}
+        {@const variant =
+          $flash.type == 'success' ? 'variant-ghost-success' : 'variant-ghost-error'}
+        <aside class={`alert mb-4 ${variant}`}>
+          <div class="alert-message">
+            <h3 class="h3">{$flash.message}</h3>
+          </div>
+        </aside>
+      {/if}
       <slot />
     </main>
   </div>

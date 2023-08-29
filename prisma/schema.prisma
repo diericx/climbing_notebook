@@ -187,7 +187,7 @@ model TrainingCycle {
   exerciseGroups                ExerciseGroup[]
   profile                       Profile[]
   Widget                        Widget[]
-  TrainingProgramScheduledSlots TrainingProgramScheduledSlot[]
+  trainingProgramScheduledSlots TrainingProgramScheduledSlot[]
 
   @@map("training_cycle")
 }
