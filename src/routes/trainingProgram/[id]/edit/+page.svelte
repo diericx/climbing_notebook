@@ -9,9 +9,7 @@
 
   export let data: PageData;
   $: trainingProgram = data.trainingProgram;
-
-  // used in ui while counting up the weeks
-  let weeks = 0;
+  $: trainingCycles = data.trainingCycles;
 </script>
 
 <h1 class="mb-12 font-bold">Editing {trainingProgram.name}</h1>
@@ -123,7 +121,8 @@
               action: `/trainingProgram/${trainingProgram.id}?/addTrainingProgramScheduledSlot`,
               title: 'Add Slot',
               formProps: {
-                trainingCycles: trainingProgram.trainingCycles,
+                trainingCyclesFromTrainingProgram: trainingProgram.trainingCycles,
+                trainingCyclesFromAccount: trainingCycles,
                 order: 0,
               },
             },
@@ -179,7 +178,8 @@
                           action: `/trainingProgram/${trainingProgram.id}/scheduledSlot/${s.id}?/update`,
                           title: 'Edit Slot',
                           formProps: {
-                            trainingCycles: trainingProgram.trainingCycles,
+                            trainingCyclesFromTrainingProgram: trainingProgram.trainingCycles,
+                            trainingCyclesFromAccount: trainingCycles,
                           },
                         },
                       })}

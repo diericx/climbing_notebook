@@ -8,14 +8,20 @@
 
   export let superForm: SuperForm<z.AnyZodObject, any>;
   export let showSubmitButton = true;
-  export let trainingCycles: TrainingCycle[];
+  export let trainingCyclesFromTrainingProgram: TrainingCycle[];
+  export let trainingCyclesFromAccount: TrainingCycle[];
   export let order: number;
 </script>
 
 <input type="hidden" name="order" value={order} />
 <NumberField name="duration" field="duration" label="Duration (weeks)" form={superForm} />
 <SelectField name="trainingCycleId" field="trainingCycleId" label="Training Cycle" form={superForm}>
-  {#each trainingCycles as c}
+  <option disabled>Cycles from this program</option>
+  {#each trainingCyclesFromTrainingProgram as c}
+    <option value={c.id}>{c.name}</option>
+  {/each}
+  <option disabled>Other cycles on your account</option>
+  {#each trainingCyclesFromAccount as c}
     <option value={c.id}>{c.name}</option>
   {/each}
 </SelectField>
