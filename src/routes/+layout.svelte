@@ -40,6 +40,15 @@
   $: countOfExercisesThatNeedMigration = data.countOfExercisesThatNeedMigration;
 
   const flash = getFlash(page);
+  flash.subscribe(($flash) => {
+    if (!$flash) return;
+
+    console.log('got a flash message!');
+
+    // Clearing the flash message could sometimes
+    // be required here to avoid double-toasting.
+    flash.set(undefined);
+  });
 
   NProgress.configure({
     minimum: 0.16,
@@ -227,7 +236,7 @@
 
   <div class="container mx-auto px-3">
     <main class="pt-8 pb-10">
-      {#if $flash}
+      <!-- {#if $flash}
         {@const variant =
           $flash.type == 'success' ? 'variant-ghost-success' : 'variant-ghost-error'}
         <aside class={`alert mb-4 ${variant}`}>
@@ -235,7 +244,7 @@
             <h3 class="h3">{$flash.message}</h3>
           </div>
         </aside>
-      {/if}
+      {/if} -->
       <slot />
     </main>
   </div>

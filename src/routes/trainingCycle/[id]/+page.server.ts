@@ -5,6 +5,7 @@ import { TrainingCycleRepo, trainingCycleSchema } from '$lib/trainingCycle';
 import { getSessionOrRedirect } from '$lib/utils';
 import type { TrainingCycle } from '@prisma/client';
 import { fail } from '@sveltejs/kit';
+import { setFlash } from 'sveltekit-flash-message/server';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -21,7 +22,11 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 };
 
 export const actions: Actions = {
-  delete: async ({ locals, params, url }) => {
+  delete: async (event) => {
+    const { locals, params, url } = event;
+    setFlash({ type: 'error', message: 'Please enter text.' }, event);
+    return fail(400);
+
     const { user } = await getSessionOrRedirect({ locals, url });
     const id = Number(params.id);
 

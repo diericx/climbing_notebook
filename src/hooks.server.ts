@@ -19,6 +19,7 @@ export const handle: Handle = async ({ event, resolve }) => {
     event.request.headers.get('content-type') === 'application/x-www-form-urlencoded';
 
   const result = await resolve(event);
+  return result;
 
   // For form actions only, if there is a redirectTo search param, on success redirect
   // to that location
