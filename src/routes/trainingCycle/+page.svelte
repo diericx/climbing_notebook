@@ -44,7 +44,7 @@
 
     <div>
       {#if trainingCycles.length == 0}
-        <p class="text-gray-400 italic">You have no training programs.</p>
+        <p class="text-gray-400 italic">You have no training cycles.</p>
       {:else}
         <div class="grid grid-cols-1 gap-4">
           {#each trainingCycles as p}
