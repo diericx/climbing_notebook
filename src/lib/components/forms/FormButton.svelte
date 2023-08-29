@@ -1,6 +1,7 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
   import { page } from '$app/stores';
+  import { updateFlash } from 'sveltekit-flash-message/client';
 
   export let action: string;
   let className: string = '';
@@ -25,7 +26,7 @@
           onSuccess();
         }
       }
-      await update();
+      updateFlash(page, update);
     };
   }}
 >
