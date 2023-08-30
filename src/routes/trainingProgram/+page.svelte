@@ -46,11 +46,11 @@
       {#each trainingPrograms as p}
         <ListItem href={`/trainingProgram/${p.id}/edit`}>
           <div slot="title">
-            <h2>
+            <div class="text-xl">
               <b>
                 {p.name}
               </b>
-            </h2>
+            </div>
           </div>
           <div slot="popup-buttons">
             <a class="btn btn-sm justify-start" href="/trainingProgram/{p.id}/edit">
