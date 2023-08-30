@@ -36,10 +36,10 @@
     </div>
 
     <p class="mb-8 text-gray-400">
-      Here you can create shared Training Cycles that will be available to all of your <a
-        class="link"
-        href="/trainingProgram">Training Programs</a
-      > as well as any widgets.
+      Training Cycles are one week long exercise plans. Here you can create shared Training Cycles
+      that will be available to all of your <a class="link" href="/trainingProgram"
+        >Training Programs</a
+      > and widgets. You can also view the Cycles you have imported from the community.
     </p>
 
     <div>

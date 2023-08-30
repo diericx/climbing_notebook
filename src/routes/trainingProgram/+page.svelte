@@ -35,7 +35,7 @@
 </div>
 
 <p class="mb-8 text-gray-400">
-  Training Programs allow you to schedule your Training Cycles for any number of weeks.
+  Training Programs allow you to schedule Training Cycles for any number of weeks.
 </p>
 
 <div>
