@@ -11,8 +11,8 @@
   import { modalStore } from '@skeletonlabs/skeleton';
   import dayjs from 'dayjs';
 
-  export let calendarEvents: CalendarEvent[];
-  export let journalEntries: JournalEntry[];
+  export let calendarEvents: CalendarEvent[] = [];
+  export let journalEntries: JournalEntry[] = [];
   export let trainingProgramActivations: Prisma.TrainingProgramActivationGetPayload<{
     include: {
       trainingProgram: {
@@ -115,14 +115,17 @@
   });
 
   let plugins = [TimeGrid, DayGrid, Interraction];
+  // Note: I don't think the 'pointer' option works so it is applied via css
   $: options = {
     view: 'dayGridMonth',
+    // Note: I don't think the 'editable' option works so we need to specify each one individually
+    eventStartEditable: false,
+    eventDurationEditable: false,
     firstDay: 1,
     eventTimeFormat: () => {
       return '';
     },
-    pointer: true,
-    events: [...journalEntryEvents, ..._calendarEvents, ...trainingProgramActivationEvents],
+    events: [...trainingProgramActivationEvents, ...journalEntryEvents, ..._calendarEvents],
     eventClick: ({ event }: { event: Event }) => {
       event.extendedProps.onClick();
     },

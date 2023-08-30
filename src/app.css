@@ -198,6 +198,9 @@ pre {
 .ec-body {
   background-color: white;
 }
+.ec-event-body {
+  cursor: pointer;
+}
 
 input[type='checkbox'][disabled] {
   @apply bg-gray-300;

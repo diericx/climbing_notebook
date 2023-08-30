@@ -11,6 +11,8 @@
   $: widgets = data.widgets;
   $: customQueryResults = data.customQueryResults;
   $: trainingCycles = data.trainingCycles;
+  $: trainingPrograms = data.trainingPrograms;
+  $: trainingProgramActivations = data.trainingProgramActivations;
 </script>
 
 <div class="mb-16">
@@ -94,6 +96,8 @@
           {journalEntries}
           {profile}
           {trainingCycles}
+          {trainingPrograms}
+          {trainingProgramActivations}
         />
       </div>
     {/each}
