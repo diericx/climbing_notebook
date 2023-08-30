@@ -2,7 +2,6 @@
   import { enhance } from '$app/forms';
   import List from '$lib/components/List.svelte';
   import ListExerciseEvent from '$lib/components/ListExerciseEvent.svelte';
-  import ListExerciseGroup from '$lib/components/ListExerciseGroup.svelte';
   import ListItem from '$lib/components/ListItem.svelte';
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import { confirmDelete } from '$lib/utils';
@@ -196,7 +195,7 @@
     {#each trainingCycle.days as day, i}
       <div class="bg-white rounded-lg px-4 pt-3 pb-3 mb-10 border">
         <div class="flex mb-4 justify-between">
-          <div class="mr-2">
+          <div class="mr-2 mb-6">
             <h2>
               <b>{daysOfTheWeek[i]}</b>
             </h2>
@@ -225,7 +224,7 @@
         </div>
 
         <div class="mb-12">
-          <div class="flex w-full justify-between items-end">
+          <div class="flex flex-wrap w-full justify-between items-end">
             <div class="font-bold text-lg">Exercise Groups</div>
 
             <form
@@ -251,21 +250,48 @@
               </button>
             </form>
           </div>
-          <ListExerciseGroup exerciseGroups={day.exerciseGroups}>
-            <div slot="buttons" let:group>
-              <FormButton
-                action={`/trainingCycle/${trainingCycle.id}/day/${day.id}/?/disconnectExerciseGroup`}
-                class="btn btn-sm variant-ringed"
-              >
-                <div slot="form">
-                  <input type="hidden" value={group.id} name="exerciseGroupId" />
-                </div>
 
-                <Icon icon="fluent:plug-disconnected-20-regular" height="18" />
-                <span class="ml-1 mr-1"> Disconnect </span>
-              </FormButton>
-            </div>
-          </ListExerciseGroup>
+          {#if day.exerciseGroups.length == 0}
+            <div class="text-gray-400 italic">No groups</div>
+          {/if}
+          <List>
+            {#each day.exerciseGroups as group}
+              <ListItem>
+                <div slot="title">
+                  <div class="flex items-center md:space-x-3">
+                    <div class="mr-2">
+                      <Icon icon="material-symbols:list-alt" width="35" />
+                    </div>
+                    <div class="flex items-center md:space-x-8">
+                      <div class="flex-1 min-w-0">
+                        <p>{group.name}</p>
+                        <p class="text-sm text-gray-400">
+                          {group.exercises.length} exercises
+                        </p>
+                      </div>
+                    </div>
+                    <div class="flex-1" />
+                    <div class="flex min-w-0 float-right space-x-2">
+                      <slot name="buttons" {group} />
+                    </div>
+                  </div>
+                </div>
+                <div slot="popup-buttons">
+                  <FormButton
+                    action={`/trainingCycle/${trainingCycle.id}/day/${day.id}/?/disconnectExerciseGroup`}
+                    class="btn btn-sm "
+                  >
+                    <div slot="form">
+                      <input type="hidden" value={group.id} name="exerciseGroupId" />
+                    </div>
+
+                    <Icon icon="fluent:plug-disconnected-20-regular" height="18" />
+                    <span class="ml-1 mr-1"> Disconnect </span>
+                  </FormButton>
+                </div>
+              </ListItem>
+            {/each}
+          </List>
         </div>
 
         <div class="flex justify-between items-end">
