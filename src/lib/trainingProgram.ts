@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
 
@@ -14,6 +14,12 @@ export const trainingProgramScheduledSlotSchema = z.object({
   trainingCycleId: z.number(),
 });
 export type TrainingProgramScheduledSlotSchema = typeof trainingProgramScheduledSlotSchema;
+
+export const trainingProgramActivationSchema = z.object({
+  startDate: z.date().default(new Date()),
+  trainingProgramId: z.string(),
+});
+export type TrainingProgramActivationSchema = typeof trainingProgramActivationSchema;
 
 export class TrainingProgramRepo {
   constructor(private readonly prisma: PrismaClient) {}
@@ -359,6 +365,78 @@ export class TrainingProgramRepo {
       ...incrementOrderOfSubsequentSlots,
       moveSlot,
     ]);
+  }
+
+  async getActivations(ownerId: string) {
+    return this.prisma.trainingProgramActivation.findMany({
+      where: {
+        ownerId,
+      },
+      include: {
+        trainingProgram: {
+          select: {
+            name: true,
+            trainingProgramScheduledSlots: {
+              select: {
+                duration: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  async newActivation(data: z.infer<TrainingProgramActivationSchema>, ownerId: string) {
+    this.getOneAndValidateOwner(data.trainingProgramId, ownerId);
+
+    return await this.prisma.trainingProgramActivation.create({
+      data: {
+        startDate: data.startDate,
+        owner: {
+          connect: {
+            id: ownerId,
+          },
+        },
+        trainingProgram: {
+          connect: {
+            id: data.trainingProgramId,
+          },
+        },
+      },
+    });
+  }
+
+  async updateActivation(
+    data: z.infer<TrainingProgramActivationSchema>,
+    activationId: string,
+    ownerId: string
+  ) {
+    this.getOneAndValidateOwner(data.trainingProgramId, ownerId);
+
+    return await this.prisma.trainingProgramActivation.update({
+      where: {
+        id: activationId,
+      },
+      data: {
+        startDate: data.startDate,
+        trainingProgram: {
+          connect: {
+            id: data.trainingProgramId,
+          },
+        },
+      },
+    });
+  }
+
+  async deleteActivation(trainingProgramId: string, activationId: string, ownerId: string) {
+    this.getOneAndValidateOwner(trainingProgramId, ownerId);
+
+    return await this.prisma.trainingProgramActivation.delete({
+      where: {
+        id: activationId,
+      },
+    });
   }
 
   async delete(id: string, ownerId: string) {

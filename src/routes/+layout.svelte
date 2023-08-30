@@ -22,6 +22,7 @@
   import FormModalTrainingCycle from '$lib/components/modals/formModals/FormModalTrainingCycle.svelte';
   import FormModalTrainingCycleDay from '$lib/components/modals/formModals/FormModalTrainingCycleDay.svelte';
   import FormModalTrainingProgram from '$lib/components/modals/formModals/FormModalTrainingProgram.svelte';
+  import FormModalTrainingProgramActivation from '$lib/components/modals/formModals/FormModalTrainingProgramActivation.svelte';
   import FormModalTrainingProgramScheduledSlot from '$lib/components/modals/formModals/FormModalTrainingProgramScheduledSlot.svelte';
   import FormModalWidget from '$lib/components/modals/formModals/FormModalWidget.svelte';
   import FormModalWidgetTemplate from '$lib/components/modals/formModals/FormModalWidgetTemplate.svelte';
@@ -70,6 +71,7 @@
     formModalExercise: { ref: FormModalExercise },
     formModalTrainingProgram: { ref: FormModalTrainingProgram },
     formModalTrainingProgramScheduledSlot: { ref: FormModalTrainingProgramScheduledSlot },
+    formModalTrainingProgramActivation: { ref: FormModalTrainingProgramActivation },
     modalCalendarEvent: { ref: ModalCalendarEvent },
     modalJournalEntry: { ref: ModalJournalEntry },
     modalShareTrainingCycle: { ref: ModalShareTrainingCycle },
@@ -94,9 +96,10 @@
     {
       title: 'Training',
       children: [
-        { title: 'Exercise Log', url: '/exerciseEvent' },
-        { title: 'Training Programs', url: '/trainingProgram' },
         { title: 'Training Cycles', url: '/trainingCycle' },
+        { title: 'Training Programs', url: '/trainingProgram' },
+        { title: 'Training Program Scheduler', url: '/trainingProgramScheduler' },
+        { title: 'Exercise Log', url: '/exerciseEvent' },
         { title: 'Journal', url: '/journalEntry' },
       ],
     },
@@ -185,7 +188,7 @@
                 </div>
               </button>
               <!--Create the pop up-->
-              <div class="card w-48 shadow-xl py-2 z-50" data-popup={item.title}>
+              <div class="card w-48 min-w-min shadow-xl py-2 z-50" data-popup={item.title}>
                 <nav class="list-nav">
                   <ul>
                     {#each item.children as child}

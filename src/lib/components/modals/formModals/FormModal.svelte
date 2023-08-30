@@ -1,4 +1,8 @@
 <script lang="ts">
+  import { confirmDelete } from '$lib/utils';
+
+  import FormButton from '$lib/components/forms/FormButton.svelte';
+
   import type { ZodValidation } from 'sveltekit-superforms';
 
   import { modalStore } from '@skeletonlabs/skeleton';
@@ -9,7 +13,16 @@
   export let schema: ZodValidation<T>;
 
   let meta = $modalStore[0]?.meta || {};
-  const { title, description, action, data, debug, formProps } = meta;
+  const {
+    title,
+    description,
+    action,
+    data,
+    debug,
+    formProps,
+    showDeleteButton,
+    deleteButtonAction,
+  } = meta;
 </script>
 
 <div style="max-height: 90vh" class="card w-modal">
@@ -39,6 +52,19 @@
             modalStore.close();
           }}>Cancel</button
         >
+        {#if showDeleteButton}
+          <FormButton
+            action={deleteButtonAction}
+            class="btn variant-filled"
+            onSuccess={() => {
+              modalStore.clear();
+            }}
+            onClick={confirmDelete}
+          >
+            <span class="ml-1 mr-1"> Delete </span>
+          </FormButton>
+        {/if}
+        <slot name="buttons" />
         <SubmitButton {superForm} />
       </footer>
     </Form>

@@ -168,6 +168,8 @@ model TrainingProgramActivation {
   startDate         DateTime        @default(now()) @map("start_date")
   trainingProgramId String          @map("training_program_id")
   trainingProgram   TrainingProgram @relation(fields: [trainingProgramId], references: [id], onDelete: Cascade)
+  ownerId           String          @map("owner_id")
+  owner             AuthUser        @relation(fields: [ownerId], references: [id])
 
   @@map("training_program_activation")
 }
@@ -339,21 +341,22 @@ model AuthUser {
   username  String   @unique @db.Citext
   email     String   @unique
 
-  auth_session      AuthSession[]
-  auth_key          AuthKey[]
-  journalEntry      JournalEntry[]
-  exerciseEvents    ExerciseEvent[]
-  profile           Profile?
-  trainingCycle     TrainingCycle[]
-  exerciseGroup     ExerciseGroup[]
-  metric            Metric[]
-  calendarEvent     CalendarEvent[]
-  AuthPasswordReset AuthPasswordReset[]
-  Project           Project[]
-  ProjectSession    ProjectSession[]
-  Exercise          Exercise[]
-  Widget            Widget[]
-  TrainingProgram   TrainingProgram[]
+  auth_session              AuthSession[]
+  auth_key                  AuthKey[]
+  journalEntry              JournalEntry[]
+  exerciseEvents            ExerciseEvent[]
+  profile                   Profile?
+  trainingCycle             TrainingCycle[]
+  exerciseGroup             ExerciseGroup[]
+  metric                    Metric[]
+  calendarEvent             CalendarEvent[]
+  AuthPasswordReset         AuthPasswordReset[]
+  Project                   Project[]
+  ProjectSession            ProjectSession[]
+  Exercise                  Exercise[]
+  Widget                    Widget[]
+  TrainingProgram           TrainingProgram[]
+  TrainingProgramActivation TrainingProgramActivation[]
 
   @@map("user")
 }

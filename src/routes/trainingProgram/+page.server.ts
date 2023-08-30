@@ -1,6 +1,10 @@
 import { prisma } from '$lib/prisma';
 import { ProfileRepo } from '$lib/profile';
-import { TrainingProgramRepo, trainingProgramSchema } from '$lib/trainingProgram';
+import {
+  trainingProgramActivationSchema,
+  TrainingProgramRepo,
+  trainingProgramSchema,
+} from '$lib/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
@@ -31,6 +35,20 @@ export const actions: Actions = {
 
     const repo = new TrainingProgramRepo(prisma);
     await repo.new(form.data, user?.userId);
+
+    return { form };
+  },
+
+  newActivation: async ({ locals, request, url }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+    const form = await superValidate(request, trainingProgramActivationSchema);
+
+    if (!form.valid) {
+      return fail(400, { form });
+    }
+
+    const repo = new TrainingProgramRepo(prisma);
+    await repo.newActivation(form.data, user?.userId);
 
     return { form };
   },
