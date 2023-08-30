@@ -6,7 +6,10 @@
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import { modalStore } from '@skeletonlabs/skeleton';
+  import dayjs from 'dayjs';
+  import localizedFormat from 'dayjs/plugin/localizedFormat';
   import type { PageData } from './$types';
+  dayjs.extend(localizedFormat);
 
   export let data: PageData;
 
@@ -44,6 +47,10 @@
   {:else}
     <List>
       {#each trainingPrograms as p}
+        {@const durationWeeks = p.trainingProgramScheduledSlots.reduce(
+          (acc, slot) => acc + slot.duration,
+          0
+        )}
         <ListItem href={`/trainingProgram/${p.id}/edit`}>
           <div slot="title">
             <div class="text-xl">
@@ -63,6 +70,14 @@
             >
               <span> Delete </span>
             </FormButton>
+          </div>
+          <div slot="content" class="text-gray-400">
+            <div>
+              Created {dayjs(p.createdAt).format('L')}
+            </div>
+            <div>
+              {durationWeeks} week{durationWeeks > 0 ? 's' : ''}
+            </div>
           </div>
         </ListItem>
       {/each}

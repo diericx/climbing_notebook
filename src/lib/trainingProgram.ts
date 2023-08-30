@@ -75,6 +75,7 @@ export class TrainingProgramRepo {
         createdAt: 'desc',
       },
       include: {
+        trainingProgramScheduledSlots: true,
         trainingCycles: true,
         trainingProgramActivations: true,
       },
