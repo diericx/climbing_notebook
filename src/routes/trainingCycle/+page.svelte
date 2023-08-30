@@ -85,7 +85,7 @@
                 {#if doesTrainingCycleHaveLegacyExercises(p)}
                   <section class="p-4">
                     <p class="text-red-500">
-                      Contains legacy exercises. Edit the exercises in this program to migrate.
+                      Contains legacy exercises. Edit the exercises in this cycle to migrate.
                     </p>
                   </section>
                 {/if}

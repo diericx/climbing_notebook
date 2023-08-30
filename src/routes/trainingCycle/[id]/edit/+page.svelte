@@ -78,7 +78,7 @@
                 meta: {
                   data: trainingCycle,
                   action: `/trainingCycle/${trainingCycle.id}?/edit`,
-                  title: 'Edit Training Program',
+                  title: 'Edit Training Cycle',
                 },
               })}
           >
