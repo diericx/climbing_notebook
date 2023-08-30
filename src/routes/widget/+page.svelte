@@ -28,7 +28,7 @@
 </script>
 
 <div class="mb-7">
-  <div class="flex justify-between">
+  <div class="flex flex-wrap justify-between">
     <h1>Community Widgets</h1>
 
     <button

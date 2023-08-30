@@ -16,7 +16,7 @@
   $: isOwner = widget.ownerId == user.userId;
 </script>
 
-<div class="flex justify-between">
+<div class="flex flex-wrap justify-between">
   <div>
     <h1 class="font-bold">{widget.name}</h1>
   </div>
