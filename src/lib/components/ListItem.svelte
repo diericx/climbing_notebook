@@ -23,7 +23,7 @@
           <button
             class="btn !bg-transparent justify-between"
             use:popup={{
-              event: 'focus-click',
+              event: 'click',
               target: id,
               placement: 'bottom-end',
             }}
@@ -43,11 +43,11 @@
   </a>
 </div>
 
-<div {id} class="card shadow-xl py-2" data-popup={id}>
-  <nav class="list-nav">
+<div {id} data-popup={id}>
+  <nav class="list-nav card shadow-xl py-2 relative">
     <ul>
       <slot name="popup-buttons" />
     </ul>
   </nav>
-  <div class="arrow bg-surface-100-800-token" />
+  <div class="arrow bg-white border" />
 </div>
