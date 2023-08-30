@@ -7,7 +7,8 @@ import {
 } from '$lib/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms/server';
+import dayjs from 'dayjs';
+import { setError, superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
@@ -45,6 +46,10 @@ export const actions: Actions = {
 
     if (!form.valid) {
       return fail(400, { form });
+    }
+
+    if (dayjs(form.data.startDate).day() > 1) {
+      return setError(form, 'startDate', 'Start Date must be on a Monday or Sunday');
     }
 
     const repo = new TrainingProgramRepo(prisma);

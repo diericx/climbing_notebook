@@ -2,7 +2,8 @@ import { prisma } from '$lib/prisma';
 import { trainingProgramActivationSchema, TrainingProgramRepo } from '$lib/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms/server';
+import dayjs from 'dayjs';
+import { setError, superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params, url }) => {
@@ -28,7 +29,7 @@ export const actions: Actions = {
   edit: async ({ locals, request, url, params }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
     const formData = await request.formData();
-    const id = params.id;
+    const activationId = params.activationId;
     const form = await superValidate(formData, trainingProgramActivationSchema, {
       id: formData.get('_formId')?.toString(),
     });
@@ -37,8 +38,16 @@ export const actions: Actions = {
       return fail(400, { form });
     }
 
+    if (dayjs(form.data.startDate).day() > 1) {
+      return setError(
+        form,
+        'startDate',
+        'Start Date must be on a Monday or Sunday. This is because cycles are structured around a full week.'
+      );
+    }
+
     const repo = new TrainingProgramRepo(prisma);
-    await repo.updateActivation(form.data, id, user?.userId);
+    await repo.updateActivation(form.data, activationId, user?.userId);
 
     return { form };
   },

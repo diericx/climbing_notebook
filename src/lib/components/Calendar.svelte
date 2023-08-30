@@ -100,6 +100,7 @@
             type: 'component',
             component: 'formModalTrainingProgramActivation',
             meta: {
+              action: `/trainingProgram/${a.trainingProgramId}/activation/${a.id}?/edit`,
               data: a,
               title: 'Edit Scheduled Program',
               showDeleteButton: true,
