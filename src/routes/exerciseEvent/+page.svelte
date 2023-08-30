@@ -37,9 +37,11 @@
   <div>
     {#if !activeTrainingCycle}
       <p class="text-gray-400">
-        You don't have an active training program! Go to the <a class="link" href="/trainingCycle"
-          >Training Programs</a
-        > page to create and set one.
+        You don't have an active training program or cycle! You can activate individual week long
+        cycles from the
+        <a class="link" href="/trainingCycle"> Training Cycle </a> page, or you can create a
+        <a class="link" href="/trainingProgram">Training Program</a> to schedule multiple week long training
+        cycles.
       </p>
     {:else}
       <WeeklyCalendar

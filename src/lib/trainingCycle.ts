@@ -371,11 +371,14 @@ export class TrainingCycleRepo {
     exerciseGroupId: number,
     ownerId: string
   ) {
-    const trainingCycle = await this.getOneAndValidateOwner(exerciseGroup.id, ownerId);
+    const trainingCycle = await this.getOneAndValidateOwner(trainingCycleId, ownerId);
 
     // Group names must be unique
     trainingCycle.exerciseGroups.forEach((g) => {
-      if (exerciseGroup.name.toLocaleLowerCase() == g.name.toLocaleLowerCase()) {
+      if (
+        g.id != exerciseGroupId &&
+        exerciseGroup.name.toLocaleLowerCase() == g.name.toLocaleLowerCase()
+      ) {
         throw new APIError('INVALID_INPUT', 'Group with that name already exists.');
       }
     });
