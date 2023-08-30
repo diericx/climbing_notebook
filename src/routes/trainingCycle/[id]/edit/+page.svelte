@@ -152,7 +152,7 @@
               <span> Delete </span>
             </FormButton>
           </div>
-          <div slot="content">
+          <div slot="content" class="mt-8">
             <div class="flex w-full items-center mb-2 mt-4">
               <span class="items-end text-lg font-light">Exercises</span>
               <div class="flex-1" />

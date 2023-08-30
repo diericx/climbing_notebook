@@ -127,11 +127,13 @@
   </div>
 </div>
 
-<div style="z-index: 99" class="card p-3" data-popup="popupHover">
-  <p class="text-sm text-gray-500">
-    This button not log any data, it only controls the UI.
-    <br />
-    Use the "Complete" button below to log data from this exercise.
-  </p>
-  <div class="arrow bg-surface-100-800-token" />
+<div data-popup="popupHover">
+  <div class="z-50 card p-3">
+    <p class="text-sm text-gray-500">
+      This button not log any data, it only controls the UI.
+      <br />
+      Use the "Complete" button below to log data from this exercise.
+    </p>
+  </div>
+  <div class="arrow bg-white border" />
 </div>

@@ -49,7 +49,7 @@
               widget.owner.id == user.userId ? '' : 'hidden'
             }`}
             use:popup={{
-              event: 'focus-click',
+              event: 'click',
               target: widget.id,
               placement: 'bottom-end',
             }}
@@ -160,5 +160,5 @@
       </li>
     </ul>
   </nav>
-  <div class="arrow bg-surface-100-800-token" />
+  <div class="arrow bg-white border" />
 </div>

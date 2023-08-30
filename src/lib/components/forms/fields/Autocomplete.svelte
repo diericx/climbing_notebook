@@ -19,7 +19,7 @@
 
   let searchValue = '';
   let popupSettings: PopupSettings = {
-    event: 'focus-click',
+    event: 'click',
     target: 'popupAutocomplete',
     placement: 'bottom',
   };

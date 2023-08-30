@@ -71,7 +71,7 @@
 
       <div slot="popup-buttons">
         <button
-          class="btn btn-sm"
+          class="btn btn-sm w-full justify-start"
           on:click={() =>
             modalStore.trigger({
               type: 'component',
@@ -93,7 +93,7 @@
         </button>
         <FormButton
           action={`/exerciseEvent/${exerciseEvent.id}?/delete`}
-          class="btn btn-sm "
+          class="btn btn-sm w-full"
           onClick={confirmDelete}
         >
           <Icon icon="mdi:trash-outline" height="18" />

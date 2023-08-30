@@ -111,7 +111,7 @@
     <button
       class={`btn !bg-transparent justify-between`}
       use:popup={{
-        event: 'focus-click',
+        event: 'click',
         target: widget.id,
         placement: 'bottom-end',
       }}
@@ -186,72 +186,74 @@
   {/if}
 </div>
 
-<div class="card shadow-xl py-2 z-50" data-popup={widget.id}>
-  <nav class="list-nav">
-    <ul>
-      <li>
-        <button
-          class="btn btn-sm mr-2 w-full justify-start"
-          on:click={() =>
-            modalStore.trigger({
-              type: 'component',
-              component: 'formModalWidget',
-              meta: {
-                action: `/widget/${widget.id}?/update`,
-                title: 'Edit Widget',
-                data: widget,
-                formProps: {
-                  widget,
-                  showType: false,
-                  showSimpleFields: true,
-                  showSimpleFieldCheckBoxes: false,
-                  trainingCycles,
+<div data-popup={widget.id}>
+  <div class="card shadow-xl py-2 z-50">
+    <nav class="list-nav">
+      <ul>
+        <li>
+          <button
+            class="btn btn-sm mr-2 w-full justify-start"
+            on:click={() =>
+              modalStore.trigger({
+                type: 'component',
+                component: 'formModalWidget',
+                meta: {
+                  action: `/widget/${widget.id}?/update`,
+                  title: 'Edit Widget',
+                  data: widget,
+                  formProps: {
+                    widget,
+                    showType: false,
+                    showSimpleFields: true,
+                    showSimpleFieldCheckBoxes: false,
+                    trainingCycles,
+                  },
                 },
-              },
-            })}
-        >
-          <Icon icon="material-symbols:edit-outline" height="18" />
-          <span>Edit</span>
-        </button>
-      </li>
-      <li>
-        <div>
-          <a class="btn btn-sm flex justify-start" href={`/widget/${widget.id}/edit`}>
+              })}
+          >
             <Icon icon="material-symbols:edit-outline" height="18" />
-            <span>Advanced Editor</span>
-          </a>
-        </div>
-      </li>
-      <li>
-        <button
-          class="btn btn-sm w-full justify-start"
-          on:click={() =>
-            modalStore.trigger({
-              type: 'component',
-              component: 'formModalWidgetTemplate',
-              meta: {
-                action: `/widget/${widget.id}?/newTemplate&redirectTo=/widget`,
-                title: 'New Community Widget Template',
-                description:
-                  'To share widgets you create a Community Widget which will be a duplicate of this one on your dashboard.',
-              },
-            })}
-        >
-          <Icon icon="material-symbols:share" height="18" />
-          <span>Share Widget</span>
-        </button>
-      </li>
-      <li>
-        <FormButton
-          action={`/widget/${widget.id}?/delete`}
-          class="btn btn-sm w-full justify-start"
-          onClick={confirmDelete}
-        >
-          <Icon icon="mdi:trash-outline" height="18" />
-          <span>Delete</span>
-        </FormButton>
-      </li>
-    </ul>
-  </nav>
-  <div class="arrow bg-surface-100-800-token" />
+            <span>Edit</span>
+          </button>
+        </li>
+        <li>
+          <div>
+            <a class="btn btn-sm flex justify-start" href={`/widget/${widget.id}/edit`}>
+              <Icon icon="material-symbols:edit-outline" height="18" />
+              <span>Advanced Editor</span>
+            </a>
+          </div>
+        </li>
+        <li>
+          <button
+            class="btn btn-sm w-full justify-start"
+            on:click={() =>
+              modalStore.trigger({
+                type: 'component',
+                component: 'formModalWidgetTemplate',
+                meta: {
+                  action: `/widget/${widget.id}?/newTemplate&redirectTo=/widget`,
+                  title: 'New Community Widget Template',
+                  description:
+                    'To share widgets you create a Community Widget which will be a duplicate of this one on your dashboard.',
+                },
+              })}
+          >
+            <Icon icon="material-symbols:share" height="18" />
+            <span>Share Widget</span>
+          </button>
+        </li>
+        <li>
+          <FormButton
+            action={`/widget/${widget.id}?/delete`}
+            class="btn btn-sm w-full justify-start"
+            onClick={confirmDelete}
+          >
+            <Icon icon="mdi:trash-outline" height="18" />
+            <span>Delete</span>
+          </FormButton>
+        </li>
+      </ul>
+    </nav>
+    <div class="arrow bg-white border" />
+  </div>
 </div>

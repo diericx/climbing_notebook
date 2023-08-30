@@ -84,7 +84,7 @@
   }
 
   let popupCombobox: PopupSettings = {
-    event: 'focus-click',
+    event: 'click',
     target: 'combobox',
     placement: 'bottom-end',
     // Close the popup when the item is clicked
@@ -198,7 +198,7 @@
                     {/each}
                   </ul>
                 </nav>
-                <div class="arrow bg-surface-100-800-token" />
+                <div class="arrow bg-white border" />
               </div>
             {:else}
               <a class="px-2 text-gray-600 hover:text-black font-light" href={item.url}>
@@ -219,7 +219,7 @@
         {/if}
       </svelte:fragment>
     </AppBar>
-    {#if countOfExercisesThatNeedMigration > 0}
+    {#if countOfExercisesThatNeedMigration !== undefined && countOfExercisesThatNeedMigration > 0}
       <div class="bg-green-300 w-full text-center py-2 px-8 text-opacity-30">
         A new exercise system has been implemented. Please edit your exercises to migrate.
         <br />
@@ -256,5 +256,5 @@
       </li>
     </ul>
   </nav>
-  <div class="arrow bg-surface-100-800-token" />
+  <div class="arrow bg-white border" />
 </div>
