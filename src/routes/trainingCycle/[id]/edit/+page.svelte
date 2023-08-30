@@ -1,7 +1,9 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
+  import List from '$lib/components/List.svelte';
   import ListExerciseEvent from '$lib/components/ListExerciseEvent.svelte';
   import ListExerciseGroup from '$lib/components/ListExerciseGroup.svelte';
+  import ListItem from '$lib/components/ListItem.svelte';
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
@@ -111,76 +113,77 @@
     </div>
     <hr class="mb-2" />
 
-    {#each trainingCycle.exerciseGroups as group}
-      <div class="rounded-lg px-4 pb-4 pt-3 border mb-4 bg-white">
-        <div class="flex items-center">
-          <div class="flex mb-7 w-full justify-between">
-            <h2 class="font-bold">{group.name}</h2>
-
-            <div class="flex space-x-2">
-              <button
-                class="btn btn-sm variant-ringed"
-                on:click={() =>
-                  modalStore.trigger({
-                    type: 'component',
-                    component: 'formModalExerciseGroup',
-                    meta: {
-                      data: group,
-                      action: `/trainingCycle/${trainingCycle.id}/group/${group.id}?/edit`,
-                      title: 'Edit Group',
-                    },
-                  })}
-              >
-                <Icon icon="material-symbols:edit-outline" height="18" />
-                <span>Edit</span>
-              </button>
-              <FormButton
-                action={`/trainingCycle/${trainingCycle.id}/group/${group.id}?/delete`}
-                onClick={confirmDelete}
-                class="btn btn-sm variant-ringed"
-              >
-                <div slot="form">
-                  <input type="hidden" name="exerciseGroupId" value={group.id} />
-                </div>
-                <Icon icon="mdi:trash-outline" height="18" />
-                <span class="ml-1 mr-1"> Delete </span>
-              </FormButton>
+    <List>
+      {#each trainingCycle.exerciseGroups as group}
+        <ListItem>
+          <div slot="title">
+            <div class="text-xl">
+              <b>
+                {group.name}
+              </b>
             </div>
           </div>
-          <div />
-        </div>
-
-        <div>
-          <div class="flex w-full items-center mb-2">
-            <span class="items-end text-lg font-light">Exercises</span>
-            <div class="flex-1" />
+          <div slot="popup-buttons">
             <button
-              class="btn btn-sm variant-filled"
+              class="btn btn-sm w-full justify-start"
               on:click={() =>
                 modalStore.trigger({
                   type: 'component',
-                  component: 'formModalExerciseEvent',
+                  component: 'formModalExerciseGroup',
                   meta: {
-                    action: `/trainingCycle/${trainingCycle.id}/group/${group.id}?/newExerciseEvent`,
-                    title: 'Add Exercise',
-                    formProps: {
-                      showDate: false,
-                      showDifficulty: false,
-                      showMigrationOption: false,
-                      exercises,
-                    },
+                    data: group,
+                    action: `/trainingCycle/${trainingCycle.id}/group/${group.id}?/edit`,
+                    title: 'Edit Group',
                   },
                 })}
             >
-              <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-              <span>Add Exercise</span>
+              <Icon icon="material-symbols:edit-outline" height="18" />
+              <span>Edit</span>
             </button>
+            <FormButton
+              action={`/trainingCycle/${trainingCycle.id}/group/${group.id}?/delete`}
+              onClick={confirmDelete}
+              class="btn-sm"
+            >
+              <div slot="form">
+                <input type="hidden" name="exerciseGroupId" value={group.id} />
+              </div>
+              <Icon icon="mdi:trash-outline" height="18" />
+              <span> Delete </span>
+            </FormButton>
           </div>
+          <div slot="content">
+            <div class="flex w-full items-center mb-2 mt-4">
+              <span class="items-end text-lg font-light">Exercises</span>
+              <div class="flex-1" />
+              <button
+                class="btn btn-sm variant-filled"
+                on:click={() =>
+                  modalStore.trigger({
+                    type: 'component',
+                    component: 'formModalExerciseEvent',
+                    meta: {
+                      action: `/trainingCycle/${trainingCycle.id}/group/${group.id}?/newExerciseEvent`,
+                      title: 'Add Exercise',
+                      formProps: {
+                        showDate: false,
+                        showDifficulty: false,
+                        showMigrationOption: false,
+                        exercises,
+                      },
+                    },
+                  })}
+              >
+                <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
+                <span>Add Exercise</span>
+              </button>
+            </div>
 
-          <ListExerciseEvent {exercises} exerciseEvents={group.exercises} showDate={false} />
-        </div>
-      </div>
-    {/each}
+            <ListExerciseEvent {exercises} exerciseEvents={group.exercises} showDate={false} />
+          </div>
+        </ListItem>
+      {/each}
+    </List>
   </div>
 
   <div class="mb-2">

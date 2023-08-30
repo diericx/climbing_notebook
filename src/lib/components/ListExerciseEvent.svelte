@@ -3,6 +3,8 @@
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
+  import List from './List.svelte';
+  import ListItem from './ListItem.svelte';
   import FormButton from './forms/FormButton.svelte';
 
   type ExerciseEvent = Prisma.ExerciseEventGetPayload<{
@@ -33,10 +35,10 @@
   export let showActionBtns = true;
 </script>
 
-<ul class="list space-y-2">
+<List>
   {#each exerciseEvents as exerciseEvent}
-    <li class="card bg-white py-3 px-2 md:px-4">
-      <div class="flex items-center md:space-x-3">
+    <ListItem showElipses={showActionBtns}>
+      <div slot="title" class="flex items-center md:space-x-3">
         <div class="mr-2">
           <Icon icon="healthicons:exercise-weights" width="35" />
         </div>
@@ -45,7 +47,6 @@
             {new Date(exerciseEvent.date || '').toLocaleDateString('en-US')}
           </div>
         {/if}
-
         <div class="flex-1 min-w-0">
           <p>{exerciseEvent.exercise?.name || exerciseEvent.name}</p>
           {#if exerciseEvent.exerciseId == null}
@@ -66,45 +67,43 @@
             {/if}
           </p>
         </div>
-        <div class="flex min-w-0 float-right space-x-2">
-          {#if showActionBtns}
-            <slot name="buttons" {exerciseEvent}>
-              <button
-                class="btn btn-sm variant-ringed"
-                on:click={() =>
-                  modalStore.trigger({
-                    type: 'component',
-                    component: 'formModalExerciseEvent',
-                    meta: {
-                      data: exerciseEvent,
-                      action: `/exerciseEvent/${exerciseEvent.id}?/edit`,
-                      title: 'Edit Exercise Event',
-                      formProps: {
-                        showDate,
-                        showDifficulty,
-                        exercises,
-                      },
-                    },
-                  })}
-              >
-                <Icon icon="material-symbols:edit-outline" height="18" />
-                <span>Edit</span>
-              </button>
-              <FormButton
-                action={`/exerciseEvent/${exerciseEvent.id}?/delete`}
-                class="btn btn-sm variant-ringed"
-                onClick={confirmDelete}
-              >
-                <Icon icon="mdi:trash-outline" height="18" />
-                <span class="ml-1 mr-1"> Delete </span>
-              </FormButton>
-            </slot>
-          {/if}
-        </div>
       </div>
-    </li>
+
+      <div slot="popup-buttons">
+        <button
+          class="btn btn-sm"
+          on:click={() =>
+            modalStore.trigger({
+              type: 'component',
+              component: 'formModalExerciseEvent',
+              meta: {
+                data: exerciseEvent,
+                action: `/exerciseEvent/${exerciseEvent.id}?/edit`,
+                title: 'Edit Exercise Event',
+                formProps: {
+                  showDate,
+                  showDifficulty,
+                  exercises,
+                },
+              },
+            })}
+        >
+          <Icon icon="material-symbols:edit-outline" height="18" />
+          <span>Edit</span>
+        </button>
+        <FormButton
+          action={`/exerciseEvent/${exerciseEvent.id}?/delete`}
+          class="btn btn-sm "
+          onClick={confirmDelete}
+        >
+          <Icon icon="mdi:trash-outline" height="18" />
+          <span class="ml-1 mr-1"> Delete </span>
+        </FormButton>
+      </div>
+    </ListItem>
   {/each}
-</ul>
+</List>
+
 {#if exerciseEvents.length == 0}
   <span class="italic text-gray-400">No exercises</span>
 {/if}

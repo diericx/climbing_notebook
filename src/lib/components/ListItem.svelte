@@ -8,7 +8,7 @@
   export let showElipses = true;
 </script>
 
-<div class={`block card ${href === '' ? '' : 'card-hover'}`}>
+<div class={`block bg-white rounded-md ${href === '' ? '' : 'card-hover'} border`}>
   <a
     style="height: 100%;"
     class="flex flex-col justify-between p-4"
