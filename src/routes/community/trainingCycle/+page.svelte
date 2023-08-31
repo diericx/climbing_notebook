@@ -77,7 +77,7 @@
               </div>
               <div slot="content" class="text-gray-400">
                 <div>
-                  {p.description}
+                  {p.description || ''}
                 </div>
                 <hr class="border-gray-200 divider my-4 mb-2" />
                 <div class="flex justify-between">

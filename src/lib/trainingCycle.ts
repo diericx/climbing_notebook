@@ -8,7 +8,9 @@ export const trainingCycleSchema = z.object({
   name: z.string().min(1),
   isPublic: z.boolean().optional().default(false),
 });
+export const trainingCyclePartialSchema = trainingCycleSchema.partial();
 export type TrainingCycleSchema = typeof trainingCycleSchema;
+export type TrainingCyclePartialSchema = typeof trainingCyclePartialSchema;
 
 export const trainingCycleTemplateSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -104,11 +106,11 @@ export class TrainingCycleRepo {
   async duplicate(
     id: number,
     ownerId: string,
-    data?: { name?: string; isTemplate?: boolean; description?: string; parentId?: number }
+    data?: { name?: string; isPublic?: boolean; description?: string; parentId?: number }
   ) {
     const program = await this.getOne(id);
 
-    if (!program.isTemplate && program.ownerId != ownerId) {
+    if (!program.isPublic && program.ownerId != ownerId) {
       throw new APIError(
         'INVALID_PERMISSIONS',
         'You can only duplicate template cycles or cycles you own'
@@ -120,7 +122,7 @@ export class TrainingCycleRepo {
       data: {
         name: data?.name || program.name + ' Duplicate',
         ownerId,
-        isTemplate: data?.isTemplate || false,
+        isPublic: data?.isPublic || false,
         description: data?.description || null,
         parentId: data?.parentId || null,
         days: {
@@ -314,7 +316,7 @@ export class TrainingCycleRepo {
     });
   }
 
-  async update(data: z.infer<TrainingCycleSchema>, id: number, ownerId: string) {
+  async update(data: z.infer<TrainingCyclePartialSchema>, id: number, ownerId: string) {
     // Get current training program
     const trainingCycle = await this.prisma.trainingCycle.findUnique({
       where: {
@@ -361,7 +363,7 @@ export class TrainingCycleRepo {
   // Performs same funcionality as duplicate, but also increments use count
   // of the parent
   async importTemplate(id: number, ownerId: string) {
-    await this.duplicate(id, ownerId, { isTemplate: false, parentId: id });
+    await this.duplicate(id, ownerId, { isPublic: false, parentId: id });
     await this.prisma.trainingCycle.update({
       where: {
         id,
@@ -372,22 +374,6 @@ export class TrainingCycleRepo {
         },
       },
     });
-  }
-
-  async newTemplate(data: z.infer<TrainingCycleTemplateSchema>, id: number, ownerId: string) {
-    // Validate ownership
-    await this.getOneAndValidateOwner(id, ownerId);
-
-    // Duplicate
-    const newTrainingCycle = await this.duplicate(id, ownerId, {
-      isTemplate: true,
-      name: data.name,
-      description: data.description,
-    });
-
-    // Update local obj and return
-    newTrainingCycle.isTemplate = true;
-    return newTrainingCycle;
   }
 
   async addExerciseGroup(exerciseGroup: z.infer<ExerciseGroupSchema>, id: number, ownerId: string) {

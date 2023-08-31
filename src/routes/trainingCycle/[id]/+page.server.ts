@@ -46,7 +46,7 @@ export const actions: Actions = {
   },
 
   // Same as duplicate but assumed it is being called on a template so
-  // it will set isTemplate to false and parentID
+  // it will set isPublic to false and parentID
   import: async ({ locals, url, params }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
     const id = Number(params.id);
@@ -54,6 +54,18 @@ export const actions: Actions = {
     const repo = new TrainingCycleRepo(prisma);
 
     await repo.importTemplate(id, user.userId);
+
+    return { success: true };
+  },
+
+  // Set the cycle to public
+  share: async ({ locals, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+    const id = Number(params.id);
+
+    const repo = new TrainingCycleRepo(prisma);
+
+    await repo.update({ isPublic: true }, id, user.userId);
 
     return { success: true };
   },

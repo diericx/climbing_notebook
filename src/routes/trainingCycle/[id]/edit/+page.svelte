@@ -28,6 +28,16 @@
 <svelte:window bind:scrollY />
 
 <div class="grid grid-cols-1">
+  <aside class="alert variant-ghost mb-8">
+    <Icon icon="ep:warn-triangle-filled" height="18" />
+    <div class="alert-message">
+      <p>
+        You are editing a public Training Cycle. Any changes made will be public, and will edit the
+        previously shared version.
+      </p>
+    </div>
+  </aside>
+
   <div class="mb-12 flex items-center justify-between">
     <div>
       <h1 class="font-bold inline">
@@ -35,22 +45,24 @@
       </h1>
     </div>
 
-    <div class="flex">
-      <button
-        class="btn btn-sm variant-ringed justify-start mr-2"
-        on:click={() =>
-          modalStore.trigger({
-            type: 'component',
-            component: 'modalShareTrainingCycle',
-            meta: {
-              trainingCycle,
-            },
-          })}
-      >
-        <Icon icon="mdi:share" height="18" />
-        <span>Share</span>
-      </button>
-    </div>
+    {#if !trainingCycle.isPublic && !trainingCycle.trainingProgramId}
+      <div class="flex">
+        <button
+          class="btn btn-sm variant-ringed justify-start mr-2"
+          on:click={() =>
+            modalStore.trigger({
+              type: 'component',
+              component: 'modalShareTrainingCycle',
+              meta: {
+                trainingCycle,
+              },
+            })}
+        >
+          <Icon icon="mdi:share" height="18" />
+          <span>Share</span>
+        </button>
+      </div>
+    {/if}
   </div>
 
   <div class="mb-10">

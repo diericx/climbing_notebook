@@ -10,7 +10,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
   const trainingCycles = await trainingCycleRepo.get(user?.userId, {
     trainingProgramId: null,
-    isTemplate: true,
+    isPublic: true,
   });
 
   return {

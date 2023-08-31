@@ -7,21 +7,10 @@
 
 <div class="card w-modal">
   <header class="card-header">
-    <h2 class="font-bold">Share Training Program</h2>
+    <h2 class="font-bold">Training Program Shared</h2>
   </header>
   <section class="p-4">
-    {#if !trainingCycle.isPublic}
-      <div
-        class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-2"
-        role="alert"
-      >
-        <span class="block sm:inline"
-          >This program is not public and the link below will not work for other users until it is
-          made public.</span
-        >
-      </div>
-    {/if}
-    <p class="mb-2">Here is the public link to your training program.</p>
+    <p class="mb-4">This Training Program is now public. You can view it at the link below!</p>
     <div class="flex">
       <div class="border rounded p-2 w-fit bg-gray-100">
         {publicUrl}

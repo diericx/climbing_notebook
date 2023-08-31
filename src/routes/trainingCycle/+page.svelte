@@ -72,23 +72,22 @@
                   <Icon icon="material-symbols:control-point-duplicate" height="18" />
                   <span> Duplicate </span>
                 </FormButton>
-                <button
+                <FormButton
+                  action={`/trainingCycle/${p.id}?/share`}
                   class="btn btn-sm w-full justify-start"
-                  on:click={() =>
+                  onSuccess={() => {
                     modalStore.trigger({
                       type: 'component',
-                      component: 'formModalTrainingCycleTemplate',
+                      component: 'modalShareTrainingCycle',
                       meta: {
-                        action: `/trainingCycle/${p.id}?/newTemplate&redirectTo=/community/trainingCycle`,
-                        title: 'New Community Training Cycle',
-                        description:
-                          'To share Training Cycles you create a Community Training Cycle which will be a duplicate of this one.',
+                        trainingCycle: p,
                       },
-                    })}
+                    });
+                  }}
                 >
                   <Icon icon="material-symbols:share" height="18" />
-                  <span>Share</span>
-                </button>
+                  <span> Share </span>
+                </FormButton>
                 <FormButton
                   action={`/trainingCycle/${p.id}?/delete`}
                   class="btn btn-sm w-full justify-start"
@@ -99,6 +98,9 @@
                 </FormButton>
               </div>
               <div slot="content" class="text-gray-400">
+                {#if p.isPublic}
+                  <div class="text-green-400">Public</div>
+                {/if}
                 <div>
                   Created {dayjs(p.createdAt).format('L')}
                 </div>

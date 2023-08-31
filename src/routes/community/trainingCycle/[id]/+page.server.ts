@@ -11,8 +11,8 @@ export const load: PageServerLoad = async ({ locals, url, params }) => {
   const id = params.id;
 
   const trainingCycle = await trainingCycleRepo.getOne(Number(id));
-  if (!trainingCycle.isTemplate) {
-    throw new APIError('INVALID_PERMISSIONS', 'This Training Cycle is not a template');
+  if (!trainingCycle.isPublic) {
+    throw new APIError('INVALID_PERMISSIONS', 'This Training Cycle is not public');
   }
 
   return {
