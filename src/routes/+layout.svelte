@@ -21,6 +21,7 @@
   import FormModalProjectSession from '$lib/components/modals/formModals/FormModalProjectSession.svelte';
   import FormModalTrainingCycle from '$lib/components/modals/formModals/FormModalTrainingCycle.svelte';
   import FormModalTrainingCycleDay from '$lib/components/modals/formModals/FormModalTrainingCycleDay.svelte';
+  import FormModalTrainingCycleTemplate from '$lib/components/modals/formModals/FormModalTrainingCycleTemplate.svelte';
   import FormModalTrainingProgram from '$lib/components/modals/formModals/FormModalTrainingProgram.svelte';
   import FormModalTrainingProgramActivation from '$lib/components/modals/formModals/FormModalTrainingProgramActivation.svelte';
   import FormModalTrainingProgramScheduledSlot from '$lib/components/modals/formModals/FormModalTrainingProgramScheduledSlot.svelte';
@@ -72,6 +73,7 @@
     formModalTrainingProgram: { ref: FormModalTrainingProgram },
     formModalTrainingProgramScheduledSlot: { ref: FormModalTrainingProgramScheduledSlot },
     formModalTrainingProgramActivation: { ref: FormModalTrainingProgramActivation },
+    formModalTrainingCycleTemplate: { ref: FormModalTrainingCycleTemplate },
     modalCalendarEvent: { ref: ModalCalendarEvent },
     modalJournalEntry: { ref: ModalJournalEntry },
     modalShareTrainingCycle: { ref: ModalShareTrainingCycle },
@@ -106,7 +108,10 @@
     { title: 'Climbing', children: [{ title: 'Project Notes', url: '/project' }] },
     {
       title: 'Community Marketplace',
-      children: [{ title: 'Widgets', url: '/widget' }],
+      children: [
+        { title: 'Widgets', url: '/widget' },
+        { title: 'Training Cycles', url: '/community/trainingCycle' },
+      ],
     },
     { title: 'Feedback', url: '/feedback' },
   ];

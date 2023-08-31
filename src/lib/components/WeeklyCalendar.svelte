@@ -2,9 +2,7 @@
   import CalExerciseEvent from '$lib/components/WeeklyCalendarExerciseEvent.svelte';
   import { daysFromToday, getDayWeekStartsMonday } from '$lib/utils';
   import type { Prisma } from '@prisma/client';
-  import type { User } from 'lucia';
   import { onMount } from 'svelte';
-  import FormButton from './forms/FormButton.svelte';
 
   type TrainingCycle = Prisma.TrainingCycleGetPayload<{
     include: {
@@ -41,8 +39,6 @@
   export let shouldScrollIntoView = false;
   export let disableActionButtons = false;
   export let showMarkedCompleted = true;
-  export let showDuplicateBtn = false;
-  export let user: User | undefined;
   export let exercises:
     | Prisma.ExerciseGetPayload<{
         select: {
@@ -76,32 +72,6 @@
     });
   }
 </script>
-
-<div class="flex justify-between mb-3 items-end">
-  <div>
-    <h1 class="font-bold">{trainingCycle.name}</h1>
-  </div>
-
-  <div class="flex">
-    {#if showDuplicateBtn}
-      <div class="mr-2">
-        <FormButton
-          action={`/trainingCycle/${trainingCycle.id}?/duplicate&redirectTo=/trainingCycle`}
-          class="btn btn-sm variant-ringed"
-        >
-          Duplicate this program
-        </FormButton>
-      </div>
-    {/if}
-    {#if user !== null}
-      <div>
-        <a class="btn btn-sm variant-ringed" href={`/trainingCycle/${trainingCycle.id}/edit`}
-          >Edit this program</a
-        >
-      </div>
-    {/if}
-  </div>
-</div>
 
 <div class="overflow-scroll">
   <div style="width: 1500px">

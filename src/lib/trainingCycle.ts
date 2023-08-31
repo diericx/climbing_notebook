@@ -10,6 +10,12 @@ export const trainingCycleSchema = z.object({
 });
 export type TrainingCycleSchema = typeof trainingCycleSchema;
 
+export const trainingCycleTemplateSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  description: z.string().min(1, 'Description is required'),
+});
+export type TrainingCycleTemplateSchema = typeof trainingCycleTemplateSchema;
+
 export class TrainingCycleRepo {
   constructor(private readonly prisma: PrismaClient) {}
 
@@ -95,14 +101,28 @@ export class TrainingCycleRepo {
     return trainingCycle;
   }
 
-  async duplicate(id: number, ownerId: string) {
+  async duplicate(
+    id: number,
+    ownerId: string,
+    data?: { name?: string; isTemplate?: boolean; description?: string; parentId?: number }
+  ) {
     const program = await this.getOne(id);
 
+    if (!program.isTemplate && program.ownerId != ownerId) {
+      throw new APIError(
+        'INVALID_PERMISSIONS',
+        'You can only duplicate template cycles or cycles you own'
+      );
+    }
+
     // Create the new program
-    const newProgram = await this.prisma.trainingCycle.create({
+    const newCycle = await this.prisma.trainingCycle.create({
       data: {
-        name: program.name + ' Duplicate',
+        name: data?.name || program.name + ' Duplicate',
         ownerId,
+        isTemplate: data?.isTemplate || false,
+        description: data?.description || null,
+        parentId: data?.parentId || null,
         days: {
           create: Array.from(Array(7)).map((_, i) => {
             return {
@@ -156,7 +176,7 @@ export class TrainingCycleRepo {
           trainingCycleId: undefined,
           trainingCycle: {
             connect: {
-              id: newProgram.id,
+              id: newCycle.id,
             },
           },
           ownerId: undefined,
@@ -198,13 +218,13 @@ export class TrainingCycleRepo {
         if (day.exerciseGroups.find((_g) => _g.id == g.id) != undefined) {
           await this.prisma.trainingCycle.update({
             where: {
-              id: newProgram.id,
+              id: newCycle.id,
             },
             data: {
               days: {
                 update: {
                   where: {
-                    id: newProgram.days[i].id,
+                    id: newCycle.days[i].id,
                   },
                   data: {
                     exerciseGroups: {
@@ -218,6 +238,8 @@ export class TrainingCycleRepo {
         }
       }
     }
+
+    return newCycle;
   }
 
   async new(data: z.infer<TrainingCycleSchema>, ownerId: string, trainingProgramId?: string) {
@@ -250,6 +272,7 @@ export class TrainingCycleRepo {
         createdAt: 'desc',
       },
       include: {
+        owner: true,
         exerciseGroups: {
           include: {
             exercises: {
@@ -333,6 +356,38 @@ export class TrainingCycleRepo {
         id,
       },
     });
+  }
+
+  // Performs same funcionality as duplicate, but also increments use count
+  // of the parent
+  async importTemplate(id: number, ownerId: string) {
+    await this.duplicate(id, ownerId, { isTemplate: false, parentId: id });
+    await this.prisma.trainingCycle.update({
+      where: {
+        id,
+      },
+      data: {
+        useCount: {
+          increment: 1,
+        },
+      },
+    });
+  }
+
+  async newTemplate(data: z.infer<TrainingCycleTemplateSchema>, id: number, ownerId: string) {
+    // Validate ownership
+    await this.getOneAndValidateOwner(id, ownerId);
+
+    // Duplicate
+    const newTrainingCycle = await this.duplicate(id, ownerId, {
+      isTemplate: true,
+      name: data.name,
+      description: data.description,
+    });
+
+    // Update local obj and return
+    newTrainingCycle.isTemplate = true;
+    return newTrainingCycle;
   }
 
   async addExerciseGroup(exerciseGroup: z.infer<ExerciseGroupSchema>, id: number, ownerId: string) {

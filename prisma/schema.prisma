@@ -136,10 +136,15 @@ model TrainingCycleDay {
 }
 
 model TrainingProgram {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now()) @map("created_at")
-  name        String
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  name      String
+
+  // Fields for template functionality
   description String
+  isTemplate  Boolean @default(false) @map("is_template")
+  useCount    Int     @default(0) @map("use_count")
+  parentId    String? @map("parent_id")
 
   ownerId                       String                         @map("owner_id")
   owner                         AuthUser                       @relation(fields: [ownerId], references: [id])
@@ -179,6 +184,12 @@ model TrainingCycle {
   createdAt DateTime @default(now()) @map("created_at")
   name      String
   isPublic  Boolean  @default(false) @map("is_public")
+
+  // Fields for template functionality
+  isTemplate  Boolean @default(false) @map("is_template")
+  description String?
+  useCount    Int     @default(0) @map("use_count")
+  parentId    Int?    @map("parent_id")
 
   trainingProgramId String?          @map("training_program_id")
   trainingProgram   TrainingProgram? @relation(fields: [trainingProgramId], references: [id], onDelete: Cascade)

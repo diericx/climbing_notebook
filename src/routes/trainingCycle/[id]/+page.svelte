@@ -15,8 +15,22 @@
     <div class="leading-none mt-0 font-bold text-xl">{trainingCycle.owner.username}</div>
   </div>
 </div>
+<div class="flex justify-between mb-3 items-end">
+  <div>
+    <h1 class="font-bold">{trainingCycle.name}</h1>
+  </div>
+
+  <div class="flex">
+    {#if session?.user}
+      <div>
+        <a class="btn btn-sm variant-ringed" href={`/trainingCycle/${trainingCycle.id}/edit`}
+          >Edit this cycle</a
+        >
+      </div>
+    {/if}
+  </div>
+</div>
 <WeeklyCalendar
-  user={session?.user}
   {trainingCycle}
   shouldScrollIntoView={false}
   disableActionButtons={true}

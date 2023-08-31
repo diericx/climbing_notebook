@@ -44,12 +44,21 @@
         cycles.
       </p>
     {:else}
-      <WeeklyCalendar
-        {exercises}
-        {user}
-        trainingCycle={activeTrainingCycle}
-        showDuplicateBtn={false}
-      />
+      <div class="flex justify-between mb-3 items-end">
+        <div>
+          <h1 class="font-bold">{activeTrainingCycle.name}</h1>
+        </div>
+
+        <div class="flex">
+          <div>
+            <a
+              class="btn btn-sm variant-ringed"
+              href={`/trainingCycle/${activeTrainingCycle.id}/edit`}>Edit this program</a
+            >
+          </div>
+        </div>
+      </div>
+      <WeeklyCalendar {exercises} trainingCycle={activeTrainingCycle} />
     {/if}
   </div>
 </div>

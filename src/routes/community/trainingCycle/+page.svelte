@@ -4,13 +4,14 @@
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
-  import { modalStore } from '@skeletonlabs/skeleton';
+  import { Avatar, modalStore } from '@skeletonlabs/skeleton';
   import dayjs from 'dayjs';
   import localizedFormat from 'dayjs/plugin/localizedFormat';
   import type { PageData } from './$types';
   dayjs.extend(localizedFormat);
 
   export let data: PageData;
+  const { user } = data;
 
   $: trainingCycles = data.trainingCycles;
 </script>
@@ -18,7 +19,7 @@
 <div>
   <div>
     <div class="flex justify-between mb-4">
-      <h1>Training Cycles</h1>
+      <h1>Community Training Cycles</h1>
       <div>
         <button
           class="btn btn-sm variant-filled"
@@ -28,7 +29,7 @@
               component: 'formModalTrainingCycle',
               meta: {
                 action: `/trainingCycle?/new`,
-                title: 'New Training Cycle',
+                title: 'New Community Training Cycle',
               },
             })}
         >
@@ -39,19 +40,20 @@
     </div>
 
     <p class="mb-8 text-gray-400">
-      Training Cycles are one week long exercise plans. Here you can create shared Training Cycles
-      that will be available to all of your <a class="link" href="/trainingProgram"
-        >Training Programs</a
-      > and widgets. You can also view the Cycles you have imported from the community.
+      Find Training Cycles made by the community! Import them into your account to use them in your
+      own Training Programs.
     </p>
 
-    <div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
       {#if trainingCycles.length == 0}
         <p class="text-gray-400 italic">You have no training cycles.</p>
       {:else}
         <List>
           {#each trainingCycles as p}
-            <ListItem href={`/trainingCycle/${p.id}/edit`}>
+            <ListItem
+              href={`/community/trainingCycle/${p.id}`}
+              showElipses={p.ownerId == user?.userId}
+            >
               <div slot="title">
                 <div class="text-xl">
                   <b>
@@ -64,31 +66,6 @@
                   <Icon icon="material-symbols:edit-outline" height="18" />
                   <span> Edit </span>
                 </a>
-
-                <FormButton
-                  action={`/trainingCycle/${p.id}?/duplicate&redirectTo=/trainingCycle`}
-                  class="btn btn-sm w-full justify-start"
-                >
-                  <Icon icon="material-symbols:control-point-duplicate" height="18" />
-                  <span> Duplicate </span>
-                </FormButton>
-                <button
-                  class="btn btn-sm w-full justify-start"
-                  on:click={() =>
-                    modalStore.trigger({
-                      type: 'component',
-                      component: 'formModalTrainingCycleTemplate',
-                      meta: {
-                        action: `/trainingCycle/${p.id}?/newTemplate&redirectTo=/community/trainingCycle`,
-                        title: 'New Community Training Cycle',
-                        description:
-                          'To share Training Cycles you create a Community Training Cycle which will be a duplicate of this one.',
-                      },
-                    })}
-                >
-                  <Icon icon="material-symbols:share" height="18" />
-                  <span>Share</span>
-                </button>
                 <FormButton
                   action={`/trainingCycle/${p.id}?/delete`}
                   class="btn btn-sm w-full justify-start"
@@ -100,7 +77,26 @@
               </div>
               <div slot="content" class="text-gray-400">
                 <div>
-                  Created {dayjs(p.createdAt).format('L')}
+                  {p.description}
+                </div>
+                <hr class="border-gray-200 divider my-4 mb-2" />
+                <div class="flex justify-between">
+                  <div class="text-gray-600 flex items-center">
+                    <Avatar
+                      class="text-white"
+                      width="w-9"
+                      initials={p.owner.username}
+                      background="bg-primary-500"
+                    />
+                    <div class="ml-2 align-middle items-center">
+                      <div class="text-md leading-none font-bold">{p.owner.username}</div>
+                    </div>
+                  </div>
+                  <div class="text-gray-600 flex items-center">
+                    <p>
+                      Used <b>{p.useCount} time{p.useCount == 1 ? '' : 's'}</b>
+                    </p>
+                  </div>
                 </div>
               </div>
             </ListItem>
