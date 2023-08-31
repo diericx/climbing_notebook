@@ -46,22 +46,22 @@
     </div>
 
     {#if !trainingCycle.isPublic && !trainingCycle.trainingProgramId}
-      <div class="flex">
-        <button
-          class="btn btn-sm variant-ringed justify-start mr-2"
-          on:click={() =>
-            modalStore.trigger({
-              type: 'component',
-              component: 'modalShareTrainingCycle',
-              meta: {
-                trainingCycle,
-              },
-            })}
-        >
-          <Icon icon="mdi:share" height="18" />
-          <span>Share</span>
-        </button>
-      </div>
+      <FormButton
+        action={`/trainingCycle/${trainingCycle.id}?/share`}
+        class="btn btn-sm variant-outline w-full justify-start"
+        onSuccess={() => {
+          modalStore.trigger({
+            type: 'component',
+            component: 'modalShareTrainingCycle',
+            meta: {
+              trainingCycle,
+            },
+          });
+        }}
+      >
+        <Icon icon="material-symbols:share" height="18" />
+        <span> Share </span>
+      </FormButton>
     {/if}
   </div>
 
