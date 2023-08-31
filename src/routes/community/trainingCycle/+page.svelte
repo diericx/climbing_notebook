@@ -4,7 +4,7 @@
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
-  import { Avatar, modalStore } from '@skeletonlabs/skeleton';
+  import { Avatar } from '@skeletonlabs/skeleton';
   import dayjs from 'dayjs';
   import localizedFormat from 'dayjs/plugin/localizedFormat';
   import type { PageData } from './$types';
@@ -18,26 +18,7 @@
 
 <div>
   <div>
-    <div class="flex justify-between mb-4">
-      <h1>Community Training Cycles</h1>
-      <div>
-        <button
-          class="btn btn-sm variant-filled"
-          on:click={() =>
-            modalStore.trigger({
-              type: 'component',
-              component: 'formModalTrainingCycle',
-              meta: {
-                action: `/trainingCycle?/new`,
-                title: 'New Community Training Cycle',
-              },
-            })}
-        >
-          <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-          <span>New Cycle</span>
-        </button>
-      </div>
-    </div>
+    <h1>Community Training Cycles</h1>
 
     <p class="mb-8 text-gray-400">
       Find Training Cycles made by the community! Import them into your account to use them in your
