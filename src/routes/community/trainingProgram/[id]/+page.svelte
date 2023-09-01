@@ -78,6 +78,9 @@
                           <div class="text-xl font-bold">
                             {s.trainingCycles[0].name}
                           </div>
+                          <div class="text-gray-400">
+                            {s.trainingCycles[0].description || ''}
+                          </div>
                           {s.duration} week{s.duration == 1 ? '' : 's'}
                         </div>
                       </svelte:fragment>

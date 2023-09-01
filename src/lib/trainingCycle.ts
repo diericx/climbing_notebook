@@ -6,6 +6,7 @@ import type { TrainingCycleDaySchema } from './trainingCycleDay';
 
 export const trainingCycleSchema = z.object({
   name: z.string().min(1),
+  description: z.string().nullish(),
   isPublic: z.boolean().optional().default(false),
 });
 export const trainingCyclePartialSchema = trainingCycleSchema.partial();

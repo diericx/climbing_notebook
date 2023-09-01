@@ -79,6 +79,10 @@
             {trainingCycle.name}
           </p>
           <p>
+            <b>Description: </b>
+            {trainingCycle.description || ''}
+          </p>
+          <p>
             <b>Public: </b>
             {trainingCycle.isPublic ? 'yes' : 'no'}
           </p>

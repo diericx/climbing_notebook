@@ -104,6 +104,9 @@
               <div class="text-xl font-bold">
                 {c.name}
               </div>
+              <div class="text-gray-400">
+                {c.description || ''}
+              </div>
             </div>
             <div slot="popup-buttons">
               <FormButton
