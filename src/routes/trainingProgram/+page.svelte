@@ -61,22 +61,44 @@
           </div>
           <div slot="popup-buttons">
             <a class="btn btn-sm justify-start" href="/trainingProgram/{p.id}/edit">
+              <Icon icon="material-symbols:edit-outline" height="18" />
               <span> Edit </span>
             </a>
+            <FormButton
+              action={`/trainingProgram/${p.id}?/share`}
+              class="btn btn-sm w-full justify-start"
+              onSuccess={() => {
+                modalStore.trigger({
+                  type: 'component',
+                  component: 'modalShareTrainingProgram',
+                  meta: {
+                    trainingProgram: p,
+                  },
+                });
+              }}
+            >
+              <Icon icon="material-symbols:share" height="18" />
+              <span> Share </span>
+            </FormButton>
             <FormButton
               action={`/trainingProgram/${p.id}?/delete`}
               class="btn btn-sm w-full justify-start"
               onClick={confirmDelete}
             >
+              <Icon icon="mdi:trash-outline" height="18" />
               <span> Delete </span>
             </FormButton>
           </div>
           <div slot="content" class="text-gray-400">
-            <div>
-              Created {dayjs(p.createdAt).format('L')}
-            </div>
+            {#if p.isPublic}
+              <div class="text-green-400">Public</div>
+            {/if}
+
             <div>
               {durationWeeks} week{durationWeeks > 0 ? 's' : ''}
+            </div>
+            <div>
+              Created {dayjs(p.createdAt).format('L')}
             </div>
           </div>
         </ListItem>

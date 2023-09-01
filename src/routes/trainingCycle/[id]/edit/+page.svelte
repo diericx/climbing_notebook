@@ -28,15 +28,17 @@
 <svelte:window bind:scrollY />
 
 <div class="grid grid-cols-1">
-  <aside class="alert variant-ghost mb-8">
-    <Icon icon="ep:warn-triangle-filled" height="18" />
-    <div class="alert-message">
-      <p>
-        You are editing a public Training Cycle. Any changes made will be public, and will edit the
-        previously shared version.
-      </p>
-    </div>
-  </aside>
+  {#if trainingCycle.isPublic}
+    <aside class="alert variant-ghost mb-8">
+      <Icon icon="ep:warn-triangle-filled" height="18" />
+      <div class="alert-message">
+        <p>
+          You are editing a public Training Cycle. Any changes made will be public, and will edit
+          the previously shared version.
+        </p>
+      </div>
+    </aside>
+  {/if}
 
   <div class="mb-12 flex items-center justify-between">
     <div>

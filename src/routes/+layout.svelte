@@ -10,6 +10,7 @@
   import ModalCalendarEvent from '$lib/components/modals/ModalCalendarEvent.svelte';
   import ModalJournalEntry from '$lib/components/modals/ModalJournalEntry.svelte';
   import ModalShareTrainingCycle from '$lib/components/modals/ModalShareTrainingCycle.svelte';
+  import ModalShareTrainingProgram from '$lib/components/modals/ModalShareTrainingProgram.svelte';
   import FormModalCalendarEvent from '$lib/components/modals/formModals/FormModalCalendarEvent.svelte';
   import FormModalCustomQuery from '$lib/components/modals/formModals/FormModalCustomQuery.svelte';
   import FormModalCustomQueryCondition from '$lib/components/modals/formModals/FormModalCustomQueryCondition.svelte';
@@ -77,6 +78,7 @@
     modalCalendarEvent: { ref: ModalCalendarEvent },
     modalJournalEntry: { ref: ModalJournalEntry },
     modalShareTrainingCycle: { ref: ModalShareTrainingCycle },
+    modalShareTrainingProgram: { ref: ModalShareTrainingProgram },
   };
   function drawerOpen(): void {
     drawerStore.open({});
@@ -111,6 +113,7 @@
       children: [
         { title: 'Widgets', url: '/widget' },
         { title: 'Training Cycles', url: '/community/trainingCycle' },
+        { title: 'Training Programs', url: '/community/trainingProgram' },
       ],
     },
     { title: 'Feedback', url: '/feedback' },

@@ -1,18 +1,18 @@
 <script lang="ts">
-  import type { TrainingCycle } from '@prisma/client';
+  import type { TrainingProgram } from '@prisma/client';
   import { clipboard, modalStore } from '@skeletonlabs/skeleton';
-  let trainingCycle = $modalStore[0]?.meta?.trainingCycle as TrainingCycle;
-  const publicUrl = `https://climbingnotebook.com/trainingCycle/${trainingCycle.id}`;
+  let trainingProgram = $modalStore[0]?.meta?.trainingProgram as TrainingProgram;
+  const publicUrl = `https://climbingnotebook.com/trainingProgram/${trainingProgram.id}`;
 </script>
 
 <div class="card w-modal">
   <header class="card-header">
-    <h2 class="font-bold">Training Cycle Shared</h2>
+    <h2 class="font-bold">Training Program Shared</h2>
   </header>
   <section class="p-4">
-    <p class="mb-4">This Training Cycle is now public. You can view it at the link below!</p>
+    <p class="mb-4">This Training Program is now public. You can view it at the link below!</p>
     <div class="flex">
-      <div class="border rounded p-2 w-fit bg-gray-100">
+      <div class="border rounded p-2 w-fit bg-gray-100 overflow-hidden whitespace-nowrap max-w-xs">
         {publicUrl}
       </div>
       <button class="btn ml-2 variant-filled" use:clipboard={publicUrl}>Copy</button>

@@ -12,6 +12,18 @@
   $: trainingCycles = data.trainingCycles;
 </script>
 
+{#if trainingProgram.isPublic}
+  <aside class="alert variant-ghost mb-8">
+    <Icon icon="ep:warn-triangle-filled" height="18" />
+    <div class="alert-message">
+      <p>
+        You are editing a public Training Program. Any changes made will be public, and will edit
+        the previously shared version.
+      </p>
+    </div>
+  </aside>
+{/if}
+
 <h1 class="mb-12 font-bold">Editing {trainingProgram.name}</h1>
 
 <div class="mb-12">
@@ -28,6 +40,10 @@
         <p>
           <b>Description: </b>
           {trainingProgram.description}
+        </p>
+        <p>
+          <b>Public: </b>
+          {trainingProgram.isPublic}
         </p>
       </div>
       <div>

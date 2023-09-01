@@ -58,7 +58,7 @@ export const actions: Actions = {
     return { success: true };
   },
 
-  // Set the cycle to public
+  // Set isPublic to true
   share: async ({ locals, url, params }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
     const id = Number(params.id);

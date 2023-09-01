@@ -49,6 +49,18 @@ export const actions: Actions = {
     return { form };
   },
 
+  // Set isPublic to true
+  share: async ({ locals, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+    const id = params.id;
+
+    const repo = new TrainingProgramRepo(prisma);
+
+    await repo.update({ isPublic: true }, id, user.userId);
+
+    return { success: true };
+  },
+
   addTrainingCycle: async ({ locals, request, url, params }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
     const formData = await request.formData();

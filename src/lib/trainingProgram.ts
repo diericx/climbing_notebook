@@ -1,12 +1,15 @@
-import type { PrismaClient } from '@prisma/client';
+import type { Prisma, PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
 
 export const trainingProgramSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   description: z.string().min(1, 'Description is required'),
+  isPublic: z.boolean().optional().default(false),
 });
+export const trainingProgramPartialSchema = trainingProgramSchema.partial();
 export type TrainingProgramSchema = typeof trainingProgramSchema;
+export type TrainingProgramPartialSchema = typeof trainingProgramPartialSchema;
 
 export const trainingProgramScheduledSlotSchema = z.object({
   duration: z.number().min(1, 'Duration must be greater than 0'),
@@ -30,12 +33,76 @@ export class TrainingProgramRepo {
         id,
       },
       include: {
+        owner: true,
         trainingProgramScheduledSlots: {
           orderBy: {
             order: 'asc',
           },
           include: {
-            trainingCycles: true,
+            trainingCycles: {
+              include: {
+                owner: true,
+                trainingProgramScheduledSlots: true,
+                exerciseGroups: {
+                  include: {
+                    exercises: {
+                      include: {
+                        exercise: {
+                          select: {
+                            name: true,
+                          },
+                        },
+                      },
+                      orderBy: {
+                        name: 'asc',
+                      },
+                    },
+                  },
+                  orderBy: {
+                    name: 'asc',
+                  },
+                },
+                days: {
+                  include: {
+                    exercises: {
+                      include: {
+                        exercise: {
+                          select: {
+                            name: true,
+                          },
+                        },
+                      },
+                      orderBy: {
+                        name: 'asc',
+                      },
+                    },
+                    exerciseGroups: {
+                      orderBy: {
+                        name: 'asc',
+                      },
+                      include: {
+                        exercises: {
+                          include: {
+                            exercise: {
+                              select: {
+                                name: true,
+                              },
+                            },
+                          },
+                          orderBy: {
+                            name: 'asc',
+                          },
+                        },
+                      },
+                    },
+                  },
+                  orderBy: {
+                    // Note: ui depends on this being sorted in this way
+                    dayOfTheWeek: 'asc',
+                  },
+                },
+              },
+            },
           },
         },
         trainingCycles: true,
@@ -65,16 +132,18 @@ export class TrainingProgramRepo {
     });
   }
 
-  async get(ownerId: string) {
+  async get(ownerId: string, where?: Prisma.TrainingProgramWhereInput) {
     // Fetch all
     return await this.prisma.trainingProgram.findMany({
       where: {
         ownerId,
+        ...where,
       },
       orderBy: {
         createdAt: 'desc',
       },
       include: {
+        owner: true,
         trainingProgramScheduledSlots: true,
         trainingCycles: true,
         trainingProgramActivations: true,
@@ -82,7 +151,7 @@ export class TrainingProgramRepo {
     });
   }
 
-  async update(data: z.infer<TrainingProgramSchema>, id: string, ownerId: string) {
+  async update(data: z.infer<TrainingProgramPartialSchema>, id: string, ownerId: string) {
     // Get current training program
     const trainingProgram = await this.prisma.trainingProgram.findUnique({
       where: {

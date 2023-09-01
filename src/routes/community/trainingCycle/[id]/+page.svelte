@@ -9,7 +9,6 @@
   dayjs.extend(localizedFormat);
 
   export let data: PageData;
-  const { user } = data;
 
   $: trainingCycle = data.trainingCycle;
 </script>
