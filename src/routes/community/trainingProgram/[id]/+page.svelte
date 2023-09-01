@@ -61,7 +61,7 @@
                 class="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -left-1.5 border border-white dark:border-gray-900 dark:bg-gray-700"
               />
               <div class="text-gray-300">Week {weeks + 1}</div>
-              <ListItem showElipses={false}>
+              <ListItem showElipses={false} class="px-0 py-0">
                 <path
                   stroke="currentColor"
                   stroke-linecap="round"
@@ -69,19 +69,20 @@
                   stroke-width="2"
                   d="M1 5h12m0 0L9 1m4 4L9 9"
                 />
-                <div slot="title" class="mb-5">
-                  <div class="text-xl font-bold">
-                    {s.trainingCycles[0].name}
-                  </div>
-                  {s.duration} week{s.duration == 1 ? '' : 's'}
-                </div>
                 <div slot="content">
-                  <Accordion class="border rounded-lg ">
+                  <Accordion padding="p-4">
                     <AccordionItem>
                       <svelte:fragment slot="lead" />
-                      <svelte:fragment slot="summary">Show Full Cycle</svelte:fragment>
+                      <svelte:fragment slot="summary">
+                        <div slot="title">
+                          <div class="text-xl font-bold">
+                            {s.trainingCycles[0].name}
+                          </div>
+                          {s.duration} week{s.duration == 1 ? '' : 's'}
+                        </div>
+                      </svelte:fragment>
                       <svelte:fragment slot="content">
-                        <WeeklyCalendar trainingCycle={s.trainingCycles[0]} />
+                        <WeeklyCalendar trainingCycle={s.trainingCycles[0]} height="350px" />
                       </svelte:fragment>
                     </AccordionItem>
                   </Accordion>

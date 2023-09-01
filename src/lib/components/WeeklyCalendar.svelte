@@ -53,6 +53,7 @@
         };
       }>[]
     | undefined = undefined;
+  export let height = '425px;';
 
   onMount(() => {
     if (shouldScrollIntoView) {
@@ -90,7 +91,7 @@
               </p>
             </div>
 
-            <div style="height: 425px;" class="overflow-scroll">
+            <div style={`height: ${height}`} class="overflow-scroll">
               {#if day.exercises.length == 0 && day.exerciseGroups.length == 0}
                 <p class="text-gray-400 italic">No exercises for this day</p>
               {/if}

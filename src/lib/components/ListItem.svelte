@@ -6,12 +6,14 @@
 
   export let href: string = '';
   export let showElipses = true;
+  let className: string = '';
+  export { className as class };
 </script>
 
 <div class={`block bg-white rounded-md ${href === '' ? '' : 'card-hover'} border`}>
   <a
     style="height: 100%;"
-    class="flex flex-col justify-between p-4"
+    class={`flex flex-col justify-between p-4 ${className}`}
     href={href === '' ? undefined : href}
   >
     <div class="flex justify-between items-center">
