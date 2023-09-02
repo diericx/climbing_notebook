@@ -28,42 +28,45 @@
 <svelte:window bind:scrollY />
 
 <div class="grid grid-cols-1">
-  {#if trainingCycle.isPublic}
-    <aside class="alert variant-ghost mb-8">
-      <Icon icon="ep:warn-triangle-filled" height="18" />
-      <div class="alert-message">
-        <p>
-          You are editing a public Training Cycle. Any changes made will be public, and will edit
-          the previously shared version.
-        </p>
+  <div class="mb-10">
+    <div class="mb-8 flex items-center justify-between">
+      <div>
+        <h1 class="font-bold inline">
+          Editing {trainingCycle.name}
+        </h1>
       </div>
-    </aside>
-  {/if}
 
-  <div class="mb-12 flex items-center justify-between">
-    <div>
-      <h1 class="font-bold inline">
-        Editing {trainingCycle.name}
-      </h1>
+      {#if !trainingCycle.isPublic && !trainingCycle.trainingProgramId}
+        <FormButton
+          action={`/trainingCycle/${trainingCycle.id}?/share`}
+          class="btn btn-sm variant-outline w-full justify-start"
+          onSuccess={() => {
+            modalStore.trigger({
+              type: 'component',
+              component: 'modalShareTrainingCycle',
+              meta: {
+                trainingCycle,
+              },
+            });
+          }}
+        >
+          <Icon icon="material-symbols:share" height="18" />
+          <span> Share </span>
+        </FormButton>
+      {/if}
     </div>
-
-    {#if !trainingCycle.isPublic && !trainingCycle.trainingProgramId}
-      <FormButton
-        action={`/trainingCycle/${trainingCycle.id}?/share`}
-        class="btn btn-sm variant-outline w-full justify-start"
-        onSuccess={() => {
-          modalStore.trigger({
-            type: 'component',
-            component: 'modalShareTrainingCycle',
-            meta: {
-              trainingCycle,
-            },
-          });
-        }}
-      >
-        <Icon icon="material-symbols:share" height="18" />
-        <span> Share </span>
-      </FormButton>
+    {#if trainingCycle.isPublic}
+      <div class="">
+        <aside class="alert variant-ghost">
+          <Icon icon="ep:warn-triangle-filled" height="18" />
+          <div class="alert-message">
+            <p>
+              You are editing a public Training Cycle. Any changes made will be public, and will
+              edit the previously shared version.
+            </p>
+          </div>
+        </aside>
+      </div>
     {/if}
   </div>
 

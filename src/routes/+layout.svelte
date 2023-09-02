@@ -6,6 +6,7 @@
   import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
   // This contains the bulk of Skeletons required styles:
   import { navigating, page } from '$app/stores';
+  import Breadcrumb from '$lib/components/Breadcrumb.svelte';
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import ModalCalendarEvent from '$lib/components/modals/ModalCalendarEvent.svelte';
   import ModalJournalEntry from '$lib/components/modals/ModalJournalEntry.svelte';
@@ -237,7 +238,7 @@
   </svelte:fragment>
 
   <div class="container mx-auto px-3">
-    <main class="pt-8 pb-10">
+    <main class="pb-10">
       {#if $flash}
         {@const variant =
           $flash.type == 'success' ? 'variant-ghost-success' : 'variant-ghost-error'}
@@ -247,6 +248,9 @@
           </div>
         </aside>
       {/if}
+      <div class="py-5">
+        <Breadcrumb />
+      </div>
       <slot />
     </main>
   </div>

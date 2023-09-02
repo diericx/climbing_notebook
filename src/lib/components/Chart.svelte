@@ -136,7 +136,9 @@
   let chartComponent;
   onMount(() => {
     window.addEventListener('resize', function () {
-      chartComponent.resize();
+      if (chartComponent) {
+        chartComponent.resize();
+      }
     });
   });
 </script>

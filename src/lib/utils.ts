@@ -286,3 +286,13 @@ export async function getSessionOrRedirect({ locals, url }: { locals: App.Locals
   // The session definitely exists now, so return it
   return session;
 }
+
+export type Crumb = {
+  title?: string;
+  url?: string;
+  route?: string;
+};
+
+export type CrumbConfig = {
+  crumbs: Crumb[];
+};

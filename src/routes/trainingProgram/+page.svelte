@@ -1,3 +1,7 @@
+<script context="module">
+  export const pageTitle = 'Training Programs';
+</script>
+
 <script lang="ts">
   import ListItem from '$lib/components/ListItem.svelte';
 

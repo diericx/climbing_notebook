@@ -1,3 +1,10 @@
+<script context="module">
+  import { page } from '$app/stores';
+  import { get } from 'svelte/store';
+
+  export const pageTitle = get(page).data.trainingCycle?.name;
+</script>
+
 <script lang="ts">
   import WeeklyCalendar from '$lib/components/WeeklyCalendar.svelte';
   import { Avatar } from '@skeletonlabs/skeleton';

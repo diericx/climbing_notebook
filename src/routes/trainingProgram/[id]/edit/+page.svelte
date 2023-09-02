@@ -12,19 +12,20 @@
   $: trainingCycles = data.trainingCycles;
 </script>
 
-{#if trainingProgram.isPublic}
-  <aside class="alert variant-ghost mb-8">
-    <Icon icon="ep:warn-triangle-filled" height="18" />
-    <div class="alert-message">
-      <p>
-        You are editing a public Training Program. Any changes made will be public, and will edit
-        the previously shared version.
-      </p>
-    </div>
-  </aside>
-{/if}
-
-<h1 class="mb-12 font-bold">Editing {trainingProgram.name}</h1>
+<div class="mb-10">
+  <h1 class="font-bold mb-8">Editing {trainingProgram.name}</h1>
+  {#if trainingProgram.isPublic}
+    <aside class="alert variant-ghost mb-8">
+      <Icon icon="ep:warn-triangle-filled" height="18" />
+      <div class="alert-message">
+        <p>
+          You are editing a public Training Program. Any changes made will be public, and will edit
+          the previously shared version.
+        </p>
+      </div>
+    </aside>
+  {/if}
+</div>
 
 <div class="mb-12">
   <div class="text-xl">Details</div>
