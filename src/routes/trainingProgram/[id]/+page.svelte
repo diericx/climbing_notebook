@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-  export function getPageTitle(page: any) {
-    return page.data.trainingCycle?.name;
+  export function getPageTitle(data: any) {
+    return data.trainingCycle?.name;
   }
 </script>

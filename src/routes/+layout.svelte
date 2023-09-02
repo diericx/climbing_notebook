@@ -2,12 +2,10 @@
   import { AppBar, AppShell, Modal, type ModalComponent } from '@skeletonlabs/skeleton';
   import NProgress from 'nprogress';
   import type { PageData } from './$types';
-  // Your selected Skeleton theme:
+// Your selected Skeleton theme:
   import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
   // This contains the bulk of Skeletons required styles:
   import { navigating, page } from '$app/stores';
-  import BreadcrumbTitle from '$lib/components/BreadcrumbTitle.svelte';
-  import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import ModalCalendarEvent from '$lib/components/modals/ModalCalendarEvent.svelte';
   import ModalJournalEntry from '$lib/components/modals/ModalJournalEntry.svelte';
@@ -37,6 +35,7 @@
   import '@skeletonlabs/skeleton/styles/skeleton.css';
   import 'nprogress/nprogress.css';
   import { getFlash } from 'sveltekit-flash-message';
+  import { BreadcrumbTitle, Breadcrumbs } from '../../../svelte-breadcrumbs/dist';
   import '../app.css';
 
   storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
@@ -120,6 +119,8 @@
     },
     { title: 'Feedback', url: '/feedback' },
   ];
+
+  const routeModules = import.meta.glob('../routes/**/*.svelte');
 </script>
 
 <Modal components={modalComponentRegistry} />
@@ -250,14 +251,14 @@
         </aside>
       {/if}
       <div class="py-5">
-        <Breadcrumbs relPathToRoutes="../../routes" let:crumbs>
+        <Breadcrumbs url={$page.url} crumbs={$page.data.crumbs} routeId={$page.route.id} let:crumbs>
           <ol class="breadcrumb">
             <li class="crumb"><a class="anchor" href="/">Home</a></li>
             {#each crumbs as c}
               <li class="crumb-separator" aria-hidden>/</li>
               <li class={`${c.url ? 'crumb' : ''}`}>
                 <a class={`${c.url ? 'anchor' : ''}`} href={c.url}>
-                  <BreadcrumbTitle crumb={c} />
+                  <BreadcrumbTitle pageData={$page.data} {routeModules} crumb={c} />
                 </a>
               </li>
             {/each}
