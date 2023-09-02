@@ -292,7 +292,3 @@ export type Crumb = {
   url?: string;
   route?: string;
 };
-
-export type CrumbConfig = {
-  crumbs: Crumb[];
-};
