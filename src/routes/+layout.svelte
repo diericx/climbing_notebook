@@ -2,7 +2,7 @@
   import { AppBar, AppShell, Modal, type ModalComponent } from '@skeletonlabs/skeleton';
   import NProgress from 'nprogress';
   import type { PageData } from './$types';
-// Your selected Skeleton theme:
+  // Your selected Skeleton theme:
   import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
   // This contains the bulk of Skeletons required styles:
   import { navigating, page } from '$app/stores';
@@ -119,8 +119,6 @@
     },
     { title: 'Feedback', url: '/feedback' },
   ];
-
-  const routeModules = import.meta.glob('../routes/**/*.svelte');
 </script>
 
 <Modal components={modalComponentRegistry} />
@@ -251,7 +249,13 @@
         </aside>
       {/if}
       <div class="py-5">
-        <Breadcrumbs url={$page.url} crumbs={$page.data.crumbs} routeId={$page.route.id} let:crumbs>
+        <Breadcrumbs
+          url={$page.url}
+          crumbs={$page.data.crumbs}
+          routeId={$page.route.id}
+          let:crumbs
+          let:routeModules
+        >
           <ol class="breadcrumb">
             <li class="crumb"><a class="anchor" href="/">Home</a></li>
             {#each crumbs as c}

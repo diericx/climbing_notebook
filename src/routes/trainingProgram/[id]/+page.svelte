@@ -1,5 +1,7 @@
 <script context="module" lang="ts">
-  export function getPageTitle(data: any) {
-    return data.trainingCycle?.name;
+  import type { PageData } from './$types';
+
+  export function getPageTitle(data: PageData) {
+    return data.trainingProgram.name;
   }
 </script>

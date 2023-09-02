@@ -1,13 +1,14 @@
 <script context="module" lang="ts">
-  export function getPageTitle(data: any) {
-    return data.trainingCycle?.name;
+  import type { PageData } from './$types';
+
+  export function getPageTitle(data: PageData) {
+    return data.trainingCycle.name;
   }
 </script>
 
 <script lang="ts">
   import WeeklyCalendar from '$lib/components/WeeklyCalendar.svelte';
   import { Avatar } from '@skeletonlabs/skeleton';
-  import type { PageData } from './$types';
 
   export let data: PageData;
   $: trainingCycle = data.trainingCycle;
