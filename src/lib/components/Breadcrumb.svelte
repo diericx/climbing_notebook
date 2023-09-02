@@ -2,8 +2,6 @@
   import { page } from '$app/stores';
   import type { Crumb, CrumbConfig } from '$lib/utils';
 
-  const routeModules = import.meta.glob('../../routes/**/*.svelte');
-
   $: crumbConfig = { crumbs: [] } as CrumbConfig;
   $: {
     // Cannot subscribe to 'page' store on the server outside of a Svelte
@@ -65,13 +63,14 @@
       <li class={`${c.url ? 'crumb' : ''}`}>
         <a class={`${c.url ? 'anchor' : ''}`} href={c.url}>
           {#if c.route}
-            {#await routeModules[c.route]() then result}
+            {#await import(c.route) then result}
               {#if result.pageTitle}
                 {result.pageTitle}
               {:else}
                 {c.title}
               {/if}
             {:catch error}
+              {console.error(error)}
               {c.title}
             {/await}
           {:else}
