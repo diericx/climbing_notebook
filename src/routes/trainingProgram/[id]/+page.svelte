@@ -1,6 +1,5 @@
-<script context="module">
-  import { page } from '$app/stores';
-  import { get } from 'svelte/store';
-
-  export const pageTitle = get(page).data.trainingProgram?.name;
+<script context="module" lang="ts">
+  export function getPageTitle(page: any) {
+    return page.data.trainingCycle?.name;
+  }
 </script>

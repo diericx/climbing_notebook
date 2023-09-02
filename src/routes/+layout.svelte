@@ -6,7 +6,8 @@
   import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
   // This contains the bulk of Skeletons required styles:
   import { navigating, page } from '$app/stores';
-  import Breadcrumb from '$lib/components/Breadcrumb.svelte';
+  import BreadcrumbTitle from '$lib/components/BreadcrumbTitle.svelte';
+  import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import ModalCalendarEvent from '$lib/components/modals/ModalCalendarEvent.svelte';
   import ModalJournalEntry from '$lib/components/modals/ModalJournalEntry.svelte';
@@ -249,7 +250,19 @@
         </aside>
       {/if}
       <div class="py-5">
-        <Breadcrumb />
+        <Breadcrumbs relPathToRoutes="../../routes" let:crumbs>
+          <ol class="breadcrumb">
+            <li class="crumb"><a class="anchor" href="/">Home</a></li>
+            {#each crumbs as c}
+              <li class="crumb-separator" aria-hidden>/</li>
+              <li class={`${c.url ? 'crumb' : ''}`}>
+                <a class={`${c.url ? 'anchor' : ''}`} href={c.url}>
+                  <BreadcrumbTitle crumb={c} />
+                </a>
+              </li>
+            {/each}
+          </ol>
+        </Breadcrumbs>
       </div>
       <slot />
     </main>
