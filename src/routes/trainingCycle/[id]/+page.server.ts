@@ -59,13 +59,25 @@ export const actions: Actions = {
   },
 
   // Set isPublic to true
-  share: async ({ locals, url, params }) => {
+  publish: async ({ locals, url, params }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
     const id = Number(params.id);
 
     const repo = new TrainingCycleRepo(prisma);
 
     await repo.update({ isPublic: true }, id, user.userId);
+
+    return { success: true };
+  },
+
+  // Set isPublic to false
+  hide: async ({ locals, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+    const id = Number(params.id);
+
+    const repo = new TrainingCycleRepo(prisma);
+
+    await repo.update({ isPublic: false }, id, user.userId);
 
     return { success: true };
   },

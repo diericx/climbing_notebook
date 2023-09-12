@@ -8,7 +8,7 @@
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
-  import { modalStore } from '@skeletonlabs/skeleton';
+  import { modalStore, toastStore } from '@skeletonlabs/skeleton';
   import dayjs from 'dayjs';
   import localizedFormat from 'dayjs/plugin/localizedFormat';
   import type { PageData } from './$types';
@@ -76,22 +76,40 @@
                   <Icon icon="material-symbols:control-point-duplicate" height="18" />
                   <span> Duplicate </span>
                 </FormButton>
-                <FormButton
-                  action={`/trainingCycle/${p.id}?/share`}
-                  class="btn btn-sm w-full justify-start"
-                  onSuccess={() => {
-                    modalStore.trigger({
-                      type: 'component',
-                      component: 'modalShareTrainingCycle',
-                      meta: {
-                        trainingCycle: p,
-                      },
-                    });
-                  }}
-                >
-                  <Icon icon="material-symbols:share" height="18" />
-                  <span> Share </span>
-                </FormButton>
+                {#if !p.isPublic}
+                  <FormButton
+                    action={`/trainingCycle/${p.id}?/publish`}
+                    class="btn btn-sm w-full justify-start"
+                    onSuccess={() => {
+                      modalStore.trigger({
+                        type: 'component',
+                        component: 'modalShareTrainingCycle',
+                        meta: {
+                          trainingCycle: p,
+                        },
+                      });
+                    }}
+                  >
+                    <Icon icon="material-symbols:share" height="18" />
+                    <span> Publish </span>
+                  </FormButton>
+                {/if}
+                {#if p.isPublic}
+                  <FormButton
+                    action={`/trainingCycle/${p.id}?/hide`}
+                    class="btn btn-sm w-full justify-start"
+                    onSuccess={() => {
+                      toastStore.trigger({
+                        message:
+                          'Your Training Cycle is now hidden and will not show up in the Community Training Cycles page.',
+                        timeout: 5000,
+                      });
+                    }}
+                  >
+                    <Icon icon="mdi:hide-outline" height="18" />
+                    <span> Hide </span>
+                  </FormButton>
+                {/if}
                 <FormButton
                   action={`/trainingCycle/${p.id}?/delete`}
                   class="btn btn-sm w-full justify-start"

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { AppBar, AppShell, Modal, type ModalComponent } from '@skeletonlabs/skeleton';
+  import { AppBar, AppShell, Modal, Toast, type ModalComponent } from '@skeletonlabs/skeleton';
   import NProgress from 'nprogress';
   import type { PageData } from './$types';
   // Your selected Skeleton theme:
@@ -157,6 +157,8 @@
     {/each}
   </div>
 </Drawer>
+
+<Toast />
 
 <AppShell slotSidebarLeft="bg-surface-500/5 w-0 lg:w-64">
   <svelte:fragment slot="header">
