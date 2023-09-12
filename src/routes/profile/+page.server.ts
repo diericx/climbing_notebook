@@ -21,7 +21,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const profile = await profileRepo.getOne(user?.userId);
   const exerciseEvents = await exerciseEventRepo.get(user?.userId);
   const journalEntries = await journalEntryRepo.get(user?.userId);
-  const trainingCycles = await trainingCycleRepo.get(user?.userId);
+  const trainingCycles = await trainingCycleRepo.get({
+    ownerId: user.userId,
+  });
   const metrics = await metricsRepo.get(user?.userId);
   return {
     profile,

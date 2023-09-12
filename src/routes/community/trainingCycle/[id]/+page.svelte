@@ -1,3 +1,9 @@
+<script context="module" lang="ts">
+  export function getPageTitle(data: any) {
+    return data.trainingCycle?.name;
+  }
+</script>
+
 <script lang="ts">
   import WeeklyCalendar from '$lib/components/WeeklyCalendar.svelte';
   import FormButton from '$lib/components/forms/FormButton.svelte';

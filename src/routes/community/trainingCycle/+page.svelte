@@ -1,3 +1,7 @@
+<script context="module" lang="ts">
+  export const pageTitle = 'Training Cycles';
+</script>
+
 <script lang="ts">
   import List from '$lib/components/List.svelte';
   import ListItem from '$lib/components/ListItem.svelte';

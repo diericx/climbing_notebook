@@ -18,7 +18,9 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   // Editing can only be done by the owner
   const widget = await widgetRepo.getOneAndValidateOwner(id, user?.userId);
 
-  const trainingCycles = await trainingCycleRepo.get(user?.userId);
+  const trainingCycles = await trainingCycleRepo.get({
+    ownerId: user.userId,
+  });
   // compile datasets for widgets
   const customQueryResults: CustomQueryResults[] = [];
   // Go through each widget and fetch cooresponding query results

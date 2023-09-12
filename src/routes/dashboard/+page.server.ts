@@ -76,7 +76,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     },
   });
 
-  const trainingCycles = await trainingCycleRepo.get(user?.userId);
+  const trainingCycles = await trainingCycleRepo.get({
+    ownerId: user.userId,
+  });
 
   // compile datasets for widgets
   const customQueryResults: CustomQueryResults[] = [];
