@@ -77,6 +77,7 @@
                   <Icon icon="material-symbols:control-point-duplicate" height="18" />
                   <span> Duplicate </span>
                 </FormButton>
+
                 {#if !p.isPublic}
                   <FormButton
                     action={`/trainingCycle/${p.id}?/publish`}
@@ -107,6 +108,7 @@
                     <span> Copy Private URL </span>
                   </button>
                 {/if}
+
                 {#if p.isPublic}
                   <FormButton
                     action={`/trainingCycle/${p.id}?/hide`}

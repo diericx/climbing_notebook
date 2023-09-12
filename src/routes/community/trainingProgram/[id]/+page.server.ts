@@ -1,11 +1,10 @@
 import { APIError } from '$lib/errors';
 import { prisma } from '$lib/prisma';
 import { TrainingProgramRepo } from '$lib/trainingProgram';
-import { getSessionOrRedirect } from '$lib/utils';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals, url, params }) => {
-  const { user } = await getSessionOrRedirect({ locals, url });
+export const load: PageServerLoad = async ({ locals, params }) => {
+  const session = await locals.auth.validate();
 
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
   const id = params.id;
@@ -17,6 +16,6 @@ export const load: PageServerLoad = async ({ locals, url, params }) => {
 
   return {
     trainingProgram,
-    user,
+    session,
   };
 };

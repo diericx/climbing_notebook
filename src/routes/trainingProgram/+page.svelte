@@ -9,7 +9,7 @@
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
-  import { modalStore } from '@skeletonlabs/skeleton';
+  import { clipboard, modalStore, toastStore } from '@skeletonlabs/skeleton';
   import dayjs from 'dayjs';
   import localizedFormat from 'dayjs/plugin/localizedFormat';
   import type { PageData } from './$types';
@@ -68,22 +68,55 @@
               <Icon icon="material-symbols:edit-outline" height="18" />
               <span> Edit </span>
             </a>
-            <FormButton
-              action={`/trainingProgram/${p.id}?/share`}
-              class="btn btn-sm w-full justify-start"
-              onSuccess={() => {
-                modalStore.trigger({
-                  type: 'component',
-                  component: 'modalShareTrainingProgram',
-                  meta: {
-                    trainingProgram: p,
-                  },
-                });
-              }}
-            >
-              <Icon icon="material-symbols:share" height="18" />
-              <span> Share </span>
-            </FormButton>
+
+            {#if !p.isPublic}
+              <FormButton
+                action={`/trainingProgram/${p.id}?/publish`}
+                class="btn btn-sm w-full justify-start"
+                onSuccess={() => {
+                  modalStore.trigger({
+                    type: 'component',
+                    component: 'modalShareTrainingProgram',
+                    meta: {
+                      trainingProgram: p,
+                    },
+                  });
+                }}
+              >
+                <Icon icon="material-symbols:share" height="18" />
+                <span> Publish </span>
+              </FormButton>
+              <button
+                class="btn btn-sm w-full justify-start"
+                use:clipboard={`https://climbingnotebook.com/trainingProgram/${p.id}?token=${p.privateUrlToken}`}
+                on:click={() => {
+                  toastStore.trigger({
+                    message: 'Private URL copied',
+                  });
+                }}
+              >
+                <Icon icon="ph:link-bold" height="18" />
+                <span> Copy Private URL </span>
+              </button>
+            {/if}
+
+            {#if p.isPublic}
+              <FormButton
+                action={`/trainingProgram/${p.id}?/hide`}
+                class="btn btn-sm w-full justify-start"
+                onSuccess={() => {
+                  toastStore.trigger({
+                    message:
+                      'Your Training Program is now hidden and will not show up in the Community Training Programs page.',
+                    timeout: 5000,
+                  });
+                }}
+              >
+                <Icon icon="mdi:hide-outline" height="18" />
+                <span> Hide </span>
+              </FormButton>
+            {/if}
+
             <FormButton
               action={`/trainingProgram/${p.id}?/delete`}
               class="btn btn-sm w-full justify-start"

@@ -17,7 +17,7 @@ export const load: PageServerLoad = async ({ url, locals, params }) => {
   // If no user is not signed in and the training program is not public, error out
   if (session === null) {
     if (!trainingCycle.isPublic && token != trainingCycle.privateUrlToken) {
-      throw new APIError('INVALID_PERMISSIONS', 'This Training Program is private');
+      throw new APIError('INVALID_PERMISSIONS', 'This Training Cycle is private');
     }
   }
   return { trainingCycle, session };

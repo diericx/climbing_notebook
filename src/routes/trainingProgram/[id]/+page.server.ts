@@ -1,3 +1,4 @@
+import { APIError } from '$lib/errors';
 import { prisma } from '$lib/prisma';
 import { TrainingCycleRepo, trainingCycleSchema } from '$lib/trainingCycle';
 import {
@@ -12,11 +13,20 @@ import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params, url }) => {
-  const { user } = await getSessionOrRedirect({ locals, url });
+  const session = await locals.auth.validate();
+  const token = url.searchParams.get('token');
 
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
-  const trainingProgram = await trainingProgramRepo.getOneAndValidateOwner(params.id, user.userId);
-  return { trainingProgram };
+  const trainingProgram = await trainingProgramRepo.getOne(params.id);
+
+  // If no user is not signed in and the training program is not public, error out
+  if (session === null) {
+    if (!trainingProgram.isPublic && token != trainingProgram.privateUrlToken) {
+      throw new APIError('INVALID_PERMISSIONS', 'This Training Program is private');
+    }
+  }
+
+  return { session, trainingProgram };
 };
 
 export const actions: Actions = {
@@ -50,13 +60,25 @@ export const actions: Actions = {
   },
 
   // Set isPublic to true
-  share: async ({ locals, url, params }) => {
+  publish: async ({ locals, url, params }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
     const id = params.id;
 
     const repo = new TrainingProgramRepo(prisma);
 
     await repo.update({ isPublic: true }, id, user.userId);
+
+    return { success: true };
+  },
+
+  // Set isPublis to false
+  hide: async ({ locals, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+    const id = params.id;
+
+    const repo = new TrainingProgramRepo(prisma);
+
+    await repo.update({ isPublic: false }, id, user.userId);
 
     return { success: true };
   },
