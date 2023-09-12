@@ -132,13 +132,10 @@ export class TrainingProgramRepo {
     });
   }
 
-  async get(ownerId: string, where?: Prisma.TrainingProgramWhereInput) {
+  async get(where: Prisma.TrainingProgramWhereInput) {
     // Fetch all
     return await this.prisma.trainingProgram.findMany({
-      where: {
-        ownerId,
-        ...where,
-      },
+      where,
       orderBy: {
         createdAt: 'desc',
       },

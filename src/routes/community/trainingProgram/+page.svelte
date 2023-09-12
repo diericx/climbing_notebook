@@ -11,9 +11,9 @@
   dayjs.extend(localizedFormat);
 
   export let data: PageData;
-  const { user } = data;
 
   $: trainingPrograms = data.trainingPrograms;
+  $: session = data.session;
 </script>
 
 <div>
@@ -33,7 +33,7 @@
           {#each trainingPrograms as p}
             <ListItem
               href={`/community/trainingProgram/${p.id}`}
-              showElipses={p.ownerId == user?.userId}
+              showElipses={p.ownerId == session?.user.userId}
             >
               <div slot="title">
                 <div class="text-xl">

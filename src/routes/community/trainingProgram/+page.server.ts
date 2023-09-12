@@ -1,19 +1,18 @@
 import { prisma } from '$lib/prisma';
 import { TrainingProgramRepo } from '$lib/trainingProgram';
-import { getSessionOrRedirect } from '$lib/utils';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
-  const { user } = await getSessionOrRedirect({ locals, url });
+  const session = await locals.auth.validate();
 
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
 
-  const trainingPrograms = await trainingProgramRepo.get(user?.userId, {
+  const trainingPrograms = await trainingProgramRepo.get({
     isPublic: true,
   });
 
   return {
     trainingPrograms,
-    user,
+    session,
   };
 };

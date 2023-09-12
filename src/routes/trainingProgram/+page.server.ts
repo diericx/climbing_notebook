@@ -17,7 +17,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
   const profileRepo = new ProfileRepo(prisma);
 
-  const trainingPrograms = await trainingProgramRepo.get(user?.userId);
+  const trainingPrograms = await trainingProgramRepo.get({
+    ownerId: user.userId,
+  });
   const profile = await profileRepo.getOne(user?.userId);
   return {
     trainingPrograms,
