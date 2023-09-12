@@ -38,7 +38,7 @@
 
       {#if !trainingCycle.isPublic && !trainingCycle.trainingProgramId}
         <FormButton
-          action={`/trainingCycle/${trainingCycle.id}?/share`}
+          action={`/trainingCycle/${trainingCycle.id}?/publish`}
           class="btn btn-sm variant-outline w-full justify-start"
           onSuccess={() => {
             modalStore.trigger({
@@ -51,7 +51,7 @@
           }}
         >
           <Icon icon="material-symbols:share" height="18" />
-          <span> Share </span>
+          <span> Publish </span>
         </FormButton>
       {/if}
     </div>

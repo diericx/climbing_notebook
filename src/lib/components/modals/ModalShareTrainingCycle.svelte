@@ -7,7 +7,7 @@
 
 <div class="card w-modal">
   <header class="card-header">
-    <h2 class="font-bold">Training Cycle Shared</h2>
+    <h2 class="font-bold">Training Cycle Published</h2>
   </header>
   <section class="p-4">
     <p class="mb-4">This Training Cycle is now public. You can view it at the link below!</p>

@@ -34,8 +34,8 @@
   import { Drawer, drawerStore, popup, storePopup } from '@skeletonlabs/skeleton';
   import '@skeletonlabs/skeleton/styles/skeleton.css';
   import 'nprogress/nprogress.css';
+  import { BreadcrumbTitle, Breadcrumbs } from 'svelte-breadcrumbs';
   import { getFlash } from 'sveltekit-flash-message';
-  import { BreadcrumbTitle, Breadcrumbs } from '../../../svelte-breadcrumbs/dist';
   import '../app.css';
 
   storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
