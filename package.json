@@ -70,6 +70,7 @@
     "cal-heatmap": "^4.2.2",
     "chart.js": "^4.3.0",
     "chartjs-adapter-dayjs-4": "^1.0.4",
+    "cuid": "^3.0.0",
     "dayjs": "^1.11.7",
     "json-2-csv": "^4.0.0",
     "lucia": "^2.3.0",

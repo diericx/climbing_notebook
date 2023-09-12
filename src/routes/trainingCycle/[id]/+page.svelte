@@ -2,7 +2,7 @@
   import type { PageData } from './$types';
 
   export function getPageTitle(data: PageData) {
-    return data.trainingCycle.name;
+    return data.trainingCycle?.name;
   }
 </script>
 

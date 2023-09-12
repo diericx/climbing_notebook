@@ -1,25 +1,24 @@
 import { APIError } from '$lib/errors';
 import { exerciseGroupSchema } from '$lib/exerciseGroup';
 import { prisma } from '$lib/prisma';
-import {
-  TrainingCycleRepo,
-  trainingCycleSchema,
-  trainingCycleTemplateSchema,
-} from '$lib/trainingCycle';
+import { TrainingCycleRepo, trainingCycleSchema } from '$lib/trainingCycle';
 import { getSessionOrRedirect } from '$lib/utils';
 import type { TrainingCycle } from '@prisma/client';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals, params }) => {
+export const load: PageServerLoad = async ({ url, locals, params }) => {
   const session = await locals.auth.validate();
+  const token = url.searchParams.get('token');
 
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
   const trainingCycle = await trainingCycleRepo.getOne(Number(params.id));
   // If no user is not signed in and the training program is not public, error out
-  if (!trainingCycle.isPublic && session === null) {
-    throw new APIError('INVALID_PERMISSIONS', 'This Training Program is private');
+  if (session === null) {
+    if (!trainingCycle.isPublic && token != trainingCycle.privateUrlToken) {
+      throw new APIError('INVALID_PERMISSIONS', 'This Training Program is private');
+    }
   }
   return { trainingCycle, session };
 };
@@ -98,24 +97,6 @@ export const actions: Actions = {
     await repo.update(form.data, id, user?.userId);
 
     return { form };
-  },
-
-  newTemplate: async ({ locals, url, request, params }) => {
-    const { user } = await getSessionOrRedirect({ locals, url });
-    const formData = await request.formData();
-    const id = Number(params.id);
-    const form = await superValidate(formData, trainingCycleTemplateSchema, {
-      id: formData.get('_formId')?.toString(),
-    });
-
-    if (!form.valid) {
-      return fail(400, { form });
-    }
-
-    const repo = new TrainingCycleRepo(prisma);
-    await repo.newTemplate(form.data, id, user?.userId);
-
-    return { success: true };
   },
 
   addExerciseGroup: async ({ locals, request, url, params }) => {
