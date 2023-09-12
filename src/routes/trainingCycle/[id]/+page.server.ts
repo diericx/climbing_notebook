@@ -5,6 +5,7 @@ import { TrainingCycleRepo, trainingCycleSchema } from '$lib/trainingCycle';
 import { getSessionOrRedirect } from '$lib/utils';
 import type { TrainingCycle } from '@prisma/client';
 import { fail } from '@sveltejs/kit';
+import type { Crumb } from 'svelte-breadcrumbs';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -20,7 +21,25 @@ export const load: PageServerLoad = async ({ url, locals, params }) => {
       throw new APIError('INVALID_PERMISSIONS', 'This Training Cycle is private');
     }
   }
-  return { trainingCycle, session };
+
+  // Manually override breadcrumbs to show training program path
+  // if this is an embedded cycle.
+  let crumbs = [{ title: trainingCycle.name }] as Crumb[];
+  if (trainingCycle.trainingProgram) {
+    crumbs = [
+      { title: 'Training Programs', url: `/trainingProgram` },
+      {
+        title: trainingCycle.trainingProgram.name,
+        url: `/trainingProgram/${trainingCycle.trainingProgramId}/edit`,
+      },
+      { title: 'Training Cycles', url: `/trainingProgram/${trainingCycle.trainingProgramId}/edit` },
+      ...crumbs,
+    ];
+  } else {
+    crumbs = [{ title: 'Training Cycles', url: `/trainingCycle` }, ...crumbs];
+  }
+
+  return { trainingCycle, session, crumbs };
 };
 
 export const actions: Actions = {

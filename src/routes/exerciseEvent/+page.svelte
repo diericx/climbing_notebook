@@ -33,7 +33,7 @@
 </script>
 
 <div class="mb-14">
-  <h3>Active Training Program</h3>
+  <h3>Active Training Cycle</h3>
   <div>
     {#if !activeTrainingCycle}
       <p class="text-gray-400">

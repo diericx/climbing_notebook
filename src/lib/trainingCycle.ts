@@ -30,6 +30,11 @@ export class TrainingCycleRepo {
       include: {
         owner: true,
         trainingProgramScheduledSlots: true,
+        trainingProgram: {
+          select: {
+            name: true,
+          },
+        },
         exerciseGroups: {
           include: {
             exercises: {
