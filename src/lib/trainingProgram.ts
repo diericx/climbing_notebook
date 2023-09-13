@@ -174,7 +174,11 @@ export class TrainingProgramRepo {
     });
   }
 
-  async duplicate(id: string, ownerId: string) {
+  async duplicate(
+    id: string,
+    ownerId: string,
+    data?: { name?: string; nameSuffix?: string; parentId?: string }
+  ) {
     const trainingProgram = await this.prisma.trainingProgram.findUnique({
       where: {
         id,
@@ -206,13 +210,16 @@ export class TrainingProgramRepo {
     return await this.prisma.trainingProgram.create({
       data: {
         ...trainingProgram,
+        ...data,
         id: newTrainingProgramId,
-        name: trainingProgram.name + ' Duplicate',
+        name: data?.name || trainingProgram.name + (data?.nameSuffix || ' Duplicate'),
+        ownerId,
         // Dupes always start private
         isPublic: false,
         trainingCycles: {
           create: trainingProgram.trainingCycles.map((c) => ({
             ...c,
+            ownerId,
             id: undefined,
             trainingProgramId: undefined,
           })),
@@ -246,6 +253,22 @@ export class TrainingProgramRepo {
               };
             }
           }),
+        },
+      },
+    });
+  }
+
+  // Performs same functionality as duplicate, but also increments use count
+  // of the parent
+  async import(id: string, ownerId: string) {
+    await this.duplicate(id, ownerId, { nameSuffix: '', parentId: id });
+    await this.prisma.trainingProgram.update({
+      where: {
+        id,
+      },
+      data: {
+        useCount: {
+          increment: 1,
         },
       },
     });

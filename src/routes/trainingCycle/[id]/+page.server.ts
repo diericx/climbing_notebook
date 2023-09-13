@@ -71,7 +71,7 @@ export const actions: Actions = {
 
     const repo = new TrainingCycleRepo(prisma);
 
-    await repo.importTemplate(id, user.userId);
+    await repo.import(id, user.userId);
 
     return { success: true };
   },

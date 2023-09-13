@@ -112,7 +112,13 @@ export class TrainingCycleRepo {
   async duplicate(
     id: number,
     ownerId: string,
-    data?: { name?: string; isPublic?: boolean; description?: string; parentId?: number }
+    data?: {
+      name?: string;
+      nameSuffix?: string;
+      isPublic?: boolean;
+      description?: string;
+      parentId?: number;
+    }
   ) {
     const program = await this.getOne(id);
 
@@ -126,7 +132,9 @@ export class TrainingCycleRepo {
     // Create the new program
     const newCycle = await this.prisma.trainingCycle.create({
       data: {
-        name: data?.name || program.name + ' Duplicate',
+        name:
+          data?.name ||
+          program.name + (data?.nameSuffix == undefined ? ' Duplicate' : data?.nameSuffix),
         ownerId,
         isPublic: data?.isPublic || false,
         description: data?.description || null,
@@ -363,10 +371,10 @@ export class TrainingCycleRepo {
     });
   }
 
-  // Performs same funcionality as duplicate, but also increments use count
+  // Performs same functionality as duplicate, but also increments use count
   // of the parent
-  async importTemplate(id: number, ownerId: string) {
-    await this.duplicate(id, ownerId, { isPublic: false, parentId: id });
+  async import(id: number, ownerId: string) {
+    await this.duplicate(id, ownerId, { nameSuffix: '', isPublic: false, parentId: id });
     await this.prisma.trainingCycle.update({
       where: {
         id,

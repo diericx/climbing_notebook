@@ -17,21 +17,24 @@
   export let data: PageData;
 
   $: trainingCycle = data.trainingCycle;
+  $: session = data.session;
 </script>
 
 <div class="flex justify-between mb-2">
   <h1 class="font-bold">{trainingCycle.name}</h1>
 
-  <FormButton
-    action={`/trainingCycle/${trainingCycle.id}?/import&redirectTo=/trainingCycle`}
-    class="btn btn-sm variant-filled"
-    onClick={(e) => {
-      e.stopPropagation();
-    }}
-  >
-    <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-    <span>Import Training Cycle</span>
-  </FormButton>
+  {#if session?.user?.userId != trainingCycle.ownerId}
+    <FormButton
+      action={`/trainingCycle/${trainingCycle.id}?/import&redirectTo=/trainingCycle`}
+      class="btn btn-sm variant-filled"
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+    >
+      <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
+      <span>Import Training Cycle</span>
+    </FormButton>
+  {/if}
 </div>
 
 <div class="text-gray-600 flex items-center mb-8">

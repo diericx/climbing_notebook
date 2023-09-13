@@ -68,6 +68,15 @@ export const actions: Actions = {
     return { success: true };
   },
 
+  import: async ({ locals, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+
+    const repo = new TrainingProgramRepo(prisma);
+    await repo.import(params.id, user.userId);
+
+    return { success: true };
+  },
+
   // Set isPublic to true
   publish: async ({ locals, url, params }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
