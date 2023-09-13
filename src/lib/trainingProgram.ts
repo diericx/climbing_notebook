@@ -1,4 +1,5 @@
 import type { Prisma, PrismaClient } from '@prisma/client';
+import cuid from 'cuid';
 import { z } from 'zod';
 import { APIError } from './errors';
 
@@ -169,6 +170,83 @@ export class TrainingProgramRepo {
       },
       data: {
         ...data,
+      },
+    });
+  }
+
+  async duplicate(id: string, ownerId: string) {
+    const trainingProgram = await this.prisma.trainingProgram.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        trainingCycles: true,
+        trainingProgramScheduledSlots: {
+          include: {
+            trainingCycles: {
+              include: {
+                owner: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    if (trainingProgram == null) {
+      throw new APIError('NOT_FOUND', 'Resource not found');
+    }
+    // Auth checks; only owner can duplicate, unless public
+    if (trainingProgram.ownerId != ownerId && !trainingProgram.isPublic) {
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
+    }
+
+    // Note: id must be manually generated here so we can use it in the nested connect
+    // below
+    const newTrainingProgramId = cuid();
+    return await this.prisma.trainingProgram.create({
+      data: {
+        ...trainingProgram,
+        id: newTrainingProgramId,
+        name: trainingProgram.name + ' Duplicate',
+        // Dupes always start private
+        isPublic: false,
+        trainingCycles: {
+          create: trainingProgram.trainingCycles.map((c) => ({
+            ...c,
+            id: undefined,
+            trainingProgramId: undefined,
+          })),
+        },
+        trainingProgramScheduledSlots: {
+          create: trainingProgram.trainingProgramScheduledSlots.map((s) => {
+            if (s.trainingCycles[0].trainingProgramId) {
+              return {
+                ...s,
+                id: undefined,
+                trainingProgramId: undefined,
+                trainingCycles: {
+                  connect: {
+                    trainingProgramId_name: {
+                      name: s.trainingCycles[0].name,
+                      trainingProgramId: newTrainingProgramId,
+                    },
+                  },
+                },
+              };
+            } else {
+              return {
+                ...s,
+                id: undefined,
+                trainingProgramId: undefined,
+                trainingCycles: {
+                  connect: {
+                    id: s.trainingCycles[0].id,
+                  },
+                },
+              };
+            }
+          }),
+        },
       },
     });
   }

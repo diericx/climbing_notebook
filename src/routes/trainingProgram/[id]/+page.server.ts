@@ -21,7 +21,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
 
   // If no user is not signed in and the training program is not public, error out
   if (session === null) {
-    if (!trainingProgram.isPublic && token != trainingProgram.privateUrlToken) {
+    if (!trainingProgram.isPublic && token != trainingProgram.privateAccessToken) {
       throw new APIError('INVALID_PERMISSIONS', 'This Training Program is private');
     }
   }
@@ -57,6 +57,15 @@ export const actions: Actions = {
     await repo.update(form.data, id, user?.userId);
 
     return { form };
+  },
+
+  duplicate: async ({ locals, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+
+    const repo = new TrainingProgramRepo(prisma);
+    await repo.duplicate(params.id, user.userId);
+
+    return { success: true };
   },
 
   // Set isPublic to true

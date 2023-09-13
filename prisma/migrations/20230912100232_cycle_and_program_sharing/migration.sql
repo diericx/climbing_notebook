@@ -3,7 +3,7 @@ create extension if not exists "pgcrypto";
 -- AlterTable
 ALTER TABLE "training_cycle" ADD COLUMN     "description" TEXT,
 ADD COLUMN     "parent_id" INTEGER,
-ADD COLUMN     "privateUrlToken" UUID NOT NULL DEFAULT gen_random_uuid(),
+ADD COLUMN     "private_access_token" UUID NOT NULL DEFAULT gen_random_uuid(),
 ADD COLUMN     "training_program_id" TEXT,
 ADD COLUMN     "use_count" INTEGER NOT NULL DEFAULT 0;
 
@@ -16,7 +16,7 @@ CREATE TABLE "training_program" (
     "description" TEXT NOT NULL,
     "use_count" INTEGER NOT NULL DEFAULT 0,
     "parent_id" TEXT,
-    "privateUrlToken" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "private_access_token" UUID NOT NULL DEFAULT gen_random_uuid(),
     "owner_id" TEXT NOT NULL,
 
     CONSTRAINT "training_program_pkey" PRIMARY KEY ("id")

@@ -141,11 +141,11 @@ model TrainingProgram {
   name      String
 
   // Fields for template functionality
-  isPublic        Boolean @default(false) @map("is_public")
-  description     String
-  useCount        Int     @default(0) @map("use_count")
-  parentId        String? @map("parent_id")
-  privateUrlToken String  @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  isPublic           Boolean @default(false) @map("is_public")
+  description        String
+  useCount           Int     @default(0) @map("use_count")
+  parentId           String? @map("parent_id")
+  privateAccessToken String  @default(dbgenerated("gen_random_uuid()")) @map("private_access_token") @db.Uuid
 
   ownerId                       String                         @map("owner_id")
   owner                         AuthUser                       @relation(fields: [ownerId], references: [id])
@@ -186,11 +186,11 @@ model TrainingCycle {
   name      String
 
   // Fields for template functionality
-  isPublic        Boolean @default(false) @map("is_public")
-  description     String?
-  useCount        Int     @default(0) @map("use_count")
-  parentId        Int?    @map("parent_id")
-  privateUrlToken String  @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  isPublic           Boolean @default(false) @map("is_public")
+  description        String?
+  useCount           Int     @default(0) @map("use_count")
+  parentId           Int?    @map("parent_id")
+  privateAccessToken String  @default(dbgenerated("gen_random_uuid()")) @map("private_access_token") @db.Uuid
 
   trainingProgramId String?          @map("training_program_id")
   trainingProgram   TrainingProgram? @relation(fields: [trainingProgramId], references: [id], onDelete: Cascade)
@@ -203,6 +203,7 @@ model TrainingCycle {
   Widget                        Widget[]
   trainingProgramScheduledSlots TrainingProgramScheduledSlot[]
 
+  @@unique([trainingProgramId, name])
   @@map("training_cycle")
 }
 

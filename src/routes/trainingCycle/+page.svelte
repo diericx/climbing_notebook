@@ -97,7 +97,7 @@
                   </FormButton>
                   <button
                     class="btn btn-sm w-full justify-start"
-                    use:clipboard={`https://climbingnotebook.com/trainingCycle/${p.id}?token=${p.privateUrlToken}`}
+                    use:clipboard={`https://climbingnotebook.com/trainingCycle/${p.id}?token=${p.privateAccessToken}`}
                     on:click={() => {
                       toastStore.trigger({
                         message: 'Private URL copied',

@@ -68,6 +68,13 @@
               <Icon icon="material-symbols:edit-outline" height="18" />
               <span> Edit </span>
             </a>
+            <FormButton
+              action={`/trainingProgram/${p.id}?/duplicate&redirectTo=/trainingProgram`}
+              class="btn btn-sm w-full justify-start"
+            >
+              <Icon icon="material-symbols:control-point-duplicate" height="18" />
+              <span> Duplicate </span>
+            </FormButton>
 
             {#if !p.isPublic}
               <FormButton
@@ -88,7 +95,7 @@
               </FormButton>
               <button
                 class="btn btn-sm w-full justify-start"
-                use:clipboard={`https://climbingnotebook.com/trainingProgram/${p.id}?token=${p.privateUrlToken}`}
+                use:clipboard={`https://climbingnotebook.com/trainingProgram/${p.id}?token=${p.privateAccessToken}`}
                 on:click={() => {
                   toastStore.trigger({
                     message: 'Private URL copied',
