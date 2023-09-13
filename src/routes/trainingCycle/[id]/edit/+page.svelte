@@ -6,7 +6,7 @@
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
-  import { modalStore } from '@skeletonlabs/skeleton';
+  import { clipboard, modalStore, toastStore } from '@skeletonlabs/skeleton';
   import type { PageData } from './$types';
 
   export let data: PageData;
@@ -36,24 +36,69 @@
         </h1>
       </div>
 
-      {#if !trainingCycle.isPublic && !trainingCycle.trainingProgramId}
-        <FormButton
-          action={`/trainingCycle/${trainingCycle.id}?/publish`}
-          class="btn btn-sm variant-outline w-full justify-start"
-          onSuccess={() => {
-            modalStore.trigger({
-              type: 'component',
-              component: 'modalShareTrainingCycle',
-              meta: {
-                trainingCycle,
-              },
-            });
-          }}
-        >
-          <Icon icon="material-symbols:share" height="18" />
-          <span> Publish </span>
-        </FormButton>
-      {/if}
+      <div class="flex space-x-2">
+        {#if !trainingCycle.trainingProgramId}
+          {#if trainingCycle.isPublic}
+            <div>
+              <button
+                class="btn btn-sm variant-filled w-full justify-start"
+                use:clipboard={`https://climbingnotebook.com/trainingCycle/${trainingCycle.id}`}
+                on:click={() => {
+                  toastStore.trigger({
+                    message: 'Public URL copied',
+                  });
+                }}
+              >
+                <Icon icon="ph:link-bold" height="18" />
+                <span> Copy Public URL </span>
+              </button>
+            </div>
+            <FormButton
+              action={`/trainingCycle/${trainingCycle.id}?/hide`}
+              class="btn btn-sm variant-filled w-full justify-start"
+              onSuccess={() => {
+                toastStore.trigger({
+                  message:
+                    'Your Training Cycle is now hidden and will not show up in the Community Training Cycles page.',
+                  timeout: 5000,
+                });
+              }}
+            >
+              <Icon icon="mdi:hide-outline" height="18" />
+              <span> Hide </span>
+            </FormButton>
+          {:else}
+            <div>
+              <button
+                class="btn btn-sm variant-filled w-full justify-start"
+                use:clipboard={`https://climbingnotebook.com/trainingCycle/${trainingCycle.id}?token=${trainingCycle.privateAccessToken}`}
+                on:click={() => {
+                  toastStore.trigger({
+                    message: 'Private URL copied',
+                  });
+                }}
+              >
+                <Icon icon="ph:link-bold" height="18" />
+                <span> Copy Private URL </span>
+              </button>
+            </div>
+            <FormButton
+              action={`/trainingCycle/${trainingCycle.id}?/publish`}
+              class="btn btn-sm variant-filled w-full justify-start"
+              onSuccess={() => {
+                toastStore.trigger({
+                  message:
+                    'Your Training Cycle is now public and will show up in the Community Training Cycles page.',
+                  timeout: 5000,
+                });
+              }}
+            >
+              <Icon icon="material-symbols:share" height="18" />
+              <span> Publish </span>
+            </FormButton>
+          {/if}
+        {/if}
+      </div>
     </div>
     {#if trainingCycle.isPublic}
       <div class="">
@@ -70,7 +115,7 @@
     {/if}
   </div>
 
-  <div class="mb-10">
+  <div class="mb-12">
     <div class="text-xl">Details</div>
     <hr class="mb-2" />
 
@@ -112,7 +157,7 @@
     </div>
   </div>
 
-  <div class="mb-10">
+  <div class="mb-12">
     <div class="flex justify-between mb-2">
       <div class="text-xl">Exercise Groups</div>
       <button
@@ -132,6 +177,10 @@
       </button>
     </div>
     <hr class="mb-2" />
+
+    {#if trainingCycle.exerciseGroups.length == 0}
+      <p class="text-gray-400 italic">No exercise groups</p>
+    {/if}
 
     <List>
       {#each trainingCycle.exerciseGroups as group}

@@ -83,12 +83,10 @@
                     action={`/trainingCycle/${p.id}?/publish`}
                     class="btn btn-sm w-full justify-start"
                     onSuccess={() => {
-                      modalStore.trigger({
-                        type: 'component',
-                        component: 'modalShareTrainingCycle',
-                        meta: {
-                          trainingCycle: p,
-                        },
+                      toastStore.trigger({
+                        message:
+                          'Your Training Cycle is now public and will show up in the Community Training Cycles page.',
+                        timeout: 5000,
                       });
                     }}
                   >
@@ -124,6 +122,20 @@
                     <Icon icon="mdi:hide-outline" height="18" />
                     <span> Hide </span>
                   </FormButton>
+                  <div>
+                    <button
+                      class="btn btn-sm w-full justify-start"
+                      use:clipboard={`https://climbingnotebook.com/trainingCycle/${p.id}`}
+                      on:click={() => {
+                        toastStore.trigger({
+                          message: 'Public URL copied',
+                        });
+                      }}
+                    >
+                      <Icon icon="ph:link-bold" height="18" />
+                      <span> Copy Public URL </span>
+                    </button>
+                  </div>
                 {/if}
                 <FormButton
                   action={`/trainingCycle/${p.id}?/delete`}

@@ -81,12 +81,10 @@
                 action={`/trainingProgram/${p.id}?/publish`}
                 class="btn btn-sm w-full justify-start"
                 onSuccess={() => {
-                  modalStore.trigger({
-                    type: 'component',
-                    component: 'modalShareTrainingProgram',
-                    meta: {
-                      trainingProgram: p,
-                    },
+                  toastStore.trigger({
+                    message:
+                      'Your Training Program is now public and will show up in the Community Training Programs page.',
+                    timeout: 5000,
                   });
                 }}
               >
@@ -122,6 +120,20 @@
                 <Icon icon="mdi:hide-outline" height="18" />
                 <span> Hide </span>
               </FormButton>
+              <div>
+                <button
+                  class="btn btn-sm w-full justify-start"
+                  use:clipboard={`https://climbingnotebook.com/trainingProgram/${p.id}`}
+                  on:click={() => {
+                    toastStore.trigger({
+                      message: 'Public URL copied',
+                    });
+                  }}
+                >
+                  <Icon icon="ph:link-bold" height="18" />
+                  <span> Copy Public URL </span>
+                </button>
+              </div>
             {/if}
 
             <FormButton

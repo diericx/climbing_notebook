@@ -241,16 +241,7 @@
 
   <div class="container mx-auto px-3">
     <main class="pb-10">
-      {#if $flash}
-        {@const variant =
-          $flash.type == 'success' ? 'variant-ghost-success' : 'variant-ghost-error'}
-        <aside class={`alert mb-4 ${variant}`}>
-          <div class="alert-message">
-            <h3 class="h3">{$flash.message}</h3>
-          </div>
-        </aside>
-      {/if}
-      <div class="py-5">
+      <div class="pt-5 pb-4">
         <Breadcrumbs
           url={$page.url}
           crumbs={$page.data.crumbs}
@@ -271,6 +262,16 @@
           </ol>
         </Breadcrumbs>
       </div>
+      {#if $flash}
+        {@const variant =
+          $flash.type == 'success' ? 'variant-ghost-success' : 'variant-ghost-error'}
+        <aside class={`alert mb-4 mt-4 ${variant}`}>
+          <div class="alert-message">
+            <h3 class="h3">{$flash.message}</h3>
+          </div>
+        </aside>
+      {/if}
+      <div class="pb-6" />
       <slot />
     </main>
   </div>

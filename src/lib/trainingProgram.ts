@@ -5,7 +5,7 @@ import { APIError } from './errors';
 
 export const trainingProgramSchema = z.object({
   name: z.string().min(1, 'Name is required'),
-  description: z.string().min(1, 'Description is required'),
+  description: z.string().nullish(),
   isPublic: z.boolean().optional().default(false),
 });
 export const trainingProgramPartialSchema = trainingProgramSchema.partial();

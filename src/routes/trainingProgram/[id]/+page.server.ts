@@ -61,9 +61,11 @@ export const actions: Actions = {
 
   duplicate: async ({ locals, url, params }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
+    const id = params.id;
 
     const repo = new TrainingProgramRepo(prisma);
-    await repo.duplicate(params.id, user.userId);
+
+    await repo.duplicate(id, user.userId);
 
     return { success: true };
   },
@@ -83,6 +85,14 @@ export const actions: Actions = {
     const id = params.id;
 
     const repo = new TrainingProgramRepo(prisma);
+
+    const program = await repo.getOneAndValidateOwner(id, user.userId);
+    if (!program.description) {
+      throw new APIError(
+        'INVALID_INPUT',
+        'Training Program requires a description to be published. Be as descriptive as possible.'
+      );
+    }
 
     await repo.update({ isPublic: true }, id, user.userId);
 

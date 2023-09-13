@@ -82,6 +82,13 @@ export const actions: Actions = {
     const id = Number(params.id);
 
     const repo = new TrainingCycleRepo(prisma);
+    const cycle = await repo.getOneAndValidateOwner(id, user.userId);
+    if (!cycle.description) {
+      throw new APIError(
+        'INVALID_INPUT',
+        'Training Cycle requires a description to be published. Be as descriptive as possible.'
+      );
+    }
 
     await repo.update({ isPublic: true }, id, user.userId);
 
