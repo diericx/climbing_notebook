@@ -55,17 +55,27 @@
 <div class="flex justify-between mb-2">
   <h1 class="font-bold">{trainingProgram.name}</h1>
 
-  {#if user && user.userId != trainingProgram.ownerId}
-    <FormButton
-      action={`/trainingProgram/${trainingProgram.id}?/import&redirectTo=/trainingProgram`}
-      class="btn btn-sm variant-filled"
-      onClick={(e) => {
-        e.stopPropagation();
-      }}
-    >
-      <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-      <span>Import Training Program</span>
-    </FormButton>
+  {#if user}
+    {#if user.userId == trainingProgram.ownerId}
+      <div class="flex">
+        <div>
+          <a class="btn btn-sm variant-ringed" href={`/trainingProgram/${trainingProgram.id}/edit`}
+            >Edit this program</a
+          >
+        </div>
+      </div>
+    {:else}
+      <FormButton
+        action={`/trainingProgram/${trainingProgram.id}?/import&redirectTo=/trainingProgram`}
+        class="btn btn-sm variant-filled"
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
+        <span>Import Training Program</span>
+      </FormButton>
+    {/if}
   {/if}
 </div>
 
