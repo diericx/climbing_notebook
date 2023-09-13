@@ -125,7 +125,7 @@
                   <div>
                     <button
                       class="btn btn-sm w-full justify-start"
-                      use:clipboard={`https://climbingnotebook.com/trainingCycle/${p.id}`}
+                      use:clipboard={`https://climbingnotebook.com/community/trainingCycle/${p.id}`}
                       on:click={() => {
                         toastStore.trigger({
                           message: 'Public URL copied',
