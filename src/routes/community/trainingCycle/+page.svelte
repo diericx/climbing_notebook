@@ -37,7 +37,7 @@
           {#each trainingCycles as p}
             <ListItem
               href={`/community/trainingCycle/${p.id}`}
-              showElipses={p.ownerId == user?.userId}
+              showElipses={p.ownerId == session?.user?.userId}
             >
               <div slot="title">
                 <div class="text-xl">

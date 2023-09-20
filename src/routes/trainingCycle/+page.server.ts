@@ -1,5 +1,4 @@
 import { prisma } from '$lib/prisma';
-import { ProfileRepo } from '$lib/profile';
 import { TrainingCycleRepo, trainingCycleSchema } from '$lib/trainingCycle';
 import { getSessionOrRedirect } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
@@ -7,19 +6,24 @@ import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
-  const { user } = await getSessionOrRedirect({ locals, url });
+  const session = await locals.auth.validate();
 
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
-  const profileRepo = new ProfileRepo(prisma);
 
   const trainingCycles = await trainingCycleRepo.get({
-    ownerId: user.userId,
     trainingProgramId: null,
+    OR: [
+      {
+        isPublic: true,
+      },
+      {
+        ownerId: session?.user.userId,
+      },
+    ],
   });
-  const profile = await profileRepo.getOne(user?.userId);
   return {
     trainingCycles,
-    profile,
+    session,
   };
 };
 

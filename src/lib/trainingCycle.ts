@@ -282,7 +282,7 @@ export class TrainingCycleRepo {
     return await this.prisma.trainingCycle.findMany({
       where,
       orderBy: {
-        createdAt: 'desc',
+        useCount: 'desc',
       },
       include: {
         owner: true,
