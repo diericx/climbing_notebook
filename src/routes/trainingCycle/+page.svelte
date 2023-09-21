@@ -1,5 +1,5 @@
 <script context="module">
-  export const pageTitle = 'Training Cycles';
+  export const pageTitle = 'Cycles';
 </script>
 
 <script lang="ts">

@@ -1,6 +1,6 @@
 <script context="module" lang="ts">
   export function getPageTitle(data: PageData) {
-    return data.trainingProgram?.name;
+    return data?.trainingProgram?.name;
   }
 </script>
 

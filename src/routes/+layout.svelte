@@ -34,7 +34,7 @@
   import { Drawer, drawerStore, popup, storePopup } from '@skeletonlabs/skeleton';
   import '@skeletonlabs/skeleton/styles/skeleton.css';
   import 'nprogress/nprogress.css';
-  import { BreadcrumbTitle, Breadcrumbs } from 'svelte-breadcrumbs';
+  import { Breadcrumbs } from 'svelte-breadcrumbs';
   import { getFlash } from 'sveltekit-flash-message';
   import '../app.css';
 
@@ -246,16 +246,16 @@
           url={$page.url}
           crumbs={$page.data.crumbs}
           routeId={$page.route.id}
+          pageData={$page.data}
           let:crumbs
-          let:routeModules
         >
           <ol class="breadcrumb">
             <li class="crumb"><a class="anchor" href="/">Home</a></li>
             {#each crumbs as c}
               <li class="crumb-separator" aria-hidden>/</li>
               <li class={`${c.url ? 'crumb' : ''}`}>
-                <a class={`${c.url ? 'anchor' : ''}`} href={c.url}>
-                  <BreadcrumbTitle pageData={$page.data} {routeModules} crumb={c} />
+                <a class={`whitespace-nowrap ${c.url ? 'anchor' : ''}`} href={c.url}>
+                  {c.title}
                 </a>
               </li>
             {/each}
