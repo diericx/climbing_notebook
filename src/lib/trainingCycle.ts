@@ -291,7 +291,7 @@ export class TrainingCycleRepo {
     return await this.prisma.trainingCycle.findMany({
       where,
       orderBy: {
-        name: 'desc',
+        name: 'asc',
       },
       include: {
         owner: true,

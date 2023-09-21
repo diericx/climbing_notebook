@@ -27,15 +27,15 @@
     <h1 class="font-bold">{trainingCycle.name}</h1>
   </div>
 
-  <div class="flex">
-    {#if session?.user}
+  {#if session?.user.userId == trainingCycle.ownerId}
+    <div class="flex">
       <div>
         <a class="btn btn-sm variant-ringed" href={`/trainingCycle/${trainingCycle.id}/edit`}
           >Edit this cycle</a
         >
       </div>
-    {/if}
-  </div>
+    </div>
+  {/if}
 </div>
 <WeeklyCalendar
   {trainingCycle}

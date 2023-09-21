@@ -10,22 +10,33 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
 
-  const trainingCycles = await trainingCycleRepo.get(
+  const ownedTrainingCycles = await trainingCycleRepo.get({
+    ownerId: session?.user.userId,
+    trainingProgramId: null,
+  });
+
+  const savedTrainingCycles = await trainingCycleRepo.get(
     {
-      trainingProgramId: null,
-      OR: [
-        {
-          isPublic: true,
+      saves: {
+        some: {
+          userId: session?.user.userId,
         },
-        {
-          ownerId: session?.user.userId,
-        },
-      ],
+      },
     },
     session ? { userId: session.user.userId } : undefined
   );
+
+  const publicTrainingCycles = await trainingCycleRepo.get(
+    {
+      isPublic: true,
+    },
+    session ? { userId: session.user.userId } : undefined
+  );
+
   return {
-    trainingCycles,
+    ownedTrainingCycles,
+    savedTrainingCycles,
+    publicTrainingCycles,
     session,
   };
 };

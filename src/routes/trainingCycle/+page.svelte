@@ -19,10 +19,12 @@
 
   $: session = data.session;
   // Ordering by count not supported in prisma...
-  $: trainingCycles = data.trainingCycles.sort((a, b) => b._count.saves - a._count.saves);
+  $: publicTrainingCycles = data.publicTrainingCycles.sort(
+    (a, b) => b._count.saves - a._count.saves
+  );
   // We only query for saves related to the current user, so length check will be fine
-  $: savedTrainingCycles = data.trainingCycles.filter((c) => c.saves.length > 0);
-  $: ownedTrainingCycles = data.trainingCycles.filter((c) => c.ownerId == session?.user.userId);
+  $: savedTrainingCycles = data.savedTrainingCycles;
+  $: ownedTrainingCycles = data.ownedTrainingCycles;
 </script>
 
 <div>
@@ -74,7 +76,7 @@
             </List>
           {/if}
         {:else if tabSet == 1}
-          {#if ownedTrainingCycles.length == 0}
+          {#if savedTrainingCycles.length == 0}
             <p class="text-gray-400 italic">You have no saved training cycles.</p>
           {:else}
             <List>
@@ -88,7 +90,7 @@
         {:else if tabSet === 2}
           <List>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-              {#each trainingCycles as trainingCycle}
+              {#each publicTrainingCycles as trainingCycle}
                 <ListItemTrainingCycle {trainingCycle} {session} />
               {/each}
             </div>

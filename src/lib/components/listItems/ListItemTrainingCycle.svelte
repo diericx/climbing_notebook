@@ -26,10 +26,7 @@
   };
 </script>
 
-<ListItem
-  href={`/community/trainingCycle/${trainingCycle.id}`}
-  showElipses={trainingCycle.ownerId == session?.user?.userId}
->
+<ListItem href={`/trainingCycle/${trainingCycle.id}`} showElipses={true}>
   <div slot="title">
     <div class="text-xl">
       <b>
@@ -38,86 +35,96 @@
     </div>
   </div>
   <div slot="popup-buttons">
-    <a class="btn btn-sm justify-start" href="/trainingCycle/{trainingCycle.id}/edit">
-      <Icon icon="material-symbols:edit-outline" height="18" />
-      <span> Edit </span>
-    </a>
+    {#if session?.user.userId == trainingCycle.ownerId}
+      <a class="btn btn-sm justify-start" href="/trainingCycle/{trainingCycle.id}/edit">
+        <Icon icon="material-symbols:edit-outline" height="18" />
+        <span> Edit </span>
+      </a>
 
-    <FormButton
-      action={`/trainingCycle/${trainingCycle.id}?/duplicate&redirectTo=/trainingCycle`}
-      class="btn btn-sm w-full justify-start"
-    >
-      <Icon icon="material-symbols:control-point-duplicate" height="18" />
-      <span> Duplicate </span>
-    </FormButton>
-
-    {#if !trainingCycle.isPublic}
       <FormButton
-        action={`/trainingCycle/${trainingCycle.id}?/publish`}
+        action={`/trainingCycle/${trainingCycle.id}?/duplicate&redirectTo=/trainingCycle`}
         class="btn btn-sm w-full justify-start"
-        onSuccess={() => {
-          toastStore.trigger({
-            message:
-              'Your Training Cycle is now public and will show up in the Community Training Cycles page.',
-            timeout: 5000,
-          });
-        }}
       >
-        <Icon icon="material-symbols:share" height="18" />
-        <span> Publish </span>
+        <Icon icon="material-symbols:control-point-duplicate" height="18" />
+        <span> Duplicate </span>
       </FormButton>
-      <button
-        class="btn btn-sm w-full justify-start"
-        use:clipboard={`https://climbingnotebook.com/trainingCycle/${trainingCycle.id}?token=${trainingCycle.privateAccessToken}`}
-        on:click={() => {
-          toastStore.trigger({
-            message: 'Private URL copied',
-          });
-        }}
-      >
-        <Icon icon="ph:link-bold" height="18" />
-        <span> Copy Private URL </span>
-      </button>
-    {/if}
 
-    {#if trainingCycle.isPublic}
-      <FormButton
-        action={`/trainingCycle/${trainingCycle.id}?/hide`}
-        class="btn btn-sm w-full justify-start"
-        onSuccess={() => {
-          toastStore.trigger({
-            message:
-              'Your Training Cycle is now hidden and will not show up in the Community Training Cycles page.',
-            timeout: 5000,
-          });
-        }}
-      >
-        <Icon icon="mdi:hide-outline" height="18" />
-        <span> Hide </span>
-      </FormButton>
-      <div>
+      {#if !trainingCycle.isPublic}
+        <FormButton
+          action={`/trainingCycle/${trainingCycle.id}?/publish`}
+          class="btn btn-sm w-full justify-start"
+          onSuccess={() => {
+            toastStore.trigger({
+              message:
+                'Your Training Cycle is now public and will show up in the Community Training Cycles page.',
+              timeout: 5000,
+            });
+          }}
+        >
+          <Icon icon="material-symbols:share" height="18" />
+          <span> Publish </span>
+        </FormButton>
         <button
           class="btn btn-sm w-full justify-start"
-          use:clipboard={`https://climbingnotebook.com/community/trainingCycle/${trainingCycle.id}`}
+          use:clipboard={`https://climbingnotebook.com/trainingCycle/${trainingCycle.id}?token=${trainingCycle.privateAccessToken}`}
           on:click={() => {
             toastStore.trigger({
-              message: 'Public URL copied',
+              message: 'Private URL copied',
             });
           }}
         >
           <Icon icon="ph:link-bold" height="18" />
-          <span> Copy Public URL </span>
+          <span> Copy Private URL </span>
         </button>
-      </div>
+      {/if}
+
+      {#if trainingCycle.isPublic}
+        <FormButton
+          action={`/trainingCycle/${trainingCycle.id}?/hide`}
+          class="btn btn-sm w-full justify-start"
+          onSuccess={() => {
+            toastStore.trigger({
+              message:
+                'Your Training Cycle is now hidden and will not show up in the Community Training Cycles page.',
+              timeout: 5000,
+            });
+          }}
+        >
+          <Icon icon="mdi:hide-outline" height="18" />
+          <span> Hide </span>
+        </FormButton>
+        <div>
+          <button
+            class="btn btn-sm w-full justify-start"
+            use:clipboard={`https://climbingnotebook.com/community/trainingCycle/${trainingCycle.id}`}
+            on:click={() => {
+              toastStore.trigger({
+                message: 'Public URL copied',
+              });
+            }}
+          >
+            <Icon icon="ph:link-bold" height="18" />
+            <span> Copy Public URL </span>
+          </button>
+        </div>
+      {/if}
+      <FormButton
+        action={`/trainingCycle/${trainingCycle.id}?/delete`}
+        class="btn btn-sm w-full justify-start"
+        onClick={confirmDelete}
+      >
+        <Icon icon="mdi:trash-outline" height="18" />
+        <span> Delete </span>
+      </FormButton>
+    {:else}
+      <FormButton
+        action={`/trainingCycle/${trainingCycle.id}?/duplicate&redirectTo=/trainingCycle`}
+        class="btn btn-sm w-full justify-start"
+      >
+        <Icon icon="material-symbols:control-point-duplicate" height="18" />
+        <span> Duplicate </span>
+      </FormButton>
     {/if}
-    <FormButton
-      action={`/trainingCycle/${trainingCycle.id}?/delete`}
-      class="btn btn-sm w-full justify-start"
-      onClick={confirmDelete}
-    >
-      <Icon icon="mdi:trash-outline" height="18" />
-      <span> Delete </span>
-    </FormButton>
   </div>
 
   <div slot="content" style:height="100%" class="text-gray-400 flex flex-col justify-between">
