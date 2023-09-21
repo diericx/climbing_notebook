@@ -109,14 +109,7 @@
       ],
     },
     { title: 'Climbing', children: [{ title: 'Project Notes', url: '/project' }] },
-    {
-      title: 'Community Marketplace',
-      children: [
-        { title: 'Widgets', url: '/widget' },
-        { title: 'Training Cycles', url: '/community/trainingCycle' },
-        { title: 'Training Programs', url: '/community/trainingProgram' },
-      ],
-    },
+    { title: 'Widgets', url: '/widget' },
     { title: 'Feedback', url: '/feedback' },
   ];
 </script>
