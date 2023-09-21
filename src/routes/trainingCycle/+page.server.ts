@@ -5,22 +5,25 @@ import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals, url }) => {
+export const load: PageServerLoad = async ({ locals }) => {
   const session = await locals.auth.validate();
 
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
 
-  const trainingCycles = await trainingCycleRepo.get({
-    trainingProgramId: null,
-    OR: [
-      {
-        isPublic: true,
-      },
-      {
-        ownerId: session?.user.userId,
-      },
-    ],
-  });
+  const trainingCycles = await trainingCycleRepo.get(
+    {
+      trainingProgramId: null,
+      OR: [
+        {
+          isPublic: true,
+        },
+        {
+          ownerId: session?.user.userId,
+        },
+      ],
+    },
+    session ? { userId: session.user.userId } : undefined
+  );
   return {
     trainingCycles,
     session,

@@ -10,9 +10,20 @@
   export let trainingCycle: Prisma.TrainingCycleGetPayload<{
     include: {
       owner: true;
+      _count: {
+        select: {
+          saves: true;
+        };
+      };
+      saves: true;
     };
   }>;
   export let session: Session | null;
+
+  $: saves = trainingCycle.saves;
+  $: isTrainingCycleSavedByUser = () => {
+    return saves.find((s) => s.userId == session?.user.userId);
+  };
 </script>
 
 <ListItem
@@ -134,9 +145,42 @@
           </div>
         </div>
         <div class="text-gray-600 flex items-center">
-          <p>
-            Used <b>{trainingCycle.duplications} time{trainingCycle.duplications == 1 ? '' : 's'}</b
+          {#if session != null && trainingCycle.ownerId != session.user.userId}
+            {#if isTrainingCycleSavedByUser()}
+              <FormButton
+                action={`/trainingCycle/${trainingCycle.id}?/unsave`}
+                class="btn btn-sm w-full justify-start"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <Icon icon="material-symbols:bookmark" height="18" />
+              </FormButton>
+            {:else}
+              <FormButton
+                action={`/trainingCycle/${trainingCycle.id}?/save`}
+                class="btn btn-sm w-full justify-start"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <Icon icon="material-symbols:bookmark-outline" height="18" />
+              </FormButton>
+            {/if}
+          {:else}
+            <FormButton
+              action={`/trainingCycle/${trainingCycle.id}?/save`}
+              class="btn btn-sm w-full justify-start"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              disabled
             >
+              <Icon icon="material-symbols:bookmark-outline" height="18" />
+            </FormButton>
+          {/if}
+          <p>
+            <b>{trainingCycle._count.saves} </b>
           </p>
         </div>
       </div>

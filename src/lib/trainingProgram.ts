@@ -133,7 +133,10 @@ export class TrainingProgramRepo {
     });
   }
 
-  async get(where: Prisma.TrainingProgramWhereInput) {
+  async get(
+    where: Prisma.TrainingProgramWhereInput,
+    savesWhere?: Prisma.TrainingProgramSaveWhereInput
+  ) {
     // Fetch all
     return await this.prisma.trainingProgram.findMany({
       where,
@@ -145,6 +148,7 @@ export class TrainingProgramRepo {
         trainingProgramScheduledSlots: true,
         trainingCycles: true,
         trainingProgramActivations: true,
+        saves: savesWhere ? { where: savesWhere } : undefined,
       },
     });
   }
@@ -270,7 +274,7 @@ export class TrainingProgramRepo {
 
   async save(id: string, ownerId: string) {
     const trainingProgram = await this.getOne(id);
-    if (!trainingProgram.isPublic || trainingProgram.ownerId != ownerId) {
+    if (!trainingProgram.isPublic && trainingProgram.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this program');
     }
 
@@ -298,7 +302,7 @@ export class TrainingProgramRepo {
 
   async unsave(id: string, ownerId: string) {
     const trainingProgram = await this.getOne(id);
-    if (!trainingProgram.isPublic || trainingProgram.ownerId != ownerId) {
+    if (!trainingProgram.isPublic && trainingProgram.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this program');
     }
 
@@ -308,7 +312,7 @@ export class TrainingProgramRepo {
       },
       data: {
         saves: {
-          disconnect: {
+          delete: {
             trainingProgramId_userId: {
               trainingProgramId: id,
               userId: ownerId,

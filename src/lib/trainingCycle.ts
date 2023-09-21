@@ -283,12 +283,15 @@ export class TrainingCycleRepo {
     });
   }
 
-  async get(where: Prisma.TrainingCycleWhereInput) {
+  async get(
+    where: Prisma.TrainingCycleWhereInput,
+    savesWhere?: Prisma.TrainingCycleSaveWhereInput
+  ) {
     // Fetch all
     return await this.prisma.trainingCycle.findMany({
       where,
       orderBy: {
-        duplications: 'desc',
+        name: 'desc',
       },
       include: {
         owner: true,
@@ -327,6 +330,16 @@ export class TrainingCycleRepo {
           orderBy: {
             // Note: ui depends on this being sorted in this way
             dayOfTheWeek: 'asc',
+          },
+        },
+        saves: savesWhere
+          ? {
+              where: savesWhere,
+            }
+          : undefined,
+        _count: {
+          select: {
+            saves: true,
           },
         },
       },
@@ -379,8 +392,8 @@ export class TrainingCycleRepo {
 
   async save(id: number, ownerId: string) {
     const trainingCycle = await this.getOne(id);
-    if (!trainingCycle.isPublic || trainingCycle.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this cycle');
+    if (!trainingCycle.isPublic && trainingCycle.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to save this cycle');
     }
 
     await this.prisma.trainingCycle.update({
@@ -407,7 +420,7 @@ export class TrainingCycleRepo {
 
   async unsave(id: number, ownerId: string) {
     const trainingCycle = await this.getOne(id);
-    if (!trainingCycle.isPublic || trainingCycle.ownerId != ownerId) {
+    if (!trainingCycle.isPublic && trainingCycle.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this cycle');
     }
 
@@ -417,7 +430,7 @@ export class TrainingCycleRepo {
       },
       data: {
         saves: {
-          disconnect: {
+          delete: {
             trainingCycleId_userId: {
               trainingCycleId: id,
               userId: ownerId,
