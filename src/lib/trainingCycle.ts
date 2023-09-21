@@ -114,10 +114,7 @@ export class TrainingCycleRepo {
     ownerId: string,
     data?: {
       name?: string;
-      nameSuffix?: string;
-      isPublic?: boolean;
       description?: string;
-      parentId?: number;
     }
   ) {
     const program = await this.getOne(id);
@@ -132,13 +129,11 @@ export class TrainingCycleRepo {
     // Create the new program
     const newCycle = await this.prisma.trainingCycle.create({
       data: {
-        name:
-          data?.name ||
-          program.name + (data?.nameSuffix == undefined ? ' Duplicate' : data?.nameSuffix),
+        name: data?.name || program.name + ' Duplicate',
         ownerId,
-        isPublic: data?.isPublic || false,
+        isPublic: false,
         description: data?.description || null,
-        parentId: data?.parentId || null,
+        parentId: program.id,
         days: {
           create: Array.from(Array(7)).map((_, i) => {
             return {
@@ -254,6 +249,17 @@ export class TrainingCycleRepo {
         }
       }
     }
+
+    await this.prisma.trainingCycle.update({
+      where: {
+        id: program.id,
+      },
+      data: {
+        duplications: {
+          increment: 1,
+        },
+      },
+    });
 
     return newCycle;
   }
@@ -371,17 +377,52 @@ export class TrainingCycleRepo {
     });
   }
 
-  // Performs same functionality as duplicate, but also increments use count
-  // of the parent
-  async import(id: number, ownerId: string) {
-    await this.duplicate(id, ownerId, { nameSuffix: '', isPublic: false, parentId: id });
+  async save(id: number, ownerId: string) {
+    const trainingCycle = await this.getOne(id);
+    if (!trainingCycle.isPublic || trainingCycle.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this cycle');
+    }
+
     await this.prisma.trainingCycle.update({
       where: {
         id,
       },
       data: {
-        useCount: {
-          increment: 1,
+        saves: {
+          connectOrCreate: {
+            where: {
+              trainingCycleId_userId: {
+                trainingCycleId: id,
+                userId: ownerId,
+              },
+            },
+            create: {
+              userId: ownerId,
+            },
+          },
+        },
+      },
+    });
+  }
+
+  async unsave(id: number, ownerId: string) {
+    const trainingCycle = await this.getOne(id);
+    if (!trainingCycle.isPublic || trainingCycle.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this cycle');
+    }
+
+    await this.prisma.trainingCycle.update({
+      where: {
+        id,
+      },
+      data: {
+        saves: {
+          disconnect: {
+            trainingCycleId_userId: {
+              trainingCycleId: id,
+              userId: ownerId,
+            },
+          },
         },
       },
     });

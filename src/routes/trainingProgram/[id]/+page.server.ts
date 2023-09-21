@@ -70,11 +70,20 @@ export const actions: Actions = {
     return { success: true };
   },
 
-  import: async ({ locals, url, params }) => {
+  save: async ({ locals, url, params }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
 
     const repo = new TrainingProgramRepo(prisma);
-    await repo.import(params.id, user.userId);
+    await repo.save(params.id, user.userId);
+
+    return { success: true };
+  },
+
+  unsave: async ({ locals, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+
+    const repo = new TrainingProgramRepo(prisma);
+    await repo.unsave(params.id, user.userId);
 
     return { success: true };
   },
@@ -99,7 +108,7 @@ export const actions: Actions = {
     return { success: true };
   },
 
-  // Set isPublis to false
+  // Set isPublish to false
   hide: async ({ locals, url, params }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
     const id = params.id;

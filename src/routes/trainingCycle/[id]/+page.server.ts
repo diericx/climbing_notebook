@@ -63,15 +63,24 @@ export const actions: Actions = {
     return { success: true };
   },
 
-  // Same as duplicate but assumed it is being called on a template so
-  // it will set isPublic to false and parentID
-  import: async ({ locals, url, params }) => {
+  save: async ({ locals, url, params }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
     const id = Number(params.id);
 
     const repo = new TrainingCycleRepo(prisma);
 
-    await repo.import(id, user.userId);
+    await repo.save(id, user.userId);
+
+    return { success: true };
+  },
+
+  unsave: async ({ locals, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+    const id = Number(params.id);
+
+    const repo = new TrainingCycleRepo(prisma);
+
+    await repo.unsave(id, user.userId);
 
     return { success: true };
   },

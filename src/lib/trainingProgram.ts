@@ -174,11 +174,7 @@ export class TrainingProgramRepo {
     });
   }
 
-  async duplicate(
-    id: string,
-    ownerId: string,
-    data?: { name?: string; nameSuffix?: string; parentId?: string }
-  ) {
+  async duplicate(id: string, ownerId: string, data?: { name?: string }) {
     const trainingProgram = await this.prisma.trainingProgram.findUnique({
       where: {
         id,
@@ -207,12 +203,13 @@ export class TrainingProgramRepo {
     // Note: id must be manually generated here so we can use it in the nested connect
     // below
     const newTrainingProgramId = cuid();
-    return await this.prisma.trainingProgram.create({
+    const updatedProgram = await this.prisma.trainingProgram.create({
       data: {
         ...trainingProgram,
         ...data,
         id: newTrainingProgramId,
-        name: data?.name || trainingProgram.name + (data?.nameSuffix || ' Duplicate'),
+        name: data?.name || trainingProgram.name + ' Duplicate',
+        parentId: trainingProgram.id,
         ownerId,
         // Dupes always start private
         isPublic: false,
@@ -256,12 +253,7 @@ export class TrainingProgramRepo {
         },
       },
     });
-  }
 
-  // Performs same functionality as duplicate, but also increments use count
-  // of the parent
-  async import(id: string, ownerId: string) {
-    await this.duplicate(id, ownerId, { nameSuffix: '', parentId: id });
     await this.prisma.trainingProgram.update({
       where: {
         id,
@@ -269,6 +261,59 @@ export class TrainingProgramRepo {
       data: {
         duplications: {
           increment: 1,
+        },
+      },
+    });
+
+    return updatedProgram;
+  }
+
+  async save(id: string, ownerId: string) {
+    const trainingProgram = await this.getOne(id);
+    if (!trainingProgram.isPublic || trainingProgram.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this program');
+    }
+
+    await this.prisma.trainingProgram.update({
+      where: {
+        id,
+      },
+      data: {
+        saves: {
+          connectOrCreate: {
+            where: {
+              trainingProgramId_userId: {
+                trainingProgramId: id,
+                userId: ownerId,
+              },
+            },
+            create: {
+              userId: ownerId,
+            },
+          },
+        },
+      },
+    });
+  }
+
+  async unsave(id: string, ownerId: string) {
+    const trainingProgram = await this.getOne(id);
+    if (!trainingProgram.isPublic || trainingProgram.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this program');
+    }
+
+    await this.prisma.trainingProgram.update({
+      where: {
+        id,
+      },
+      data: {
+        saves: {
+          disconnect: {
+            trainingProgramId_userId: {
+              trainingProgramId: id,
+              userId: ownerId,
+            },
+          },
         },
       },
     });

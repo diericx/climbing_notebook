@@ -142,7 +142,7 @@ model TrainingProgram {
 
   // Fields for template functionality
   isPublic           Boolean @default(false) @map("is_public")
-  description        String
+  description        String?
   duplications       Int     @default(0) @map("use_count")
   parentId           String? @map("parent_id")
   privateAccessToken String  @default(dbgenerated("gen_random_uuid()")) @map("private_access_token") @db.Uuid
@@ -393,7 +393,7 @@ model AuthUser {
   TrainingProgram           TrainingProgram[]
   TrainingProgramActivation TrainingProgramActivation[]
   savedTrainingCycles       TrainingCycleSave[]
-  TrainingProgramSave       TrainingProgramSave[]
+  saves                     TrainingProgramSave[]
 
   @@map("user")
 }
