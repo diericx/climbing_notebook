@@ -35,7 +35,11 @@
       </b>
     </div>
     {#if showVisibility}
-      <div class:text-emerald-400={trainingProgram.isPublic} class="font-bold text-gray-400">
+      <div
+        class:text-emerald-400={trainingProgram.isPublic}
+        class:text-gray-400={!trainingProgram.isPublic}
+        class="font-bold"
+      >
         {trainingProgram.isPublic ? 'Public' : 'Private'}
       </div>
     {/if}

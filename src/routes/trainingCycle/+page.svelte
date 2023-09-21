@@ -51,9 +51,9 @@
 
     <p class="mb-8 text-gray-400">
       Training Cycles are one week long exercise plans. Training Cycles that you have created or
-      starred will be available to all of your <a class="link" href="/trainingProgram"
+      saved will be available to all of your <a class="link" href="/trainingProgram"
         >Training Programs</a
-      > and widgets. You can also view all published Cycles from the community.
+      > and widgets. You can also view all published Cycles from the community in the Browse tab.
     </p>
 
     <TabGroup>
