@@ -6,7 +6,8 @@
 
   export let data: PageData;
   $: trainingProgramActivations = data.trainingProgramActivations;
-  $: trainingPrograms = data.trainingPrograms;
+  $: ownedTrainingPrograms = data.ownedTrainingPrograms;
+  $: savedTrainingPrograms = data.savedTrainingPrograms;
 </script>
 
 <div class="flex justify-between mb-4">
@@ -22,7 +23,8 @@
             action: `/trainingProgram?/newActivation`,
             title: 'Schedule Program',
             formProps: {
-              trainingPrograms,
+              ownedTrainingPrograms,
+              savedTrainingPrograms,
             },
           },
         })}
@@ -33,4 +35,9 @@
   </div>
 </div>
 
-<Calendar journalEntries={[]} calendarEvents={[]} {trainingProgramActivations} {trainingPrograms} />
+<Calendar
+  journalEntries={[]}
+  calendarEvents={[]}
+  {trainingProgramActivations}
+  trainingPrograms={[...ownedTrainingPrograms, ...savedTrainingPrograms]}
+/>

@@ -8,7 +8,13 @@
 
   export let superForm: SuperForm<z.AnyZodObject, any>;
   export let showSubmitButton = false;
-  export let trainingPrograms: Prisma.TrainingProgramGetPayload<{
+  export let ownedTrainingPrograms: Prisma.TrainingProgramGetPayload<{
+    select: {
+      id: true;
+      name: true;
+    };
+  }>[];
+  export let savedTrainingPrograms: Prisma.TrainingProgramGetPayload<{
     select: {
       id: true;
       name: true;
@@ -24,7 +30,12 @@
   label="Training Program"
   form={superForm}
 >
-  {#each trainingPrograms as trainingProgram}
+  <option disabled>Created by you</option>
+  {#each ownedTrainingPrograms as trainingProgram}
+    <option value={trainingProgram.id}>{trainingProgram.name}</option>
+  {/each}
+  <option disabled>Saved</option>
+  {#each savedTrainingPrograms as trainingProgram}
     <option value={trainingProgram.id}>{trainingProgram.name}</option>
   {/each}
 </SelectField>
