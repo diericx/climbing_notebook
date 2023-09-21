@@ -267,7 +267,7 @@ export class TrainingProgramRepo {
         id,
       },
       data: {
-        useCount: {
+        duplications: {
           increment: 1,
         },
       },

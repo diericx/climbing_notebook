@@ -143,7 +143,7 @@ model TrainingProgram {
   // Fields for template functionality
   isPublic           Boolean @default(false) @map("is_public")
   description        String
-  useCount           Int     @default(0) @map("use_count")
+  duplications       Int     @default(0) @map("use_count")
   parentId           String? @map("parent_id")
   privateAccessToken String  @default(dbgenerated("gen_random_uuid()")) @map("private_access_token") @db.Uuid
 
@@ -152,8 +152,19 @@ model TrainingProgram {
   trainingProgramActivations    TrainingProgramActivation[]
   trainingCycles                TrainingCycle[]
   trainingProgramScheduledSlots TrainingProgramScheduledSlot[]
+  saves                         TrainingProgramSave[]
 
   @@map("training_program")
+}
+
+model TrainingProgramSave {
+  trainingProgram   TrainingProgram @relation(fields: [trainingProgramId], references: [id])
+  trainingProgramId String          @map("training_program_id")
+  user              AuthUser        @relation(fields: [userId], references: [id])
+  userId            String          @map("user_id")
+
+  @@id([trainingProgramId, userId])
+  @@map("training_program_on_auth_user")
 }
 
 model TrainingProgramScheduledSlot {
@@ -188,7 +199,7 @@ model TrainingCycle {
   // Fields for template functionality
   isPublic           Boolean @default(false) @map("is_public")
   description        String?
-  useCount           Int     @default(0) @map("use_count")
+  duplications       Int     @default(0) @map("use_count")
   parentId           Int?    @map("parent_id")
   privateAccessToken String  @default(dbgenerated("gen_random_uuid()")) @map("private_access_token") @db.Uuid
 
@@ -202,9 +213,20 @@ model TrainingCycle {
   profile                       Profile[]
   Widget                        Widget[]
   trainingProgramScheduledSlots TrainingProgramScheduledSlot[]
+  saves                         TrainingCycleSave[]
 
   @@unique([trainingProgramId, name])
   @@map("training_cycle")
+}
+
+model TrainingCycleSave {
+  trainingCycle   TrainingCycle @relation(fields: [trainingCycleId], references: [id])
+  trainingCycleId Int           @map("training_cycle_id")
+  user            AuthUser      @relation(fields: [userId], references: [id])
+  userId          String        @map("user_id")
+
+  @@id([trainingCycleId, userId])
+  @@map("training_cycle_on_auth_user")
 }
 
 model Metric {
@@ -370,6 +392,8 @@ model AuthUser {
   Widget                    Widget[]
   TrainingProgram           TrainingProgram[]
   TrainingProgramActivation TrainingProgramActivation[]
+  savedTrainingCycles       TrainingCycleSave[]
+  TrainingProgramSave       TrainingProgramSave[]
 
   @@map("user")
 }

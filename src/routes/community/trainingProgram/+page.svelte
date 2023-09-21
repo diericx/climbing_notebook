@@ -75,7 +75,7 @@
                   </div>
                   <div class="text-gray-600 flex items-center">
                     <p>
-                      Used <b>{p.useCount} time{p.useCount == 1 ? '' : 's'}</b>
+                      Used <b>{p.duplications} time{p.duplications == 1 ? '' : 's'}</b>
                     </p>
                   </div>
                 </div>

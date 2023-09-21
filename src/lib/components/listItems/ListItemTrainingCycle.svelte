@@ -135,7 +135,8 @@
         </div>
         <div class="text-gray-600 flex items-center">
           <p>
-            Used <b>{trainingCycle.useCount} time{trainingCycle.useCount == 1 ? '' : 's'}</b>
+            Used <b>{trainingCycle.duplications} time{trainingCycle.duplications == 1 ? '' : 's'}</b
+            >
           </p>
         </div>
       </div>
