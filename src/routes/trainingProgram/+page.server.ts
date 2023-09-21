@@ -1,5 +1,4 @@
 import { prisma } from '$lib/prisma';
-import { ProfileRepo } from '$lib/profile';
 import {
   trainingProgramActivationSchema,
   TrainingProgramRepo,
@@ -13,17 +12,37 @@ import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
   const { user } = await getSessionOrRedirect({ locals, url });
+  const session = await locals.auth.validate();
 
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
-  const profileRepo = new ProfileRepo(prisma);
 
-  const trainingPrograms = await trainingProgramRepo.get({
-    ownerId: user.userId,
+  const ownedTrainingPrograms = await trainingProgramRepo.get({
+    ownerId: session?.user.userId,
   });
-  const profile = await profileRepo.getOne(user?.userId);
+
+  const savedTrainingPrograms = await trainingProgramRepo.get(
+    {
+      saves: {
+        some: {
+          userId: session?.user.userId,
+        },
+      },
+    },
+    session ? { userId: session.user.userId } : undefined
+  );
+
+  const publicTrainingPrograms = await trainingProgramRepo.get(
+    {
+      isPublic: true,
+    },
+    session ? { userId: session.user.userId } : undefined
+  );
+
   return {
-    trainingPrograms,
-    profile,
+    ownedTrainingPrograms,
+    savedTrainingPrograms,
+    publicTrainingPrograms,
+    session,
   };
 };
 

@@ -149,6 +149,11 @@ export class TrainingProgramRepo {
         trainingCycles: true,
         trainingProgramActivations: true,
         saves: savesWhere ? { where: savesWhere } : undefined,
+        _count: {
+          select: {
+            saves: true,
+          },
+        },
       },
     });
   }

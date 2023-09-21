@@ -22,7 +22,6 @@
   $: publicTrainingCycles = data.publicTrainingCycles.sort(
     (a, b) => b._count.saves - a._count.saves
   );
-  // We only query for saves related to the current user, so length check will be fine
   $: savedTrainingCycles = data.savedTrainingCycles;
   $: ownedTrainingCycles = data.ownedTrainingCycles;
 </script>
