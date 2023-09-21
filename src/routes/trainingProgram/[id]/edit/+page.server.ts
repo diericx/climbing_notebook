@@ -12,13 +12,21 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
   const trainingProgram = await trainingProgramRepo.getOneAndValidateOwner(id, user?.userId);
-  const trainingCycles = await trainingCycleRepo.get({
+  const ownedTrainingCycles = await trainingCycleRepo.get({
     ownerId: user.userId,
     trainingProgramId: null,
+  });
+  const savedTrainingCycles = await trainingCycleRepo.get({
+    saves: {
+      some: {
+        userId: user.userId,
+      },
+    },
   });
 
   return {
     trainingProgram,
-    trainingCycles,
+    ownedTrainingCycles,
+    savedTrainingCycles,
   };
 };

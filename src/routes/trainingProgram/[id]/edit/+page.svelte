@@ -9,7 +9,8 @@
 
   export let data: PageData;
   $: trainingProgram = data.trainingProgram;
-  $: trainingCycles = data.trainingCycles;
+  $: ownedTrainingCycles = data.ownedTrainingCycles;
+  $: savedTrainingCycles = data.savedTrainingCycles;
 </script>
 
 <div class="mb-4 flex items-center justify-between">
@@ -80,13 +81,11 @@
 </div>
 {#if trainingProgram.isPublic}
   <aside class="alert variant-ghost">
-    <Icon icon="ep:warn-triangle-filled" height="18" />
-    <div class="alert-message">
-      <p>
-        You are editing a public Training Program. Any changes made will be public, and will edit
-        the previously shared version.
-      </p>
-    </div>
+    <span class="alert-message">
+      <Icon class="inline" icon="ep:warn-triangle-filled" height="18" />
+      You are editing a public Training Program. Any changes made will be public, and will edit the previously
+      shared version.
+    </span>
   </aside>
 {/if}
 
@@ -207,7 +206,8 @@
               title: 'Add Slot',
               formProps: {
                 trainingCyclesFromTrainingProgram: trainingProgram.trainingCycles,
-                trainingCyclesFromAccount: trainingCycles,
+                ownedTrainingCycles,
+                savedTrainingCycles,
                 order: 0,
               },
             },
@@ -264,7 +264,8 @@
                           title: 'Edit Slot',
                           formProps: {
                             trainingCyclesFromTrainingProgram: trainingProgram.trainingCycles,
-                            trainingCyclesFromAccount: trainingCycles,
+                            ownedTrainingCycles,
+                            savedTrainingCycles,
                           },
                         },
                       })}

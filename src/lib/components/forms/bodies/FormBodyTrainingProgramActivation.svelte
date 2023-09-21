@@ -34,7 +34,7 @@
   {#each ownedTrainingPrograms as trainingProgram}
     <option value={trainingProgram.id}>{trainingProgram.name}</option>
   {/each}
-  <option disabled>Saved</option>
+  <option disabled>Saved Community Programs</option>
   {#each savedTrainingPrograms as trainingProgram}
     <option value={trainingProgram.id}>{trainingProgram.name}</option>
   {/each}
