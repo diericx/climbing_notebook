@@ -58,9 +58,9 @@
     </p>
 
     <TabGroup>
-      <Tab bind:group={tabSet} name="tab1" value={0}>My Cycles</Tab>
-      <Tab bind:group={tabSet} name="tab2" value={1}>Saved Cycles</Tab>
-      <Tab bind:group={tabSet} name="tab3" value={2}>All</Tab>
+      <Tab bind:group={tabSet} name="tab1" value={0}>Created by me</Tab>
+      <Tab bind:group={tabSet} name="tab2" value={1}>Saved</Tab>
+      <Tab bind:group={tabSet} name="tab3" value={2}>Browse</Tab>
       <!-- Tab Panels --->
       <svelte:fragment slot="panel">
         {#if tabSet === 0}
@@ -70,7 +70,7 @@
             <List>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {#each ownedTrainingCycles as trainingCycle}
-                  <ListItemTrainingCycle {trainingCycle} {session} />
+                  <ListItemTrainingCycle {trainingCycle} {session} showVisibility={true} />
                 {/each}
               </div>
             </List>

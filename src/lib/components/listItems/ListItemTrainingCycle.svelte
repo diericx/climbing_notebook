@@ -19,6 +19,7 @@
     };
   }>;
   export let session: Session | null;
+  export let showVisibility = false;
 
   $: saves = trainingCycle.saves;
   $: isTrainingCycleSavedByUser = () => {
@@ -33,6 +34,11 @@
         {trainingCycle.name}
       </b>
     </div>
+    {#if showVisibility}
+      <div class:text-emerald-400={trainingCycle.isPublic} class="font-bold text-gray-400">
+        {trainingCycle.isPublic ? 'Public' : 'Private'}
+      </div>
+    {/if}
   </div>
   <div slot="popup-buttons">
     {#if session?.user.userId == trainingCycle.ownerId}
