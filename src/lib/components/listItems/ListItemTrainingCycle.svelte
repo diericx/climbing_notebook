@@ -132,8 +132,9 @@
       </FormButton>
     {:else}
       <FormButton
-        action={`/trainingCycle/${trainingCycle.id}?/duplicate&redirectTo=/trainingCycle`}
+        action={`/trainingCycle/${trainingCycle.id}?/duplicate`}
         class="btn btn-sm w-full justify-start"
+        onSuccess={onSuccessDuplicate}
       >
         <Icon icon="material-symbols:control-point-duplicate" height="18" />
         <span> Duplicate </span>

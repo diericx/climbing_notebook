@@ -20,6 +20,7 @@
   }>;
   export let session: Session | null;
   export let showVisibility = false;
+  export let onSuccessDuplicate = () => {};
 
   $: saves = trainingProgram.saves;
   $: isTrainingProgramSavedByUser = () => {
@@ -52,8 +53,9 @@
       </a>
 
       <FormButton
-        action={`/trainingProgram/${trainingProgram.id}?/duplicate&redirectTo=/trainingProgram`}
+        action={`/trainingProgram/${trainingProgram.id}?/duplicate`}
         class="btn btn-sm w-full justify-start"
+        onSuccess={onSuccessDuplicate}
       >
         <Icon icon="material-symbols:control-point-duplicate" height="18" />
         <span> Duplicate </span>
@@ -128,8 +130,9 @@
       </FormButton>
     {:else}
       <FormButton
-        action={`/trainingProgram/${trainingProgram.id}?/duplicate&redirectTo=/trainingProgram`}
+        action={`/trainingProgram/${trainingProgram.id}?/duplicate`}
         class="btn btn-sm w-full justify-start"
+        onSuccess={onSuccessDuplicate}
       >
         <Icon icon="material-symbols:control-point-duplicate" height="18" />
         <span> Duplicate </span>

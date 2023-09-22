@@ -15,8 +15,7 @@
 
   export let data: PageData;
 
-  let tabSet: number = 0;
-
+  $: tabSet = 0;
   $: session = data.session;
   // Ordering by count not supported in prisma...
   $: publicTrainingPrograms = data.publicTrainingPrograms.sort(
@@ -80,7 +79,11 @@
             <List>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {#each savedTrainingPrograms as trainingProgram}
-                  <ListItemTrainingProgram {trainingProgram} {session} />
+                  <ListItemTrainingProgram
+                    {trainingProgram}
+                    {session}
+                    onSuccessDuplicate={() => (tabSet = 0)}
+                  />
                 {/each}
               </div>
             </List>
@@ -89,7 +92,11 @@
           <List>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
               {#each publicTrainingPrograms as trainingProgram}
-                <ListItemTrainingProgram {trainingProgram} {session} />
+                <ListItemTrainingProgram
+                  {trainingProgram}
+                  {session}
+                  onSuccessDuplicate={() => (tabSet = 0)}
+                />
               {/each}
             </div>
           </List>
