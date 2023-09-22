@@ -23,6 +23,7 @@ export const load: PageServerLoad = async ({ locals }) => {
         },
       },
     },
+    session ? { userId: session.user.userId } : undefined,
     session ? { userId: session.user.userId } : undefined
   );
 
@@ -30,6 +31,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     {
       isPublic: true,
     },
+    session ? { userId: session.user.userId } : undefined,
     session ? { userId: session.user.userId } : undefined
   );
 

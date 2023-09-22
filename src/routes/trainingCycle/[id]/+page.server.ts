@@ -85,6 +85,28 @@ export const actions: Actions = {
     return { success: true };
   },
 
+  activate: async ({ locals, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+    const id = Number(params.id);
+
+    const repo = new TrainingCycleRepo(prisma);
+
+    await repo.activate(id, user.userId);
+
+    return { success: true };
+  },
+
+  deactivate: async ({ locals, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+    const id = Number(params.id);
+
+    const repo = new TrainingCycleRepo(prisma);
+
+    await repo.deactivate(id, user.userId);
+
+    return { success: true };
+  },
+
   // Set isPublic to true
   publish: async ({ locals, url, params }) => {
     const { user } = await getSessionOrRedirect({ locals, url });

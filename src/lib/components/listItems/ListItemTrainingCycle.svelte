@@ -16,15 +16,18 @@
         };
       };
       saves: true;
+      activations: true;
     };
   }>;
   export let session: Session | null;
   export let showVisibility = false;
+  export let onSuccessDuplicate = () => {};
 
   $: saves = trainingCycle.saves;
   $: isTrainingCycleSavedByUser = () => {
     return saves.find((s) => s.userId == session?.user.userId);
   };
+  $: isActive = trainingCycle.activations.find((a) => a.userId == session?.user.userId);
 </script>
 
 <ListItem href={`/trainingCycle/${trainingCycle.id}`} showElipses={true}>
@@ -52,8 +55,9 @@
       </a>
 
       <FormButton
-        action={`/trainingCycle/${trainingCycle.id}?/duplicate&redirectTo=/trainingCycle`}
+        action={`/trainingCycle/${trainingCycle.id}?/duplicate`}
         class="btn btn-sm w-full justify-start"
+        onSuccess={onSuccessDuplicate}
       >
         <Icon icon="material-symbols:control-point-duplicate" height="18" />
         <span> Duplicate </span>
@@ -137,13 +141,13 @@
     {/if}
   </div>
 
-  <div slot="content" style:height="100%" class="text-gray-400 flex flex-col justify-between">
+  <div slot="content" style:height="100%" class="flex flex-col justify-between">
     {#if trainingCycle.description}
-      <div>
+      <div class="text-gray-400">
         {trainingCycle.description || ''}
       </div>
     {:else}
-      <div class="italic">
+      <div class="italic text-gray-400">
         {'No description'}
       </div>
     {/if}
@@ -161,18 +165,53 @@
             <div class="text-md leading-none font-bold">{trainingCycle.owner.username}</div>
           </div>
         </div>
-        <div class="text-gray-600 flex items-center">
-          {#if session != null && trainingCycle.ownerId != session.user.userId}
-            {#if isTrainingCycleSavedByUser()}
+        <div class="flex space-x-2">
+          <div>
+            {#if isActive}
               <FormButton
-                action={`/trainingCycle/${trainingCycle.id}?/unsave`}
-                class="btn btn-sm w-full justify-start"
+                action={`/trainingCycle/${trainingCycle.id}?/deactivate`}
+                class="btn btn-sm variant-filled w-full justify-start"
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
               >
-                <Icon icon="material-symbols:bookmark" height="18" />
+                <span> Deactivate </span>
               </FormButton>
+            {:else}
+              <FormButton
+                action={`/trainingCycle/${trainingCycle.id}?/activate`}
+                class="btn btn-sm variant-ringed w-full justify-start"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <span> Activate </span>
+              </FormButton>
+            {/if}
+          </div>
+          <div class="text-gray-600 flex items-center">
+            {#if session != null && trainingCycle.ownerId != session.user.userId}
+              {#if isTrainingCycleSavedByUser()}
+                <FormButton
+                  action={`/trainingCycle/${trainingCycle.id}?/unsave`}
+                  class="btn btn-sm w-full justify-start"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <Icon icon="material-symbols:bookmark" height="18" />
+                </FormButton>
+              {:else}
+                <FormButton
+                  action={`/trainingCycle/${trainingCycle.id}?/save`}
+                  class="btn btn-sm w-full justify-start"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <Icon icon="material-symbols:bookmark-outline" height="18" />
+                </FormButton>
+              {/if}
             {:else}
               <FormButton
                 action={`/trainingCycle/${trainingCycle.id}?/save`}
@@ -180,25 +219,15 @@
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
+                disabled
               >
                 <Icon icon="material-symbols:bookmark-outline" height="18" />
               </FormButton>
             {/if}
-          {:else}
-            <FormButton
-              action={`/trainingCycle/${trainingCycle.id}?/save`}
-              class="btn btn-sm w-full justify-start"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              disabled
-            >
-              <Icon icon="material-symbols:bookmark-outline" height="18" />
-            </FormButton>
-          {/if}
-          <p>
-            <b>{trainingCycle._count.saves} </b>
-          </p>
+            <p>
+              <b>{trainingCycle._count.saves} </b>
+            </p>
+          </div>
         </div>
       </div>
     </div>

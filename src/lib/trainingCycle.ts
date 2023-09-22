@@ -285,7 +285,8 @@ export class TrainingCycleRepo {
 
   async get(
     where: Prisma.TrainingCycleWhereInput,
-    savesWhere?: Prisma.TrainingCycleSaveWhereInput
+    savesWhere?: Prisma.TrainingCycleSaveWhereInput,
+    activationsWhere?: Prisma.TrainingCycleActivationWhereInput
   ) {
     // Fetch all
     return await this.prisma.trainingCycle.findMany({
@@ -335,6 +336,11 @@ export class TrainingCycleRepo {
         saves: savesWhere
           ? {
               where: savesWhere,
+            }
+          : undefined,
+        activations: activationsWhere
+          ? {
+              where: activationsWhere,
             }
           : undefined,
         _count: {
@@ -599,6 +605,63 @@ export class TrainingCycleRepo {
             },
             data: {
               ...data,
+            },
+          },
+        },
+      },
+    });
+  }
+
+  async activate(id: number, ownerId: string) {
+    const cycle = await this.getOne(id);
+    if (!cycle.isPublic && ownerId != cycle.ownerId) {
+      throw new APIError(
+        'INVALID_PERMISSIONS',
+        'You do not have permission to activate this cycle.'
+      );
+    }
+
+    return await this.prisma.trainingCycle.update({
+      where: {
+        id,
+      },
+      data: {
+        activations: {
+          connectOrCreate: {
+            where: {
+              trainingCycleId_userId: {
+                userId: ownerId,
+                trainingCycleId: id,
+              },
+            },
+            create: {
+              userId: ownerId,
+            },
+          },
+        },
+      },
+    });
+  }
+
+  async deactivate(id: number, ownerId: string) {
+    const cycle = await this.getOne(id);
+    if (!cycle.isPublic && ownerId != cycle.ownerId) {
+      throw new APIError(
+        'INVALID_PERMISSIONS',
+        'You do not have permission to deactivate this cycle.'
+      );
+    }
+
+    return await this.prisma.trainingCycle.update({
+      where: {
+        id,
+      },
+      data: {
+        activations: {
+          delete: {
+            trainingCycleId_userId: {
+              userId: ownerId,
+              trainingCycleId: id,
             },
           },
         },

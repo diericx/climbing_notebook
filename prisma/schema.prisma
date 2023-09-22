@@ -214,6 +214,7 @@ model TrainingCycle {
   Widget                        Widget[]
   trainingProgramScheduledSlots TrainingProgramScheduledSlot[]
   saves                         TrainingCycleSave[]
+  activations                   TrainingCycleActivation[]
 
   @@unique([trainingProgramId, name])
   @@map("training_cycle")
@@ -227,6 +228,16 @@ model TrainingCycleSave {
 
   @@id([trainingCycleId, userId])
   @@map("training_cycle_on_auth_user")
+}
+
+model TrainingCycleActivation {
+  trainingCycle   TrainingCycle @relation(fields: [trainingCycleId], references: [id])
+  trainingCycleId Int           @map("training_cycle_id")
+  user            AuthUser      @relation(fields: [userId], references: [id])
+  userId          String        @map("user_id")
+
+  @@id([trainingCycleId, userId])
+  @@map("training_cycle_activation")
 }
 
 model Metric {
@@ -258,13 +269,13 @@ model JournalEntry {
 }
 
 model Profile {
-  id                    Int            @id @default(autoincrement())
-  createdAt             DateTime       @default(now()) @map("created_at")
-  goals                 String?
-  ownerId               String         @unique @map("owner_id")
-  owner                 AuthUser       @relation(fields: [ownerId], references: [id])
-  activeTrainingCycleId Int?           @map("active_training_cycle_id")
-  activeTrainingCycle   TrainingCycle? @relation(fields: [activeTrainingCycleId], references: [id])
+  id              Int            @id @default(autoincrement())
+  createdAt       DateTime       @default(now()) @map("created_at")
+  goals           String?
+  ownerId         String         @unique @map("owner_id")
+  owner           AuthUser       @relation(fields: [ownerId], references: [id])
+  TrainingCycle   TrainingCycle? @relation(fields: [trainingCycleId], references: [id])
+  trainingCycleId Int?
 
   @@map("profile")
 }
@@ -394,6 +405,7 @@ model AuthUser {
   TrainingProgramActivation TrainingProgramActivation[]
   savedTrainingCycles       TrainingCycleSave[]
   saves                     TrainingProgramSave[]
+  trainingCycleActivations  TrainingCycleActivation[]
 
   @@map("user")
 }
