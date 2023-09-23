@@ -292,7 +292,9 @@ export async function getSessionOrRedirect({ locals, url }: { locals: App.Locals
   return session;
 }
 
-export function getActiveTrainingCycle(
+// Returns the active training cycle for a program activated at a certain date
+// and undefined if the activation is no longer valid.
+export function getActiveTrainingCycleForTrainingProgramActivation(
   activation: Prisma.TrainingProgramActivationGetPayload<{
     include: {
       trainingProgram: {
@@ -359,6 +361,7 @@ export function getActiveTrainingCycle(
     };
   }>
 ) {
+  const slots = activation.trainingProgram.trainingProgramScheduledSlots;
   const startDateWeekOfYear = dayjs(activation.startDate).week();
   let todayWeekOfYear = dayjs().week();
   // Account for year rollover
@@ -366,5 +369,8 @@ export function getActiveTrainingCycle(
     todayWeekOfYear += startDateWeekOfYear;
   }
   const weekDiff = todayWeekOfYear - startDateWeekOfYear;
-  return activation.trainingProgram.trainingProgramScheduledSlots[weekDiff].trainingCycles[0];
+  if (slots[weekDiff] === undefined) {
+    return undefined;
+  }
+  return slots[weekDiff].trainingCycles[0];
 }

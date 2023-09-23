@@ -3,12 +3,17 @@ import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
 import { prisma } from '$lib/prisma';
 import { ProfileRepo } from '$lib/profile';
 import { TrainingCycleRepo } from '$lib/trainingCycle';
-import { TrainingProgramRepo } from '$lib/trainingProgram';
 import { TrainingProgramActivationRepo } from '$lib/trainingProgramActivation';
-import { getActiveTrainingCycle, getSessionOrRedirect } from '$lib/utils';
+import {
+  getActiveTrainingCycleForTrainingProgramActivation,
+  getSessionOrRedirect,
+} from '$lib/utils';
 import { fail } from '@sveltejs/kit';
+import dayjs from 'dayjs';
+import weekOfYear from 'dayjs/plugin/weekOfYear';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
+dayjs.extend(weekOfYear);
 
 export const load: PageServerLoad = async ({ locals, url }) => {
   const { user } = await getSessionOrRedirect({ locals, url });
@@ -17,7 +22,6 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const exerciseRepo = new ExerciseRepo(prisma);
   const profileRepo = new ProfileRepo(prisma);
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
-  const trainingProgramRepo = new TrainingProgramRepo(prisma);
   const trainingProgramActivationRepo = new TrainingProgramActivationRepo(prisma);
 
   const exerciseEvents = await exerciseEventsRepo.get(user?.userId);
@@ -51,17 +55,15 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     },
   });
 
-  // Pick out the active cycle within each program
-  const activeCyclesFromProgramActivations = trainingProgramActivations
-    .map((a) => getActiveTrainingCycle(a))
-    .filter((c) => c !== undefined);
-
-  activeCycles = [...activeCycles, ...activeCyclesFromProgramActivations];
+  const validTrainingProgramActivations = trainingProgramActivations.filter(
+    (a) => getActiveTrainingCycleForTrainingProgramActivation(a) !== undefined
+  );
 
   return {
     exercises,
     exerciseEvents,
     activeCycles,
+    validTrainingProgramActivations,
     profile,
     user,
   };

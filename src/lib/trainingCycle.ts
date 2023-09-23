@@ -314,6 +314,9 @@ export class TrainingCycleRepo {
               orderBy: {
                 name: 'asc',
               },
+              include: {
+                exercise: true,
+              },
             },
             exerciseGroups: {
               orderBy: {
@@ -323,6 +326,9 @@ export class TrainingCycleRepo {
                 exercises: {
                   orderBy: {
                     name: 'asc',
+                  },
+                  include: {
+                    exercise: true,
                   },
                 },
               },

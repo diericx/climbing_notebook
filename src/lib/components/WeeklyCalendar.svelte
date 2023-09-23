@@ -4,7 +4,7 @@
   import type { Prisma } from '@prisma/client';
   import { onMount } from 'svelte';
 
-  type TrainingCycle = Prisma.TrainingCycleGetPayload<{
+  export let trainingCycle: Prisma.TrainingCycleGetPayload<{
     include: {
       days: {
         include: {
@@ -34,8 +34,6 @@
       };
     };
   }>;
-
-  export let trainingCycle: TrainingCycle;
   export let shouldScrollIntoView = false;
   export let disableActionButtons = false;
   export let showMarkedCompleted = true;
