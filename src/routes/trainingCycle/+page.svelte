@@ -113,7 +113,6 @@
                   {session}
                   onSuccessDuplicate={() => {
                     tabSet = 0;
-                    console.log('SEt tab set to: ', tabSet);
                   }}
                 />
               {/each}
