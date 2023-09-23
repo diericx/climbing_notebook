@@ -15,7 +15,8 @@
 
   export let data: PageData;
 
-  $: tabSet = 0;
+  let tabSet = data.session === null ? 2 : 0;
+  $: tabSet;
   $: session = data.session;
   // Ordering by count not supported in prisma...
   $: publicTrainingCycles = data.publicTrainingCycles.sort(
@@ -56,8 +57,22 @@
     </p>
 
     <TabGroup>
-      <Tab bind:group={tabSet} name="tab1" value={0}>Created by me</Tab>
-      <Tab bind:group={tabSet} name="tab2" value={1}>Saved</Tab>
+      <Tab
+        bind:group={tabSet}
+        name="tab1"
+        value={0}
+        disabled={session === null}
+        regionTab={session === null ? 'cursor-not-allowed' : undefined}
+        hover={session === null ? 'cursor-not-allowed' : undefined}>Created by me</Tab
+      >
+      <Tab
+        bind:group={tabSet}
+        name="tab2"
+        value={1}
+        disabled={session === null}
+        regionTab={session === null ? 'cursor-not-allowed' : undefined}
+        hover={session === null ? 'cursor-not-allowed' : undefined}>Saved</Tab
+      >
       <Tab bind:group={tabSet} name="tab3" value={2}>Browse</Tab>
       <!-- Tab Panels --->
       <svelte:fragment slot="panel">

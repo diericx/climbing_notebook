@@ -11,20 +11,21 @@ import { setError, superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
-  const { user } = await getSessionOrRedirect({ locals, url });
   const session = await locals.auth.validate();
 
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
 
   const ownedTrainingPrograms = await trainingProgramRepo.get({
-    ownerId: session?.user.userId,
+    // Default to empty string so query defaults to returning empty array
+    ownerId: session?.user.userId || '',
   });
 
   const savedTrainingPrograms = await trainingProgramRepo.get(
     {
       saves: {
         some: {
-          userId: session?.user.userId,
+          // Default to empty string so query defaults to returning empty array
+          userId: session?.user.userId || '',
         },
       },
     },
