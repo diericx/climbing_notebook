@@ -285,8 +285,8 @@ export class TrainingCycleRepo {
 
   async get(
     where: Prisma.TrainingCycleWhereInput,
-    savesWhere?: Prisma.TrainingCycleSaveWhereInput,
-    activationsWhere?: Prisma.TrainingCycleActivationWhereInput
+    saves?: Prisma.TrainingCycle$savesArgs,
+    activations?: Prisma.TrainingCycle$activationsArgs
   ) {
     // Fetch all
     return await this.prisma.trainingCycle.findMany({
@@ -333,16 +333,8 @@ export class TrainingCycleRepo {
             dayOfTheWeek: 'asc',
           },
         },
-        saves: savesWhere
-          ? {
-              where: savesWhere,
-            }
-          : undefined,
-        activations: activationsWhere
-          ? {
-              where: activationsWhere,
-            }
-          : undefined,
+        saves,
+        activations,
         _count: {
           select: {
             saves: true,

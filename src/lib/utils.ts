@@ -1,5 +1,10 @@
+import type { Prisma } from '@prisma/client';
 import { redirect } from '@sveltejs/kit';
+import dayjs from 'dayjs';
+import weekOfYear from 'dayjs/plugin/weekOfYear';
 import 'fs';
+dayjs.extend(weekOfYear);
+
 export const huecoGrades: readonly [string, ...string[]] = [
   'V0',
   'V1',
@@ -285,4 +290,81 @@ export async function getSessionOrRedirect({ locals, url }: { locals: App.Locals
 
   // The session definitely exists now, so return it
   return session;
+}
+
+export function getActiveTrainingCycle(
+  activation: Prisma.TrainingProgramActivationGetPayload<{
+    include: {
+      trainingProgram: {
+        include: {
+          owner: true;
+          trainingProgramScheduledSlots: {
+            orderBy: {
+              order: 'asc';
+            };
+            include: {
+              trainingCycles: {
+                include: {
+                  owner: true;
+                  exerciseGroups: {
+                    include: {
+                      exercises: {
+                        orderBy: {
+                          name: 'asc';
+                        };
+                      };
+                    };
+                    orderBy: {
+                      name: 'asc';
+                    };
+                  };
+                  days: {
+                    include: {
+                      exercises: {
+                        orderBy: {
+                          name: 'asc';
+                        };
+                      };
+                      exerciseGroups: {
+                        orderBy: {
+                          name: 'asc';
+                        };
+                        include: {
+                          exercises: {
+                            orderBy: {
+                              name: 'asc';
+                            };
+                          };
+                        };
+                      };
+                    };
+                    orderBy: {
+                      // Note: ui depends on this being sorted in this way
+                      dayOfTheWeek: 'asc';
+                    };
+                  };
+                  saves: true;
+                  activations: true;
+                  _count: {
+                    select: {
+                      saves: true;
+                    };
+                  };
+                };
+              };
+            };
+          };
+        };
+      };
+    };
+  }>
+) {
+  const startDateWeekOfYear = dayjs(activation.startDate).week();
+  let todayWeekOfYear = dayjs().week();
+  // Account for year rollover
+  if (todayWeekOfYear < startDateWeekOfYear) {
+    todayWeekOfYear += startDateWeekOfYear;
+  }
+  const weekDiff = todayWeekOfYear - startDateWeekOfYear;
+  return activation.trainingProgram.trainingProgramScheduledSlots[weekDiff].trainingCycles[0];
 }

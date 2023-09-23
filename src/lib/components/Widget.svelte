@@ -6,6 +6,7 @@
     CalendarEvent,
     JournalEntry,
     Prisma,
+    Profile,
     TrainingCycle,
     TrainingProgram,
   } from '@prisma/client';
@@ -30,33 +31,6 @@
         };
       };
       trainingCycle: {
-        include: {
-          days: {
-            include: {
-              exercises: {
-                include: {
-                  exercise: true;
-                };
-              };
-              exerciseGroups: {
-                include: {
-                  exercises: {
-                    include: {
-                      exercise: true;
-                    };
-                  };
-                };
-              };
-            };
-          };
-        };
-      };
-    };
-  }>;
-
-  type Profile = Prisma.ProfileGetPayload<{
-    include: {
-      activeTrainingCycle: {
         include: {
           days: {
             include: {
@@ -171,16 +145,11 @@
   {:else if widget.type == 'dailyExerciseCalendar'}
     <div class="h-80">
       {#if widget.trainingCycle === null}
-        {#if profile.activeTrainingCycle == null}
-          <p class="text-gray-400 italic">
-            This widget is set to use an active training program but no active training program was
-            found.
-          </p>
-        {:else}
-          <DailyCalendar trainingCycle={profile.activeTrainingCycle} />
-        {/if}
+        <p class="text-gray-400 italic">
+          You must set a Training Cycle for this widget to display exercises.
+        </p>
       {:else}
-        <DailyCalendar trainingCycle={widget.trainingCycle || profile.activeTrainingCycle} />
+        <DailyCalendar trainingCycle={widget.trainingCycle} />
       {/if}
     </div>
   {/if}

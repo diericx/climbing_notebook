@@ -23,16 +23,16 @@ export const load: PageServerLoad = async ({ locals }) => {
         },
       },
     },
-    session ? { userId: session.user.userId } : undefined,
-    session ? { userId: session.user.userId } : undefined
+    session ? { where: { userId: session.user.userId } } : undefined,
+    session ? { where: { userId: session.user.userId } } : undefined
   );
 
   const publicTrainingCycles = await trainingCycleRepo.get(
     {
       isPublic: true,
     },
-    session ? { userId: session.user.userId } : undefined,
-    session ? { userId: session.user.userId } : undefined
+    session ? { where: { userId: session.user.userId } } : undefined,
+    session ? { where: { userId: session.user.userId } } : undefined
   );
 
   return {

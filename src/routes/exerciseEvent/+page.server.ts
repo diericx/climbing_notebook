@@ -2,7 +2,10 @@ import { ExerciseRepo } from '$lib/exercise';
 import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
 import { prisma } from '$lib/prisma';
 import { ProfileRepo } from '$lib/profile';
-import { getSessionOrRedirect } from '$lib/utils';
+import { TrainingCycleRepo } from '$lib/trainingCycle';
+import { TrainingProgramRepo } from '$lib/trainingProgram';
+import { TrainingProgramActivationRepo } from '$lib/trainingProgramActivation';
+import { getActiveTrainingCycle, getSessionOrRedirect } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
@@ -13,6 +16,10 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const exerciseEventsRepo = new ExerciseEventRepo(prisma);
   const exerciseRepo = new ExerciseRepo(prisma);
   const profileRepo = new ProfileRepo(prisma);
+  const trainingCycleRepo = new TrainingCycleRepo(prisma);
+  const trainingProgramRepo = new TrainingProgramRepo(prisma);
+  const trainingProgramActivationRepo = new TrainingProgramActivationRepo(prisma);
+
   const exerciseEvents = await exerciseEventsRepo.get(user?.userId);
   const profile = await profileRepo.getOne(user?.userId);
   const exercises = await exerciseRepo.getSelect({
@@ -26,9 +33,35 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     fieldsToShow: true,
   });
 
+  let activeCycles = await trainingCycleRepo.get({
+    activations: {
+      some: {
+        userId: user.userId,
+      },
+    },
+  });
+
+  // Note: this does not filter for training programs that are active yet have
+  // ended. This should be improved upon by upgrading prisma and using field
+  // references to make the query more advanced
+  const trainingProgramActivations = await trainingProgramActivationRepo.get({
+    ownerId: user.userId,
+    startDate: {
+      lte: new Date(),
+    },
+  });
+
+  // Pick out the active cycle within each program
+  const activeCyclesFromProgramActivations = trainingProgramActivations
+    .map((a) => getActiveTrainingCycle(a))
+    .filter((c) => c !== undefined);
+
+  activeCycles = [...activeCycles, ...activeCyclesFromProgramActivations];
+
   return {
     exercises,
     exerciseEvents,
+    activeCycles,
     profile,
     user,
   };
