@@ -210,7 +210,6 @@ model TrainingCycle {
   owner                         AuthUser                       @relation(fields: [ownerId], references: [id])
   days                          TrainingCycleDay[]
   exerciseGroups                ExerciseGroup[]
-  profile                       Profile[]
   Widget                        Widget[]
   trainingProgramScheduledSlots TrainingProgramScheduledSlot[]
   saves                         TrainingCycleSave[]
@@ -269,13 +268,11 @@ model JournalEntry {
 }
 
 model Profile {
-  id              Int            @id @default(autoincrement())
-  createdAt       DateTime       @default(now()) @map("created_at")
-  goals           String?
-  ownerId         String         @unique @map("owner_id")
-  owner           AuthUser       @relation(fields: [ownerId], references: [id])
-  TrainingCycle   TrainingCycle? @relation(fields: [trainingCycleId], references: [id])
-  trainingCycleId Int?
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  goals     String?
+  ownerId   String   @unique @map("owner_id")
+  owner     AuthUser @relation(fields: [ownerId], references: [id])
 
   @@map("profile")
 }
