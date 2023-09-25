@@ -101,17 +101,13 @@
       </div>
     </div>
     {#if trainingCycle.isPublic}
-      <div class="">
-        <aside class="alert variant-ghost">
-          <Icon icon="ep:warn-triangle-filled" height="18" />
-          <div class="alert-message">
-            <p>
-              You are editing a public Training Cycle. Any changes made will be public, and will
-              edit the previously shared version.
-            </p>
-          </div>
-        </aside>
-      </div>
+      <aside class="alert variant-ghost">
+        <span class="alert-message">
+          <Icon class="inline" icon="ep:warn-triangle-filled" height="18" />
+          You are editing a public Training Cycle. Any changes made will be public, and will edit the
+          previously shared version.
+        </span>
+      </aside>
     {/if}
   </div>
 

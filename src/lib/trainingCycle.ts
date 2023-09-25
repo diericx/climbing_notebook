@@ -22,7 +22,11 @@ export type TrainingCycleTemplateSchema = typeof trainingCycleTemplateSchema;
 export class TrainingCycleRepo {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async getOne(id: number) {
+  async getOne(
+    id: number,
+    saves?: Prisma.TrainingCycle$savesArgs,
+    activations?: Prisma.TrainingCycle$activationsArgs
+  ) {
     const trainingCycle = await this.prisma.trainingCycle.findUnique({
       where: {
         id,
@@ -91,6 +95,13 @@ export class TrainingCycleRepo {
           orderBy: {
             // Note: ui depends on this being sorted in this way
             dayOfTheWeek: 'asc',
+          },
+        },
+        saves,
+        activations,
+        _count: {
+          select: {
+            saves: true,
           },
         },
       },

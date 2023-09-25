@@ -28,7 +28,7 @@ export type TrainingProgramActivationSchema = typeof trainingProgramActivationSc
 export class TrainingProgramRepo {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async getOne(id: string) {
+  async getOne(id: string, saves?: Prisma.TrainingProgram$savesArgs) {
     const trainingProgram = await this.prisma.trainingProgram.findUnique({
       where: {
         id,
@@ -107,6 +107,12 @@ export class TrainingProgramRepo {
           },
         },
         trainingCycles: true,
+        saves,
+        _count: {
+          select: {
+            saves: true,
+          },
+        },
       },
     });
     if (trainingProgram == null) {

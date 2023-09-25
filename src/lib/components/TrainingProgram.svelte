@@ -1,12 +1,9 @@
 <script lang="ts">
-  import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
-  import { Accordion, AccordionItem, Avatar } from '@skeletonlabs/skeleton';
-  import type { User } from 'lucia';
+  import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
   import List from './List.svelte';
   import ListItem from './ListItem.svelte';
   import WeeklyCalendar from './WeeklyCalendar.svelte';
-  import FormButton from './forms/FormButton.svelte';
 
   export let trainingProgram: Prisma.TrainingProgramGetPayload<{
     include: {
@@ -48,52 +45,8 @@
       trainingCycles: true;
     };
   }>;
-
-  export let user: User | undefined = undefined;
 </script>
 
-<div class="flex justify-between mb-2">
-  <h1 class="font-bold">{trainingProgram.name}</h1>
-
-  {#if user}
-    {#if user.userId == trainingProgram.ownerId}
-      <div class="flex">
-        <div>
-          <a class="btn btn-sm variant-ringed" href={`/trainingProgram/${trainingProgram.id}/edit`}
-            >Edit this program</a
-          >
-        </div>
-      </div>
-    {:else}
-      <FormButton
-        action={`/trainingProgram/${trainingProgram.id}?/import&redirectTo=/trainingProgram`}
-        class="btn btn-sm variant-filled"
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-      >
-        <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-        <span>Import Training Program</span>
-      </FormButton>
-    {/if}
-  {/if}
-</div>
-
-<div class="mb-2">
-  {trainingProgram.description || ''}
-</div>
-
-<div class="text-gray-600 flex items-center mb-8">
-  <Avatar
-    class="text-white"
-    width="w-9"
-    initials={trainingProgram.owner.username}
-    background="bg-primary-500"
-  />
-  <div class="ml-2 align-middle items-center">
-    <div class="text-md leading-none font-bold">{trainingProgram.owner.username}</div>
-  </div>
-</div>
 <div class="mb-12">
   <div>
     {#if trainingProgram.trainingProgramScheduledSlots.length == 0}
