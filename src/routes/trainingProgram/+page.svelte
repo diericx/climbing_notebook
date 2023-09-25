@@ -3,6 +3,7 @@
 </script>
 
 <script lang="ts">
+  import { page } from '$app/stores';
   import List from '$lib/components/List.svelte';
   import ListItemTrainingProgram from '$lib/components/listItems/ListItemTrainingProgram.svelte';
   import Icon from '@iconify/svelte';
@@ -15,7 +16,10 @@
 
   export let data: PageData;
 
-  let tabSet = data.session === null ? 2 : 0;
+  // Enable setting initial tab from url
+  const tabFromUrl = Number($page.url.searchParams.get('tab'));
+
+  let tabSet = data.session === null ? 2 : tabFromUrl || 0;
   $: tabSet;
   $: session = data.session;
   // Ordering by count not supported in prisma...
