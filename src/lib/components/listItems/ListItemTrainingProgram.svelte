@@ -35,15 +35,6 @@
         {trainingProgram.name}
       </b>
     </div>
-    {#if showVisibility}
-      <div
-        class:text-emerald-400={trainingProgram.isPublic}
-        class:text-gray-400={!trainingProgram.isPublic}
-        class="font-bold"
-      >
-        {trainingProgram.isPublic ? 'Public' : 'Private'}
-      </div>
-    {/if}
   </div>
   <div slot="popup-buttons">
     {#if session?.user.userId == trainingProgram.ownerId}
@@ -141,6 +132,15 @@
   </div>
 
   <div slot="content" style:height="100%" class="text-gray-400 flex flex-col justify-between">
+    {#if showVisibility}
+      <div
+        class:text-emerald-400={trainingProgram.isPublic}
+        class:text-gray-400={!trainingProgram.isPublic}
+        class="font-bold"
+      >
+        {trainingProgram.isPublic ? 'Public' : 'Private'}
+      </div>
+    {/if}
     {#if trainingProgram.description}
       <div>
         {trainingProgram.description || ''}
