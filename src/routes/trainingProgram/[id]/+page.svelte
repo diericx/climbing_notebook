@@ -25,34 +25,6 @@
     <h1 class="font-bold">{trainingProgram.name}</h1>
   </div>
   <div class="flex space-x-2">
-    {#if trainingProgram.isPublic}
-      <button
-        class="btn btn-sm variant-ringed w-full justify-start"
-        use:clipboard={`https://climbingnotebook.com/community/trainingProgram/${trainingProgram.id}`}
-        on:click={() => {
-          toastStore.trigger({
-            message: 'Public URL copied',
-          });
-        }}
-      >
-        <Icon icon="ph:link-bold" height="18" />
-        <span> Copy Public URL </span>
-      </button>
-    {:else if session?.user.userId == trainingProgram.ownerId}
-      <button
-        class="btn btn-sm variant-ringed w-full justify-start"
-        use:clipboard={`https://climbingnotebook.com/trainingProgram/${trainingProgram.id}?token=${trainingProgram.privateAccessToken}`}
-        on:click={() => {
-          toastStore.trigger({
-            message: 'Private URL copied',
-          });
-        }}
-      >
-        <Icon icon="ph:link-bold" height="18" />
-        <span> Copy Private URL </span>
-      </button>
-    {/if}
-
     {#if session?.user.userId == trainingProgram.ownerId}
       <div>
         <a class="btn btn-sm variant-ringed" href={`/trainingProgram/${trainingProgram.id}/edit`}>
@@ -60,6 +32,34 @@
           <span> Edit </span>
         </a>
       </div>
+
+      {#if trainingProgram.isPublic}
+        <button
+          class="btn btn-sm variant-ringed w-full justify-start"
+          use:clipboard={`https://climbingnotebook.com/community/trainingProgram/${trainingProgram.id}`}
+          on:click={() => {
+            toastStore.trigger({
+              message: 'Public URL copied',
+            });
+          }}
+        >
+          <Icon icon="ph:link-bold" height="18" />
+          <span> Copy Public URL </span>
+        </button>
+      {:else if session?.user.userId == trainingProgram.ownerId}
+        <button
+          class="btn btn-sm variant-ringed w-full justify-start"
+          use:clipboard={`https://climbingnotebook.com/trainingProgram/${trainingProgram.id}?token=${trainingProgram.privateAccessToken}`}
+          on:click={() => {
+            toastStore.trigger({
+              message: 'Private URL copied',
+            });
+          }}
+        >
+          <Icon icon="ph:link-bold" height="18" />
+          <span> Copy Private URL </span>
+        </button>
+      {/if}
     {/if}
 
     <FormButton
@@ -108,4 +108,4 @@
     <div class="leading-none mt-0 font-bold text-xl">{trainingProgram.owner.username}</div>
   </div>
 </div>
-<TrainingProgram user={session?.user} {trainingProgram} />
+<TrainingProgram {trainingProgram} />
