@@ -32,7 +32,9 @@
             > set some.
           </p>
         {:else}
-          {profile.goals}
+          <p class="whitespace-pre">
+            {profile.goals}
+          </p>
         {/if}
       </div>
       <div>
