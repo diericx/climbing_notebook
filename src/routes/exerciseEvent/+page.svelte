@@ -53,7 +53,7 @@
 <div class="mb-14">
   <h1>Active Training Cycles</h1>
   <div>
-    {#if activeCycles.length == 0}
+    {#if activeCycles.length + validTrainingProgramActivations.length == 0}
       <p class="text-gray-400">
         You don't have an active training program or cycle!
         <br />
