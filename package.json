@@ -13,6 +13,7 @@
     "eslint-check": "eslint . --ext .ts,.js",
     "typescript-check": "tsc --noEmit",
     "svelte-check": "npx svelte-check",
+    "lint": "npm run prettier-check && npm run eslint-check && npm run typescript-check && npm run svelte-check",
     "format": "prettier --plugin-search-dir . --write .",
     "prisma-generate": "prisma generate",
     "ts-script-runner": "npx ts-node --esm"

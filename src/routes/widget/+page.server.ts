@@ -1,3 +1,4 @@
+import { getSignedUrlPromises } from '$lib/aws/s3';
 import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
 import { prisma } from '$lib/prisma';
 import { getSessionOrRedirect } from '$lib/utils';
@@ -13,7 +14,11 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const customQueryRepo = new CustomQueryRepo(prisma);
 
   const widgets = await widgetRepo.getAllPublishedOrOwnedTemplates(user.userId, {
-    owner: true,
+    owner: {
+      include: {
+        profile: true,
+      },
+    },
     datasets: {
       include: {
         customQueries: {
@@ -45,10 +50,21 @@ export const load: PageServerLoad = async ({ locals, url }) => {
       }
     }
   }
+
+  const s3ObjectUrlPromises = getSignedUrlPromises(
+    widgets.reduce((acc, cur) => {
+      if (cur.owner.profile?.imageS3ObjectKey) {
+        return [...acc, cur.owner.profile.imageS3ObjectKey];
+      }
+      return acc;
+    }, [] as string[])
+  );
+
   return {
     user,
     customQueryResults,
     widgets,
+    s3ObjectUrlPromises,
   };
 };
 

@@ -2,14 +2,23 @@
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
-  import { Avatar, clipboard, toastStore } from '@skeletonlabs/skeleton';
+  import { clipboard, toastStore } from '@skeletonlabs/skeleton';
   import type { Session } from 'lucia';
   import ListItem from '../ListItem.svelte';
+  import S3Avatar from '../S3Avatar.svelte';
   import FormButton from '../forms/FormButton.svelte';
 
   export let trainingProgram: Prisma.TrainingProgramGetPayload<{
     include: {
-      owner: true;
+      owner: {
+        include: {
+          profile: {
+            select: {
+              imageS3ObjectKey: true;
+            };
+          };
+        };
+      };
       _count: {
         select: {
           saves: true;
@@ -21,6 +30,7 @@
   export let session: Session | null;
   export let showVisibility = false;
   export let onSuccessDuplicate = () => {};
+  export let s3ObjectUrlPromises: { [key: string]: Promise<string> };
 
   $: saves = trainingProgram.saves;
   $: isTrainingProgramSavedByUser = () => {
@@ -154,7 +164,9 @@
       <hr class="border-gray-200 divider my-4 mb-2" />
       <div class="flex justify-between">
         <div class="text-gray-600 flex items-center">
-          <Avatar
+          <S3Avatar
+            key={trainingProgram.owner.profile?.imageS3ObjectKey}
+            {s3ObjectUrlPromises}
             class="text-white"
             width="w-9"
             initials={trainingProgram.owner.username}

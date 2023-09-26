@@ -5,14 +5,19 @@
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
-  import { Avatar, popup } from '@skeletonlabs/skeleton';
+  import { popup } from '@skeletonlabs/skeleton';
   import Chart from './Chart.svelte';
   import HeatmapCalendar from './HeatmapCalendar.svelte';
+  import S3Avatar from './S3Avatar.svelte';
   import FormButton from './forms/FormButton.svelte';
 
   type Widget = Prisma.WidgetGetPayload<{
     include: {
-      owner: true;
+      owner: {
+        include: {
+          profile: true;
+        };
+      };
       datasets: {
         include: {
           customQueries: {
@@ -28,6 +33,7 @@
   export let widget: Widget;
   export let customQueryResults: CustomQueryResults[];
   export let user: any;
+  export let s3ObjectUrlPromises: { [key: string]: Promise<string> };
 </script>
 
 <div class="block card card-hover p-4 h-[29rem]">
@@ -104,7 +110,9 @@
 
       <div class="flex justify-between">
         <div class="text-gray-600 flex items-center">
-          <Avatar
+          <S3Avatar
+            key={widget.owner.profile?.imageS3ObjectKey}
+            {s3ObjectUrlPromises}
             class="text-white"
             width="w-9"
             initials={widget.owner.username}

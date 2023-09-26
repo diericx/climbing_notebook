@@ -8,6 +8,8 @@
   export let superForm: SuperForm<z.AnyZodObject, any>;
   export let showSubmitButton = true;
   export let label = 'Files';
+  let className = '';
+  export { className as class };
 
   // Bound to the file picker
   let files: FileList;
@@ -19,7 +21,7 @@
 <!-- Files are not handled by SuperForms so all errors are sent manually to 'file'-->
 {#if $errors.file}<span class="invalid">{$errors.file}</span>{/if}
 
-<FileDropzone name="file" field="file" bind:files>
+<FileDropzone class={className} name="file" field="file" bind:files>
   <svelte:fragment slot="lead">
     {#if !files || files.length == 0}
       <div class="flex justify-center">

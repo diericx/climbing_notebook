@@ -1,3 +1,4 @@
+import { getSignedUrlPromises } from '$lib/aws/s3';
 import { prisma } from '$lib/prisma';
 import { TrainingCycleRepo, trainingCycleSchema } from '$lib/trainingCycle';
 import { getSessionOrRedirect } from '$lib/utils';
@@ -37,11 +38,33 @@ export const load: PageServerLoad = async ({ locals }) => {
     session ? { where: { userId: session.user.userId } } : undefined
   );
 
+  const s3ObjectUrlPromises = getSignedUrlPromises([
+    ...ownedTrainingCycles.reduce((acc, cur) => {
+      if (cur.owner.profile?.imageS3ObjectKey) {
+        return [...acc, cur.owner.profile.imageS3ObjectKey];
+      }
+      return acc;
+    }, [] as string[]),
+    ...savedTrainingCycles.reduce((acc, cur) => {
+      if (cur.owner.profile?.imageS3ObjectKey) {
+        return [...acc, cur.owner.profile.imageS3ObjectKey];
+      }
+      return acc;
+    }, [] as string[]),
+    ...publicTrainingCycles.reduce((acc, cur) => {
+      if (cur.owner.profile?.imageS3ObjectKey) {
+        return [...acc, cur.owner.profile.imageS3ObjectKey];
+      }
+      return acc;
+    }, [] as string[]),
+  ]);
+
   return {
     ownedTrainingCycles,
     savedTrainingCycles,
     publicTrainingCycles,
     session,
+    s3ObjectUrlPromises,
   };
 };
 

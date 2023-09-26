@@ -56,7 +56,15 @@ export const datasetSchema = z.object({
 export type DatasetSchema = typeof datasetSchema;
 
 export const widgetInclude = {
-  owner: true,
+  owner: {
+    include: {
+      profile: {
+        select: {
+          imageS3ObjectKey: true,
+        },
+      },
+    },
+  },
   datasets: {
     include: {
       customQueries: {

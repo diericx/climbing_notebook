@@ -1,23 +1,25 @@
 <script context="module" lang="ts">
-  export function getPageTitle(data: PageData) {
+  export function getPageTitle(data: any) {
     return data?.trainingProgram?.name;
   }
 </script>
 
 <script lang="ts">
+  import S3Avatar from '$lib/components/S3Avatar.svelte';
   import TrainingProgram from '$lib/components/TrainingProgram.svelte';
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import Icon from '@iconify/svelte';
-  import { Avatar, clipboard, toastStore } from '@skeletonlabs/skeleton';
+  import { clipboard, toastStore } from '@skeletonlabs/skeleton';
   import type { PageData } from './$types';
 
   export let data: PageData;
   $: session = data.session;
   $: trainingProgram = data.trainingProgram;
-
   $: isSaved = () => {
     return trainingProgram.saves.find((s) => s.userId == session?.user.userId) != undefined;
   };
+
+  const { s3ObjectUrlPromises } = data;
 </script>
 
 <div class="flex flex-wrap mb-4 justify-between items-center">
@@ -97,7 +99,9 @@
 </div>
 
 <div class="flex mb-8 items-center">
-  <Avatar
+  <S3Avatar
+    key={trainingProgram.owner.profile?.imageS3ObjectKey}
+    {s3ObjectUrlPromises}
     width="w-12"
     class="text-white"
     initials={trainingProgram.owner.username}

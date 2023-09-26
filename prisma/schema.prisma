@@ -268,11 +268,12 @@ model JournalEntry {
 }
 
 model Profile {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now()) @map("created_at")
-  goals     String?
-  ownerId   String   @unique @map("owner_id")
-  owner     AuthUser @relation(fields: [ownerId], references: [id])
+  id               Int      @id @default(autoincrement())
+  createdAt        DateTime @default(now()) @map("created_at")
+  goals            String?
+  ownerId          String   @unique @map("owner_id")
+  owner            AuthUser @relation(fields: [ownerId], references: [id])
+  imageS3ObjectKey String?  @map("image_s3_object_key")
 
   @@map("profile")
 }

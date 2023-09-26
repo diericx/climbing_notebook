@@ -1,10 +1,16 @@
+<script context="module" lang="ts">
+  export function getPageTitle(data: any) {
+    return data.widget?.name;
+  }
+</script>
+
 <script lang="ts">
   import Chart from '$lib/components/Chart.svelte';
   import Dataset from '$lib/components/Dataset.svelte';
   import HeatmapCalendar from '$lib/components/HeatmapCalendar.svelte';
+  import S3Avatar from '$lib/components/S3Avatar.svelte';
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import Icon from '@iconify/svelte';
-  import { Avatar } from '@skeletonlabs/skeleton';
   import type { PageData } from './$types';
 
   export let data: PageData;
@@ -12,8 +18,9 @@
   $: widget = data.widget;
   $: customQueryResults = data.customQueryResults;
   $: datasets = widget.datasets;
-
   $: isOwner = widget.ownerId == user.userId;
+
+  const { s3ObjectUrlPromises } = data;
 </script>
 
 <div class="flex flex-wrap justify-between">
@@ -45,7 +52,9 @@
   {widget.description}
 </div>
 <div class="flex mb-8 mt-2 items-center">
-  <Avatar
+  <S3Avatar
+    key={widget.owner.profile?.imageS3ObjectKey}
+    {s3ObjectUrlPromises}
     class="text-white"
     width="w-9"
     initials={widget.owner.username}

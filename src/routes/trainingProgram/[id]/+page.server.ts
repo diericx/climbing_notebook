@@ -1,3 +1,4 @@
+import { getSignedUrlPromises } from '$lib/aws/s3';
 import { APIError } from '$lib/errors';
 import { prisma } from '$lib/prisma';
 import { TrainingCycleRepo, trainingCycleSchema } from '$lib/trainingCycle';
@@ -25,7 +26,17 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
     }
   }
 
-  return { session, trainingProgram };
+  const s3ObjectUrlPromises = getSignedUrlPromises(
+    trainingProgram.owner.profile?.imageS3ObjectKey
+      ? [trainingProgram.owner.profile.imageS3ObjectKey]
+      : []
+  );
+
+  return {
+    session,
+    trainingProgram,
+    s3ObjectUrlPromises,
+  };
 };
 
 export const actions: Actions = {

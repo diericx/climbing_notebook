@@ -1,3 +1,4 @@
+import { getSignedUrlPromises } from '$lib/aws/s3';
 import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
 import { APIError } from '$lib/errors';
 import { prisma } from '$lib/prisma';
@@ -44,11 +45,16 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
     }
   }
 
+  const s3ObjectUrlPromises = getSignedUrlPromises(
+    widget.owner.profile?.imageS3ObjectKey ? [widget.owner.profile.imageS3ObjectKey] : []
+  );
+
   return {
     widget,
     trainingCycles,
     customQueryResults,
     user,
+    s3ObjectUrlPromises,
   };
 };
 

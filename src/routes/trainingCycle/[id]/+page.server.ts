@@ -1,3 +1,4 @@
+import { getSignedUrlPromises } from '$lib/aws/s3';
 import { APIError } from '$lib/errors';
 import { exerciseGroupSchema } from '$lib/exerciseGroup';
 import { prisma } from '$lib/prisma';
@@ -41,7 +42,19 @@ export const load: PageServerLoad = async ({ url, locals, params }) => {
     crumbs = [{ title: 'Training Cycles', url: `/trainingCycle` }, ...crumbs];
   }
 
-  return { trainingCycle, session, crumbs };
+  // Feth s3 signed object URLs in order to display images
+  const s3ObjectUrlPromises = getSignedUrlPromises(
+    trainingCycle.owner.profile?.imageS3ObjectKey
+      ? [trainingCycle.owner.profile.imageS3ObjectKey]
+      : []
+  );
+
+  return {
+    trainingCycle,
+    session,
+    crumbs,
+    s3ObjectUrlPromises,
+  };
 };
 
 export const actions: Actions = {
