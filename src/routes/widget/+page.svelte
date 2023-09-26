@@ -1,3 +1,7 @@
+<script context="module">
+  export const pageTitle = 'Widgets';
+</script>
+
 <script lang="ts">
   import WidgetTemplate from '$lib/components/WidgetTemplate.svelte';
   import Icon from '@iconify/svelte';

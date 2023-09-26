@@ -1,3 +1,9 @@
+<script context="module" lang="ts">
+  export function getPageTitle(data: any) {
+    return data.widget?.name;
+  }
+</script>
+
 <script lang="ts">
   import Chart from '$lib/components/Chart.svelte';
   import Dataset from '$lib/components/Dataset.svelte';
