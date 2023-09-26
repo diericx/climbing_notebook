@@ -14,6 +14,7 @@
   export let data: PageData;
   $: session = data.session;
   $: trainingProgram = data.trainingProgram;
+  $: s3ObjectUrls = data.s3ObjectUrls;
 
   $: isSaved = () => {
     return trainingProgram.saves.find((s) => s.userId == session?.user.userId) != undefined;
@@ -101,6 +102,9 @@
     width="w-12"
     class="text-white"
     initials={trainingProgram.owner.username}
+    src={trainingProgram.owner.profile?.imageS3ObjectKey
+      ? s3ObjectUrls[trainingProgram.owner.profile.imageS3ObjectKey]
+      : undefined}
     background="bg-primary-500"
   />
   <div class="ml-3 align-middle items-center">

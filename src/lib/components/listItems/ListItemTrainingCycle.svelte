@@ -11,7 +11,11 @@
     include: {
       owner: {
         include: {
-          profile: true;
+          profile: {
+            select: {
+              imageS3ObjectKey: true;
+            };
+          };
         };
       };
       _count: {

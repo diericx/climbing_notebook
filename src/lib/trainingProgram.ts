@@ -1,4 +1,4 @@
-import type { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, type PrismaClient } from '@prisma/client';
 import cuid from 'cuid';
 import { z } from 'zod';
 import { APIError } from './errors';
@@ -34,7 +34,15 @@ export class TrainingProgramRepo {
         id,
       },
       include: {
-        owner: true,
+        owner: {
+          include: {
+            profile: {
+              select: {
+                imageS3ObjectKey: true,
+              },
+            },
+          },
+        },
         trainingProgramScheduledSlots: {
           orderBy: {
             order: 'asc',
@@ -150,7 +158,15 @@ export class TrainingProgramRepo {
         createdAt: 'desc',
       },
       include: {
-        owner: true,
+        owner: {
+          include: {
+            profile: {
+              select: {
+                imageS3ObjectKey: true,
+              },
+            },
+          },
+        },
         trainingProgramScheduledSlots: true,
         trainingCycles: true,
         trainingProgramActivations: true,

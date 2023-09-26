@@ -28,6 +28,7 @@
   );
   $: savedTrainingPrograms = data.savedTrainingPrograms;
   $: ownedTrainingPrograms = data.ownedTrainingPrograms;
+  $: s3ObjectUrls = data.s3ObjectUrls;
 </script>
 
 <div>
@@ -86,7 +87,12 @@
             <List>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {#each ownedTrainingPrograms as trainingProgram}
-                  <ListItemTrainingProgram {trainingProgram} {session} showVisibility={true} />
+                  <ListItemTrainingProgram
+                    {s3ObjectUrls}
+                    {trainingProgram}
+                    {session}
+                    showVisibility={true}
+                  />
                 {/each}
               </div>
             </List>
@@ -99,6 +105,7 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {#each savedTrainingPrograms as trainingProgram}
                   <ListItemTrainingProgram
+                    {s3ObjectUrls}
                     {trainingProgram}
                     {session}
                     onSuccessDuplicate={() => (tabSet = 0)}
@@ -112,6 +119,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
               {#each publicTrainingPrograms as trainingProgram}
                 <ListItemTrainingProgram
+                  {s3ObjectUrls}
                   {trainingProgram}
                   {session}
                   onSuccessDuplicate={() => (tabSet = 0)}
