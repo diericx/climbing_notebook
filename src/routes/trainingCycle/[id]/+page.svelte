@@ -18,6 +18,7 @@
   $: isSaved = () => {
     return trainingCycle.saves.find((s) => s.userId == session?.user.userId) != undefined;
   };
+  $: s3ObjectUrls = data.s3ObjectUrls;
 </script>
 
 <div class="flex flex-wrap mb-4 justify-between items-center">
@@ -101,6 +102,9 @@
     width="w-12"
     class="text-white"
     initials={trainingCycle.owner.username}
+    src={trainingCycle.owner.profile?.imageS3ObjectKey
+      ? s3ObjectUrls[trainingCycle.owner.profile.imageS3ObjectKey]
+      : undefined}
     background="bg-primary-500"
   />
   <div class="ml-3 align-middle items-center">

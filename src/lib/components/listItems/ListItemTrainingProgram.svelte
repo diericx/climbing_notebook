@@ -9,7 +9,11 @@
 
   export let trainingProgram: Prisma.TrainingProgramGetPayload<{
     include: {
-      owner: true;
+      owner: {
+        include: {
+          profile: true;
+        };
+      };
       _count: {
         select: {
           saves: true;
@@ -21,6 +25,7 @@
   export let session: Session | null;
   export let showVisibility = false;
   export let onSuccessDuplicate = () => {};
+  export let s3ObjectUrls: { [key: string]: string };
 
   $: saves = trainingProgram.saves;
   $: isTrainingProgramSavedByUser = () => {
@@ -158,6 +163,9 @@
             class="text-white"
             width="w-9"
             initials={trainingProgram.owner.username}
+            src={trainingProgram.owner.profile?.imageS3ObjectKey
+              ? s3ObjectUrls[trainingProgram.owner.profile.imageS3ObjectKey]
+              : undefined}
             background="bg-primary-500"
           />
           <div class="ml-2 align-middle items-center">

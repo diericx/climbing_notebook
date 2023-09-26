@@ -32,7 +32,15 @@ export class TrainingCycleRepo {
         id,
       },
       include: {
-        owner: true,
+        owner: {
+          include: {
+            profile: {
+              select: {
+                imageS3ObjectKey: true,
+              },
+            },
+          },
+        },
         trainingProgramScheduledSlots: true,
         trainingProgram: {
           select: {
@@ -306,7 +314,15 @@ export class TrainingCycleRepo {
         name: 'asc',
       },
       include: {
-        owner: true,
+        owner: {
+          include: {
+            profile: {
+              select: {
+                imageS3ObjectKey: true,
+              },
+            },
+          },
+        },
         exerciseGroups: {
           include: {
             exercises: {

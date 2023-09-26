@@ -12,6 +12,7 @@
   $: widget = data.widget;
   $: customQueryResults = data.customQueryResults;
   $: datasets = widget.datasets;
+  $: s3ObjectUrls = data.s3ObjectUrls;
 
   $: isOwner = widget.ownerId == user.userId;
 </script>
@@ -49,6 +50,9 @@
     class="text-white"
     width="w-9"
     initials={widget.owner.username}
+    src={widget.owner.profile?.imageS3ObjectKey
+      ? s3ObjectUrls[widget.owner.profile.imageS3ObjectKey]
+      : undefined}
     background="bg-primary-500"
   />
   <div class="ml-2 align-middle items-center">

@@ -12,7 +12,11 @@
 
   type Widget = Prisma.WidgetGetPayload<{
     include: {
-      owner: true;
+      owner: {
+        include: {
+          profile: true;
+        };
+      };
       datasets: {
         include: {
           customQueries: {
@@ -28,6 +32,7 @@
   export let widget: Widget;
   export let customQueryResults: CustomQueryResults[];
   export let user: any;
+  export let s3ObjectUrls: { [key: string]: string };
 </script>
 
 <div class="block card card-hover p-4 h-[29rem]">
@@ -108,6 +113,9 @@
             class="text-white"
             width="w-9"
             initials={widget.owner.username}
+            src={widget.owner.profile?.imageS3ObjectKey
+              ? s3ObjectUrls[widget.owner.profile.imageS3ObjectKey]
+              : undefined}
             background="bg-primary-500"
           />
           <div class="ml-2 align-middle items-center">
