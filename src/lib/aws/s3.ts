@@ -76,6 +76,10 @@ const getMetadata = async (key: string) => {
     Key: key,
   });
   const result = await client.send(command);
+
+  // Set cache
+  s3ObjectMetadataCache[key] = result;
+
   return result.Metadata;
 };
 
