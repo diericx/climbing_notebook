@@ -37,7 +37,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     fieldsToShow: true,
   });
 
-  let activeCycles = await trainingCycleRepo.get({
+  const activeCycles = await trainingCycleRepo.get({
     activations: {
       some: {
         userId: user.userId,

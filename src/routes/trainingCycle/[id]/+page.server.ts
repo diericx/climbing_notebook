@@ -3,7 +3,6 @@ import { exerciseGroupSchema } from '$lib/exerciseGroup';
 import { prisma } from '$lib/prisma';
 import { TrainingCycleRepo, trainingCycleSchema } from '$lib/trainingCycle';
 import { getSessionOrRedirect } from '$lib/utils';
-import type { TrainingCycle } from '@prisma/client';
 import { fail } from '@sveltejs/kit';
 import type { Crumb } from 'svelte-breadcrumbs';
 import { superValidate } from 'sveltekit-superforms/server';
@@ -51,8 +50,7 @@ export const actions: Actions = {
     const id = Number(params.id);
 
     const repo = new TrainingCycleRepo(prisma);
-    let trainingCycle: TrainingCycle;
-    trainingCycle = await repo.delete(id, user?.userId);
+    const trainingCycle = await repo.delete(id, user?.userId);
 
     return { success: true, trainingCycle };
   },

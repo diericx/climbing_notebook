@@ -7,7 +7,6 @@ import {
   trainingProgramSchema,
 } from '$lib/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
-import type { TrainingProgram } from '@prisma/client';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
@@ -35,8 +34,7 @@ export const actions: Actions = {
     const id = params.id;
 
     const repo = new TrainingProgramRepo(prisma);
-    let trainingProgram: TrainingProgram;
-    trainingProgram = await repo.delete(id, user?.userId);
+    const trainingProgram = await repo.delete(id, user?.userId);
 
     return { success: true, trainingProgram };
   },

@@ -10,7 +10,7 @@ import dayjs from 'dayjs';
 import { setError, superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals, url }) => {
+export const load: PageServerLoad = async ({ locals }) => {
   const session = await locals.auth.validate();
 
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
