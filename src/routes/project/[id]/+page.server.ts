@@ -1,7 +1,7 @@
-import { deleteFile, getMetadata, getPresignedUrl, uploadFile } from '$lib/aws/s3';
+import { deleteFile, getSignedUrlsAndMetadata, uploadFile } from '$lib/aws/s3';
 import { fileUploadSchema } from '$lib/file';
 import { prisma } from '$lib/prisma';
-import { ProjectRepo, projectPartialSchema } from '$lib/project';
+import { projectPartialSchema, ProjectRepo } from '$lib/project';
 import { getSessionOrRedirect } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
 import sharp from 'sharp';
@@ -14,16 +14,10 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
 
   const repo = new ProjectRepo(prisma);
   const project = await repo.getOneAndValidateOwner(params.id, user?.userId);
-  // NOTE: we should create some sort of helper function for fetching batches of s3 object urls
-  // once it is used more often that returns an object of this signature.
-  const s3ObjectUrls: { [key: string]: string } = {};
-  if (project.imageS3ObjectKey) {
-    s3ObjectUrls[project.imageS3ObjectKey] = await getPresignedUrl(project.imageS3ObjectKey);
-  }
-  const s3ObjectMetadatas: { [key: string]: Record<string, string> | undefined } = {};
-  if (project.imageS3ObjectKey) {
-    s3ObjectMetadatas[project.imageS3ObjectKey] = await getMetadata(project.imageS3ObjectKey);
-  }
+
+  const { s3ObjectMetadatas, s3ObjectUrls } = await getSignedUrlsAndMetadata(
+    project.imageS3ObjectKey === null ? [] : [project.imageS3ObjectKey]
+  );
 
   return {
     project,

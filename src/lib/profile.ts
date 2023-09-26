@@ -4,8 +4,12 @@ import { APIError } from './errors';
 
 export const profileSchema = z.object({
   goals: z.string().optional(),
+  imageS3ObjectKey: z.string().nullish(),
 });
 export type ProfileSchema = typeof profileSchema;
+
+export const profilePartialSchema = profileSchema.partial();
+export type ProfilePartialSchema = typeof profilePartialSchema;
 
 export class ProfileRepo {
   constructor(private readonly prisma: PrismaClient) {}
@@ -30,7 +34,7 @@ export class ProfileRepo {
     return profile;
   }
 
-  async update(data: z.infer<ProfileSchema>, ownerId: string) {
+  async update(data: z.infer<ProfilePartialSchema>, ownerId: string) {
     await this.getOneAndValidateOwner(ownerId);
 
     return await this.prisma.profile.update({

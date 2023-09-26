@@ -47,4 +47,18 @@ const getMetadata = async (key: string) => {
   return result.Metadata;
 };
 
-export { deleteFile, getMetadata, getPresignedUrl, uploadFile };
+const getSignedUrlsAndMetadata = async (keys: string[]) => {
+  const s3ObjectUrls: { [key: string]: string } = {};
+  for (const key of keys) {
+    s3ObjectUrls[key] = await getPresignedUrl(key);
+  }
+
+  const s3ObjectMetadatas: { [key: string]: Record<string, string> | undefined } = {};
+  for (const key of keys) {
+    s3ObjectMetadatas[key] = await getMetadata(key);
+  }
+
+  return { s3ObjectUrls, s3ObjectMetadatas };
+};
+
+export { deleteFile, getMetadata, getPresignedUrl, uploadFile, getSignedUrlsAndMetadata };

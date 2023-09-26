@@ -1,9 +1,17 @@
 <script lang="ts">
+  import Image from '$lib/components/Image.svelte';
+  import Form from '$lib/components/forms/Form.svelte';
+  import FormButton from '$lib/components/forms/FormButton.svelte';
+  import FormBodyFileUpload from '$lib/components/forms/bodies/FormBodyFileUpload.svelte';
+  import { fileUploadSchema } from '$lib/file';
+  import { confirmDelete } from '$lib/utils';
+  import Icon from '@iconify/svelte';
   import { json2csv } from 'json-2-csv';
   import type { PageData } from './$types';
 
   export let data: PageData;
-  const { profile, user, metrics, exerciseEvents, journalEntries } = data;
+  $: ({ profile, user, metrics, exerciseEvents, journalEntries, s3ObjectMetadatas, s3ObjectUrls } =
+    data);
 
   function downloadAsJson(resources: any, name: string) {
     var a = window.document.createElement('a');
@@ -37,9 +45,35 @@
 
 <h1>Account Info</h1>
 <hr />
-<p>Username: {user?.username}</p>
-<p>Email: {user?.email}</p>
+<p><b>Username: </b> {user?.username}</p>
+<p><b>Email: </b> {user?.email}</p>
 
+<p><b>Profile Image: </b></p>
+{#if profile.imageS3ObjectKey}
+  <div class="">
+    <Image
+      src={s3ObjectUrls[profile.imageS3ObjectKey]}
+      width={s3ObjectMetadatas[profile.imageS3ObjectKey]?.width || '0'}
+      height={s3ObjectMetadatas[profile.imageS3ObjectKey]?.height || '0'}
+      class={'max-h-96 mb-2'}
+    />
+    <FormButton
+      action={`/profile?/deleteImage`}
+      class="btn btn-sm variant-ringed"
+      onClick={confirmDelete}
+    >
+      <slot name="form">
+        <input type="hidden" name="key" value={profile.imageS3ObjectKey} />
+      </slot>
+      <Icon icon="mdi:trash-outline" height="18" />
+      <span class="ml-1 mr-1"> Delete Profile Image </span>
+    </FormButton>
+  </div>
+{:else}
+  <Form schema={fileUploadSchema} let:superForm action={`/profile?/uploadImage`}>
+    <FormBodyFileUpload class="w-72" label="" {superForm} />
+  </Form>
+{/if}
 <br />
 
 <h1 class="inline">Profile</h1>

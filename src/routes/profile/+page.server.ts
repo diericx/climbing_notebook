@@ -1,4 +1,6 @@
+import { deleteFile, getSignedUrlsAndMetadata, uploadFile } from '$lib/aws/s3';
 import { ExerciseEventRepo } from '$lib/exerciseEvent';
+import { fileUploadSchema } from '$lib/file';
 import { JournalEntryRepo } from '$lib/journalEntry';
 import { MetricRepo } from '$lib/metric';
 import { prisma } from '$lib/prisma';
@@ -6,7 +8,9 @@ import { ProfileRepo, profileSchema } from '$lib/profile';
 import { TrainingCycleRepo } from '$lib/trainingCycle';
 import { getSessionOrRedirect } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms/server';
+import sharp from 'sharp';
+import { setError, superValidate } from 'sveltekit-superforms/server';
+import { v4 as uuidv4 } from 'uuid';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
@@ -25,6 +29,11 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     ownerId: user.userId,
   });
   const metrics = await metricsRepo.get(user?.userId);
+
+  const { s3ObjectMetadatas, s3ObjectUrls } = await getSignedUrlsAndMetadata(
+    profile.imageS3ObjectKey === null ? [] : [profile.imageS3ObjectKey]
+  );
+
   return {
     profile,
     exerciseEvents,
@@ -32,6 +41,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     trainingCycles,
     metrics,
     user,
+    s3ObjectMetadatas,
+    s3ObjectUrls,
   };
 };
 
@@ -50,6 +61,86 @@ export const actions: Actions = {
 
     const repo = new ProfileRepo(prisma);
     await repo.update(form.data, user?.userId);
+
+    return { form };
+  },
+
+  uploadImage: async ({ locals, request, url }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+
+    const formData = await request.formData();
+    const form = await superValidate(formData, fileUploadSchema, {
+      id: formData.get('_formId')?.toString(),
+    });
+
+    if (!form.valid) {
+      return fail(400, { form });
+    }
+
+    const repo = new ProfileRepo(prisma);
+    const profile = await repo.getOneAndValidateOwner(user.userId);
+
+    const file = formData.get('file');
+    if (file instanceof File) {
+      // File is required
+      if (file.size == 0) {
+        return setError(form, 'file', 'No file was selected to upload');
+      }
+      // File type restriction
+      if (file.type != 'image/jpeg' && file.type != 'image/png') {
+        return setError(form, 'file', 'File type not supported.');
+      }
+
+      const image = sharp(Buffer.from(await file.arrayBuffer()));
+      const imageMetadata = await image.metadata();
+      // Max file size of 5MB
+      if (file.size > 1024 * 1024 * 5) {
+        return setError(form, 'file', 'File exceeds maximum file size (5MB)');
+      }
+      // Delete existing file if it exists
+      if (profile.imageS3ObjectKey) {
+        await deleteFile(profile.imageS3ObjectKey);
+      }
+      // Upload file
+      const fileId = uuidv4();
+      const fileSuffix = file.name.split('.').pop();
+
+      // Upload small size
+      const key = `profile/${user.userId}/images/${fileId}_48x48.${fileSuffix}`;
+      const smallImg = await image.resize(48, 48).toBuffer();
+
+      await uploadFile(key, new File([smallImg as BlobPart], `${fileId}_48x48.${fileSuffix}`), {
+        width: imageMetadata.width?.toString() || '0',
+        height: imageMetadata.height?.toString() || '0',
+      });
+
+      // Update the project
+      await repo.update({ imageS3ObjectKey: key }, user?.userId);
+    }
+
+    return { form };
+  },
+
+  deleteImage: async ({ locals, url, request }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+
+    const formData = await request.formData();
+    const form = await superValidate(formData, profileSchema, {
+      id: formData.get('_formId')?.toString(),
+    });
+
+    const key = formData.get('key');
+
+    if (!key) {
+      return fail(401, { message: 'Object Key required' });
+    }
+
+    // Delete the file
+    await deleteFile(key.toString());
+
+    // Update the project
+    const repo = new ProfileRepo(prisma);
+    await repo.update({ imageS3ObjectKey: null }, user?.userId);
 
     return { form };
   },
