@@ -11,8 +11,6 @@
   $: shouldApplyFilterMadeByMe = false;
   $: shouldApplyFilterChart = false;
   $: shouldApplyFilterHeatmap = false;
-  $: s3ObjectUrls = data.s3ObjectUrls;
-
   // Apply filters
   $: {
     widgets = data.widgets;
@@ -26,6 +24,8 @@
       widgets = widgets.filter((w) => w.type == 'heatmapCalendar');
     }
   }
+
+  const { s3ObjectUrlPromises } = data;
 </script>
 
 <div class="mb-7">
@@ -98,7 +98,7 @@
   <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
     {#each widgets as widget}
       <div class={widget.width == 'full' ? 'col-span-2' : 'col-span-1'}>
-        <WidgetTemplate {s3ObjectUrls} {user} {widget} {customQueryResults} />
+        <WidgetTemplate {s3ObjectUrlPromises} {user} {widget} {customQueryResults} />
       </div>
     {/each}
   </div>

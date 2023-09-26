@@ -1,4 +1,4 @@
-import { getSignedUrlsAndMetadata } from '$lib/aws/s3';
+import { getSignedUrlPromises } from '$lib/aws/s3';
 import { APIError } from '$lib/errors';
 import { exerciseGroupSchema } from '$lib/exerciseGroup';
 import { prisma } from '$lib/prisma';
@@ -42,8 +42,8 @@ export const load: PageServerLoad = async ({ url, locals, params }) => {
     crumbs = [{ title: 'Training Cycles', url: `/trainingCycle` }, ...crumbs];
   }
 
-  // Fetch s3 signed object URLs in order to display images
-  const signedUrlsAndMetadataPromise = getSignedUrlsAndMetadata(
+  // Feth s3 signed object URLs in order to display images
+  const s3ObjectUrlPromises = getSignedUrlPromises(
     trainingCycle.owner.profile?.imageS3ObjectKey
       ? [trainingCycle.owner.profile.imageS3ObjectKey]
       : []
@@ -53,7 +53,7 @@ export const load: PageServerLoad = async ({ url, locals, params }) => {
     trainingCycle,
     session,
     crumbs,
-    s3ObjectUrls: (await Promise.resolve(signedUrlsAndMetadataPromise)).s3ObjectUrls,
+    s3ObjectUrlPromises,
   };
 };
 

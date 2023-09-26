@@ -7,10 +7,11 @@
 <script lang="ts">
   import type { PageData } from './$types';
 
+  import S3Avatar from '$lib/components/S3Avatar.svelte';
   import WeeklyCalendar from '$lib/components/WeeklyCalendar.svelte';
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import Icon from '@iconify/svelte';
-  import { Avatar, clipboard, toastStore } from '@skeletonlabs/skeleton';
+  import { clipboard, toastStore } from '@skeletonlabs/skeleton';
 
   export let data: PageData;
   $: trainingCycle = data.trainingCycle;
@@ -18,7 +19,7 @@
   $: isSaved = () => {
     return trainingCycle.saves.find((s) => s.userId == session?.user.userId) != undefined;
   };
-  $: s3ObjectUrls = data.s3ObjectUrls;
+  const { s3ObjectUrlPromises } = data;
 </script>
 
 <div class="flex flex-wrap mb-4 justify-between items-center">
@@ -98,13 +99,12 @@
 </div>
 
 <div class="flex mb-8 items-center">
-  <Avatar
+  <S3Avatar
+    key={trainingCycle.owner.profile?.imageS3ObjectKey}
+    {s3ObjectUrlPromises}
     width="w-12"
     class="text-white"
     initials={trainingCycle.owner.username}
-    src={trainingCycle.owner.profile?.imageS3ObjectKey
-      ? s3ObjectUrls[trainingCycle.owner.profile.imageS3ObjectKey]
-      : undefined}
     background="bg-primary-500"
   />
   <div class="ml-3 align-middle items-center">

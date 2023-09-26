@@ -28,7 +28,7 @@
   );
   $: savedTrainingCycles = data.savedTrainingCycles;
   $: ownedTrainingCycles = data.ownedTrainingCycles;
-  $: s3ObjectUrls = data.s3ObjectUrls;
+  const { s3ObjectUrlPromises } = data;
 </script>
 
 <div>
@@ -89,7 +89,7 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {#each ownedTrainingCycles as trainingCycle}
                   <ListItemTrainingCycle
-                    {s3ObjectUrls}
+                    {s3ObjectUrlPromises}
                     {trainingCycle}
                     {session}
                     showVisibility={true}
@@ -106,7 +106,7 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {#each savedTrainingCycles as trainingCycle}
                   <ListItemTrainingCycle
-                    {s3ObjectUrls}
+                    {s3ObjectUrlPromises}
                     {trainingCycle}
                     {session}
                     onSuccessDuplicate={() => (tabSet = 0)}
@@ -120,7 +120,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
               {#each publicTrainingCycles as trainingCycle}
                 <ListItemTrainingCycle
-                  {s3ObjectUrls}
+                  {s3ObjectUrlPromises}
                   {trainingCycle}
                   {session}
                   onSuccessDuplicate={() => {

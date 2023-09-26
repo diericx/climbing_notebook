@@ -1,4 +1,4 @@
-import { getSignedUrlsAndMetadata } from '$lib/aws/s3';
+import { getSignedUrlPromises } from '$lib/aws/s3';
 import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
 import { prisma } from '$lib/prisma';
 import { getSessionOrRedirect } from '$lib/utils';
@@ -51,8 +51,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     }
   }
 
-  // Fetch s3 signed object URLs in order to display images
-  const signedUrlsAndMetadataPromise = getSignedUrlsAndMetadata(
+  const s3ObjectUrlPromises = getSignedUrlPromises(
     widgets.reduce((acc, cur) => {
       if (cur.owner.profile?.imageS3ObjectKey) {
         return [...acc, cur.owner.profile.imageS3ObjectKey];
@@ -65,7 +64,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     user,
     customQueryResults,
     widgets,
-    s3ObjectUrls: (await Promise.resolve(signedUrlsAndMetadataPromise)).s3ObjectUrls,
+    s3ObjectUrlPromises,
   };
 };
 

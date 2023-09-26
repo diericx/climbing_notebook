@@ -2,9 +2,10 @@
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
-  import { Avatar, clipboard, toastStore } from '@skeletonlabs/skeleton';
+  import { clipboard, toastStore } from '@skeletonlabs/skeleton';
   import type { Session } from 'lucia';
   import ListItem from '../ListItem.svelte';
+  import S3Avatar from '../S3Avatar.svelte';
   import FormButton from '../forms/FormButton.svelte';
 
   export let trainingCycle: Prisma.TrainingCycleGetPayload<{
@@ -30,7 +31,7 @@
   export let session: Session | null;
   export let showVisibility = false;
   export let onSuccessDuplicate = () => {};
-  export let s3ObjectUrls: { [key: string]: string };
+  export let s3ObjectUrlPromises: { [key: string]: Promise<string> };
 
   $: saves = trainingCycle.saves;
   $: isTrainingCycleSavedByUser = () => {
@@ -165,13 +166,12 @@
       <hr class="border-gray-200 divider my-4 mb-2" />
       <div class="flex justify-between">
         <div class="text-gray-600 flex items-center">
-          <Avatar
+          <S3Avatar
+            key={trainingCycle.owner.profile?.imageS3ObjectKey}
+            {s3ObjectUrlPromises}
             class="text-white"
             width="w-9"
             initials={trainingCycle.owner.username}
-            src={trainingCycle.owner.profile?.imageS3ObjectKey
-              ? s3ObjectUrls[trainingCycle.owner.profile.imageS3ObjectKey]
-              : undefined}
             background="bg-primary-500"
           />
           <div class="ml-2 align-middle items-center">
