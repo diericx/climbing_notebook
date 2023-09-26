@@ -3,14 +3,17 @@
 
   import ListExerciseEvent from '$lib/components/ListExerciseEvent.svelte';
   import WeeklyCalendar from '$lib/components/WeeklyCalendar.svelte';
-  import { isDateInTheSameDayAsToday } from '$lib/utils';
+  import {
+    getActiveTrainingCycleForTrainingProgramActivation,
+    isDateInTheSameDayAsToday,
+  } from '$lib/utils';
   import Icon from '@iconify/svelte';
-  import { modalStore } from '@skeletonlabs/skeleton';
+  import { Tab, TabGroup, modalStore } from '@skeletonlabs/skeleton';
 
   export let data: PageData;
-  $: activeTrainingCycle = data.profile?.activeTrainingCycle;
+  $: activeCycles = data.activeCycles;
+  $: validTrainingProgramActivations = data.validTrainingProgramActivations;
   $: exerciseEvents = data.exerciseEvents;
-  $: user = data.user;
   $: exercises = data.exercises;
 
   // Filter out only todays exercise events
@@ -30,31 +33,76 @@
     const [eDateStr] = e.date.toISOString().split('T');
     return eDateStr != todayStr;
   });
+
+  interface TabData {
+    cycle: (typeof activeCycles)[number];
+    program?: (typeof validTrainingProgramActivations)[number]['trainingProgram'];
+  }
+  $: tabSet = 0;
+  $: tabData = [
+    ...activeCycles.map((c) => ({
+      cycle: c,
+    })),
+    ...validTrainingProgramActivations.map((a) => ({
+      cycle: getActiveTrainingCycleForTrainingProgramActivation(a),
+      program: a.trainingProgram,
+    })),
+  ] as TabData[];
 </script>
 
 <div class="mb-14">
-  <h3>Active Training Program</h3>
+  <h1>Active Training Cycles</h1>
   <div>
-    {#if !activeTrainingCycle}
+    {#if activeCycles.length + validTrainingProgramActivations.length == 0}
       <p class="text-gray-400">
-        You don't have an active training program! Go to the <a class="link" href="/trainingCycle"
-          >Training Programs</a
-        > page to create and set one.
+        You don't have an active training program or cycle!
+        <br />
+        You can activate individual week long cycles from the
+        <a class="link" href="/trainingCycle"> Training Cycle </a> page.
+        <br />
+        You can schedule Training Cycles with
+        <a class="link" href="/trainingProgram">Training Programs</a>.
       </p>
     {:else}
-      <WeeklyCalendar
-        {exercises}
-        {user}
-        trainingCycle={activeTrainingCycle}
-        showDuplicateBtn={false}
-      />
+      <TabGroup>
+        <!-- Tabs --->
+        {#each tabData as d, i}
+          <Tab bind:group={tabSet} name={d.cycle.name} value={i}>
+            <span>{d.cycle.name}</span>
+          </Tab>
+        {/each}
+        <!-- Tab Panels --->
+        <svelte:fragment slot="panel">
+          <div class="flex justify-between mb-3 items-end">
+            <div class="flex text-gray-400">
+              {#if tabData[tabSet].program !== undefined}
+                <p>
+                  This cycle was activated from the Training Program
+                  <a class="link" href={`/trainingProgram/${tabData[tabSet].program?.id}`}
+                    >{tabData[tabSet].program?.name}</a
+                  >
+                  <br />
+                  The Program was activated by your
+                  <a class="link" href="/trainingProgramScheduler">Schedule</a>.
+                </p>
+              {:else}
+                <p>
+                  This cycle was activated via a direct activation from the
+                  <a class="link" href="/trainingCycle">Training Cycles</a> page.
+                </p>
+              {/if}
+            </div>
+          </div>
+          <WeeklyCalendar {exercises} trainingCycle={tabData[tabSet].cycle} />
+        </svelte:fragment>
+      </TabGroup>
     {/if}
   </div>
 </div>
 
 <div class="mb-7">
   <div class="flex justify-between">
-    <h2>Today</h2>
+    <h1>Today</h1>
     <button
       class="btn btn-sm variant-filled mb-2"
       on:click={() =>
@@ -79,6 +127,6 @@
 </div>
 
 <div class="pt-8">
-  <h2 class="mb-3">History</h2>
+  <h1 class="mb-3">History</h1>
   <ListExerciseEvent {exercises} exerciseEvents={pastExerciseEvents} />
 </div>

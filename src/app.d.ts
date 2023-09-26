@@ -22,6 +22,9 @@ declare global {
       status?: number;
     }
   }
+  interface PageData {
+    flash?: { type: 'success' | 'error'; message: string };
+  }
 }
 
 export {};

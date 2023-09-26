@@ -1,15 +1,16 @@
 <script lang="ts">
-  import { AppBar, AppShell, Modal, type ModalComponent } from '@skeletonlabs/skeleton';
+  import { AppBar, AppShell, Modal, Toast, type ModalComponent } from '@skeletonlabs/skeleton';
   import NProgress from 'nprogress';
   import type { PageData } from './$types';
   // Your selected Skeleton theme:
   import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
   // This contains the bulk of Skeletons required styles:
-  import { navigating } from '$app/stores';
+  import { navigating, page } from '$app/stores';
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import ModalCalendarEvent from '$lib/components/modals/ModalCalendarEvent.svelte';
   import ModalJournalEntry from '$lib/components/modals/ModalJournalEntry.svelte';
   import ModalShareTrainingCycle from '$lib/components/modals/ModalShareTrainingCycle.svelte';
+  import ModalShareTrainingProgram from '$lib/components/modals/ModalShareTrainingProgram.svelte';
   import FormModalCalendarEvent from '$lib/components/modals/formModals/FormModalCalendarEvent.svelte';
   import FormModalCustomQuery from '$lib/components/modals/formModals/FormModalCustomQuery.svelte';
   import FormModalCustomQueryCondition from '$lib/components/modals/formModals/FormModalCustomQueryCondition.svelte';
@@ -21,6 +22,10 @@
   import FormModalProjectSession from '$lib/components/modals/formModals/FormModalProjectSession.svelte';
   import FormModalTrainingCycle from '$lib/components/modals/formModals/FormModalTrainingCycle.svelte';
   import FormModalTrainingCycleDay from '$lib/components/modals/formModals/FormModalTrainingCycleDay.svelte';
+  import FormModalTrainingCycleTemplate from '$lib/components/modals/formModals/FormModalTrainingCycleTemplate.svelte';
+  import FormModalTrainingProgram from '$lib/components/modals/formModals/FormModalTrainingProgram.svelte';
+  import FormModalTrainingProgramActivation from '$lib/components/modals/formModals/FormModalTrainingProgramActivation.svelte';
+  import FormModalTrainingProgramScheduledSlot from '$lib/components/modals/formModals/FormModalTrainingProgramScheduledSlot.svelte';
   import FormModalWidget from '$lib/components/modals/formModals/FormModalWidget.svelte';
   import FormModalWidgetTemplate from '$lib/components/modals/formModals/FormModalWidgetTemplate.svelte';
   import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
@@ -29,12 +34,16 @@
   import { Drawer, drawerStore, popup, storePopup } from '@skeletonlabs/skeleton';
   import '@skeletonlabs/skeleton/styles/skeleton.css';
   import 'nprogress/nprogress.css';
+  import { Breadcrumbs } from 'svelte-breadcrumbs';
+  import { getFlash } from 'sveltekit-flash-message';
   import '../app.css';
 
   storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
   export let data: PageData;
   $: countOfExercisesThatNeedMigration = data.countOfExercisesThatNeedMigration;
+
+  const flash = getFlash(page);
 
   NProgress.configure({
     minimum: 0.16,
@@ -63,9 +72,14 @@
     formModalProject: { ref: FormModalProject },
     formModalProjectSession: { ref: FormModalProjectSession },
     formModalExercise: { ref: FormModalExercise },
+    formModalTrainingProgram: { ref: FormModalTrainingProgram },
+    formModalTrainingProgramScheduledSlot: { ref: FormModalTrainingProgramScheduledSlot },
+    formModalTrainingProgramActivation: { ref: FormModalTrainingProgramActivation },
+    formModalTrainingCycleTemplate: { ref: FormModalTrainingCycleTemplate },
     modalCalendarEvent: { ref: ModalCalendarEvent },
     modalJournalEntry: { ref: ModalJournalEntry },
     modalShareTrainingCycle: { ref: ModalShareTrainingCycle },
+    modalShareTrainingProgram: { ref: ModalShareTrainingProgram },
   };
   function drawerOpen(): void {
     drawerStore.open({});
@@ -75,7 +89,7 @@
   }
 
   let popupCombobox: PopupSettings = {
-    event: 'focus-click',
+    event: 'click',
     target: 'combobox',
     placement: 'bottom-end',
     // Close the popup when the item is clicked
@@ -87,16 +101,15 @@
     {
       title: 'Training',
       children: [
+        { title: 'Training Cycles', url: '/trainingCycle' },
+        { title: 'Training Programs', url: '/trainingProgram' },
+        { title: 'Training Program Scheduler', url: '/trainingProgramScheduler' },
         { title: 'Exercise Log', url: '/exerciseEvent' },
-        { title: 'Training Programs', url: '/trainingCycle' },
         { title: 'Journal', url: '/journalEntry' },
       ],
     },
     { title: 'Climbing', children: [{ title: 'Project Notes', url: '/project' }] },
-    {
-      title: 'Community Marketplace',
-      children: [{ title: 'Widgets', url: '/widget' }],
-    },
+    { title: 'Widgets', url: '/widget' },
     { title: 'Feedback', url: '/feedback' },
   ];
 </script>
@@ -138,6 +151,8 @@
   </div>
 </Drawer>
 
+<Toast />
+
 <AppShell slotSidebarLeft="bg-surface-500/5 w-0 lg:w-64">
   <svelte:fragment slot="header">
     <AppBar background="bg-white">
@@ -177,7 +192,7 @@
                 </div>
               </button>
               <!--Create the pop up-->
-              <div class="card w-48 shadow-xl py-2 z-50" data-popup={item.title}>
+              <div class="card w-48 min-w-min shadow-xl py-2 z-50" data-popup={item.title}>
                 <nav class="list-nav">
                   <ul>
                     {#each item.children as child}
@@ -187,7 +202,7 @@
                     {/each}
                   </ul>
                 </nav>
-                <div class="arrow bg-surface-100-800-token" />
+                <div class="arrow bg-white border" />
               </div>
             {:else}
               <a class="px-2 text-gray-600 hover:text-black font-light" href={item.url}>
@@ -208,7 +223,7 @@
         {/if}
       </svelte:fragment>
     </AppBar>
-    {#if countOfExercisesThatNeedMigration > 0}
+    {#if countOfExercisesThatNeedMigration !== undefined && countOfExercisesThatNeedMigration > 0}
       <div class="bg-green-300 w-full text-center py-2 px-8 text-opacity-30">
         A new exercise system has been implemented. Please edit your exercises to migrate.
         <br />
@@ -218,7 +233,38 @@
   </svelte:fragment>
 
   <div class="container mx-auto px-3">
-    <main class="pt-8 pb-10">
+    <main class="pb-10">
+      <div class="pt-5 pb-4">
+        <Breadcrumbs
+          url={$page.url}
+          crumbs={$page.data.crumbs}
+          routeId={$page.route.id}
+          pageData={$page.data}
+          let:crumbs
+        >
+          <ol class="breadcrumb">
+            <li class="crumb"><a class="anchor" href="/">Home</a></li>
+            {#each crumbs as c}
+              <li class="crumb-separator" aria-hidden>/</li>
+              <li class={`${c.url ? 'crumb' : ''}`}>
+                <a class={`whitespace-nowrap ${c.url ? 'anchor' : ''}`} href={c.url}>
+                  {c.title}
+                </a>
+              </li>
+            {/each}
+          </ol>
+        </Breadcrumbs>
+      </div>
+      {#if $flash}
+        {@const variant =
+          $flash.type == 'success' ? 'variant-ghost-success' : 'variant-ghost-error'}
+        <aside class={`alert mb-4 mt-4 ${variant}`}>
+          <div class="alert-message">
+            <h3 class="h3">{$flash.message}</h3>
+          </div>
+        </aside>
+      {/if}
+      <div class="pb-6" />
       <slot />
     </main>
   </div>
@@ -236,23 +282,5 @@
       </li>
     </ul>
   </nav>
-  <div class="arrow bg-surface-100-800-token" />
-</div>
-
-<!-- TRAINING POPUP  -->
-<div class="card w-48 shadow-xl py-2 z-50" data-popup="training">
-  <nav class="list-nav">
-    <ul>
-      <li class="listbox-item">
-        <a href="/exerciseEvent"> Exercise Log </a>
-      </li>
-      <li class="listbox-item">
-        <a href="/trainingCycle"> Training Programs </a>
-      </li>
-      <li class="listbox-item">
-        <a href="/journalEntry"> Journal </a>
-      </li>
-    </ul>
-  </nav>
-  <div class="arrow bg-surface-100-800-token" />
+  <div class="arrow bg-white border" />
 </div>

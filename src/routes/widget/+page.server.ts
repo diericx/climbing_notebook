@@ -65,8 +65,7 @@ export const actions: Actions = {
     }
 
     const repo = new WidgetRepo(prisma);
-    let widget;
-    widget = await repo.new(form.data, user?.userId);
+    const widget = await repo.new(form.data, user?.userId);
 
     // Redirect to the edit page for charts and heatmap calendars (basically charts)
     // because by default they are not complete and need more info

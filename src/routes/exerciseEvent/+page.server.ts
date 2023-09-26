@@ -2,10 +2,18 @@ import { ExerciseRepo } from '$lib/exercise';
 import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
 import { prisma } from '$lib/prisma';
 import { ProfileRepo } from '$lib/profile';
-import { getSessionOrRedirect } from '$lib/utils';
+import { TrainingCycleRepo } from '$lib/trainingCycle';
+import { TrainingProgramActivationRepo } from '$lib/trainingProgramActivation';
+import {
+  getActiveTrainingCycleForTrainingProgramActivation,
+  getSessionOrRedirect,
+} from '$lib/utils';
 import { fail } from '@sveltejs/kit';
+import dayjs from 'dayjs';
+import weekOfYear from 'dayjs/plugin/weekOfYear';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
+dayjs.extend(weekOfYear);
 
 export const load: PageServerLoad = async ({ locals, url }) => {
   const { user } = await getSessionOrRedirect({ locals, url });
@@ -13,6 +21,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const exerciseEventsRepo = new ExerciseEventRepo(prisma);
   const exerciseRepo = new ExerciseRepo(prisma);
   const profileRepo = new ProfileRepo(prisma);
+  const trainingCycleRepo = new TrainingCycleRepo(prisma);
+  const trainingProgramActivationRepo = new TrainingProgramActivationRepo(prisma);
+
   const exerciseEvents = await exerciseEventsRepo.get(user?.userId);
   const profile = await profileRepo.getOne(user?.userId);
   const exercises = await exerciseRepo.getSelect({
@@ -26,9 +37,33 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     fieldsToShow: true,
   });
 
+  const activeCycles = await trainingCycleRepo.get({
+    activations: {
+      some: {
+        userId: user.userId,
+      },
+    },
+  });
+
+  // Note: this does not filter for training programs that are active yet have
+  // ended. This should be improved upon by upgrading prisma and using field
+  // references to make the query more advanced
+  const trainingProgramActivations = await trainingProgramActivationRepo.get({
+    ownerId: user.userId,
+    startDate: {
+      lte: new Date(),
+    },
+  });
+
+  const validTrainingProgramActivations = trainingProgramActivations.filter(
+    (a) => getActiveTrainingCycleForTrainingProgramActivation(a) !== undefined
+  );
+
   return {
     exercises,
     exerciseEvents,
+    activeCycles,
+    validTrainingProgramActivations,
     profile,
     user,
   };

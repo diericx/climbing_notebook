@@ -3,6 +3,7 @@ import { auth } from '$lib/server/lucia';
 import type { Handle, HandleServerError } from '@sveltejs/kit';
 
 import { APIError } from '$lib/errors';
+import { serialize } from 'cookie';
 import segfaultHandler from 'node-segfault-handler';
 import { actionResult } from 'sveltekit-superforms/server';
 
@@ -50,6 +51,33 @@ export const handle: Handle = async ({ event, resolve }) => {
       } catch (e: unknown) {
         return result;
       }
+    } else {
+      const body = await result.clone().json();
+
+      // Create new response
+      const newResult = actionResult(
+        'redirect',
+        event.url.searchParams.get('redirectToAuthFallback') || event.url.pathname,
+        {
+          status: 303,
+        }
+      );
+      newResult.headers.append('Cache-Control', 'no-store');
+      newResult.headers.append(
+        'Set-Cookie',
+        serialize(
+          'flash',
+          JSON.stringify({
+            type: 'error',
+            message: body.error?.message || "Something wen't wrong on our end",
+          }),
+          {
+            sameSite: 'strict',
+            path: '/',
+          }
+        )
+      );
+      return newResult;
     }
   }
 

@@ -4,14 +4,36 @@
   // @ts-ignore
   import DayGrid from '@event-calendar/day-grid';
   // @ts-ignore
-  import Interraction from '@event-calendar/interaction';
+  import Interaction from '@event-calendar/interaction';
   // @ts-ignore
   import TimeGrid from '@event-calendar/time-grid';
-  import type { CalendarEvent, JournalEntry } from '@prisma/client';
+  import type { CalendarEvent, JournalEntry, Prisma, TrainingProgram } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
+  import dayjs from 'dayjs';
 
-  export let calendarEvents: CalendarEvent[];
-  export let journalEntries: JournalEntry[];
+  export let calendarEvents: CalendarEvent[] = [];
+  export let journalEntries: JournalEntry[] = [];
+  export let trainingProgramActivations: Prisma.TrainingProgramActivationGetPayload<{
+    include: {
+      trainingProgram: {
+        select: {
+          name: true;
+          trainingProgramScheduledSlots: {
+            select: {
+              duration: true;
+              trainingCycles: {
+                select: {
+                  name: true;
+                };
+              };
+            };
+          };
+        };
+      };
+    };
+  }>[] = [];
+  // For the activation modal program select
+  export let trainingPrograms: TrainingProgram[] = [];
 
   type EventExtendedProps = {
     onClick: () => void;
@@ -64,15 +86,54 @@
     },
   }));
 
-  let plugins = [TimeGrid, DayGrid, Interraction];
+  let trainingProgramActivationEvents: any[] = [];
+  $: {
+    trainingProgramActivations.forEach((a) => {
+      let startDate = dayjs(a.startDate);
+      a.trainingProgram.trainingProgramScheduledSlots.forEach((s) => {
+        let endDate = startDate.add(s.duration, 'weeks').subtract(1, 'day');
+        trainingProgramActivationEvents.push({
+          start: startDate.toDate(),
+          end: endDate.toDate(),
+          backgroundColor: '#8bfca9',
+          allDay: true,
+          title: `${a.trainingProgram.name} - ${s.trainingCycles[0].name} `,
+          extendedProps: {
+            onClick: () => {
+              modalStore.trigger({
+                type: 'component',
+                component: 'formModalTrainingProgramActivation',
+                meta: {
+                  action: `/trainingProgram/${a.trainingProgramId}/activation/${a.id}?/edit`,
+                  data: a,
+                  title: 'Edit Scheduled Program',
+                  showDeleteButton: true,
+                  deleteButtonAction: `/trainingProgram/${a.trainingProgramId}/activation/${a.id}?/delete`,
+                  formProps: {
+                    trainingPrograms,
+                  },
+                },
+              });
+            },
+          },
+        });
+        startDate = endDate.add(1, 'day');
+      });
+    });
+  }
+
+  let plugins = [TimeGrid, DayGrid, Interaction];
+  // Note: I don't think the 'pointer' option works so it is applied via css
   $: options = {
     view: 'dayGridMonth',
+    // Note: I don't think the 'editable' option works so we need to specify each one individually
+    eventStartEditable: false,
+    eventDurationEditable: false,
     firstDay: 1,
     eventTimeFormat: () => {
       return '';
     },
-    pointer: true,
-    events: [...journalEntryEvents, ..._calendarEvents],
+    events: [...trainingProgramActivationEvents, ...journalEntryEvents, ..._calendarEvents],
     eventClick: ({ event }: { event: Event }) => {
       event.extendedProps.onClick();
     },

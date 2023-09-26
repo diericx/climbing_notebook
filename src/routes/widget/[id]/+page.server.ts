@@ -21,7 +21,9 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
     throw new APIError('INVALID_INPUT', 'Only template widgets can be viewed individually');
   }
 
-  const trainingCycles = await trainingCycleRepo.get(user?.userId);
+  const trainingCycles = await trainingCycleRepo.get({
+    ownerId: user.userId,
+  });
   // compile datasets for widgets
   const customQueryResults: CustomQueryResults[] = [];
   // Go through each widget and fetch cooresponding query results

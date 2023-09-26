@@ -49,10 +49,10 @@
               <FormButton
                 action={`/exercise/${exercise.id}?/delete`}
                 class="btn btn-sm variant-ringed"
+                onClick={confirmDelete}
               >
                 <Icon icon="mdi:trash-outline" height="18" />
                 <span class="ml-1 mr-1"> Delete </span>
-                onClick={confirmDelete}
               </FormButton>
             {/if}
           </slot>

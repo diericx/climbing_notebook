@@ -9,7 +9,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const { user } = await getSessionOrRedirect({ locals, url });
 
   const repo = new ProjectRepo(prisma);
-  let projects = await repo.get(user?.userId);
+  const projects = await repo.get(user?.userId);
 
   return {
     projects,

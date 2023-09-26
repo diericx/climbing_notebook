@@ -1,21 +1,39 @@
+<script context="module">
+  export const pageTitle = 'Cycles';
+</script>
+
 <script lang="ts">
-  import FormButton from '$lib/components/forms/FormButton.svelte';
-  import { doesTrainingCycleHaveLegacyExercises } from '$lib/trainingCycle';
-  import { confirmDelete } from '$lib/utils';
+  import { page } from '$app/stores';
+  import List from '$lib/components/List.svelte';
+  import ListItemTrainingCycle from '$lib/components/listItems/ListItemTrainingCycle.svelte';
   import Icon from '@iconify/svelte';
-  import { modalStore, popup } from '@skeletonlabs/skeleton';
+  import { Tab, TabGroup, modalStore } from '@skeletonlabs/skeleton';
+  import dayjs from 'dayjs';
+  import localizedFormat from 'dayjs/plugin/localizedFormat';
   import type { PageData } from './$types';
+
+  dayjs.extend(localizedFormat);
 
   export let data: PageData;
 
-  $: profile = data.profile;
-  $: trainingCycles = data.trainingCycles;
+  // Enable setting initial tab from url
+  const tabFromUrl = Number($page.url.searchParams.get('tab'));
+
+  let tabSet = data.session === null ? 2 : tabFromUrl || 0;
+  $: tabSet;
+  $: session = data.session;
+  // Ordering by count not supported in prisma...
+  $: publicTrainingCycles = data.publicTrainingCycles.sort(
+    (a, b) => b._count.saves - a._count.saves
+  );
+  $: savedTrainingCycles = data.savedTrainingCycles;
+  $: ownedTrainingCycles = data.ownedTrainingCycles;
 </script>
 
 <div>
   <div>
     <div class="flex justify-between mb-4">
-      <h1>Your Programs</h1>
+      <h1>Training Cycles</h1>
       <div>
         <button
           class="btn btn-sm variant-filled"
@@ -25,133 +43,89 @@
               component: 'formModalTrainingCycle',
               meta: {
                 action: `/trainingCycle?/new`,
-                title: 'New Training Program',
+                title: 'New Training Cycle',
               },
             })}
         >
           <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-          <span>New Program</span>
+          <span>New Cycle</span>
         </button>
       </div>
     </div>
 
-    <div>
-      {#if trainingCycles.length == 0}
-        <p class="text-gray-400 italic">You have no training programs.</p>
-      {:else}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {#each trainingCycles as p}
-            <div class="block card card-hover">
-              <a
-                style="height: 100%;"
-                class="flex flex-col justify-between"
-                href={`/trainingCycle/${p.id}`}
-              >
-                <header class="card-header">
-                  <div class="flex justify-between">
-                    <h2>
-                      <b>
-                        {p.name}
-                      </b>
-                    </h2>
+    <p class="mb-8 text-gray-400">
+      Training Cycles are one week long exercise plans. Training Cycles that you have created or
+      saved will be available to all of your <a class="link" href="/trainingProgram"
+        >Training Programs</a
+      > and widgets. You can also view all published Cycles from the community in the Browse tab.
+    </p>
 
-                    <div class="flex">
-                      <div>
-                        <button
-                          class="btn !bg-transparent justify-between"
-                          use:popup={{
-                            event: 'focus-click',
-                            target: p.id.toString(),
-                            placement: 'bottom-end',
-                          }}
-                          on:click={(e) => {
-                            e.stopPropagation();
-                            e.preventDefault();
-                          }}
-                        >
-                          <Icon icon="fe:elipsis-h" height="18" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </header>
-                <section class="p-4">
-                  <p class="text-gray-400">
-                    {profile?.activeTrainingCycleId == p.id ? 'Active' : 'Inactive'}
-                    <br />
-                    {p.isPublic ? 'Public' : 'Private'}
-                  </p>
-                  {#if doesTrainingCycleHaveLegacyExercises(p)}
-                    <p class="text-red-500">
-                      Contains legacy exercises. Edit the exercises in this program to migrate.
-                    </p>
-                  {/if}
-                </section>
-                <footer class="card-footer">
-                  <FormButton
-                    action={`/profile?/edit`}
-                    class="btn btn-sm variant-ringed justify-start"
-                    disabled={profile?.activeTrainingCycleId == p.id}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <div slot="form">
-                      <input type="hidden" name="activeTrainingCycleId" value={p.id} />
-                    </div>
+    <TabGroup>
+      <Tab
+        bind:group={tabSet}
+        name="tab1"
+        value={0}
+        disabled={session === null}
+        regionTab={session === null ? 'cursor-not-allowed' : undefined}
+        hover={session === null ? 'cursor-not-allowed' : undefined}>Created by me</Tab
+      >
+      <Tab
+        bind:group={tabSet}
+        name="tab2"
+        value={1}
+        disabled={session === null}
+        regionTab={session === null ? 'cursor-not-allowed' : undefined}
+        hover={session === null ? 'cursor-not-allowed' : undefined}>Saved</Tab
+      >
+      <Tab bind:group={tabSet} name="tab3" value={2}>Browse</Tab>
+      <!-- Tab Panels --->
+      <svelte:fragment slot="panel">
+        {#if tabSet === 0}
+          {#if ownedTrainingCycles.length == 0}
+            <p class="text-gray-400 italic">You haven't created any training cycles yet!</p>
+          {:else}
+            <List>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {#each ownedTrainingCycles as trainingCycle}
+                  <ListItemTrainingCycle {trainingCycle} {session} showVisibility={true} />
+                {/each}
+              </div>
+            </List>
+          {/if}
+        {:else if tabSet == 1}
+          {#if savedTrainingCycles.length == 0}
+            <p class="text-gray-400 italic">You have no saved training cycles.</p>
+          {:else}
+            <List>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {#each savedTrainingCycles as trainingCycle}
+                  <ListItemTrainingCycle
+                    {trainingCycle}
+                    {session}
+                    onSuccessDuplicate={() => (tabSet = 0)}
+                  />
+                {/each}
+              </div>
+            </List>
+          {/if}
+        {:else if tabSet === 2}
+          <List>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+              {#each publicTrainingCycles as trainingCycle}
+                <ListItemTrainingCycle
+                  {trainingCycle}
+                  {session}
+                  onSuccessDuplicate={() => {
+                    tabSet = 0;
+                  }}
+                />
+              {/each}
+            </div>
+          </List>
+        {/if}
+      </svelte:fragment>
+    </TabGroup>
 
-                    Activate
-                  </FormButton>
-                </footer>
-              </a>
-            </div>
-            <div id={p.id.toString()} class="card shadow-xl py-2" data-popup={p.id.toString()}>
-              <nav class="list-nav">
-                <ul>
-                  <li>
-                    <button
-                      class="btn btn-sm w-full justify-start"
-                      on:click={() =>
-                        modalStore.trigger({
-                          type: 'component',
-                          component: 'modalShareTrainingCycle',
-                          meta: {
-                            trainingCycle: p,
-                          },
-                        })}
-                    >
-                      <span>Share</span>
-                    </button>
-                  </li>
-                  <li>
-                    <a class="btn btn-sm justify-start" href="/trainingCycle/{p.id}/edit">
-                      <span> Edit </span>
-                    </a>
-                  </li>
-                  <li>
-                    <FormButton
-                      action={`/trainingCycle/${p.id}?/duplicate&redirectTo=/trainingCycle`}
-                      class="btn btn-sm w-full justify-start"
-                    >
-                      Duplicate
-                    </FormButton>
-                  </li>
-                  <li>
-                    <FormButton
-                      action={`/trainingCycle/${p.id}?/delete`}
-                      class="btn btn-sm w-full justify-start"
-                      onClick={confirmDelete}
-                    >
-                      <span> Delete </span>
-                    </FormButton>
-                  </li>
-                </ul>
-              </nav>
-              <div class="arrow bg-surface-100-800-token" />
-            </div>
-          {/each}
-        </div>
-      {/if}
-    </div>
+    <div />
   </div>
 </div>

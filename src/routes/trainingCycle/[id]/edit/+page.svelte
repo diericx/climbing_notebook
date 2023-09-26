@@ -1,11 +1,12 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
+  import List from '$lib/components/List.svelte';
   import ListExerciseEvent from '$lib/components/ListExerciseEvent.svelte';
-  import ListExerciseGroup from '$lib/components/ListExerciseGroup.svelte';
+  import ListItem from '$lib/components/ListItem.svelte';
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
-  import { modalStore } from '@skeletonlabs/skeleton';
+  import { clipboard, modalStore, toastStore } from '@skeletonlabs/skeleton';
   import type { PageData } from './$types';
 
   export let data: PageData;
@@ -27,32 +28,90 @@
 <svelte:window bind:scrollY />
 
 <div class="grid grid-cols-1">
-  <div class="mb-12 flex items-center justify-between">
-    <div>
-      <h1 class="font-bold inline">
-        Editing {trainingCycle.name}
-      </h1>
-    </div>
+  <div class="mb-10">
+    <div class="mb-8 flex items-center justify-between">
+      <div>
+        <h1 class="font-bold inline">
+          Editing {trainingCycle.name}
+        </h1>
+      </div>
 
-    <div class="flex">
-      <button
-        class="btn btn-sm variant-ringed justify-start mr-2"
-        on:click={() =>
-          modalStore.trigger({
-            type: 'component',
-            component: 'modalShareTrainingCycle',
-            meta: {
-              trainingCycle,
-            },
-          })}
-      >
-        <Icon icon="mdi:share" height="18" />
-        <span>Share</span>
-      </button>
+      <div class="flex space-x-2">
+        {#if !trainingCycle.trainingProgramId}
+          {#if trainingCycle.isPublic}
+            <div>
+              <button
+                class="btn btn-sm variant-filled w-full justify-start"
+                use:clipboard={`https://climbingnotebook.com/community/trainingCycle/${trainingCycle.id}`}
+                on:click={() => {
+                  toastStore.trigger({
+                    message: 'Public URL copied',
+                  });
+                }}
+              >
+                <Icon icon="ph:link-bold" height="18" />
+                <span> Copy Public URL </span>
+              </button>
+            </div>
+            <FormButton
+              action={`/trainingCycle/${trainingCycle.id}?/hide`}
+              class="btn btn-sm variant-filled w-full justify-start"
+              onSuccess={() => {
+                toastStore.trigger({
+                  message:
+                    'Your Training Cycle is now hidden and will not show up in the Community Training Cycles page.',
+                  timeout: 5000,
+                });
+              }}
+            >
+              <Icon icon="mdi:hide-outline" height="18" />
+              <span> Hide </span>
+            </FormButton>
+          {:else}
+            <div>
+              <button
+                class="btn btn-sm variant-filled w-full justify-start"
+                use:clipboard={`https://climbingnotebook.com/trainingCycle/${trainingCycle.id}?token=${trainingCycle.privateAccessToken}`}
+                on:click={() => {
+                  toastStore.trigger({
+                    message: 'Private URL copied',
+                  });
+                }}
+              >
+                <Icon icon="ph:link-bold" height="18" />
+                <span> Copy Private URL </span>
+              </button>
+            </div>
+            <FormButton
+              action={`/trainingCycle/${trainingCycle.id}?/publish`}
+              class="btn btn-sm variant-filled w-full justify-start"
+              onSuccess={() => {
+                toastStore.trigger({
+                  message:
+                    'Your Training Cycle is now public and will show up in the Community Training Cycles page.',
+                  timeout: 5000,
+                });
+              }}
+            >
+              <Icon icon="material-symbols:share" height="18" />
+              <span> Publish </span>
+            </FormButton>
+          {/if}
+        {/if}
+      </div>
     </div>
+    {#if trainingCycle.isPublic}
+      <aside class="alert variant-ghost">
+        <span class="alert-message">
+          <Icon class="inline" icon="ep:warn-triangle-filled" height="18" />
+          You are editing a public Training Cycle. Any changes made will be public, and will edit the
+          previously shared version.
+        </span>
+      </aside>
+    {/if}
   </div>
 
-  <div class="mb-10">
+  <div class="mb-12">
     <div class="text-xl">Details</div>
     <hr class="mb-2" />
 
@@ -62,6 +121,10 @@
           <p>
             <b>Name: </b>
             {trainingCycle.name}
+          </p>
+          <p>
+            <b>Description: </b>
+            {trainingCycle.description || ''}
           </p>
           <p>
             <b>Public: </b>
@@ -78,7 +141,7 @@
                 meta: {
                   data: trainingCycle,
                   action: `/trainingCycle/${trainingCycle.id}?/edit`,
-                  title: 'Edit Training Program',
+                  title: 'Edit Training Cycle',
                 },
               })}
           >
@@ -90,7 +153,7 @@
     </div>
   </div>
 
-  <div class="mb-10">
+  <div class="mb-12">
     <div class="flex justify-between mb-2">
       <div class="text-xl">Exercise Groups</div>
       <button
@@ -111,76 +174,81 @@
     </div>
     <hr class="mb-2" />
 
-    {#each trainingCycle.exerciseGroups as group}
-      <div class="rounded-lg px-4 pb-4 pt-3 border mb-4 bg-white">
-        <div class="flex items-center">
-          <div class="flex mb-7 w-full justify-between">
-            <h2 class="font-bold">{group.name}</h2>
+    {#if trainingCycle.exerciseGroups.length == 0}
+      <p class="text-gray-400 italic">No exercise groups</p>
+    {/if}
 
-            <div class="flex space-x-2">
-              <button
-                class="btn btn-sm variant-ringed"
-                on:click={() =>
-                  modalStore.trigger({
-                    type: 'component',
-                    component: 'formModalExerciseGroup',
-                    meta: {
-                      data: group,
-                      action: `/trainingCycle/${trainingCycle.id}/group/${group.id}?/edit`,
-                      title: 'Edit Group',
-                    },
-                  })}
-              >
-                <Icon icon="material-symbols:edit-outline" height="18" />
-                <span>Edit</span>
-              </button>
-              <FormButton
-                action={`/trainingCycle/${trainingCycle.id}/group/${group.id}?/delete`}
-                onClick={confirmDelete}
-                class="btn btn-sm variant-ringed"
-              >
-                <div slot="form">
-                  <input type="hidden" name="exerciseGroupId" value={group.id} />
-                </div>
-                <Icon icon="mdi:trash-outline" height="18" />
-                <span class="ml-1 mr-1"> Delete </span>
-              </FormButton>
+    <List>
+      {#each trainingCycle.exerciseGroups as group}
+        <ListItem>
+          <div slot="title">
+            <div class="text-xl">
+              <b>
+                {group.name}
+              </b>
             </div>
           </div>
-          <div />
-        </div>
-
-        <div>
-          <div class="flex w-full items-center mb-2">
-            <span class="items-end text-lg font-light">Exercises</span>
-            <div class="flex-1" />
+          <div slot="popup-buttons">
             <button
-              class="btn btn-sm variant-filled"
+              class="btn btn-sm w-full justify-start"
               on:click={() =>
                 modalStore.trigger({
                   type: 'component',
-                  component: 'formModalExerciseEvent',
+                  component: 'formModalExerciseGroup',
                   meta: {
-                    action: `/trainingCycle/${trainingCycle.id}/group/${group.id}?/newExerciseEvent`,
-                    title: 'Add Exercise',
-                    formProps: {
-                      showDate: false,
-                      showDifficulty: false,
-                      showMigrationOption: false,
-                      exercises,
-                    },
+                    data: group,
+                    action: `/trainingCycle/${trainingCycle.id}/group/${group.id}?/edit`,
+                    title: 'Edit Group',
                   },
                 })}
             >
-              <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-              <span>Add Exercise</span>
+              <Icon icon="material-symbols:edit-outline" height="18" />
+              <span>Edit</span>
             </button>
+            <FormButton
+              action={`/trainingCycle/${trainingCycle.id}/group/${group.id}?/delete`}
+              onClick={confirmDelete}
+              class="btn-sm"
+            >
+              <div slot="form">
+                <input type="hidden" name="exerciseGroupId" value={group.id} />
+              </div>
+              <Icon icon="mdi:trash-outline" height="18" />
+              <span> Delete </span>
+            </FormButton>
           </div>
+          <div slot="content" class="mt-8">
+            <div class="flex w-full items-center mb-2 mt-4">
+              <span class="items-end text-lg font-light">Exercises</span>
+              <div class="flex-1" />
+              <button
+                class="btn btn-sm variant-filled"
+                on:click={() =>
+                  modalStore.trigger({
+                    type: 'component',
+                    component: 'formModalExerciseEvent',
+                    meta: {
+                      action: `/trainingCycle/${trainingCycle.id}/group/${group.id}?/newExerciseEvent`,
+                      title: 'Add Exercise',
+                      formProps: {
+                        showDate: false,
+                        showDifficulty: false,
+                        showMigrationOption: false,
+                        exercises,
+                      },
+                    },
+                  })}
+              >
+                <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
+                <span>Add Exercise</span>
+              </button>
+            </div>
 
-          <ListExerciseEvent {exercises} exerciseEvents={group.exercises} showDate={false} />
-        </div>
-      </div>
-    {/each}
+            <ListExerciseEvent {exercises} exerciseEvents={group.exercises} showDate={false} />
+          </div>
+        </ListItem>
+      {/each}
+    </List>
   </div>
 
   <div class="mb-2">
@@ -193,7 +261,7 @@
     {#each trainingCycle.days as day, i}
       <div class="bg-white rounded-lg px-4 pt-3 pb-3 mb-10 border">
         <div class="flex mb-4 justify-between">
-          <div class="mr-2">
+          <div class="mr-2 mb-6">
             <h2>
               <b>{daysOfTheWeek[i]}</b>
             </h2>
@@ -222,7 +290,7 @@
         </div>
 
         <div class="mb-12">
-          <div class="flex w-full justify-between items-end">
+          <div class="flex flex-wrap w-full justify-between items-end">
             <div class="font-bold text-lg">Exercise Groups</div>
 
             <form
@@ -248,21 +316,48 @@
               </button>
             </form>
           </div>
-          <ListExerciseGroup exerciseGroups={day.exerciseGroups}>
-            <div slot="buttons" let:group>
-              <FormButton
-                action={`/trainingCycle/${trainingCycle.id}/day/${day.id}/?/disconnectExerciseGroup`}
-                class="btn btn-sm variant-ringed"
-              >
-                <div slot="form">
-                  <input type="hidden" value={group.id} name="exerciseGroupId" />
-                </div>
 
-                <Icon icon="fluent:plug-disconnected-20-regular" height="18" />
-                <span class="ml-1 mr-1"> Disconnect </span>
-              </FormButton>
-            </div>
-          </ListExerciseGroup>
+          {#if day.exerciseGroups.length == 0}
+            <div class="text-gray-400 italic">No groups</div>
+          {/if}
+          <List>
+            {#each day.exerciseGroups as group}
+              <ListItem>
+                <div slot="title">
+                  <div class="flex items-center md:space-x-3">
+                    <div class="mr-2">
+                      <Icon icon="material-symbols:list-alt" width="35" />
+                    </div>
+                    <div class="flex items-center md:space-x-8">
+                      <div class="flex-1 min-w-0">
+                        <p>{group.name}</p>
+                        <p class="text-sm text-gray-400">
+                          {group.exercises.length} exercises
+                        </p>
+                      </div>
+                    </div>
+                    <div class="flex-1" />
+                    <div class="flex min-w-0 float-right space-x-2">
+                      <slot name="buttons" {group} />
+                    </div>
+                  </div>
+                </div>
+                <div slot="popup-buttons">
+                  <FormButton
+                    action={`/trainingCycle/${trainingCycle.id}/day/${day.id}/?/disconnectExerciseGroup`}
+                    class="btn btn-sm "
+                  >
+                    <div slot="form">
+                      <input type="hidden" value={group.id} name="exerciseGroupId" />
+                    </div>
+
+                    <Icon icon="fluent:plug-disconnected-20-regular" height="18" />
+                    <span class="ml-1 mr-1"> Disconnect </span>
+                  </FormButton>
+                </div>
+              </ListItem>
+            {/each}
+          </List>
         </div>
 
         <div class="flex justify-between items-end">

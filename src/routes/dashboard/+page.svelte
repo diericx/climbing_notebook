@@ -11,6 +11,8 @@
   $: widgets = data.widgets;
   $: customQueryResults = data.customQueryResults;
   $: trainingCycles = data.trainingCycles;
+  $: trainingPrograms = data.trainingPrograms;
+  $: trainingProgramActivations = data.trainingProgramActivations;
 </script>
 
 <div class="mb-16">
@@ -30,7 +32,9 @@
             > set some.
           </p>
         {:else}
-          {profile.goals}
+          <p class="whitespace-pre">
+            {profile.goals}
+          </p>
         {/if}
       </div>
       <div>
@@ -92,8 +96,9 @@
           {customQueryResults}
           {calendarEvents}
           {journalEntries}
-          {profile}
           {trainingCycles}
+          {trainingPrograms}
+          {trainingProgramActivations}
         />
       </div>
     {/each}

@@ -3,21 +3,45 @@ import { exerciseGroupSchema } from '$lib/exerciseGroup';
 import { prisma } from '$lib/prisma';
 import { TrainingCycleRepo, trainingCycleSchema } from '$lib/trainingCycle';
 import { getSessionOrRedirect } from '$lib/utils';
-import type { TrainingCycle } from '@prisma/client';
-import { fail, type Actions } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
+import type { Crumb } from 'svelte-breadcrumbs';
 import { superValidate } from 'sveltekit-superforms/server';
-import type { PageServerLoad } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals, params }) => {
+export const load: PageServerLoad = async ({ url, locals, params }) => {
   const session = await locals.auth.validate();
+  const token = url.searchParams.get('token');
 
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
-  const trainingCycle = await trainingCycleRepo.getOne(Number(params.id));
+  const trainingCycle = await trainingCycleRepo.getOne(Number(params.id), {
+    where: session ? { userId: session.user.userId } : undefined,
+  });
+
   // If no user is not signed in and the training program is not public, error out
-  if (!trainingCycle.isPublic && session === null) {
-    throw new APIError('INVALID_PERMISSIONS', 'This Training Program is private');
+  if (session === null) {
+    if (!trainingCycle.isPublic && token != trainingCycle.privateAccessToken) {
+      throw new APIError('INVALID_PERMISSIONS', 'This Training Cycle is private');
+    }
   }
-  return { trainingCycle, session };
+
+  // Manually override breadcrumbs to show training program path
+  // if this is an embedded cycle.
+  let crumbs = [{ title: trainingCycle.name }] as Crumb[];
+  if (trainingCycle.trainingProgram) {
+    crumbs = [
+      { title: 'Training Programs', url: `/trainingProgram` },
+      {
+        title: trainingCycle.trainingProgram.name,
+        url: `/trainingProgram/${trainingCycle.trainingProgramId}/edit`,
+      },
+      { title: 'Training Cycles', url: `/trainingProgram/${trainingCycle.trainingProgramId}/edit` },
+      ...crumbs,
+    ];
+  } else {
+    crumbs = [{ title: 'Training Cycles', url: `/trainingCycle` }, ...crumbs];
+  }
+
+  return { trainingCycle, session, crumbs };
 };
 
 export const actions: Actions = {
@@ -26,8 +50,7 @@ export const actions: Actions = {
     const id = Number(params.id);
 
     const repo = new TrainingCycleRepo(prisma);
-    let trainingCycle: TrainingCycle;
-    trainingCycle = await repo.delete(id, user?.userId);
+    const trainingCycle = await repo.delete(id, user?.userId);
 
     return { success: true, trainingCycle };
   },
@@ -37,6 +60,81 @@ export const actions: Actions = {
 
     const repo = new TrainingCycleRepo(prisma);
     await repo.duplicate(Number(params.id), user.userId);
+
+    return { success: true };
+  },
+
+  save: async ({ locals, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+    const id = Number(params.id);
+
+    const repo = new TrainingCycleRepo(prisma);
+
+    await repo.save(id, user.userId);
+
+    return { success: true };
+  },
+
+  unsave: async ({ locals, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+    const id = Number(params.id);
+
+    const repo = new TrainingCycleRepo(prisma);
+
+    await repo.unsave(id, user.userId);
+
+    return { success: true };
+  },
+
+  activate: async ({ locals, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+    const id = Number(params.id);
+
+    const repo = new TrainingCycleRepo(prisma);
+
+    await repo.activate(id, user.userId);
+
+    return { success: true };
+  },
+
+  deactivate: async ({ locals, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+    const id = Number(params.id);
+
+    const repo = new TrainingCycleRepo(prisma);
+
+    await repo.deactivate(id, user.userId);
+
+    return { success: true };
+  },
+
+  // Set isPublic to true
+  publish: async ({ locals, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+    const id = Number(params.id);
+
+    const repo = new TrainingCycleRepo(prisma);
+    const cycle = await repo.getOneAndValidateOwner(id, user.userId);
+    if (!cycle.description) {
+      throw new APIError(
+        'INVALID_INPUT',
+        'Training Cycle requires a description to be published. Be as descriptive as possible.'
+      );
+    }
+
+    await repo.update({ isPublic: true }, id, user.userId);
+
+    return { success: true };
+  },
+
+  // Set isPublic to false
+  hide: async ({ locals, url, params }) => {
+    const { user } = await getSessionOrRedirect({ locals, url });
+    const id = Number(params.id);
+
+    const repo = new TrainingCycleRepo(prisma);
+
+    await repo.update({ isPublic: false }, id, user.userId);
 
     return { success: true };
   },

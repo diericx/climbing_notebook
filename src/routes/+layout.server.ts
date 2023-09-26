@@ -1,8 +1,9 @@
 import { ExerciseEventRepo } from '$lib/exerciseEvent';
 import { prisma } from '$lib/prisma';
+import { loadFlash } from 'sveltekit-flash-message/server';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load: PageServerLoad = loadFlash(async ({ locals }) => {
   const session = await locals.auth.validate();
   if (session === null) {
     return {};
@@ -20,4 +21,4 @@ export const load: PageServerLoad = async ({ locals }) => {
     user,
     countOfExercisesThatNeedMigration,
   };
-};
+});

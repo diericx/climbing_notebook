@@ -2,11 +2,9 @@
   import CalExerciseEvent from '$lib/components/WeeklyCalendarExerciseEvent.svelte';
   import { daysFromToday, getDayWeekStartsMonday } from '$lib/utils';
   import type { Prisma } from '@prisma/client';
-  import type { User } from 'lucia';
   import { onMount } from 'svelte';
-  import FormButton from './forms/FormButton.svelte';
 
-  type TrainingCycle = Prisma.TrainingCycleGetPayload<{
+  export let trainingCycle: Prisma.TrainingCycleGetPayload<{
     include: {
       days: {
         include: {
@@ -36,13 +34,9 @@
       };
     };
   }>;
-
-  export let trainingCycle: TrainingCycle;
   export let shouldScrollIntoView = false;
   export let disableActionButtons = false;
   export let showMarkedCompleted = true;
-  export let showDuplicateBtn = false;
-  export let user: User | undefined;
   export let exercises:
     | Prisma.ExerciseGetPayload<{
         select: {
@@ -57,6 +51,7 @@
         };
       }>[]
     | undefined = undefined;
+  export let height = '425px;';
 
   onMount(() => {
     if (shouldScrollIntoView) {
@@ -77,32 +72,6 @@
   }
 </script>
 
-<div class="flex justify-between mb-3 items-end">
-  <div>
-    <h1 class="font-bold">{trainingCycle.name}</h1>
-  </div>
-
-  <div class="flex">
-    {#if showDuplicateBtn}
-      <div class="mr-2">
-        <FormButton
-          action={`/trainingCycle/${trainingCycle.id}?/duplicate&redirectTo=/trainingCycle`}
-          class="btn btn-sm variant-ringed"
-        >
-          Duplicate this program
-        </FormButton>
-      </div>
-    {/if}
-    {#if user !== null}
-      <div>
-        <a class="btn btn-sm variant-ringed" href={`/trainingCycle/${trainingCycle.id}/edit`}
-          >Edit this program</a
-        >
-      </div>
-    {/if}
-  </div>
-</div>
-
 <div class="overflow-scroll">
   <div style="width: 1500px">
     <div class="row">
@@ -120,7 +89,7 @@
               </p>
             </div>
 
-            <div style="height: 425px;" class="overflow-scroll">
+            <div style={`height: ${height}`} class="overflow-scroll">
               {#if day.exercises.length == 0 && day.exerciseGroups.length == 0}
                 <p class="text-gray-400 italic">No exercises for this day</p>
               {/if}

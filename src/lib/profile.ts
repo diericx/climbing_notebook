@@ -4,7 +4,6 @@ import { APIError } from './errors';
 
 export const profileSchema = z.object({
   goals: z.string().optional(),
-  activeTrainingCycleId: z.number().nullish().optional(),
 });
 export type ProfileSchema = typeof profileSchema;
 
@@ -15,44 +14,6 @@ export class ProfileRepo {
     const profile = await this.prisma.profile.findUnique({
       where: {
         ownerId: ownerId,
-      },
-      include: {
-        activeTrainingCycle: {
-          include: {
-            days: {
-              include: {
-                exercises: {
-                  orderBy: {
-                    name: 'desc',
-                  },
-                  include: {
-                    exercise: true,
-                  },
-                },
-                exerciseGroups: {
-                  include: {
-                    exercises: {
-                      orderBy: {
-                        name: 'desc',
-                      },
-                      include: {
-                        exercise: {
-                          select: {
-                            name: true,
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-              orderBy: {
-                // Note: ui depends on this being sorted in this way
-                dayOfTheWeek: 'asc',
-              },
-            },
-          },
-        },
       },
     });
     if (profile == null) {

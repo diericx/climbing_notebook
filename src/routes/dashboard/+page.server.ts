@@ -6,6 +6,7 @@ import { MetricRepo } from '$lib/metric';
 import { prisma } from '$lib/prisma';
 import { ProfileRepo } from '$lib/profile';
 import { TrainingCycleRepo } from '$lib/trainingCycle';
+import { TrainingProgramRepo } from '$lib/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
 import { WidgetRepo } from '$lib/widget';
 import type { PageServerLoad } from './$types';
@@ -21,6 +22,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const widgetRepo = new WidgetRepo(prisma);
   const customQueryRepo = new CustomQueryRepo(prisma);
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
+  const trainingProgramRepo = new TrainingProgramRepo(prisma);
 
   const profile = await profileRepo.getOne(user?.userId);
   // Get exercise events in the past month for the charts
@@ -31,6 +33,10 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const metrics = await metricRepo.get(user?.userId, dateMin, new Date());
   const journalEntries = await journalEntryRepo.get(user?.userId);
   const calendarEvents = await calendarEventRepo.get(user?.userId);
+  const trainingPrograms = trainingProgramRepo.get({
+    ownerId: user.userId,
+  });
+  const trainingProgramActivations = trainingProgramRepo.getActivations(user?.userId);
 
   const widgets = await widgetRepo.getAllDashboardWidgetsForUser(user.userId, {
     owner: true,
@@ -70,7 +76,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     },
   });
 
-  const trainingCycles = await trainingCycleRepo.get(user?.userId);
+  const trainingCycles = await trainingCycleRepo.get({
+    ownerId: user.userId,
+  });
 
   // compile datasets for widgets
   const customQueryResults: CustomQueryResults[] = [];
@@ -104,5 +112,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     widgets,
     customQueryResults,
     trainingCycles,
+    trainingPrograms,
+    trainingProgramActivations,
   };
 };
