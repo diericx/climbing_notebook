@@ -7,6 +7,7 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import dayjs from 'dayjs';
 const client = new S3Client({ region: 'us-west-2' });
 const bucket = 'cn-uploads-prod';
 
@@ -55,10 +56,10 @@ const getPresignedUrl = async (key: string) => {
   const signedUrl = await getSignedUrl(client, command, { expiresIn: expiresInSeconds });
 
   // Cache the value
-  // s3ObjectUrlCache[key] = {
-  //   url: signedUrl,
-  //   expiresAt: dayjs().add(expiresInSeconds, 'seconds').toDate(),
-  // };
+  s3ObjectUrlCache[key] = {
+    url: signedUrl,
+    expiresAt: dayjs().add(expiresInSeconds, 'seconds').toDate(),
+  };
 
   return signedUrl;
 };
@@ -77,7 +78,7 @@ const getMetadata = async (key: string) => {
   const result = await client.send(command);
 
   // Set cache
-  // s3ObjectMetadataCache[key] = result;
+  s3ObjectMetadataCache[key] = result;
 
   return result.Metadata;
 };
