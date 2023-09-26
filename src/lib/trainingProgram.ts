@@ -607,6 +607,11 @@ export class TrainingProgramRepo {
             trainingProgramScheduledSlots: {
               select: {
                 duration: true,
+                trainingCycles: {
+                  select: {
+                    name: true,
+                  },
+                },
               },
             },
           },

@@ -96,7 +96,6 @@
           {customQueryResults}
           {calendarEvents}
           {journalEntries}
-          {profile}
           {trainingCycles}
           {trainingPrograms}
           {trainingProgramActivations}

@@ -6,7 +6,6 @@
     CalendarEvent,
     JournalEntry,
     Prisma,
-    Profile,
     TrainingCycle,
     TrainingProgram,
   } from '@prisma/client';
@@ -59,10 +58,10 @@
   export let customQueryResults: CustomQueryResults[];
   export let calendarEvents: CalendarEvent[];
   export let journalEntries: JournalEntry[];
-  export let profile: Profile;
   export let trainingCycles: TrainingCycle[];
   // Below are optional as they are only really used on calendar on dashboard
   export let trainingPrograms: TrainingProgram[] = [];
+
   export let trainingProgramActivations: Prisma.TrainingProgramActivationGetPayload<{
     include: {
       trainingProgram: {
@@ -71,6 +70,11 @@
           trainingProgramScheduledSlots: {
             select: {
               duration: true;
+              trainingCycles: {
+                select: {
+                  name: true;
+                };
+              };
             };
           };
         };

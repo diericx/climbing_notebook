@@ -4,7 +4,7 @@
   // @ts-ignore
   import DayGrid from '@event-calendar/day-grid';
   // @ts-ignore
-  import Interraction from '@event-calendar/interaction';
+  import Interaction from '@event-calendar/interaction';
   // @ts-ignore
   import TimeGrid from '@event-calendar/time-grid';
   import type { CalendarEvent, JournalEntry, Prisma, TrainingProgram } from '@prisma/client';
@@ -21,6 +21,11 @@
           trainingProgramScheduledSlots: {
             select: {
               duration: true;
+              trainingCycles: {
+                select: {
+                  name: true;
+                };
+              };
             };
           };
         };
@@ -81,41 +86,43 @@
     },
   }));
 
-  $: trainingProgramActivationEvents = trainingProgramActivations.map((a) => {
-    const startDate = dayjs(a.startDate);
-    const durationWeeks = a.trainingProgram.trainingProgramScheduledSlots.reduce(
-      (acc, slot) => acc + slot.duration,
-      0
-    );
-    const endDate = startDate.add(durationWeeks, 'week');
-    return {
-      start: startDate.toDate(),
-      end: endDate.toDate(),
-      backgroundColor: '#8bfca9',
-      allDay: true,
-      title: a.trainingProgram.name,
-      extendedProps: {
-        onClick: () => {
-          modalStore.trigger({
-            type: 'component',
-            component: 'formModalTrainingProgramActivation',
-            meta: {
-              action: `/trainingProgram/${a.trainingProgramId}/activation/${a.id}?/edit`,
-              data: a,
-              title: 'Edit Scheduled Program',
-              showDeleteButton: true,
-              deleteButtonAction: `/trainingProgram/${a.trainingProgramId}/activation/${a.id}?/delete`,
-              formProps: {
-                trainingPrograms,
-              },
+  let trainingProgramActivationEvents: any[] = [];
+  $: {
+    trainingProgramActivations.forEach((a) => {
+      let startDate = dayjs(a.startDate);
+      a.trainingProgram.trainingProgramScheduledSlots.forEach((s) => {
+        let endDate = startDate.add(s.duration, 'weeks').subtract(1, 'day');
+        trainingProgramActivationEvents.push({
+          start: startDate.toDate(),
+          end: endDate.toDate(),
+          backgroundColor: '#8bfca9',
+          allDay: true,
+          title: `${a.trainingProgram.name} - ${s.trainingCycles[0].name} `,
+          extendedProps: {
+            onClick: () => {
+              modalStore.trigger({
+                type: 'component',
+                component: 'formModalTrainingProgramActivation',
+                meta: {
+                  action: `/trainingProgram/${a.trainingProgramId}/activation/${a.id}?/edit`,
+                  data: a,
+                  title: 'Edit Scheduled Program',
+                  showDeleteButton: true,
+                  deleteButtonAction: `/trainingProgram/${a.trainingProgramId}/activation/${a.id}?/delete`,
+                  formProps: {
+                    trainingPrograms,
+                  },
+                },
+              });
             },
-          });
-        },
-      },
-    };
-  });
+          },
+        });
+        startDate = endDate.add(1, 'day');
+      });
+    });
+  }
 
-  let plugins = [TimeGrid, DayGrid, Interraction];
+  let plugins = [TimeGrid, DayGrid, Interaction];
   // Note: I don't think the 'pointer' option works so it is applied via css
   $: options = {
     view: 'dayGridMonth',
