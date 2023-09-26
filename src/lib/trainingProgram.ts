@@ -1,4 +1,4 @@
-import { Prisma, type PrismaClient } from '@prisma/client';
+import type { Prisma, PrismaClient } from '@prisma/client';
 import cuid from 'cuid';
 import { z } from 'zod';
 import { APIError } from './errors';
