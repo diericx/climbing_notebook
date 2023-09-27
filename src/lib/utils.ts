@@ -154,12 +154,24 @@ export const postures: readonly [string, ...string[]] = [
   'walking',
   'wall sit',
 ];
+
 export const exerciseTypes: readonly [string, ...string[]] = [
-  'climbing',
-  'strength',
-  'stretch',
-  'cardio',
+  'Climbing', // was climbing
+  'Strength & Power', // was strength
+  'Conditioning & Mobility', // was stretch
+  'Endurance', // was cardio
+  'Power Endurance',
+  'Cross Training',
 ];
+export const exerciseTypeColors: { [key: string]: string } = {
+  Climbing: 'bg-sky-700',
+  'Strength & Power': 'bg-red-500',
+  'Conditioning & Mobility': 'bg-orange-400',
+  Endurance: 'bg-teal-300',
+  'Power Endurance': 'bg-teal-700',
+  'Cross Training': 'bg-yellow-300',
+};
+
 export const difficulties: readonly [string, ...string[]] = [
   'novice',
   'beginner',

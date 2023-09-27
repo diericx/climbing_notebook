@@ -201,6 +201,9 @@ pre {
 .ec-event-body {
   cursor: pointer;
 }
+.ec-event {
+  box-shadow: none;
+}
 
 input[type='checkbox'][disabled] {
   @apply bg-gray-300;

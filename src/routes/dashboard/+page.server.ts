@@ -25,12 +25,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
 
   const profile = await profileRepo.getOne(user?.userId);
-  // Get exercise events in the past month for the charts
-  const dateMin = new Date();
-  dateMin.setDate(dateMin.getDate() - 31);
-  const exerciseEvents = await exerciseEventRepo.get(user?.userId, dateMin, new Date());
+  const exerciseEvents = await exerciseEventRepo.get(user?.userId);
   // Get metris in the past month for the charts
-  const metrics = await metricRepo.get(user?.userId, dateMin, new Date());
+  const metrics = await metricRepo.get(user?.userId);
   const journalEntries = await journalEntryRepo.get(user?.userId);
   const calendarEvents = await calendarEventRepo.get(user?.userId);
   const trainingPrograms = trainingProgramRepo.get({

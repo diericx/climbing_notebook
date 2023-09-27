@@ -13,6 +13,7 @@
   $: trainingCycles = data.trainingCycles;
   $: trainingPrograms = data.trainingPrograms;
   $: trainingProgramActivations = data.trainingProgramActivations;
+  $: exerciseEvents = data.exerciseEvents;
 </script>
 
 <div class="mb-16">
@@ -97,8 +98,8 @@
           {calendarEvents}
           {journalEntries}
           {trainingCycles}
-          {trainingPrograms}
           {trainingProgramActivations}
+          {exerciseEvents}
         />
       </div>
     {/each}

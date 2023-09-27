@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { exerciseTypeColors } from '$lib/utils';
+
   // @ts-ignore
   import Calendar from '@event-calendar/core';
   // @ts-ignore
@@ -28,6 +30,16 @@
               };
             };
           };
+        };
+      };
+    };
+  }>[] = [];
+  export let exerciseEvents: Prisma.ExerciseEventGetPayload<{
+    include: {
+      exercise: {
+        select: {
+          name: true;
+          type: true;
         };
       };
     };
@@ -88,6 +100,17 @@
     },
   }));
 
+  $: _exerciseEvents = exerciseEvents.map((e) => ({
+    start: e.date,
+    backgroundColor: 'transparent',
+    allDay: false,
+    title: e.exercise?.name,
+    extendedProps: {
+      isExerciseEvent: true,
+      exerciseEvent: e,
+    },
+  }));
+
   $: trainingProgramActivationEvents = [] as any[];
   $: {
     trainingProgramActivationEvents = [];
@@ -138,9 +161,43 @@
     eventTimeFormat: () => {
       return '';
     },
-    events: [...trainingProgramActivationEvents, ...journalEntryEvents, ..._calendarEvents],
+    eventContent: (arg: {
+      event: {
+        title: string;
+        extendedProps?: {
+          isExerciseEvent: boolean;
+          exerciseEvent?: (typeof exerciseEvents)[number];
+        };
+      };
+    }) => {
+      if (arg.event.extendedProps?.isExerciseEvent) {
+        return {
+          html: `
+          <div class="flex items-start space-x-1">
+            <div>
+              <div class="w-2 h-2 mt-[6px] shadow-sm rounded-sm ${
+                exerciseTypeColors[arg.event.extendedProps?.exerciseEvent?.exercise?.type || ''] ||
+                'bg-gray-400'
+              }"></div>
+            </div>
+
+            <div class="text-gray-500">
+            ${arg.event.title}
+            </div>
+
+          </div>`,
+        };
+      }
+      return arg.event.title;
+    },
+    events: [
+      ...trainingProgramActivationEvents,
+      ...journalEntryEvents,
+      ..._calendarEvents,
+      ..._exerciseEvents,
+    ],
     eventClick: ({ event }: { event: Event }) => {
-      event.extendedProps.onClick();
+      event.extendedProps.onClick && event.extendedProps.onClick();
     },
   };
 </script>
