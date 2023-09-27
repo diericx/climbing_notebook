@@ -202,7 +202,7 @@ pre {
   cursor: pointer;
 }
 .ec-event {
-  box-shadow: none;
+  box-shadow: none !important;
 }
 
 input[type='checkbox'][disabled] {
