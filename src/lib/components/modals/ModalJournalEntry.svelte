@@ -1,4 +1,5 @@
 <script lang="ts">
+  import dayjs from '$lib/dayjs';
   import type { JournalEntry } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
   let journalEntry = $modalStore[0]?.meta?.data as JournalEntry;
@@ -10,7 +11,7 @@
   </header>
   <section class="p-4">
     <h4>
-      {new Date(journalEntry?.date || '').toLocaleDateString('en-US') || ''}
+      {dayjs.tz(journalEntry?.date || '', 'utc').format('L')}
     </h4>
     <p class="whitespace-pre-wrap">{journalEntry?.content || ''}</p>
   </section>

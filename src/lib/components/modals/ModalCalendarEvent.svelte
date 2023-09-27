@@ -1,4 +1,5 @@
 <script lang="ts">
+  import dayjs from '$lib/dayjs';
   import type { CalendarEvent } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
   let calendarEvent = $modalStore[0]?.meta?.data as CalendarEvent;
@@ -10,7 +11,7 @@
   </header>
   <section class="p-4">
     <h4>
-      {new Date(calendarEvent?.dateStart || '').toLocaleDateString('en-US') || ''}
+      {dayjs.tz(calendarEvent?.dateStart || '', 'utc').format('L')}
     </h4>
     <h4>{calendarEvent.title}</h4>
     {#if calendarEvent?.content}

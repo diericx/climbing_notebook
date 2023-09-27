@@ -229,8 +229,8 @@ export function isDateInTheSameWeekAsToday(d: Date) {
 }
 
 export function isDateInTheSameDayAsToday(d: Date) {
-  const [todayStr] = new Date().toISOString().split('T');
-  const [dateStr] = d.toISOString().split('T');
+  const todayStr = dayjs.tz(new Date(), 'UTC').format('MM/DD/YYYY');
+  const dateStr = dayjs.tz(d, 'UTC').format('MM/DD/YYYY');
   return todayStr == dateStr;
 }
 

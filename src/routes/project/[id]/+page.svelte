@@ -3,6 +3,7 @@
   import Form from '$lib/components/forms/Form.svelte';
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import FormBodyFileUpload from '$lib/components/forms/bodies/FormBodyFileUpload.svelte';
+  import dayjs from '$lib/dayjs';
   import { fileUploadSchema } from '$lib/file';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
@@ -116,7 +117,9 @@
       <div>
         <div class="flex w-full justify-between">
           <div>
-            <h3 class="font-bold">{new Date(session.date).toLocaleDateString('en-US')}</h3>
+            <h3 class="font-bold">
+              {dayjs.tz(session.date, 'UTC').format('L')}
+            </h3>
             <div class="text-green-400 font-bold">{session.sent ? 'Sent' : ''}</div>
           </div>
           <div>

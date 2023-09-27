@@ -2,6 +2,7 @@
   import Form from '$lib/components/forms/Form.svelte';
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import FormBodyJournalEntry from '$lib/components/forms/bodies/FormBodyJournalEntry.svelte';
+  import dayjs from '$lib/dayjs';
   import { journalEntrySchema } from '$lib/journalEntry';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
@@ -29,7 +30,7 @@
         <div>
           <div class="flex w-full justify-between">
             <div>
-              <h3 class="font-bold">{new Date(item.date).toLocaleDateString('en-US')}</h3>
+              <h3 class="font-bold">{dayjs.tz(item.date, 'UTC').format('L')}</h3>
             </div>
             <div>
               <a

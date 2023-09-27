@@ -1,4 +1,5 @@
 <script lang="ts">
+  import dayjs from '$lib/dayjs';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
@@ -44,7 +45,7 @@
         </div>
         {#if showDate}
           <div class="flex-initial hidden md:block">
-            {new Date(exerciseEvent.date || '').toLocaleDateString('en-US')}
+            {dayjs.tz(exerciseEvent.date || '', 'utc').format('L')}
           </div>
         {/if}
         <div class="flex-1 min-w-0">
@@ -55,7 +56,7 @@
           <p class="text-sm text-gray-400">
             {#if showDate}
               <span class="md:hidden">
-                {new Date(exerciseEvent.date || '').toLocaleDateString('en-US')}
+                {dayjs.tz(exerciseEvent.date || '', 'utc').format('L')}
                 <br />
               </span>
             {/if}
