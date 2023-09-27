@@ -102,6 +102,7 @@
 
   $: _exerciseEvents = exerciseEvents.map((e) => ({
     start: e.date,
+    end: e.date,
     backgroundColor: 'transparent',
     allDay: false,
     title: e.exercise?.name,
