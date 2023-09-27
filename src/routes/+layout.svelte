@@ -101,11 +101,11 @@
     {
       title: 'Training',
       children: [
+        { title: 'Exercise Log', url: '/exerciseEvent' },
+        { title: 'Journal', url: '/journalEntry' },
         { title: 'Training Cycles', url: '/trainingCycle' },
         { title: 'Training Programs', url: '/trainingProgram' },
         { title: 'Training Program Scheduler', url: '/trainingProgramScheduler' },
-        { title: 'Exercise Log', url: '/exerciseEvent' },
-        { title: 'Journal', url: '/journalEntry' },
       ],
     },
     { title: 'Climbing', children: [{ title: 'Project Notes', url: '/project' }] },
