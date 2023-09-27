@@ -62,8 +62,8 @@
 
   let journalEntryEvents = journalEntries.map((j) => {
     return {
-      start: j.date,
-      end: j.date,
+      start: dayjs(j.date).startOf('day').toDate(),
+      end: dayjs(j.date).startOf('day').toDate(),
       backgroundColor: '#7dd3fc',
       allDay: true,
       title: j.content.substring(0, 15),
@@ -82,8 +82,8 @@
   });
 
   $: _calendarEvents = calendarEvents.map((e) => ({
-    start: e.dateStart,
-    end: e.dateEnd,
+    start: dayjs(e.dateStart).startOf('day').toDate(),
+    end: dayjs(e.dateEnd).startOf('day').toDate(),
     backgroundColor: e.color,
     allDay: true,
     title: e.title,
@@ -120,8 +120,8 @@
       a.trainingProgram.trainingProgramScheduledSlots.forEach((s) => {
         let endDate = startDate.add(s.duration, 'weeks').subtract(1, 'day');
         trainingProgramActivationEvents.push({
-          start: startDate.toDate(),
-          end: endDate.toDate(),
+          start: startDate.startOf('day').toDate(),
+          end: endDate.startOf('day').toDate(),
           backgroundColor: '#8bfca9',
           allDay: true,
           title: `${a.trainingProgram.name} - ${s.trainingCycles[0].name} `,
