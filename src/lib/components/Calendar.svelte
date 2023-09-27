@@ -32,8 +32,10 @@
       };
     };
   }>[] = [];
+
   // For the activation modal program select
-  export let trainingPrograms: TrainingProgram[] = [];
+  export let ownedTrainingPrograms: TrainingProgram[] = [];
+  export let savedTrainingPrograms: TrainingProgram[] = [];
 
   type EventExtendedProps = {
     onClick: () => void;
@@ -86,8 +88,9 @@
     },
   }));
 
-  let trainingProgramActivationEvents: any[] = [];
+  $: trainingProgramActivationEvents = [] as any[];
   $: {
+    trainingProgramActivationEvents = [];
     trainingProgramActivations.forEach((a) => {
       let startDate = dayjs(a.startDate);
       a.trainingProgram.trainingProgramScheduledSlots.forEach((s) => {
@@ -110,7 +113,8 @@
                   showDeleteButton: true,
                   deleteButtonAction: `/trainingProgram/${a.trainingProgramId}/activation/${a.id}?/delete`,
                   formProps: {
-                    trainingPrograms,
+                    ownedTrainingPrograms,
+                    savedTrainingPrograms,
                   },
                 },
               });
@@ -120,6 +124,7 @@
         startDate = endDate.add(1, 'day');
       });
     });
+    trainingProgramActivationEvents = trainingProgramActivationEvents;
   }
 
   let plugins = [TimeGrid, DayGrid, Interaction];

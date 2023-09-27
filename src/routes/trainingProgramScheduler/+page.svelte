@@ -39,5 +39,6 @@
   journalEntries={[]}
   calendarEvents={[]}
   {trainingProgramActivations}
-  trainingPrograms={[...ownedTrainingPrograms, ...savedTrainingPrograms]}
+  {ownedTrainingPrograms}
+  {savedTrainingPrograms}
 />
