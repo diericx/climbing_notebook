@@ -11,7 +11,8 @@
   $: widgets = data.widgets;
   $: customQueryResults = data.customQueryResults;
   $: trainingCycles = data.trainingCycles;
-  $: trainingPrograms = data.trainingPrograms;
+  $: ownedTrainingPrograms = data.ownedTrainingPrograms;
+  $: savedTrainingPrograms = data.savedTrainingPrograms;
   $: trainingProgramActivations = data.trainingProgramActivations;
   $: exerciseEvents = data.exerciseEvents;
 </script>
@@ -98,8 +99,10 @@
           {calendarEvents}
           {journalEntries}
           {trainingCycles}
-          {trainingProgramActivations}
           {exerciseEvents}
+          {trainingProgramActivations}
+          {ownedTrainingPrograms}
+          {savedTrainingPrograms}
         />
       </div>
     {/each}

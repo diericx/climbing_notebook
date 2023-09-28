@@ -30,8 +30,15 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const metrics = await metricRepo.get(user?.userId);
   const journalEntries = await journalEntryRepo.get(user?.userId);
   const calendarEvents = await calendarEventRepo.get(user?.userId);
-  const trainingPrograms = trainingProgramRepo.get({
+  const ownedTrainingPrograms = await trainingProgramRepo.get({
     ownerId: user.userId,
+  });
+  const savedTrainingPrograms = await trainingProgramRepo.get({
+    saves: {
+      some: {
+        userId: user.userId,
+      },
+    },
   });
   const trainingProgramActivations = trainingProgramRepo.getActivations(user?.userId);
 
@@ -109,7 +116,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     widgets,
     customQueryResults,
     trainingCycles,
-    trainingPrograms,
+    ownedTrainingPrograms,
+    savedTrainingPrograms,
     trainingProgramActivations,
   };
 };

@@ -17,7 +17,11 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const token = url.searchParams.get('token');
 
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
-  const trainingProgram = await trainingProgramRepo.getOne(params.id);
+  const trainingProgram = await trainingProgramRepo.getOne(params.id, {
+    where: {
+      userId: session?.user.userId,
+    },
+  });
 
   // If no user is not signed in and the training program is not public, error out
   if (session === null) {

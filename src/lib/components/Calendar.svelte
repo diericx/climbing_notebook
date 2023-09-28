@@ -118,7 +118,7 @@
     trainingProgramActivations.forEach((a) => {
       let startDate = dayjs(a.startDate);
       a.trainingProgram.trainingProgramScheduledSlots.forEach((s) => {
-        let endDate = startDate.add(s.duration, 'weeks').subtract(1, 'day');
+        let endDate = startDate.add(s.duration, 'weeks');
         trainingProgramActivationEvents.push({
           start: startDate.startOf('day').toDate(),
           end: endDate.startOf('day').toDate(),
@@ -145,7 +145,7 @@
             },
           },
         });
-        startDate = endDate.add(1, 'day');
+        startDate = endDate;
       });
     });
     trainingProgramActivationEvents = trainingProgramActivationEvents;

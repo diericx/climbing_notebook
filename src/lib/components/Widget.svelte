@@ -2,7 +2,13 @@
   import type { CustomQueryResults } from '$lib/customQuery';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
-  import type { CalendarEvent, JournalEntry, Prisma, TrainingCycle } from '@prisma/client';
+  import type {
+    CalendarEvent,
+    JournalEntry,
+    Prisma,
+    TrainingCycle,
+    TrainingProgram,
+  } from '@prisma/client';
   import { modalStore, popup } from '@skeletonlabs/skeleton';
   import Calendar from './Calendar.svelte';
   import Chart from './Chart.svelte';
@@ -83,6 +89,9 @@
       };
     };
   }>[] = [];
+  // For the activation modal program select
+  export let ownedTrainingPrograms: TrainingProgram[] = [];
+  export let savedTrainingPrograms: TrainingProgram[] = [];
 </script>
 
 <div class="card p-4">
@@ -136,7 +145,14 @@
       </div>
 
       <div>
-        <Calendar {calendarEvents} {journalEntries} {exerciseEvents} {trainingProgramActivations} />
+        <Calendar
+          {calendarEvents}
+          {journalEntries}
+          {exerciseEvents}
+          {trainingProgramActivations}
+          {ownedTrainingPrograms}
+          {savedTrainingPrograms}
+        />
       </div>
     </div>
   {:else if widget.type == 'heatmapCalendar'}
