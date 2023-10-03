@@ -1,5 +1,6 @@
 import { CalendarEventRepo } from '$lib/calendarEvent';
 import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
+import { ExerciseRepo } from '$lib/exercise';
 import { ExerciseEventRepo } from '$lib/exerciseEvent';
 import { JournalEntryRepo } from '$lib/journalEntry';
 import { MetricRepo } from '$lib/metric';
@@ -23,9 +24,20 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const customQueryRepo = new CustomQueryRepo(prisma);
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
+  const exerciseRepo = new ExerciseRepo(prisma);
 
   const profile = await profileRepo.getOne(user?.userId);
   const exerciseEvents = await exerciseEventRepo.get(user?.userId);
+  const exercises = await exerciseRepo.getSelect({
+    _count: {
+      select: {
+        exerciseEvents: true,
+      },
+    },
+    id: true,
+    name: true,
+    fieldsToShow: true,
+  });
   // Get metris in the past month for the charts
   const metrics = await metricRepo.get(user?.userId);
   const journalEntries = await journalEntryRepo.get(user?.userId);
@@ -110,6 +122,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     user,
     profile,
     exerciseEvents,
+    exercises,
     metrics,
     journalEntries,
     calendarEvents,

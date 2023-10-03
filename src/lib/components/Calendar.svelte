@@ -13,8 +13,8 @@
   import { modalStore } from '@skeletonlabs/skeleton';
   import dayjs from 'dayjs';
 
-  export let calendarEvents: CalendarEvent[] = [];
-  export let journalEntries: JournalEntry[] = [];
+  export let calendarEvents: CalendarEvent[];
+  export let journalEntries: JournalEntry[];
   export let trainingProgramActivations: Prisma.TrainingProgramActivationGetPayload<{
     include: {
       trainingProgram: {
@@ -33,7 +33,7 @@
         };
       };
     };
-  }>[] = [];
+  }>[];
   export let exerciseEvents: Prisma.ExerciseEventGetPayload<{
     include: {
       exercise: {
@@ -43,11 +43,24 @@
         };
       };
     };
-  }>[] = [];
+  }>[];
 
   // For the activation modal program select
-  export let ownedTrainingPrograms: TrainingProgram[] = [];
-  export let savedTrainingPrograms: TrainingProgram[] = [];
+  export let ownedTrainingPrograms: TrainingProgram[];
+  export let savedTrainingPrograms: TrainingProgram[];
+  // For the exercise event form modals
+  export let exercises: Prisma.ExerciseGetPayload<{
+    select: {
+      _count: {
+        select: {
+          exerciseEvents: true;
+        };
+      };
+      id: true;
+      name: true;
+      fieldsToShow: true;
+    };
+  }>[];
 
   type EventExtendedProps = {
     onClick: () => void;
@@ -109,6 +122,20 @@
     extendedProps: {
       isExerciseEvent: true,
       exerciseEvent: e,
+      onClick: () => {
+        modalStore.trigger({
+          type: 'component',
+          component: 'formModalExerciseEvent',
+          meta: {
+            data: e,
+            title: 'Edit Exercise Event',
+            action: `/exerciseEvent/${e.id}?/edit`,
+            formProps: {
+              exercises,
+            },
+          },
+        });
+      },
     },
   }));
 

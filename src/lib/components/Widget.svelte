@@ -69,6 +69,18 @@
       };
     };
   }>[];
+  export let exercises: Prisma.ExerciseGetPayload<{
+    select: {
+      _count: {
+        select: {
+          exerciseEvents: true;
+        };
+      };
+      id: true;
+      name: true;
+      fieldsToShow: true;
+    };
+  }>[];
 
   export let trainingProgramActivations: Prisma.TrainingProgramActivationGetPayload<{
     include: {
@@ -149,6 +161,7 @@
           {calendarEvents}
           {journalEntries}
           {exerciseEvents}
+          {exercises}
           {trainingProgramActivations}
           {ownedTrainingPrograms}
           {savedTrainingPrograms}
