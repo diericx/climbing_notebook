@@ -11,11 +11,15 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
 
-  const ownedTrainingCycles = await trainingCycleRepo.get({
-    // Default to empty string so query defaults to returning empty array
-    ownerId: session?.user.userId || '',
-    trainingProgramId: null,
-  });
+  const ownedTrainingCycles = await trainingCycleRepo.get(
+    {
+      // Default to empty string so query defaults to returning empty array
+      ownerId: session?.user.userId || '',
+      trainingProgramId: null,
+    },
+    undefined,
+    session ? { where: { userId: session.user.userId } } : undefined
+  );
 
   const savedTrainingCycles = await trainingCycleRepo.get(
     {
