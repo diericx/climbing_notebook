@@ -5,6 +5,7 @@ import { grades, gradeSystems } from './utils';
 
 const projectBaseSchema = z.object({
   name: z.string().min(1),
+  notes: z.string().nullish(),
   grade: z.string(),
   gradeSystem: z.string(),
   url: z.string().nullish(),

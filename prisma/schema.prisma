@@ -18,8 +18,9 @@ model Project {
   gradeSystem      String   @map("grade_system")
   grade            String
   url              String?
-  updatedAt        DateTime @default(now())
+  updatedAt        DateTime @default(now()) @map("updated_at")
   imageS3ObjectKey String?  @map("image_s3_object_key")
+  notes            String?
 
   ownerId   String           @map("owner_id")
   owner     AuthUser         @relation(fields: [ownerId], references: [id])

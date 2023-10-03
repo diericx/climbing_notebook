@@ -35,13 +35,20 @@
       <div>
         <p>
           <b>Grade:</b>
-          {project.gradeSystem == 'font' ? project.fontGrade : ''}
-          {project.gradeSystem == 'hueco' ? project.huecoGrade : ''}
+          {project.grade}
+        </p>
+        <p>
+          <b>Notes:</b>
+          {#if project.notes}
+            {project.notes}
+          {:else}
+            <span class="text-gray-400 italic">No notes</span>
+          {/if}
         </p>
         <p>
           <b>URL:</b>
           {#if project.url === null}
-            <span class="text-gray-400">No url</span>
+            <span class="text-gray-400 italic">No url</span>
           {:else}
             <a class="link" href={project.url}>{project.url}</a>
           {/if}

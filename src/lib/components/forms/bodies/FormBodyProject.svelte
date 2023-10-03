@@ -4,6 +4,7 @@
   import type { z } from 'zod';
   import SelectField from '../fields/SelectField.svelte';
   import SubmitButton from '../fields/SubmitButton.svelte';
+  import TextArea from '../fields/TextArea.svelte';
   import TextField from '../fields/TextField.svelte';
 
   // Form action to execute
@@ -14,6 +15,9 @@
 </script>
 
 <TextField name="name" field="name" form={superForm} placeholder={'Alphane'} />
+
+<TextArea name="notes" field="notes" form={superForm} placeholder={'A boulder in Chironico'} />
+
 <SelectField name="gradeSystem" field="gradeSystem" form={superForm}>
   {#each gradeSystems as gradeSystem}
     <option value={gradeSystem}>{gradeSystem}</option>
