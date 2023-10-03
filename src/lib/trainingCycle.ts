@@ -1,4 +1,4 @@
-import type { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, type PrismaClient, type TrainingCycle } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
 import type { ExerciseGroupSchema } from './exerciseGroup';
@@ -18,6 +18,14 @@ export const trainingCycleTemplateSchema = z.object({
   description: z.string().min(1, 'Description is required'),
 });
 export type TrainingCycleTemplateSchema = typeof trainingCycleTemplateSchema;
+
+export const defaultTrainingCycleInclude = Prisma.validator<Prisma.TrainingCycleInclude>()({
+  owner: {
+    include: {
+      profile: true,
+    },
+  },
+});
 
 export class TrainingCycleRepo {
   constructor(private readonly prisma: PrismaClient) {}
@@ -302,80 +310,110 @@ export class TrainingCycleRepo {
     });
   }
 
-  async get(
+  async get(where: Prisma.TrainingCycleWhereInput): Promise<TrainingCycle[]>;
+  async get<I extends Prisma.TrainingCycleInclude>(
     where: Prisma.TrainingCycleWhereInput,
-    saves?: Prisma.TrainingCycle$savesArgs,
-    activations?: Prisma.TrainingCycle$activationsArgs
-  ) {
-    // Fetch all
-    return await this.prisma.trainingCycle.findMany({
+    customInclude: I
+  ): Promise<Prisma.TrainingCycleGetPayload<{ include: I }>[]>;
+  async get<I extends Prisma.TrainingCycleInclude>(
+    where: Prisma.TrainingCycleWhereInput,
+    customInclude?: I
+  ): Promise<TrainingCycle[] | Prisma.TrainingCycleGetPayload<{ include: I }>[]> {
+    return this.prisma.trainingCycle.findMany({
       where,
-      orderBy: {
-        name: 'asc',
-      },
-      include: {
-        owner: {
-          include: {
-            profile: {
-              select: {
-                imageS3ObjectKey: true,
-              },
-            },
-          },
-        },
-        exerciseGroups: {
-          include: {
-            exercises: {
-              orderBy: {
-                name: 'asc',
-              },
-            },
-          },
-          orderBy: {
-            name: 'asc',
-          },
-        },
-        days: {
-          include: {
-            exercises: {
-              orderBy: {
-                name: 'asc',
-              },
-              include: {
-                exercise: true,
-              },
-            },
-            exerciseGroups: {
-              orderBy: {
-                name: 'asc',
-              },
-              include: {
-                exercises: {
-                  orderBy: {
-                    name: 'asc',
-                  },
-                  include: {
-                    exercise: true,
-                  },
-                },
-              },
-            },
-          },
-          orderBy: {
-            // Note: ui depends on this being sorted in this way
-            dayOfTheWeek: 'asc',
-          },
-        },
-        saves,
-        activations,
-        _count: {
-          select: {
-            saves: true,
-          },
-        },
-      },
+      include: customInclude,
     });
   }
+
+  // async get<TInclude extends Prisma.TrainingCycleInclude>(
+  //   where: Prisma.TrainingCycleWhereInput,
+  //   include?: Prisma.Subset<TInclude, Prisma.TrainingCycleInclude>
+  // ) {
+  // return this.prisma.trainingCycle.findMany<
+  //   { include: Prisma.TrainingCycleInclude } & Omit<
+  //     Prisma.TrainingCycleFindManyArgs,
+  //     'select' | 'include'
+  //   >
+  // >({
+  //   where,
+  //   include,
+  // });
+  // }
+
+  // async get(
+  //   where: Prisma.TrainingCycleWhereInput,
+  //   saves?: Prisma.TrainingCycle$savesArgs,
+  //   activations?: Prisma.TrainingCycle$activationsArgs
+  // ) {
+  //   // Fetch all
+  //   return await this.prisma.trainingCycle.findMany({
+  //     where,
+  //     orderBy: {
+  //       name: 'asc',
+  //     },
+  //     include: {
+  //       owner: {
+  //         include: {
+  //           profile: {
+  //             select: {
+  //               imageS3ObjectKey: true,
+  //             },
+  //           },
+  //         },
+  //       },
+  //       exerciseGroups: {
+  //         include: {
+  //           exercises: {
+  //             orderBy: {
+  //               name: 'asc',
+  //             },
+  //           },
+  //         },
+  //         orderBy: {
+  //           name: 'asc',
+  //         },
+  //       },
+  //       days: {
+  //         include: {
+  //           exercises: {
+  //             orderBy: {
+  //               name: 'asc',
+  //             },
+  //             include: {
+  //               exercise: true,
+  //             },
+  //           },
+  //           exerciseGroups: {
+  //             orderBy: {
+  //               name: 'asc',
+  //             },
+  //             include: {
+  //               exercises: {
+  //                 orderBy: {
+  //                   name: 'asc',
+  //                 },
+  //                 include: {
+  //                   exercise: true,
+  //                 },
+  //               },
+  //             },
+  //           },
+  //         },
+  //         orderBy: {
+  //           // Note: ui depends on this being sorted in this way
+  //           dayOfTheWeek: 'asc',
+  //         },
+  //       },
+  //       saves,
+  //       activations,
+  //       _count: {
+  //         select: {
+  //           saves: true,
+  //         },
+  //       },
+  //     },
+  //   });
+  // }
 
   async update(data: z.infer<TrainingCyclePartialSchema>, id: number, ownerId: string) {
     // Get current training program
