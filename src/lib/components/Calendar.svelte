@@ -130,6 +130,8 @@
             data: e,
             title: 'Edit Exercise Event',
             action: `/exerciseEvent/${e.id}?/edit`,
+            showDeleteButton: true,
+            deleteButtonAction: `/exerciseEvent/${e.id}?/delete`,
             formProps: {
               exercises,
             },
