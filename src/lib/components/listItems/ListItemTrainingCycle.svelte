@@ -154,7 +154,7 @@
       </div>
     {/if}
     {#if trainingCycle.description}
-      <div class="text-gray-400">
+      <div class="text-gray-400 line-clamp-6">
         {trainingCycle.description || ''}
       </div>
     {:else}

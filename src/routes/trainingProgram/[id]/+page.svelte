@@ -5,6 +5,7 @@
 </script>
 
 <script lang="ts">
+  import ReadMore from '$lib/components/ReadMore.svelte';
   import S3Avatar from '$lib/components/S3Avatar.svelte';
   import TrainingProgram from '$lib/components/TrainingProgram.svelte';
   import FormButton from '$lib/components/forms/FormButton.svelte';
@@ -90,8 +91,8 @@
 
 <div class="mb-6">
   {#if trainingProgram.description}
-    <div class="text-gray-400">
-      {trainingProgram.description}
+    <div class="text-gray-400 whitespace-pre-wrap">
+      <ReadMore textContent={trainingProgram.description} maxChars={200} />
     </div>
   {:else}
     <div class="text-gray-400 italic">No description</div>

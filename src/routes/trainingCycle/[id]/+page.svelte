@@ -7,6 +7,7 @@
 <script lang="ts">
   import type { PageData } from './$types';
 
+  import ReadMore from '$lib/components/ReadMore.svelte';
   import S3Avatar from '$lib/components/S3Avatar.svelte';
   import WeeklyCalendar from '$lib/components/WeeklyCalendar.svelte';
   import FormButton from '$lib/components/forms/FormButton.svelte';
@@ -90,8 +91,8 @@
 
 <div class="mb-6">
   {#if trainingCycle.description}
-    <div class="text-gray-400">
-      {trainingCycle.description}
+    <div class="text-gray-400 whitespace-pre-wrap">
+      <ReadMore textContent={trainingCycle.description} maxChars={200} />
     </div>
   {:else}
     <div class="text-gray-400 italic">No description</div>
