@@ -1,44 +1,41 @@
 import type { PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
-import { fontGrades, gradeSystems, huecoGrades } from './utils';
+import { grades, gradeSystems } from './utils';
 
-export const projectSchema = z
-  .object({
-    name: z.string().min(1),
-    fontGrade: z.enum(fontGrades).nullish(),
-    huecoGrade: z.enum(huecoGrades).nullish(),
-    gradeSystem: z.enum(gradeSystems),
-    url: z.string().nullish(),
-    imageS3ObjectKey: z.string().nullish(),
-  })
-  .superRefine((val, ctx) => {
-    if (val.gradeSystem == 'hueco' && !val.huecoGrade) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: `Grade is required`,
-        path: ['huecoGrade'],
-      });
-    }
-    if (val.gradeSystem == 'font' && !val.fontGrade) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: `Grade is required`,
-        path: ['fontGrade'],
-      });
-    }
-  });
-
-export type ProjectSchema = typeof projectSchema;
-
-export const projectPartialSchema = z.object({
-  name: z.string().min(1).optional(),
-  fontGrade: z.enum(fontGrades).nullish(),
-  huecoGrade: z.enum(huecoGrades).nullish(),
-  gradeSystem: z.enum(gradeSystems).optional(),
+const projectBaseSchema = z.object({
+  name: z.string().min(1),
+  grade: z.string(),
+  gradeSystem: z.string(),
   url: z.string().nullish(),
   imageS3ObjectKey: z.string().nullish(),
 });
+export const projectPartialBaseSchema = projectBaseSchema.partial();
+
+const projectSchemaChecks = (
+  val: z.infer<typeof projectBaseSchema> | z.infer<typeof projectPartialBaseSchema>,
+  ctx: z.RefinementCtx
+) => {
+  if (val.gradeSystem && !gradeSystems.includes(val.gradeSystem)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: `Invalid grade system`,
+      path: ['gradeSystem'],
+    });
+  }
+  if (val.gradeSystem && val.grade && !grades[val.gradeSystem].includes(val.grade)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: `Grade is required and must be a valid grade for the selected system`,
+      path: ['grade'],
+    });
+  }
+};
+
+export const projectSchema = projectBaseSchema.superRefine(projectSchemaChecks);
+export type ProjectSchema = typeof projectSchema;
+
+export const projectPartialSchema = projectPartialBaseSchema.superRefine(projectSchemaChecks);
 export type ProjectPartialSchema = typeof projectPartialSchema;
 
 export const projectSessionSchema = z.object({

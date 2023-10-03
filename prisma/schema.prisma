@@ -16,8 +16,7 @@ model Project {
   id               String   @id @default(cuid())
   name             String
   gradeSystem      String   @map("grade_system")
-  fontGrade        String?  @map("font_grade")
-  huecoGrade       String?  @map("hueco_grade")
+  grade            String
   url              String?
   updatedAt        DateTime @default(now())
   imageS3ObjectKey String?  @map("image_s3_object_key")

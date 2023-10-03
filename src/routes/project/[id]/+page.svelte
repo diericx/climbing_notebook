@@ -1,3 +1,9 @@
+<script lang="ts" context="module">
+  export function getPageTitle(data: any) {
+    return data.project?.name;
+  }
+</script>
+
 <script lang="ts">
   import Image from '$lib/components/Image.svelte';
   import Form from '$lib/components/forms/Form.svelte';

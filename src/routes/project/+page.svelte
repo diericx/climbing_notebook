@@ -61,8 +61,7 @@
             {sent ? 'Sent' : ''}
           </p>
           <p class="text-gray-400">
-            {project.gradeSystem == 'font' ? project.fontGrade : ''}
-            {project.gradeSystem == 'hueco' ? project.huecoGrade : ''}
+            {project.grade}
           </p>
           <p class="text-gray-400">
             {project.sessions.length} session{project.sessions.length == 1 ? '' : 's'}
