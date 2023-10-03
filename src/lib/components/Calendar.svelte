@@ -73,7 +73,7 @@
     extendedProps: EventExtendedProps;
   };
 
-  let journalEntryEvents = journalEntries.map((j) => {
+  $: journalEntryEvents = journalEntries.map((j) => {
     return {
       start: dayjs(j.date).startOf('day').toDate(),
       end: dayjs(j.date).startOf('day').toDate(),
