@@ -1,7 +1,9 @@
 <script lang="ts">
   import dayjs from '$lib/dayjs';
+  import { confirmDelete } from '$lib/utils';
   import type { JournalEntry } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
+  import FormButton from '../forms/FormButton.svelte';
   let journalEntry = $modalStore[0]?.meta?.data as JournalEntry;
 </script>
 
@@ -17,6 +19,18 @@
   </section>
   <footer class="card-footer float-right space-x-4">
     <button class="btn variant-ghost-surface" on:click={modalStore.close}>Cancel</button>
+
+    <FormButton
+      action={`/journalEntry/${journalEntry?.id}?/delete`}
+      class="btn variant-filled"
+      onSuccess={() => {
+        modalStore.clear();
+      }}
+      onClick={confirmDelete}
+    >
+      <span class="ml-1 mr-1"> Delete </span>
+    </FormButton>
+
     <a href={`/journalEntry/${journalEntry?.id || undefined}/edit?redirectTo=/`}>
       <button class="btn variant-filled" on:click={modalStore.close}>Edit</button>
     </a>
