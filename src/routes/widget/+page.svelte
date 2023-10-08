@@ -15,18 +15,26 @@
   $: shouldApplyFilterMadeByMe = false;
   $: shouldApplyFilterChart = false;
   $: shouldApplyFilterHeatmap = false;
+
   // Apply filters
   $: {
-    widgets = data.widgets;
-    if (shouldApplyFilterMadeByMe) {
-      widgets = widgets.filter((w) => w.ownerId == user.userId);
-    }
-    if (shouldApplyFilterChart) {
-      widgets = widgets.filter((w) => w.type == 'chart');
-    }
-    if (shouldApplyFilterHeatmap) {
-      widgets = widgets.filter((w) => w.type == 'heatmapCalendar');
-    }
+    widgets = data.widgets.filter((w) => {
+      // Default to showing all elements when no filter is selected
+      if (!shouldApplyFilterChart && !shouldApplyFilterHeatmap && !shouldApplyFilterMadeByMe) {
+        return true;
+      }
+      // Go over each filter and return true if this object should be included
+      if (shouldApplyFilterMadeByMe && w.ownerId == user.userId) {
+        return true;
+      }
+      if (shouldApplyFilterChart && w.type == 'chart') {
+        return true;
+      }
+      if (shouldApplyFilterHeatmap && w.type == 'heatmapCalendar') {
+        return true;
+      }
+      return false;
+    });
   }
 
   const { s3ObjectUrlPromises } = data;
