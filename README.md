@@ -4,7 +4,7 @@ Climbing Notebook is an open source utility that helps climbers create long term
 
 If you would like to contribute, see the [Wiki](https://github.com/diericx/climbing_notebook/wiki) for help getting your dev environment set up.
 
-Join the [Discord server](https://discord.gg/qUWvsjKr3F) to discuss anything development related.
+Join the [Discord server](https://discord.gg/dsmEeSNQGj) to discuss anything development related.
 
 #### ZOD Schemas
 
