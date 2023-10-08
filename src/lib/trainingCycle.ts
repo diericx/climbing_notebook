@@ -22,7 +22,69 @@ export type TrainingCycleTemplateSchema = typeof trainingCycleTemplateSchema;
 export const defaultTrainingCycleInclude = Prisma.validator<Prisma.TrainingCycleInclude>()({
   owner: {
     include: {
-      profile: true,
+      profile: {
+        select: {
+          imageS3ObjectKey: true,
+        },
+      },
+    },
+  },
+  trainingProgramScheduledSlots: true,
+  trainingProgram: {
+    select: {
+      name: true,
+    },
+  },
+  exerciseGroups: {
+    include: {
+      exercises: {
+        orderBy: {
+          name: 'asc',
+        },
+      },
+    },
+    orderBy: {
+      name: 'asc',
+    },
+  },
+  days: {
+    include: {
+      exercises: {
+        orderBy: {
+          name: 'asc',
+        },
+        include: {
+          exercise: true,
+        },
+      },
+      exerciseGroups: {
+        include: {
+          exercises: {
+            include: {
+              exercise: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+            orderBy: {
+              name: 'asc',
+            },
+          },
+        },
+        orderBy: {
+          name: 'asc',
+        },
+      },
+    },
+    orderBy: {
+      // Note: ui depends on this being sorted in this way
+      dayOfTheWeek: 'asc',
+    },
+  },
+  _count: {
+    select: {
+      saves: true,
     },
   },
 });
@@ -322,98 +384,11 @@ export class TrainingCycleRepo {
     return this.prisma.trainingCycle.findMany({
       where,
       include: customInclude,
+      orderBy: {
+        name: 'desc',
+      },
     });
   }
-
-  // async get<TInclude extends Prisma.TrainingCycleInclude>(
-  //   where: Prisma.TrainingCycleWhereInput,
-  //   include?: Prisma.Subset<TInclude, Prisma.TrainingCycleInclude>
-  // ) {
-  // return this.prisma.trainingCycle.findMany<
-  //   { include: Prisma.TrainingCycleInclude } & Omit<
-  //     Prisma.TrainingCycleFindManyArgs,
-  //     'select' | 'include'
-  //   >
-  // >({
-  //   where,
-  //   include,
-  // });
-  // }
-
-  // async get(
-  //   where: Prisma.TrainingCycleWhereInput,
-  //   saves?: Prisma.TrainingCycle$savesArgs,
-  //   activations?: Prisma.TrainingCycle$activationsArgs
-  // ) {
-  //   // Fetch all
-  //   return await this.prisma.trainingCycle.findMany({
-  //     where,
-  //     orderBy: {
-  //       name: 'asc',
-  //     },
-  //     include: {
-  //       owner: {
-  //         include: {
-  //           profile: {
-  //             select: {
-  //               imageS3ObjectKey: true,
-  //             },
-  //           },
-  //         },
-  //       },
-  //       exerciseGroups: {
-  //         include: {
-  //           exercises: {
-  //             orderBy: {
-  //               name: 'asc',
-  //             },
-  //           },
-  //         },
-  //         orderBy: {
-  //           name: 'asc',
-  //         },
-  //       },
-  //       days: {
-  //         include: {
-  //           exercises: {
-  //             orderBy: {
-  //               name: 'asc',
-  //             },
-  //             include: {
-  //               exercise: true,
-  //             },
-  //           },
-  //           exerciseGroups: {
-  //             orderBy: {
-  //               name: 'asc',
-  //             },
-  //             include: {
-  //               exercises: {
-  //                 orderBy: {
-  //                   name: 'asc',
-  //                 },
-  //                 include: {
-  //                   exercise: true,
-  //                 },
-  //               },
-  //             },
-  //           },
-  //         },
-  //         orderBy: {
-  //           // Note: ui depends on this being sorted in this way
-  //           dayOfTheWeek: 'asc',
-  //         },
-  //       },
-  //       saves,
-  //       activations,
-  //       _count: {
-  //         select: {
-  //           saves: true,
-  //         },
-  //       },
-  //     },
-  //   });
-  // }
 
   async update(data: z.infer<TrainingCyclePartialSchema>, id: number, ownerId: string) {
     // Get current training program
