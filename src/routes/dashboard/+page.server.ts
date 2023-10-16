@@ -92,8 +92,11 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     },
   });
 
-  const trainingCycles = await trainingCycleRepo.get({
-    ownerId: user.userId,
+  const trainingCycles = await trainingCycleRepo.findMany({
+    where: {
+      ownerId: user.userId,
+    },
+    select: TrainingCycleRepo.nameOnlySelect(),
   });
 
   // compile datasets for widgets

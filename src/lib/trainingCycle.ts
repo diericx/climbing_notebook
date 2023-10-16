@@ -1,4 +1,4 @@
-import { Prisma, type PrismaClient, type TrainingCycle } from '@prisma/client';
+import { Prisma, type PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
 import type { ExerciseGroupSchema } from './exerciseGroup';
@@ -19,78 +19,53 @@ export const trainingCycleTemplateSchema = z.object({
 });
 export type TrainingCycleTemplateSchema = typeof trainingCycleTemplateSchema;
 
-export const defaultTrainingCycleInclude = Prisma.validator<Prisma.TrainingCycleInclude>()({
-  owner: {
-    include: {
-      profile: {
-        select: {
-          imageS3ObjectKey: true,
-        },
-      },
-    },
-  },
-  trainingProgramScheduledSlots: true,
-  trainingProgram: {
-    select: {
+export class TrainingCycleRepo {
+  constructor(private readonly prisma: PrismaClient) {}
+
+  static makeTrainingCycleSelect<T extends Prisma.TrainingCycleSelect>(
+    select: Prisma.Subset<T, Prisma.TrainingCycleSelect>
+  ): T {
+    return select;
+  }
+
+  static nameOnlySelect() {
+    return this.makeTrainingCycleSelect({
       name: true,
-    },
-  },
-  exerciseGroups: {
-    include: {
-      exercises: {
-        orderBy: {
-          name: 'asc',
-        },
-      },
-    },
-    orderBy: {
-      name: 'asc',
-    },
-  },
-  days: {
-    include: {
-      exercises: {
-        orderBy: {
-          name: 'asc',
-        },
-        include: {
-          exercise: true,
-        },
-      },
-      exerciseGroups: {
-        include: {
-          exercises: {
-            include: {
-              exercise: {
-                select: {
-                  name: true,
-                },
-              },
-            },
-            orderBy: {
-              name: 'asc',
+    });
+  }
+
+  static minSelect(userId?: string) {
+    return this.makeTrainingCycleSelect({
+      id: true,
+      ownerId: true,
+      name: true,
+      description: true,
+      isPublic: true,
+      owner: {
+        select: {
+          username: true,
+          profile: {
+            select: {
+              imageS3ObjectKey: true,
             },
           },
         },
-        orderBy: {
-          name: 'asc',
+      },
+      // NOTE: it would be ideal to not run this query, but if we set this to an optional
+      // variable the type is defined as always having this value which makes it difficult
+      // to develop the front end.
+      saves: { where: { userId: userId || '' } },
+      activations: { where: { userId: userId || '' } },
+      _count: {
+        select: {
+          saves: true,
         },
       },
-    },
-    orderBy: {
-      // Note: ui depends on this being sorted in this way
-      dayOfTheWeek: 'asc',
-    },
-  },
-  _count: {
-    select: {
-      saves: true,
-    },
-  },
-});
-
-export class TrainingCycleRepo {
-  constructor(private readonly prisma: PrismaClient) {}
+    });
+  }
+  static minSelectValidator = Prisma.validator<Prisma.TrainingCycleDefaultArgs>()({
+    select: TrainingCycleRepo.minSelect(),
+  });
 
   async getOne(
     id: number,
@@ -372,21 +347,20 @@ export class TrainingCycleRepo {
     });
   }
 
-  async get(where: Prisma.TrainingCycleWhereInput): Promise<TrainingCycle[]>;
-  async get<I extends Prisma.TrainingCycleInclude>(
-    where: Prisma.TrainingCycleWhereInput,
-    customInclude: I
-  ): Promise<Prisma.TrainingCycleGetPayload<{ include: I }>[]>;
-  async get<I extends Prisma.TrainingCycleInclude>(
-    where: Prisma.TrainingCycleWhereInput,
-    customInclude?: I
-  ): Promise<TrainingCycle[] | Prisma.TrainingCycleGetPayload<{ include: I }>[]> {
-    return this.prisma.trainingCycle.findMany({
+  async findMany<S extends Prisma.TrainingCycleSelect>({
+    where,
+    select,
+  }: {
+    where: Prisma.TrainingCycleWhereInput;
+    select: S;
+  }): Promise<Prisma.TrainingCycleGetPayload<{ select: S }>[]> {
+    // Fetch all
+    return await this.prisma.trainingCycle.findMany({
       where,
-      include: customInclude,
       orderBy: {
-        name: 'desc',
+        name: 'asc',
       },
+      select,
     });
   }
 

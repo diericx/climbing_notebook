@@ -2,13 +2,7 @@
   import type { CustomQueryResults } from '$lib/customQuery';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
-  import type {
-    CalendarEvent,
-    JournalEntry,
-    Prisma,
-    TrainingCycle,
-    TrainingProgram,
-  } from '@prisma/client';
+  import type { CalendarEvent, JournalEntry, Prisma, TrainingProgram } from '@prisma/client';
   import { modalStore, popup } from '@skeletonlabs/skeleton';
   import Calendar from './Calendar.svelte';
   import Chart from './Chart.svelte';
@@ -58,7 +52,7 @@
   export let customQueryResults: CustomQueryResults[];
   export let calendarEvents: CalendarEvent[];
   export let journalEntries: JournalEntry[];
-  export let trainingCycles: TrainingCycle[];
+  export let trainingCycles: Prisma.TrainingCycleGetPayload<{ select: { name: true } }>[];
   export let exerciseEvents: Prisma.ExerciseEventGetPayload<{
     include: {
       exercise: {

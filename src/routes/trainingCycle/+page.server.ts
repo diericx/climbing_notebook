@@ -1,9 +1,6 @@
+import { getSignedUrlPromises } from '$lib/aws/s3';
 import { prisma } from '$lib/prisma';
-import {
-  defaultTrainingCycleInclude,
-  TrainingCycleRepo,
-  trainingCycleSchema,
-} from '$lib/trainingCycle';
+import { TrainingCycleRepo, trainingCycleSchema } from '$lib/trainingCycle';
 import { getSessionOrRedirect } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
@@ -14,74 +11,62 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
 
-  const ownedTrainingCycles = await trainingCycleRepo.get(
-    {
+  const ownedTrainingCycles = await trainingCycleRepo.findMany({
+    where: {
       // Default to empty string so query defaults to returning empty array
       ownerId: session?.user.userId || '',
       trainingProgramId: null,
     },
-    { trainingProgram: true, ...defaultTrainingCycleInclude }
-  );
-  console.log(ownedTrainingCycles[0].owner.profile);
-  // const ownedTrainingCycles = await trainingCycleRepo.get(
-  //   {
-  //     // Default to empty string so query defaults to returning empty array
-  //     ownerId: session?.user.userId || '',
-  //     trainingProgramId: null,
-  //   },
-  //   undefined,
-  //   session ? { where: { userId: session.user.userId } } : undefined
-  // );
+    select: { ...TrainingCycleRepo.minSelect(session?.user.userId), privateAccessToken: true },
+  });
 
-  // const savedTrainingCycles = await trainingCycleRepo.get(
-  //   {
-  //     saves: {
-  //       some: {
-  //         // Default to empty string so query defaults to returning empty array
-  //         userId: session?.user.userId || '',
-  //       },
-  //     },
-  //   },
-  //   session ? { where: { userId: session.user.userId } } : undefined,
-  //   session ? { where: { userId: session.user.userId } } : undefined
-  // );
+  const savedTrainingCycles = await trainingCycleRepo.findMany({
+    where: {
+      saves: {
+        some: {
+          // Default to empty string so query defaults to returning empty array
+          userId: session?.user.userId || '',
+        },
+      },
+    },
+    select: TrainingCycleRepo.minSelect(session?.user.userId),
+  });
 
-  // const publicTrainingCycles = await trainingCycleRepo.get(
-  //   {
-  //     isPublic: true,
-  //   },
-  //   session ? { where: { userId: session.user.userId } } : undefined,
-  //   session ? { where: { userId: session.user.userId } } : undefined
-  // );
+  const publicTrainingCycles = await trainingCycleRepo.findMany({
+    where: {
+      isPublic: true,
+    },
+    select: TrainingCycleRepo.minSelect(session?.user.userId),
+  });
 
-  // const s3ObjectUrlPromises = getSignedUrlPromises([
-  //   ...ownedTrainingCycles.reduce((acc, cur) => {
-  //     if (cur.owner.profile?.imageS3ObjectKey) {
-  //       return [...acc, cur.owner.profile.imageS3ObjectKey];
-  //     }
-  //     return acc;
-  //   }, [] as string[]),
-  //   ...savedTrainingCycles.reduce((acc, cur) => {
-  //     if (cur.owner.profile?.imageS3ObjectKey) {
-  //       return [...acc, cur.owner.profile.imageS3ObjectKey];
-  //     }
-  //     return acc;
-  //   }, [] as string[]),
-  //   ...publicTrainingCycles.reduce((acc, cur) => {
-  //     if (cur.owner.profile?.imageS3ObjectKey) {
-  //       return [...acc, cur.owner.profile.imageS3ObjectKey];
-  //     }
-  //     return acc;
-  //   }, [] as string[]),
-  // ]);
+  const s3ObjectUrlPromises = getSignedUrlPromises([
+    ...ownedTrainingCycles.reduce((acc, cur) => {
+      if (cur.owner.profile?.imageS3ObjectKey) {
+        return [...acc, cur.owner.profile.imageS3ObjectKey];
+      }
+      return acc;
+    }, [] as string[]),
+    ...savedTrainingCycles.reduce((acc, cur) => {
+      if (cur.owner.profile?.imageS3ObjectKey) {
+        return [...acc, cur.owner.profile.imageS3ObjectKey];
+      }
+      return acc;
+    }, [] as string[]),
+    ...publicTrainingCycles.reduce((acc, cur) => {
+      if (cur.owner.profile?.imageS3ObjectKey) {
+        return [...acc, cur.owner.profile.imageS3ObjectKey];
+      }
+      return acc;
+    }, [] as string[]),
+  ]);
 
-  // return {
-  //   ownedTrainingCycles,
-  //   savedTrainingCycles,
-  //   publicTrainingCycles,
-  //   session,
-  //   s3ObjectUrlPromises,
-  // };
+  return {
+    ownedTrainingCycles,
+    savedTrainingCycles,
+    publicTrainingCycles,
+    session,
+    s3ObjectUrlPromises,
+  };
 };
 
 export const actions: Actions = {
