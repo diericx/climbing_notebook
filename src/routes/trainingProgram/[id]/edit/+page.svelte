@@ -152,9 +152,14 @@
           })}
       >
         <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-        <span>Add Cycle</span>
+        <span>New Cycle</span>
       </button>
     </div>
+  </div>
+  <div>
+    <p class="text-gray-400">
+      Create cycles that are specific to this Program and only visible by this program.
+    </p>
   </div>
   <hr />
 
@@ -214,9 +219,12 @@
           })}
       >
         <Icon icon="material-symbols:add-circle-outline-rounded" height="18" />
-        <span>Add Slot</span>
+        <span>Schedule a Cycle</span>
       </button>
     </div>
+  </div>
+  <div>
+    <p class="text-gray-400">Schedule any cycle from this program or from your account.</p>
   </div>
   <hr />
   <div>

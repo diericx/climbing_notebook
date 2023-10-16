@@ -1,9 +1,7 @@
 import type { Prisma } from '@prisma/client';
 import { redirect } from '@sveltejs/kit';
-import dayjs from 'dayjs';
-import weekOfYear from 'dayjs/plugin/weekOfYear';
 import 'fs';
-dayjs.extend(weekOfYear);
+import dayjs from './dayjs';
 
 export const grades: { [key: string]: string[] } = {
   hueco: [
@@ -433,8 +431,8 @@ export function getActiveTrainingCycleForTrainingProgramActivation(
   }>
 ) {
   const slots = activation.trainingProgram.trainingProgramScheduledSlots;
-  const startDateWeekOfYear = dayjs(activation.startDate).week();
-  let todayWeekOfYear = dayjs().week();
+  const startDateWeekOfYear = dayjs.tz(activation.startDate, 'UTC').week();
+  let todayWeekOfYear = dayjs.tz(new Date(), 'UTC').week();
   // Account for year rollover
   if (todayWeekOfYear < startDateWeekOfYear) {
     todayWeekOfYear += startDateWeekOfYear;

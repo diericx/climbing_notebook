@@ -152,7 +152,7 @@
       </div>
     {/if}
     {#if trainingProgram.description}
-      <div>
+      <div class="line-clamp-6">
         {trainingProgram.description || ''}
       </div>
     {:else}

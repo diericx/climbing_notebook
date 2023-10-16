@@ -1,6 +1,6 @@
 <script lang="ts">
+  import dayjs from '$lib/dayjs';
   import { exerciseTypeColors } from '$lib/utils';
-
   // @ts-ignore
   import Calendar from '@event-calendar/core';
   // @ts-ignore
@@ -11,7 +11,6 @@
   import TimeGrid from '@event-calendar/time-grid';
   import type { CalendarEvent, JournalEntry, Prisma, TrainingProgram } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
-  import dayjs from 'dayjs';
 
   export let calendarEvents: CalendarEvent[];
   export let journalEntries: JournalEntry[];
@@ -75,8 +74,8 @@
 
   $: journalEntryEvents = journalEntries.map((j) => {
     return {
-      start: dayjs(j.date).startOf('day').toDate(),
-      end: dayjs(j.date).startOf('day').toDate(),
+      start: dayjs.tz(j.date, 'UTC').startOf('day').toDate(),
+      end: dayjs.tz(j.date, 'UTC').startOf('day').toDate(),
       backgroundColor: '#7dd3fc',
       allDay: true,
       title: j.content.substring(0, 15),
@@ -95,8 +94,8 @@
   });
 
   $: _calendarEvents = calendarEvents.map((e) => ({
-    start: dayjs(e.dateStart).startOf('day').toDate(),
-    end: dayjs(e.dateEnd).startOf('day').toDate(),
+    start: dayjs.tz(e.dateStart, 'UTC').startOf('day').toDate(),
+    end: dayjs.tz(e.dateEnd, 'UTC').startOf('day').toDate(),
     backgroundColor: e.color,
     allDay: true,
     title: e.title,
@@ -145,12 +144,20 @@
   $: {
     trainingProgramActivationEvents = [];
     trainingProgramActivations.forEach((a) => {
-      let startDate = dayjs(a.startDate);
-      a.trainingProgram.trainingProgramScheduledSlots.forEach((s) => {
+      const { trainingProgramScheduledSlots } = a.trainingProgram;
+      let startDate = dayjs.tz(a.startDate, 'UTC');
+      trainingProgramScheduledSlots.forEach((s, i) => {
         let endDate = startDate.add(s.duration, 'weeks');
         trainingProgramActivationEvents.push({
           start: startDate.startOf('day').toDate(),
-          end: endDate.startOf('day').toDate(),
+          // Subtract one day from the end date if it is not the last one so there
+          // is no overlap in the calendar view
+          end: (i != trainingProgramScheduledSlots.length - 1
+            ? endDate.subtract(1, 'day')
+            : endDate
+          )
+            .startOf('day')
+            .toDate(),
           backgroundColor: '#8bfca9',
           allDay: true,
           title: `${a.trainingProgram.name} - ${s.trainingCycles[0].name} `,
