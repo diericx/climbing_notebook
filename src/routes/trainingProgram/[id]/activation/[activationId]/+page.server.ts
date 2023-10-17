@@ -1,8 +1,8 @@
+import dayjs from '$lib/dayjs';
 import { prisma } from '$lib/prisma';
 import { trainingProgramActivationSchema, TrainingProgramRepo } from '$lib/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
-import dayjs from 'dayjs';
 import { setError, superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 

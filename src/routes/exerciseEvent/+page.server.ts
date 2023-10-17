@@ -9,11 +9,8 @@ import {
   getSessionOrRedirect,
 } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
-import dayjs from 'dayjs';
-import weekOfYear from 'dayjs/plugin/weekOfYear';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
-dayjs.extend(weekOfYear);
 
 export const load: PageServerLoad = async ({ locals, url }) => {
   const { user } = await getSessionOrRedirect({ locals, url });
