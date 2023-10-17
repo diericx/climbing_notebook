@@ -34,6 +34,7 @@ export class TrainingCycleRepo {
     });
   }
 
+  // TODO: Should we pull this userId out and make it manual?
   static minSelect(userId?: string) {
     return this.makeTrainingCycleSelect({
       id: true,
@@ -51,9 +52,9 @@ export class TrainingCycleRepo {
           },
         },
       },
-      // NOTE: it would be ideal to not run this query, but if we set this to an optional
-      // variable the type is defined as always having this value which makes it difficult
-      // to develop the front end.
+      // NOTE: it would be ideal to not include this in the query if the user is null,
+      // but if we set this to an optional variable the type is defined as always having
+      // this value which makes it difficult to develop the front end.
       saves: { where: { userId: userId || '' } },
       activations: { where: { userId: userId || '' } },
       _count: {
@@ -66,6 +67,76 @@ export class TrainingCycleRepo {
   static minSelectValidator = Prisma.validator<Prisma.TrainingCycleDefaultArgs>()({
     select: TrainingCycleRepo.minSelect(),
   });
+
+  static fullSelect() {
+    return this.makeTrainingCycleSelect({
+      ...this.minSelect(),
+      trainingProgramScheduledSlots: true,
+      trainingProgram: {
+        select: {
+          name: true,
+        },
+      },
+      exerciseGroups: {
+        include: {
+          exercises: {
+            include: {
+              exercise: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+            orderBy: {
+              name: 'asc',
+            },
+          },
+        },
+        orderBy: {
+          name: 'asc',
+        },
+      },
+      days: {
+        include: {
+          exercises: {
+            include: {
+              exercise: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+            orderBy: {
+              name: 'asc',
+            },
+          },
+          exerciseGroups: {
+            orderBy: {
+              name: 'asc',
+            },
+            include: {
+              exercises: {
+                include: {
+                  exercise: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                },
+                orderBy: {
+                  name: 'asc',
+                },
+              },
+            },
+          },
+        },
+        orderBy: {
+          // Note: ui depends on this being sorted in this way
+          dayOfTheWeek: 'asc',
+        },
+      },
+    });
+  }
 
   async getOne(
     id: number,

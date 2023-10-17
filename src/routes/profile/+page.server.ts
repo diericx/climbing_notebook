@@ -5,7 +5,6 @@ import { JournalEntryRepo } from '$lib/journalEntry';
 import { MetricRepo } from '$lib/metric';
 import { prisma } from '$lib/prisma';
 import { ProfileRepo, profileSchema } from '$lib/profile';
-import { TrainingCycleRepo } from '$lib/trainingCycle';
 import { getSessionOrRedirect } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
 import sharp from 'sharp';
@@ -19,15 +18,11 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const profileRepo = new ProfileRepo(prisma);
   const exerciseEventRepo = new ExerciseEventRepo(prisma);
   const journalEntryRepo = new JournalEntryRepo(prisma);
-  const trainingCycleRepo = new TrainingCycleRepo(prisma);
   const metricsRepo = new MetricRepo(prisma);
 
   const profile = await profileRepo.getOne(user?.userId);
   const exerciseEvents = await exerciseEventRepo.get(user?.userId);
   const journalEntries = await journalEntryRepo.get(user?.userId);
-  const trainingCycles = await trainingCycleRepo.get({
-    ownerId: user.userId,
-  });
   const metrics = await metricsRepo.get(user?.userId);
 
   const { s3ObjectMetadatas, s3ObjectUrls } = await getSignedUrlsAndMetadata(
@@ -38,7 +33,6 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     profile,
     exerciseEvents,
     journalEntries,
-    trainingCycles,
     metrics,
     user,
     s3ObjectMetadatas,

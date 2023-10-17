@@ -37,12 +37,15 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     fieldsToShow: true,
   });
 
-  const activeCycles = await trainingCycleRepo.get({
-    activations: {
-      some: {
-        userId: user.userId,
+  const activeCycles = await trainingCycleRepo.findMany({
+    where: {
+      activations: {
+        some: {
+          userId: user.userId,
+        },
       },
     },
+    select: TrainingCycleRepo.fullSelect(),
   });
 
   // Note: this does not filter for training programs that are active yet have

@@ -5,7 +5,7 @@
   import { onMount } from 'svelte';
 
   export let trainingCycle: Prisma.TrainingCycleGetPayload<{
-    include: {
+    select: {
       days: {
         include: {
           exercises: {
