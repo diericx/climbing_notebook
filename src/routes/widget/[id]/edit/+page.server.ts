@@ -22,7 +22,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
     where: {
       ownerId: user.userId,
     },
-    select: TrainingCycleRepo.nameOnlySelect(),
+    select: TrainingCycleRepo.nameOnlySelect,
   });
   // compile datasets for widgets
   const customQueryResults: CustomQueryResults[] = [];

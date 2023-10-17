@@ -42,7 +42,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
         },
       },
     },
-    select: TrainingCycleRepo.fullSelect(),
+    select: TrainingCycleRepo.fullSelect,
   });
 
   // Note: this does not filter for training programs that are active yet have

@@ -15,9 +15,15 @@
   // Prisma.
   export let trainingCycle: Prisma.TrainingCycleGetPayload<
     typeof TrainingCycleRepo.minSelectValidator
-  > & {
-    privateAccessToken?: string;
-  };
+  > &
+    Prisma.TrainingCycleGetPayload<{
+      select: {
+        saves: true;
+        activations: true;
+      };
+    }> & {
+      privateAccessToken?: string;
+    };
 
   export const findSingleLocationSelect = {
     id: true,

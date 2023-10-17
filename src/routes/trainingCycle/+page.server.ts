@@ -17,7 +17,15 @@ export const load: PageServerLoad = async ({ locals }) => {
       ownerId: session?.user.userId || '',
       trainingProgramId: null,
     },
-    select: { ...TrainingCycleRepo.minSelect(session?.user.userId), privateAccessToken: true },
+    select: {
+      ...TrainingCycleRepo.minSelect,
+      privateAccessToken: true,
+      // NOTE: it would be ideal to not include this in the query if the user is null,
+      // but if we set this to an optional variable the type is defined as always having
+      // this value which makes it difficult to develop the front end.
+      saves: { where: { userId: session?.user.userId || '' } },
+      activations: { where: { userId: session?.user.userId || '' } },
+    },
   });
 
   const savedTrainingCycles = await trainingCycleRepo.findMany({
@@ -29,14 +37,28 @@ export const load: PageServerLoad = async ({ locals }) => {
         },
       },
     },
-    select: TrainingCycleRepo.minSelect(session?.user.userId),
+    select: {
+      ...TrainingCycleRepo.minSelect,
+      // NOTE: it would be ideal to not include this in the query if the user is null,
+      // but if we set this to an optional variable the type is defined as always having
+      // this value which makes it difficult to develop the front end.
+      saves: { where: { userId: session?.user.userId || '' } },
+      activations: { where: { userId: session?.user.userId || '' } },
+    },
   });
 
   const publicTrainingCycles = await trainingCycleRepo.findMany({
     where: {
       isPublic: true,
     },
-    select: TrainingCycleRepo.minSelect(session?.user.userId),
+    select: {
+      ...TrainingCycleRepo.minSelect,
+      // NOTE: it would be ideal to not include this in the query if the user is null,
+      // but if we set this to an optional variable the type is defined as always having
+      // this value which makes it difficult to develop the front end.
+      saves: { where: { userId: session?.user.userId || '' } },
+      activations: { where: { userId: session?.user.userId || '' } },
+    },
   });
 
   const s3ObjectUrlPromises = getSignedUrlPromises([

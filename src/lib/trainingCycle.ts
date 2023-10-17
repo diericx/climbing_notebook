@@ -28,115 +28,103 @@ export class TrainingCycleRepo {
     return select;
   }
 
-  static nameOnlySelect() {
-    return this.makeTrainingCycleSelect({
-      name: true,
-    });
-  }
-
-  // TODO: Should we pull this userId out and make it manual?
-  static minSelect(userId?: string) {
-    return this.makeTrainingCycleSelect({
-      id: true,
-      ownerId: true,
-      name: true,
-      description: true,
-      isPublic: true,
-      owner: {
-        select: {
-          username: true,
-          profile: {
-            select: {
-              imageS3ObjectKey: true,
-            },
-          },
-        },
-      },
-      // NOTE: it would be ideal to not include this in the query if the user is null,
-      // but if we set this to an optional variable the type is defined as always having
-      // this value which makes it difficult to develop the front end.
-      saves: { where: { userId: userId || '' } },
-      activations: { where: { userId: userId || '' } },
-      _count: {
-        select: {
-          saves: true,
-        },
-      },
-    });
-  }
-  static minSelectValidator = Prisma.validator<Prisma.TrainingCycleDefaultArgs>()({
-    select: TrainingCycleRepo.minSelect(),
+  static nameOnlySelect = this.makeTrainingCycleSelect({
+    name: true,
   });
 
-  static fullSelect() {
-    return this.makeTrainingCycleSelect({
-      ...this.minSelect(),
-      trainingProgramScheduledSlots: true,
-      trainingProgram: {
-        select: {
-          name: true,
-        },
-      },
-      exerciseGroups: {
-        include: {
-          exercises: {
-            include: {
-              exercise: {
-                select: {
-                  name: true,
-                },
-              },
-            },
-            orderBy: {
-              name: 'asc',
-            },
+  static minSelect = this.makeTrainingCycleSelect({
+    id: true,
+    ownerId: true,
+    name: true,
+    description: true,
+    isPublic: true,
+    owner: {
+      select: {
+        username: true,
+        profile: {
+          select: {
+            imageS3ObjectKey: true,
           },
         },
-        orderBy: {
-          name: 'asc',
-        },
       },
-      days: {
-        include: {
-          exercises: {
-            include: {
-              exercise: {
-                select: {
-                  name: true,
-                },
+    },
+    _count: {
+      select: {
+        saves: true,
+      },
+    },
+  });
+  static minSelectValidator = Prisma.validator<Prisma.TrainingCycleDefaultArgs>()({
+    select: TrainingCycleRepo.minSelect,
+  });
+
+  static fullSelect = this.makeTrainingCycleSelect({
+    ...this.minSelect,
+    trainingProgramScheduledSlots: true,
+    trainingProgram: {
+      select: {
+        name: true,
+      },
+    },
+    exerciseGroups: {
+      include: {
+        exercises: {
+          include: {
+            exercise: {
+              select: {
+                name: true,
               },
             },
-            orderBy: {
-              name: 'asc',
+          },
+          orderBy: {
+            name: 'asc',
+          },
+        },
+      },
+      orderBy: {
+        name: 'asc',
+      },
+    },
+    days: {
+      include: {
+        exercises: {
+          include: {
+            exercise: {
+              select: {
+                name: true,
+              },
             },
           },
-          exerciseGroups: {
-            orderBy: {
-              name: 'asc',
-            },
-            include: {
-              exercises: {
-                include: {
-                  exercise: {
-                    select: {
-                      name: true,
-                    },
+          orderBy: {
+            name: 'asc',
+          },
+        },
+        exerciseGroups: {
+          orderBy: {
+            name: 'asc',
+          },
+          include: {
+            exercises: {
+              include: {
+                exercise: {
+                  select: {
+                    name: true,
                   },
                 },
-                orderBy: {
-                  name: 'asc',
-                },
+              },
+              orderBy: {
+                name: 'asc',
               },
             },
           },
         },
-        orderBy: {
-          // Note: ui depends on this being sorted in this way
-          dayOfTheWeek: 'asc',
-        },
       },
-    });
-  }
+      orderBy: {
+        // Note: ui depends on this being sorted in this way
+        dayOfTheWeek: 'asc',
+      },
+    },
+  });
 
   async getOne(
     id: number,
