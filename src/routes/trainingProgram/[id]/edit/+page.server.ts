@@ -17,7 +17,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
       ownerId: user.userId,
       trainingProgramId: null,
     },
-    select: TrainingCycleRepo.nameOnlySelect,
+    select: TrainingCycleRepo.selectNameOnly,
   });
   const savedTrainingCycles = await trainingCycleRepo.findMany({
     where: {
@@ -27,7 +27,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
         },
       },
     },
-    select: TrainingCycleRepo.nameOnlySelect,
+    select: TrainingCycleRepo.selectNameOnly,
   });
 
   return {

@@ -96,7 +96,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     where: {
       ownerId: user.userId,
     },
-    select: TrainingCycleRepo.nameOnlySelect,
+    select: TrainingCycleRepo.selectNameOnly,
   });
 
   // compile datasets for widgets

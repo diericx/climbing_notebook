@@ -18,7 +18,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       trainingProgramId: null,
     },
     select: {
-      ...TrainingCycleRepo.minSelect,
+      ...TrainingCycleRepo.selectMinimal,
       privateAccessToken: true,
       // NOTE: it would be ideal to not include this in the query if the user is null,
       // but if we set this to an optional variable the type is defined as always having
@@ -38,7 +38,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       },
     },
     select: {
-      ...TrainingCycleRepo.minSelect,
+      ...TrainingCycleRepo.selectMinimal,
       // NOTE: it would be ideal to not include this in the query if the user is null,
       // but if we set this to an optional variable the type is defined as always having
       // this value which makes it difficult to develop the front end.
@@ -52,7 +52,7 @@ export const load: PageServerLoad = async ({ locals }) => {
       isPublic: true,
     },
     select: {
-      ...TrainingCycleRepo.minSelect,
+      ...TrainingCycleRepo.selectMinimal,
       // NOTE: it would be ideal to not include this in the query if the user is null,
       // but if we set this to an optional variable the type is defined as always having
       // this value which makes it difficult to develop the front end.

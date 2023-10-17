@@ -14,7 +14,7 @@
   // to be any way to generate types with optional values directly via
   // Prisma.
   export let trainingCycle: Prisma.TrainingCycleGetPayload<
-    typeof TrainingCycleRepo.minSelectValidator
+    typeof TrainingCycleRepo.selectMinimalValidator
   > &
     Prisma.TrainingCycleGetPayload<{
       select: {

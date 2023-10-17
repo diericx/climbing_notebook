@@ -28,11 +28,11 @@ export class TrainingCycleRepo {
     return select;
   }
 
-  static nameOnlySelect = this.makeTrainingCycleSelect({
+  static selectNameOnly = this.makeTrainingCycleSelect({
     name: true,
   });
 
-  static minSelect = this.makeTrainingCycleSelect({
+  static selectMinimal = this.makeTrainingCycleSelect({
     id: true,
     ownerId: true,
     name: true,
@@ -54,12 +54,12 @@ export class TrainingCycleRepo {
       },
     },
   });
-  static minSelectValidator = Prisma.validator<Prisma.TrainingCycleDefaultArgs>()({
-    select: TrainingCycleRepo.minSelect,
+  static selectMinimalValidator = Prisma.validator<Prisma.TrainingCycleDefaultArgs>()({
+    select: TrainingCycleRepo.selectMinimal,
   });
 
-  static fullSelect = this.makeTrainingCycleSelect({
-    ...this.minSelect,
+  static selectEverything = this.makeTrainingCycleSelect({
+    ...this.selectMinimal,
     trainingProgramScheduledSlots: true,
     trainingProgram: {
       select: {
