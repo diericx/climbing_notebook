@@ -60,7 +60,9 @@ export class TrainingCycleRepo {
 
   static selectEverything = this.makeTrainingCycleSelect({
     ...this.selectMinimal,
+    trainingProgramId: true,
     trainingProgramScheduledSlots: true,
+    privateAccessToken: true,
     trainingProgram: {
       select: {
         name: true,
@@ -126,108 +128,18 @@ export class TrainingCycleRepo {
     },
   });
 
-  async getOne(
+  async findOne<S extends Prisma.TrainingCycleSelect>(
     id: number,
-    saves?: Prisma.TrainingCycle$savesArgs,
-    activations?: Prisma.TrainingCycle$activationsArgs
-  ) {
+    select: S
+  ): Promise<Prisma.TrainingCycleGetPayload<{ select: S }>> {
     const trainingCycle = await this.prisma.trainingCycle.findUnique({
       where: {
         id,
       },
-      include: {
-        owner: {
-          include: {
-            profile: {
-              select: {
-                imageS3ObjectKey: true,
-              },
-            },
-          },
-        },
-        trainingProgramScheduledSlots: true,
-        trainingProgram: {
-          select: {
-            name: true,
-          },
-        },
-        exerciseGroups: {
-          include: {
-            exercises: {
-              include: {
-                exercise: {
-                  select: {
-                    name: true,
-                  },
-                },
-              },
-              orderBy: {
-                name: 'asc',
-              },
-            },
-          },
-          orderBy: {
-            name: 'asc',
-          },
-        },
-        days: {
-          include: {
-            exercises: {
-              include: {
-                exercise: {
-                  select: {
-                    name: true,
-                  },
-                },
-              },
-              orderBy: {
-                name: 'asc',
-              },
-            },
-            exerciseGroups: {
-              orderBy: {
-                name: 'asc',
-              },
-              include: {
-                exercises: {
-                  include: {
-                    exercise: {
-                      select: {
-                        name: true,
-                      },
-                    },
-                  },
-                  orderBy: {
-                    name: 'asc',
-                  },
-                },
-              },
-            },
-          },
-          orderBy: {
-            // Note: ui depends on this being sorted in this way
-            dayOfTheWeek: 'asc',
-          },
-        },
-        saves,
-        activations,
-        _count: {
-          select: {
-            saves: true,
-          },
-        },
-      },
+      select,
     });
     if (trainingCycle == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
-    }
-    return trainingCycle;
-  }
-
-  async getOneAndValidateOwner(id: number, ownerId: string) {
-    const trainingCycle = await this.getOne(id);
-    if (trainingCycle.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this object.');
     }
     return trainingCycle;
   }
@@ -240,7 +152,7 @@ export class TrainingCycleRepo {
       description?: string;
     }
   ) {
-    const program = await this.getOne(id);
+    const program = await this.findOne(id, TrainingCycleRepo.selectEverything);
 
     if (!program.isPublic && program.ownerId != ownerId) {
       throw new APIError(
@@ -452,8 +364,20 @@ export class TrainingCycleRepo {
   }
 
   async delete(id: number, ownerId: string) {
-    const trainingCycle = await this.getOneAndValidateOwner(id, ownerId);
-    if (trainingCycle.trainingProgramScheduledSlots.length != 0) {
+    const trainingCycle = await this.findOne(id, {
+      ownerId: true,
+      _count: {
+        select: {
+          trainingProgramScheduledSlots: true,
+        },
+      },
+    });
+
+    if (trainingCycle.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
+
+    if (trainingCycle._count.trainingProgramScheduledSlots != 0) {
       throw new APIError(
         'INVALID_INPUT',
         'Training Cycle cannot be deleted because it is scheduled in one or more Training Programs'
@@ -468,7 +392,7 @@ export class TrainingCycleRepo {
   }
 
   async save(id: number, ownerId: string) {
-    const trainingCycle = await this.getOne(id);
+    const trainingCycle = await this.findOne(id, { ownerId: true, isPublic: true });
     if (!trainingCycle.isPublic && trainingCycle.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to save this cycle');
     }
@@ -496,7 +420,7 @@ export class TrainingCycleRepo {
   }
 
   async unsave(id: number, ownerId: string) {
-    const trainingCycle = await this.getOne(id);
+    const trainingCycle = await this.findOne(id, { ownerId: true, isPublic: true });
     if (!trainingCycle.isPublic && trainingCycle.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this cycle');
     }
@@ -519,7 +443,13 @@ export class TrainingCycleRepo {
   }
 
   async addExerciseGroup(exerciseGroup: z.infer<ExerciseGroupSchema>, id: number, ownerId: string) {
-    const trainingCycle = await this.getOneAndValidateOwner(id, ownerId);
+    const trainingCycle = await this.findOne(id, {
+      exerciseGroups: { select: { name: true } },
+      ownerId: true,
+    });
+    if (trainingCycle.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
 
     // Group names must be unique
     trainingCycle.exerciseGroups.forEach((g) => {
@@ -554,7 +484,13 @@ export class TrainingCycleRepo {
     exerciseGroupId: number,
     ownerId: string
   ) {
-    const trainingCycle = await this.getOneAndValidateOwner(trainingCycleId, ownerId);
+    const trainingCycle = await this.findOne(trainingCycleId, {
+      exerciseGroups: { select: { id: true, name: true } },
+      ownerId: true,
+    });
+    if (trainingCycle.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
 
     // Group names must be unique
     trainingCycle.exerciseGroups.forEach((g) => {
@@ -586,7 +522,11 @@ export class TrainingCycleRepo {
   }
 
   async deleteExerciseGroup(id: number, ownerId: string, exerciseGroupId: number) {
-    await this.getOneAndValidateOwner(id, ownerId);
+    const trainingCycle = await this.findOne(id, { ownerId: true });
+    if (trainingCycle.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
+
     return await this.prisma.trainingCycle.update({
       where: {
         id,
@@ -607,7 +547,11 @@ export class TrainingCycleRepo {
     trainingCycleDayId: number,
     ownerId: string
   ) {
-    await this.getOneAndValidateOwner(trainingCycleId, ownerId);
+    const trainingCycle = await this.findOne(trainingCycleId, { ownerId: true });
+    if (trainingCycle.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
+
     return await this.prisma.trainingCycle.update({
       where: {
         id: trainingCycleId,
@@ -635,7 +579,11 @@ export class TrainingCycleRepo {
     trainingCycleDayId: number,
     ownerId: string
   ) {
-    await this.getOneAndValidateOwner(trainingCycleId, ownerId);
+    const trainingCycle = await this.findOne(trainingCycleId, { ownerId: true });
+    if (trainingCycle.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
+
     return await this.prisma.trainingCycle.update({
       where: {
         id: trainingCycleId,
@@ -663,7 +611,11 @@ export class TrainingCycleRepo {
     trainingCycleDayId: number,
     ownerId: string
   ) {
-    await this.getOneAndValidateOwner(trainingCycleId, ownerId);
+    const trainingCycle = await this.findOne(trainingCycleId, { ownerId: true });
+    if (trainingCycle.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
+
     return await this.prisma.trainingCycle.update({
       where: {
         id: trainingCycleId,
@@ -684,8 +636,12 @@ export class TrainingCycleRepo {
   }
 
   async activate(id: number, ownerId: string) {
-    const cycle = await this.getOne(id);
-    if (!cycle.isPublic && ownerId != cycle.ownerId) {
+    const trainingCycle = await this.findOne(id, { ownerId: true, isPublic: true });
+    if (trainingCycle.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
+
+    if (!trainingCycle.isPublic && ownerId != trainingCycle.ownerId) {
       throw new APIError(
         'INVALID_PERMISSIONS',
         'You do not have permission to activate this cycle.'
@@ -715,8 +671,11 @@ export class TrainingCycleRepo {
   }
 
   async deactivate(id: number, ownerId: string) {
-    const cycle = await this.getOne(id);
-    if (!cycle.isPublic && ownerId != cycle.ownerId) {
+    const trainingCycle = await this.findOne(id, { ownerId: true, isPublic: true });
+    if (trainingCycle.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
+    if (!trainingCycle.isPublic && ownerId != trainingCycle.ownerId) {
       throw new APIError(
         'INVALID_PERMISSIONS',
         'You do not have permission to deactivate this cycle.'

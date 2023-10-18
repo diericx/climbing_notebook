@@ -14,8 +14,11 @@ export const load: PageServerLoad = async ({ url, locals, params }) => {
   const token = url.searchParams.get('token');
 
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
-  const trainingCycle = await trainingCycleRepo.getOne(Number(params.id), {
-    where: session ? { userId: session.user.userId } : undefined,
+  const trainingCycle = await trainingCycleRepo.findOne(Number(params.id), {
+    ...TrainingCycleRepo.selectEverything,
+    saves: {
+      where: session ? { userId: session.user.userId } : undefined,
+    },
   });
 
   // If no user is not signed in and the training program is not public, error out
@@ -127,7 +130,11 @@ export const actions: Actions = {
     const id = Number(params.id);
 
     const repo = new TrainingCycleRepo(prisma);
-    const cycle = await repo.getOneAndValidateOwner(id, user.userId);
+    const cycle = await repo.findOne(id, { ownerId: true, description: true });
+    if (cycle.ownerId != user.userId) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
+
     if (!cycle.description) {
       throw new APIError(
         'INVALID_INPUT',
