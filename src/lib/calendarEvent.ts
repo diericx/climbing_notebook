@@ -1,4 +1,4 @@
-import type { PrismaClient } from '@prisma/client';
+import { Prisma, type PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
 
@@ -16,22 +16,34 @@ export type CalendarEventPartialSchema = typeof calendarEventPartialSchema;
 export class CalendarEventRepo {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async getOne(id: number) {
-    const e = await this.prisma.calendarEvent.findUnique({
-      where: {
-        id: Number(id),
-      },
-    });
-    if (e == null) {
-      throw new APIError('NOT_FOUND', 'Resource not found');
-    }
-    return e;
+  static makeCalendarEventSelect<T extends Prisma.CalendarEventSelect>(
+    select: Prisma.Subset<T, Prisma.CalendarEventSelect>
+  ): T {
+    return select;
   }
 
-  async getOneAndValidateOwner(id: number, ownerId: string) {
-    const calendarEvent = await this.getOne(id);
-    if (calendarEvent.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
+  static selectEverything = this.makeCalendarEventSelect({
+    id: true,
+    ownerId: true,
+    dateStart: true,
+    dateEnd: true,
+    title: true,
+    content: true,
+    color: true,
+  });
+
+  async findOne<S extends Prisma.CalendarEventSelect>(
+    id: number,
+    select: S
+  ): Promise<Prisma.CalendarEventGetPayload<{ select: S }>> {
+    const calendarEvent = await this.prisma.calendarEvent.findUnique({
+      where: {
+        id,
+      },
+      select,
+    });
+    if (calendarEvent == null) {
+      throw new APIError('NOT_FOUND');
     }
     return calendarEvent;
   }
@@ -59,7 +71,10 @@ export class CalendarEventRepo {
   }
 
   async update(data: z.infer<CalendarEventPartialSchema>, id: number, ownerId: string) {
-    await this.getOneAndValidateOwner(id, ownerId);
+    const calendarEvent = await this.findOne(id, { ownerId: true });
+    if (calendarEvent.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
 
     return await this.prisma.calendarEvent.update({
       data,
@@ -70,7 +85,10 @@ export class CalendarEventRepo {
   }
 
   async delete(id: number, ownerId: string) {
-    await this.getOneAndValidateOwner(id, ownerId);
+    const calendarEvent = await this.findOne(id, { ownerId: true });
+    if (calendarEvent.ownerId != ownerId) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
 
     return await this.prisma.calendarEvent.delete({
       where: {

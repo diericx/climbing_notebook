@@ -136,11 +136,14 @@ export class TrainingCycleRepo {
       where: {
         id,
       },
-      select,
+      select: { ...select, ownerId: true } as S,
     });
     if (trainingCycle == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
+    console.log(
+      (trainingCycle as Prisma.TrainingCycleGetPayload<{ select: { ownerId: true } }>).ownerId
+    );
     return trainingCycle;
   }
 
