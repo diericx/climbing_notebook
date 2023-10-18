@@ -144,6 +144,23 @@ export class TrainingCycleRepo {
     return trainingCycle;
   }
 
+  async findMany<S extends Prisma.TrainingCycleSelect>({
+    where,
+    select,
+  }: {
+    where: Prisma.TrainingCycleWhereInput;
+    select: S;
+  }): Promise<Prisma.TrainingCycleGetPayload<{ select: S }>[]> {
+    // Fetch all
+    return await this.prisma.trainingCycle.findMany({
+      where,
+      orderBy: {
+        name: 'asc',
+      },
+      select,
+    });
+  }
+
   async duplicate(
     id: number,
     ownerId: string,
@@ -315,23 +332,6 @@ export class TrainingCycleRepo {
           }),
         },
       },
-    });
-  }
-
-  async findMany<S extends Prisma.TrainingCycleSelect>({
-    where,
-    select,
-  }: {
-    where: Prisma.TrainingCycleWhereInput;
-    select: S;
-  }): Promise<Prisma.TrainingCycleGetPayload<{ select: S }>[]> {
-    // Fetch all
-    return await this.prisma.trainingCycle.findMany({
-      where,
-      orderBy: {
-        name: 'asc',
-      },
-      select,
     });
   }
 
