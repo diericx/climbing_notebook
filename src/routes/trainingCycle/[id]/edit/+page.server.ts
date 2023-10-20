@@ -13,7 +13,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
 
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
   const exerciseRepo = new ExerciseRepo(prisma);
-  const trainingCycle = await trainingCycleRepo.findOne(
+  const trainingCycle = await trainingCycleRepo.getOne(
     Number(id),
     TrainingCycleRepo.selectEverything
   );

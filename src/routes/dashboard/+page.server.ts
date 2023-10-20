@@ -41,7 +41,10 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   // Get metris in the past month for the charts
   const metrics = await metricRepo.get(user?.userId);
   const journalEntries = await journalEntryRepo.get(user?.userId);
-  const calendarEvents = await calendarEventRepo.get(user?.userId);
+  const calendarEvents = await calendarEventRepo.getManyForUser(
+    user?.userId,
+    CalendarEventRepo.selectEverything
+  );
   const ownedTrainingPrograms = await trainingProgramRepo.get({
     ownerId: user.userId,
   });
@@ -92,10 +95,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     },
   });
 
-  const trainingCycles = await trainingCycleRepo.findMany({
-    where: {
-      ownerId: user.userId,
-    },
+  const trainingCycles = await trainingCycleRepo.getManyForUser(user.userId, {
+    query: 'owned',
     select: TrainingCycleRepo.selectNameOnly,
   });
 

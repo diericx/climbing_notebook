@@ -22,10 +22,8 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
     throw new APIError('INVALID_INPUT', 'Only template widgets can be viewed individually');
   }
 
-  const trainingCycles = await trainingCycleRepo.findMany({
-    where: {
-      ownerId: user.userId,
-    },
+  const trainingCycles = await trainingCycleRepo.getManyForUser(user.userId, {
+    query: 'owned',
     select: TrainingCycleRepo.selectNameOnly,
   });
   // compile datasets for widgets

@@ -11,54 +11,41 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
 
-  const ownedTrainingCycles = await trainingCycleRepo.findMany({
-    where: {
-      // Default to empty string so query defaults to returning empty array
-      ownerId: session?.user.userId || '',
-      trainingProgramId: null,
-    },
-    select: {
-      ...TrainingCycleRepo.selectMinimal,
-      privateAccessToken: true,
-      // NOTE: it would be ideal to not include this in the query if the user is null,
-      // but if we set this to an optional variable the type is defined as always having
-      // this value which makes it difficult to develop the front end.
-      saves: { where: { userId: session?.user.userId || '' } },
-      activations: { where: { userId: session?.user.userId || '' } },
-    },
-  });
+  const ownedTrainingCycles =
+    session === null
+      ? []
+      : await trainingCycleRepo.getManyForUser(session.user.userId, {
+          query: 'owned',
+          extraFilters: {
+            isTemplate: true,
+          },
+          select: {
+            ...TrainingCycleRepo.selectMinimal,
+            privateAccessToken: true,
+            saves: { where: { userId: session.user.userId } },
+            activations: { where: { userId: session.user.userId } },
+          },
+        });
 
-  const savedTrainingCycles = await trainingCycleRepo.findMany({
-    where: {
-      saves: {
-        some: {
-          // Default to empty string so query defaults to returning empty array
-          userId: session?.user.userId || '',
-        },
-      },
-    },
-    select: {
-      ...TrainingCycleRepo.selectMinimal,
-      // NOTE: it would be ideal to not include this in the query if the user is null,
-      // but if we set this to an optional variable the type is defined as always having
-      // this value which makes it difficult to develop the front end.
-      saves: { where: { userId: session?.user.userId || '' } },
-      activations: { where: { userId: session?.user.userId || '' } },
-    },
-  });
+  const savedTrainingCycles =
+    session === null
+      ? []
+      : await trainingCycleRepo.getManyForUser(session.user.userId, {
+          query: 'saved',
+          select: {
+            ...TrainingCycleRepo.selectMinimal,
+            saves: { where: { userId: session?.user.userId } },
+            activations: { where: { userId: session?.user.userId } },
+          },
+        });
 
-  const publicTrainingCycles = await trainingCycleRepo.findMany({
-    where: {
-      isPublic: true,
-    },
-    select: {
-      ...TrainingCycleRepo.selectMinimal,
-      // NOTE: it would be ideal to not include this in the query if the user is null,
-      // but if we set this to an optional variable the type is defined as always having
-      // this value which makes it difficult to develop the front end.
-      saves: { where: { userId: session?.user.userId || '' } },
-      activations: { where: { userId: session?.user.userId || '' } },
-    },
+  const publicTrainingCycles = await trainingCycleRepo.getAllPublic({
+    ...TrainingCycleRepo.selectMinimal,
+    // NOTE: it would be ideal to not include this in the query if the user is null,
+    // but if we set this to an optional variable the type is defined as always having
+    // this value which makes it difficult to develop the front end.
+    saves: { where: { userId: session?.user.userId || '' } },
+    activations: { where: { userId: session?.user.userId || '' } },
   });
 
   const s3ObjectUrlPromises = getSignedUrlPromises([

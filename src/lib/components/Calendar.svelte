@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { CalendarEventRepo } from '$lib/calendarEvent';
   import dayjs from '$lib/dayjs';
   import { exerciseTypeColors } from '$lib/utils';
   // @ts-ignore
@@ -9,10 +10,12 @@
   import Interaction from '@event-calendar/interaction';
   // @ts-ignore
   import TimeGrid from '@event-calendar/time-grid';
-  import type { CalendarEvent, JournalEntry, Prisma, TrainingProgram } from '@prisma/client';
+  import type { JournalEntry, Prisma, TrainingProgram } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
 
-  export let calendarEvents: CalendarEvent[];
+  export let calendarEvents: Prisma.CalendarEventGetPayload<
+    typeof CalendarEventRepo.selectEverythingValidator
+  >[];
   export let journalEntries: JournalEntry[];
   export let trainingProgramActivations: Prisma.TrainingProgramActivationGetPayload<{
     include: {

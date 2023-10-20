@@ -128,35 +128,97 @@ export class TrainingCycleRepo {
     },
   });
 
-  async findOne<S extends Prisma.TrainingCycleSelect>(
-    id: number,
-    select: S
-  ): Promise<Prisma.TrainingCycleGetPayload<{ select: S }>> {
+  async getOne<S extends Prisma.TrainingCycleSelect>(id: number, select: S, ownerId?: string) {
     const trainingCycle = await this.prisma.trainingCycle.findUnique({
       where: {
         id,
       },
-      select: { ...select, ownerId: true } as S,
+      select: { ...select, isPublic: true, ownerId: true } as S,
     });
     if (trainingCycle == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
     }
-    console.log(
-      (trainingCycle as Prisma.TrainingCycleGetPayload<{ select: { ownerId: true } }>).ownerId
-    );
-    return trainingCycle;
+
+    const _trainingCycle = trainingCycle as Prisma.TrainingCycleGetPayload<{
+      select: S;
+    }> &
+      Prisma.TrainingCycleGetPayload<{
+        select: { isPublic: true; ownerId: true };
+      }>;
+
+    if (
+      (ownerId === undefined && !_trainingCycle.isPublic) ||
+      (ownerId && _trainingCycle.ownerId != ownerId)
+    ) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
+
+    return _trainingCycle;
   }
 
-  async findMany<S extends Prisma.TrainingCycleSelect>({
-    where,
-    select,
-  }: {
-    where: Prisma.TrainingCycleWhereInput;
-    select: S;
-  }): Promise<Prisma.TrainingCycleGetPayload<{ select: S }>[]> {
+  async getManyForUser<S extends Prisma.TrainingCycleSelect>(
+    userId: string,
+    options: {
+      query: 'owned' | 'saved' | 'activated';
+      select: S;
+      extraFilters?: { isTemplate?: boolean };
+    }
+  ): Promise<Prisma.TrainingCycleGetPayload<{ select: S }>[]> {
+    const { query, extraFilters, select } = options;
+    let where: Prisma.TrainingCycleWhereInput = {};
+    if (query == 'owned') {
+      where = {
+        ownerId: userId,
+      };
+    } else if (query == 'saved') {
+      where = {
+        saves: {
+          some: {
+            userId,
+          },
+        },
+      };
+    } else if (query == 'activated') {
+      where = {
+        activations: {
+          some: {
+            userId: userId,
+          },
+        },
+      };
+    }
+    if (extraFilters != undefined) {
+      if (extraFilters.isTemplate != undefined) {
+        if (extraFilters.isTemplate === true)
+          where = {
+            ...where,
+            trainingProgramId: null,
+          };
+        else
+          where = {
+            ...where,
+            trainingProgramId: { not: null },
+          };
+      }
+    }
     // Fetch all
     return await this.prisma.trainingCycle.findMany({
       where,
+      orderBy: {
+        name: 'asc',
+      },
+      select,
+    });
+  }
+
+  async getAllPublic<S extends Prisma.TrainingCycleSelect>(
+    select: S
+  ): Promise<Prisma.TrainingCycleGetPayload<{ select: S }>[]> {
+    // Fetch all
+    return await this.prisma.trainingCycle.findMany({
+      where: {
+        isPublic: true,
+      },
       orderBy: {
         name: 'asc',
       },
@@ -172,7 +234,7 @@ export class TrainingCycleRepo {
       description?: string;
     }
   ) {
-    const program = await this.findOne(id, TrainingCycleRepo.selectEverything);
+    const program = await this.getOne(id, TrainingCycleRepo.selectEverything);
 
     if (!program.isPublic && program.ownerId != ownerId) {
       throw new APIError(
@@ -367,8 +429,7 @@ export class TrainingCycleRepo {
   }
 
   async delete(id: number, ownerId: string) {
-    const trainingCycle = await this.findOne(id, {
-      ownerId: true,
+    const trainingCycle = await this.getOne(id, {
       _count: {
         select: {
           trainingProgramScheduledSlots: true,
@@ -395,7 +456,7 @@ export class TrainingCycleRepo {
   }
 
   async save(id: number, ownerId: string) {
-    const trainingCycle = await this.findOne(id, { ownerId: true, isPublic: true });
+    const trainingCycle = await this.getOne(id, { ownerId: true, isPublic: true });
     if (!trainingCycle.isPublic && trainingCycle.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to save this cycle');
     }
@@ -423,7 +484,7 @@ export class TrainingCycleRepo {
   }
 
   async unsave(id: number, ownerId: string) {
-    const trainingCycle = await this.findOne(id, { ownerId: true, isPublic: true });
+    const trainingCycle = await this.getOne(id, { ownerId: true, isPublic: true });
     if (!trainingCycle.isPublic && trainingCycle.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this cycle');
     }
@@ -446,7 +507,7 @@ export class TrainingCycleRepo {
   }
 
   async addExerciseGroup(exerciseGroup: z.infer<ExerciseGroupSchema>, id: number, ownerId: string) {
-    const trainingCycle = await this.findOne(id, {
+    const trainingCycle = await this.getOne(id, {
       exerciseGroups: { select: { name: true } },
       ownerId: true,
     });
@@ -487,7 +548,7 @@ export class TrainingCycleRepo {
     exerciseGroupId: number,
     ownerId: string
   ) {
-    const trainingCycle = await this.findOne(trainingCycleId, {
+    const trainingCycle = await this.getOne(trainingCycleId, {
       exerciseGroups: { select: { id: true, name: true } },
       ownerId: true,
     });
@@ -525,7 +586,7 @@ export class TrainingCycleRepo {
   }
 
   async deleteExerciseGroup(id: number, ownerId: string, exerciseGroupId: number) {
-    const trainingCycle = await this.findOne(id, { ownerId: true });
+    const trainingCycle = await this.getOne(id, { ownerId: true });
     if (trainingCycle.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS');
     }
@@ -550,7 +611,7 @@ export class TrainingCycleRepo {
     trainingCycleDayId: number,
     ownerId: string
   ) {
-    const trainingCycle = await this.findOne(trainingCycleId, { ownerId: true });
+    const trainingCycle = await this.getOne(trainingCycleId, { ownerId: true });
     if (trainingCycle.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS');
     }
@@ -582,7 +643,7 @@ export class TrainingCycleRepo {
     trainingCycleDayId: number,
     ownerId: string
   ) {
-    const trainingCycle = await this.findOne(trainingCycleId, { ownerId: true });
+    const trainingCycle = await this.getOne(trainingCycleId, { ownerId: true });
     if (trainingCycle.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS');
     }
@@ -614,7 +675,7 @@ export class TrainingCycleRepo {
     trainingCycleDayId: number,
     ownerId: string
   ) {
-    const trainingCycle = await this.findOne(trainingCycleId, { ownerId: true });
+    const trainingCycle = await this.getOne(trainingCycleId, { ownerId: true });
     if (trainingCycle.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS');
     }
@@ -639,7 +700,7 @@ export class TrainingCycleRepo {
   }
 
   async activate(id: number, ownerId: string) {
-    const trainingCycle = await this.findOne(id, { ownerId: true, isPublic: true });
+    const trainingCycle = await this.getOne(id, { ownerId: true, isPublic: true });
     if (trainingCycle.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS');
     }
@@ -674,7 +735,7 @@ export class TrainingCycleRepo {
   }
 
   async deactivate(id: number, ownerId: string) {
-    const trainingCycle = await this.findOne(id, { ownerId: true, isPublic: true });
+    const trainingCycle = await this.getOne(id, { ownerId: true, isPublic: true });
     if (trainingCycle.ownerId != ownerId) {
       throw new APIError('INVALID_PERMISSIONS');
     }
