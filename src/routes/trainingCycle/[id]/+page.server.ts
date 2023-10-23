@@ -134,7 +134,7 @@ export const actions: Actions = {
     const id = Number(params.id);
 
     const repo = new TrainingCycleRepo(prisma);
-    const cycle = await repo.getOne(id, { ownerId: true, description: true });
+    const cycle = await repo.getOne(id, { ownerId: true, description: true }, user.userId);
     if (cycle.ownerId != user.userId) {
       throw new APIError('INVALID_PERMISSIONS');
     }

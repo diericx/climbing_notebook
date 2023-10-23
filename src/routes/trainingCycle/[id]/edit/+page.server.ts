@@ -1,4 +1,3 @@
-import { APIError } from '$lib/errors';
 import { ExerciseRepo } from '$lib/exercise';
 import { prisma } from '$lib/prisma';
 import { TrainingCycleRepo } from '$lib/trainingCycle';
@@ -15,11 +14,9 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const exerciseRepo = new ExerciseRepo(prisma);
   const trainingCycle = await trainingCycleRepo.getOne(
     Number(id),
-    TrainingCycleRepo.selectEverything
+    TrainingCycleRepo.selectEverything,
+    user.userId
   );
-  if (trainingCycle.ownerId != user.userId) {
-    throw new APIError('INVALID_PERMISSIONS');
-  }
 
   const exercises = await exerciseRepo.getSelect({
     _count: {

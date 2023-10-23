@@ -128,7 +128,45 @@ export class TrainingCycleRepo {
     },
   });
 
-  async getOne<S extends Prisma.TrainingCycleSelect>(id: number, select: S, ownerId?: string) {
+  canUserRead(
+    userId: string | undefined,
+    trainingCycle: Prisma.TrainingCycleGetPayload<{
+      select: { isPublic: true; ownerId: true };
+    }>
+  ) {
+    if (userId === undefined) {
+      if (trainingCycle.isPublic) {
+        return true;
+      }
+    } else {
+      if (trainingCycle.ownerId == userId) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  canUserUpdate(
+    userId: string,
+    trainingCycle: Prisma.TrainingCycleGetPayload<{
+      select: { ownerId: true };
+    }>
+  ) {
+    if (trainingCycle.ownerId == userId) {
+      return true;
+    }
+    return false;
+  }
+
+  // Note: everywhere we want to check permissions for an update or delete
+  // we need to also check/throw on read permissions here for read...
+  // does that make sense?
+  // Note: make this select optional
+  async getOne<S extends Prisma.TrainingCycleSelect>(
+    id: number,
+    select: S,
+    ownerId: string | undefined
+  ) {
     const trainingCycle = await this.prisma.trainingCycle.findUnique({
       where: {
         id,
@@ -146,10 +184,7 @@ export class TrainingCycleRepo {
         select: { isPublic: true; ownerId: true };
       }>;
 
-    if (
-      (ownerId === undefined && !_trainingCycle.isPublic) ||
-      (ownerId && _trainingCycle.ownerId != ownerId)
-    ) {
+    if (!this.canUserRead(ownerId, _trainingCycle)) {
       throw new APIError('INVALID_PERMISSIONS');
     }
 
@@ -234,23 +269,16 @@ export class TrainingCycleRepo {
       description?: string;
     }
   ) {
-    const program = await this.getOne(id, TrainingCycleRepo.selectEverything);
-
-    if (!program.isPublic && program.ownerId != ownerId) {
-      throw new APIError(
-        'INVALID_PERMISSIONS',
-        'You can only duplicate template cycles or cycles you own'
-      );
-    }
+    const trainingCycle = await this.getOne(id, TrainingCycleRepo.selectEverything, ownerId);
 
     // Create the new program
     const newCycle = await this.prisma.trainingCycle.create({
       data: {
-        name: data?.name || program.name + ' Duplicate',
+        name: data?.name || trainingCycle.name + ' Duplicate',
         ownerId,
         isPublic: false,
         description: data?.description || null,
-        parentId: program.id,
+        parentId: trainingCycle.id,
         days: {
           create: Array.from(Array(7)).map((_, i) => {
             return {
@@ -258,7 +286,7 @@ export class TrainingCycleRepo {
               dayOfTheWeek: i,
               description: '',
               exercises: {
-                create: program.days[i].exercises.map((e) => ({
+                create: trainingCycle.days[i].exercises.map((e) => ({
                   ...e,
                   ownerId: undefined,
                   exerciseGroupId: undefined,
@@ -296,7 +324,7 @@ export class TrainingCycleRepo {
 
     // Create each group individually by looping through the groups of the old program so
     // we can properly setup the connections to each day.
-    for (const g of program.exerciseGroups) {
+    for (const g of trainingCycle.exerciseGroups) {
       const newGroup = await this.prisma.exerciseGroup.create({
         data: {
           ...g,
@@ -341,8 +369,8 @@ export class TrainingCycleRepo {
 
       // Find each day where the old group was connected by index and connect it
       // to the same day in the new program.
-      for (const i in program.days) {
-        const day = program.days[i];
+      for (const i in trainingCycle.days) {
+        const day = trainingCycle.days[i];
         if (day.exerciseGroups.find((_g) => _g.id == g.id) != undefined) {
           await this.prisma.trainingCycle.update({
             where: {
@@ -369,7 +397,7 @@ export class TrainingCycleRepo {
 
     await this.prisma.trainingCycle.update({
       where: {
-        id: program.id,
+        id: trainingCycle.id,
       },
       data: {
         duplications: {
@@ -401,20 +429,9 @@ export class TrainingCycleRepo {
   }
 
   async update(data: z.infer<TrainingCyclePartialSchema>, id: number, ownerId: string) {
-    // Get current training program
-    const trainingCycle = await this.prisma.trainingCycle.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        days: true,
-      },
-    });
-    if (trainingCycle == null) {
-      throw new APIError('NOT_FOUND', 'Resource not found');
-    }
-    if (trainingCycle.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
+    const trainingCycle = await this.getOne(id, {}, ownerId);
+    if (!this.canUserUpdate(ownerId, trainingCycle)) {
+      throw new APIError('INVALID_PERMISSIONS');
     }
 
     // Update training program
@@ -429,15 +446,19 @@ export class TrainingCycleRepo {
   }
 
   async delete(id: number, ownerId: string) {
-    const trainingCycle = await this.getOne(id, {
-      _count: {
-        select: {
-          trainingProgramScheduledSlots: true,
+    const trainingCycle = await this.getOne(
+      id,
+      {
+        _count: {
+          select: {
+            trainingProgramScheduledSlots: true,
+          },
         },
       },
-    });
+      ownerId
+    );
 
-    if (trainingCycle.ownerId != ownerId) {
+    if (!this.canUserUpdate(ownerId, trainingCycle)) {
       throw new APIError('INVALID_PERMISSIONS');
     }
 
@@ -456,10 +477,7 @@ export class TrainingCycleRepo {
   }
 
   async save(id: number, ownerId: string) {
-    const trainingCycle = await this.getOne(id, { ownerId: true, isPublic: true });
-    if (!trainingCycle.isPublic && trainingCycle.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to save this cycle');
-    }
+    await this.getOne(id, {}, ownerId);
 
     await this.prisma.trainingCycle.update({
       where: {
@@ -484,10 +502,7 @@ export class TrainingCycleRepo {
   }
 
   async unsave(id: number, ownerId: string) {
-    const trainingCycle = await this.getOne(id, { ownerId: true, isPublic: true });
-    if (!trainingCycle.isPublic && trainingCycle.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this cycle');
-    }
+    await this.getOne(id, {}, ownerId);
 
     await this.prisma.trainingCycle.update({
       where: {
@@ -507,11 +522,12 @@ export class TrainingCycleRepo {
   }
 
   async addExerciseGroup(exerciseGroup: z.infer<ExerciseGroupSchema>, id: number, ownerId: string) {
-    const trainingCycle = await this.getOne(id, {
-      exerciseGroups: { select: { name: true } },
-      ownerId: true,
-    });
-    if (trainingCycle.ownerId != ownerId) {
+    const trainingCycle = await this.getOne(
+      id,
+      { exerciseGroups: { select: { name: true } } },
+      ownerId
+    );
+    if (!this.canUserUpdate(ownerId, trainingCycle)) {
       throw new APIError('INVALID_PERMISSIONS');
     }
 
@@ -548,11 +564,12 @@ export class TrainingCycleRepo {
     exerciseGroupId: number,
     ownerId: string
   ) {
-    const trainingCycle = await this.getOne(trainingCycleId, {
-      exerciseGroups: { select: { id: true, name: true } },
-      ownerId: true,
-    });
-    if (trainingCycle.ownerId != ownerId) {
+    const trainingCycle = await this.getOne(
+      trainingCycleId,
+      { exerciseGroups: { select: { id: true, name: true } } },
+      ownerId
+    );
+    if (!this.canUserUpdate(ownerId, trainingCycle)) {
       throw new APIError('INVALID_PERMISSIONS');
     }
 
@@ -586,8 +603,8 @@ export class TrainingCycleRepo {
   }
 
   async deleteExerciseGroup(id: number, ownerId: string, exerciseGroupId: number) {
-    const trainingCycle = await this.getOne(id, { ownerId: true });
-    if (trainingCycle.ownerId != ownerId) {
+    const trainingCycle = await this.getOne(id, {}, ownerId);
+    if (!this.canUserUpdate(ownerId, trainingCycle)) {
       throw new APIError('INVALID_PERMISSIONS');
     }
 
@@ -611,8 +628,8 @@ export class TrainingCycleRepo {
     trainingCycleDayId: number,
     ownerId: string
   ) {
-    const trainingCycle = await this.getOne(trainingCycleId, { ownerId: true });
-    if (trainingCycle.ownerId != ownerId) {
+    const trainingCycle = await this.getOne(trainingCycleId, {}, ownerId);
+    if (!this.canUserUpdate(ownerId, trainingCycle)) {
       throw new APIError('INVALID_PERMISSIONS');
     }
 
@@ -643,8 +660,8 @@ export class TrainingCycleRepo {
     trainingCycleDayId: number,
     ownerId: string
   ) {
-    const trainingCycle = await this.getOne(trainingCycleId, { ownerId: true });
-    if (trainingCycle.ownerId != ownerId) {
+    const trainingCycle = await this.getOne(trainingCycleId, {}, ownerId);
+    if (!this.canUserUpdate(ownerId, trainingCycle)) {
       throw new APIError('INVALID_PERMISSIONS');
     }
 
@@ -675,8 +692,8 @@ export class TrainingCycleRepo {
     trainingCycleDayId: number,
     ownerId: string
   ) {
-    const trainingCycle = await this.getOne(trainingCycleId, { ownerId: true });
-    if (trainingCycle.ownerId != ownerId) {
+    const trainingCycle = await this.getOne(trainingCycleId, {}, ownerId);
+    if (!this.canUserUpdate(ownerId, trainingCycle)) {
       throw new APIError('INVALID_PERMISSIONS');
     }
 
@@ -700,17 +717,7 @@ export class TrainingCycleRepo {
   }
 
   async activate(id: number, ownerId: string) {
-    const trainingCycle = await this.getOne(id, { ownerId: true, isPublic: true });
-    if (trainingCycle.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS');
-    }
-
-    if (!trainingCycle.isPublic && ownerId != trainingCycle.ownerId) {
-      throw new APIError(
-        'INVALID_PERMISSIONS',
-        'You do not have permission to activate this cycle.'
-      );
-    }
+    await this.getOne(id, { ownerId: true, isPublic: true }, ownerId);
 
     return await this.prisma.trainingCycle.update({
       where: {
@@ -735,16 +742,7 @@ export class TrainingCycleRepo {
   }
 
   async deactivate(id: number, ownerId: string) {
-    const trainingCycle = await this.getOne(id, { ownerId: true, isPublic: true });
-    if (trainingCycle.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS');
-    }
-    if (!trainingCycle.isPublic && ownerId != trainingCycle.ownerId) {
-      throw new APIError(
-        'INVALID_PERMISSIONS',
-        'You do not have permission to deactivate this cycle.'
-      );
-    }
+    await this.getOne(id, { ownerId: true, isPublic: true }, ownerId);
 
     return await this.prisma.trainingCycle.update({
       where: {
