@@ -152,10 +152,16 @@ export class TrainingCycleRepo {
       select: { ownerId: true };
     }>
   ) {
-    if (trainingCycle.ownerId == userId) {
-      return true;
-    }
-    return false;
+    return trainingCycle.ownerId == userId;
+  }
+
+  canUserDelete(
+    userId: string,
+    trainingCycle: Prisma.TrainingCycleGetPayload<{
+      select: { ownerId: true };
+    }>
+  ) {
+    return trainingCycle.ownerId == userId;
   }
 
   // Note: everywhere we want to check permissions for an update or delete
@@ -458,7 +464,7 @@ export class TrainingCycleRepo {
       ownerId
     );
 
-    if (!this.canUserUpdate(ownerId, trainingCycle)) {
+    if (!this.canUserDelete(ownerId, trainingCycle)) {
       throw new APIError('INVALID_PERMISSIONS');
     }
 
