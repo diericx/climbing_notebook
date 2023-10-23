@@ -12,14 +12,16 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
   const trainingProgram = await trainingProgramRepo.getOneAndValidateOwner(id, user?.userId);
-  const ownedTrainingCycles = await trainingCycleRepo.getManyForUser(user.userId, {
+  const ownedTrainingCycles = await trainingCycleRepo.getManyForUser({
+    userId: user.userId,
     query: 'owned',
     extraFilters: {
       isTemplate: true,
     },
     select: TrainingCycleRepo.selectNameOnly,
   });
-  const savedTrainingCycles = await trainingCycleRepo.getManyForUser(user.userId, {
+  const savedTrainingCycles = await trainingCycleRepo.getManyForUser({
+    userId: user.userId,
     query: 'saved',
     select: TrainingCycleRepo.selectNameOnly,
   });

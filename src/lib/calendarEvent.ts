@@ -1,6 +1,7 @@
-import { Prisma, type PrismaClient } from '@prisma/client';
+import { Prisma, type CalendarEvent, type PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
+import type { Repo } from './repo';
 
 export const calendarEventSchema = z.object({
   dateStart: z.date().default(new Date()),
@@ -13,7 +14,7 @@ export const calendarEventPartialSchema = calendarEventSchema.partial();
 export type CalendarEventSchema = typeof calendarEventSchema;
 export type CalendarEventPartialSchema = typeof calendarEventPartialSchema;
 
-export class CalendarEventRepo {
+export class CalendarEventRepo implements Repo<CalendarEvent, Prisma.CalendarEventSelect> {
   constructor(private readonly prisma: PrismaClient) {}
 
   static makeCalendarEventSelect<T extends Prisma.CalendarEventSelect>(
@@ -72,11 +73,12 @@ export class CalendarEventRepo {
     });
   }
 
-  async getOne<S extends Prisma.CalendarEventSelect>(
-    id: number,
-    ownerId: string,
-    select: S
-  ): Promise<Prisma.CalendarEventGetPayload<{ select: S }>> {
+  async getOne<S extends Prisma.CalendarEventSelect>(options: {
+    id: number;
+    userId: string;
+    select: S;
+  }) {
+    const { id, userId, select } = options;
     const calendarEvent = await this.prisma.calendarEvent.findUnique({
       where: {
         id,
@@ -94,17 +96,18 @@ export class CalendarEventRepo {
         select: { ownerId: true };
       }>;
 
-    if (!this.canUserRead(ownerId, _calendarEvent)) {
+    if (!this.canUserRead(userId, _calendarEvent)) {
       throw new APIError('INVALID_PERMISSIONS');
     }
 
-    return calendarEvent;
+    return _calendarEvent;
   }
 
-  async getManyForUser<S extends Prisma.CalendarEventSelect>(
-    userId: string,
-    select: S
-  ): Promise<Prisma.CalendarEventGetPayload<{ select: S }>[]> {
+  async getManyForUser<S extends Prisma.CalendarEventSelect>(options: {
+    userId: string;
+    select: S;
+  }): Promise<Prisma.CalendarEventGetPayload<{ select: S }>[]> {
+    const { userId, select } = options;
     // Fetch all
     return await this.prisma.calendarEvent.findMany({
       where: {
@@ -117,10 +120,10 @@ export class CalendarEventRepo {
     });
   }
 
-  async update(data: z.infer<CalendarEventPartialSchema>, id: number, ownerId: string) {
-    const calendarEvent = await this.getOne(id, ownerId, { ownerId: true });
+  async update(data: z.infer<CalendarEventPartialSchema>, id: number, userId: string) {
+    const calendarEvent = await this.getOne({ id, userId, select: {} });
 
-    if (!this.canUserUpdate(ownerId, calendarEvent)) {
+    if (!this.canUserUpdate(userId, calendarEvent)) {
       throw new APIError('INVALID_PERMISSIONS');
     }
 
@@ -132,9 +135,9 @@ export class CalendarEventRepo {
     });
   }
 
-  async delete(id: number, ownerId: string) {
-    const calendarEvent = await this.getOne(id, ownerId, { ownerId: true });
-    if (!this.canUserDelete(ownerId, calendarEvent)) {
+  async delete(id: number, userId: string) {
+    const calendarEvent = await this.getOne({ id, userId, select: { ownerId: true } });
+    if (!this.canUserDelete(userId, calendarEvent)) {
       throw new APIError('INVALID_PERMISSIONS');
     }
 

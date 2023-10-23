@@ -14,7 +14,8 @@ export const load: PageServerLoad = async ({ locals }) => {
   const ownedTrainingCycles =
     session === null
       ? []
-      : await trainingCycleRepo.getManyForUser(session.user.userId, {
+      : await trainingCycleRepo.getManyForUser({
+          userId: session.user.userId,
           query: 'owned',
           extraFilters: {
             isTemplate: true,
@@ -30,7 +31,8 @@ export const load: PageServerLoad = async ({ locals }) => {
   const savedTrainingCycles =
     session === null
       ? []
-      : await trainingCycleRepo.getManyForUser(session.user.userId, {
+      : await trainingCycleRepo.getManyForUser({
+          userId: session.user.userId,
           query: 'saved',
           select: {
             ...TrainingCycleRepo.selectMinimal,

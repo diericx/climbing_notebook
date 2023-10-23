@@ -34,7 +34,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     fieldsToShow: true,
   });
 
-  const activeCycles = await trainingCycleRepo.getManyForUser(user.userId, {
+  const activeCycles = await trainingCycleRepo.getManyForUser({
+    userId: user.userId,
     query: 'owned',
     select: TrainingCycleRepo.selectEverything,
   });

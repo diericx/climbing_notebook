@@ -12,11 +12,11 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
 
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
   const exerciseRepo = new ExerciseRepo(prisma);
-  const trainingCycle = await trainingCycleRepo.getOne(
-    Number(id),
-    TrainingCycleRepo.selectEverything,
-    user.userId
-  );
+  const trainingCycle = await trainingCycleRepo.getOne({
+    id: Number(id),
+    select: TrainingCycleRepo.selectEverything,
+    userId: user.userId,
+  });
 
   const exercises = await exerciseRepo.getSelect({
     _count: {
