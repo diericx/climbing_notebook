@@ -1,15 +1,9 @@
-import { dev } from '$app/environment';
 import { auth } from '$lib/server/lucia';
 import type { Handle, HandleServerError } from '@sveltejs/kit';
 
 import { APIError } from '$lib/errors';
 import { serialize } from 'cookie';
-import segfaultHandler from 'node-segfault-handler';
 import { actionResult } from 'sveltekit-superforms/server';
-
-if (!dev) {
-  segfaultHandler.registerHandler();
-}
 
 export const handle: Handle = async ({ event, resolve }) => {
   event.locals.auth = auth.handleRequest(event);
