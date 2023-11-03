@@ -204,7 +204,7 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
     query: 'owned' | 'saved' | 'activated';
     select: S;
     extraFilters?: { isTemplate?: boolean };
-  }): Promise<Prisma.TrainingCycleGetPayload<{ select: S }>[]> {
+  }) {
     const { userId, query, extraFilters, select } = options;
     let where: Prisma.TrainingCycleWhereInput = {};
     if (query == 'owned') {
