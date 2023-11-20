@@ -353,7 +353,7 @@ export class CustomQueryRepo implements Repo<CustomQuery, Prisma.CustomQuerySele
   }
 
   async deleteCondition(queryId: string, conditionId: string, userId: string) {
-    const customQuery = await this.getOne({ id, userId, select: {} });
+    const customQuery = await this.getOne({ id: queryId, userId, select: {} });
     if (!this.canUserUpdate(userId, customQuery)) {
       throw new APIError('INVALID_PERMISSIONS');
     }
@@ -378,7 +378,7 @@ export class CustomQueryRepo implements Repo<CustomQuery, Prisma.CustomQuerySele
     conditionId: string,
     userId: string
   ) {
-    const customQuery = await this.getOne({ id, userId, select: {} });
+    const customQuery = await this.getOne({ id: queryId, userId, select: {} });
     if (!this.canUserUpdate(userId, customQuery)) {
       throw new APIError('INVALID_PERMISSIONS');
     }

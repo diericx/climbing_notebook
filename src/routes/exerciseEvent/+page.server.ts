@@ -23,15 +23,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
   const exerciseEvents = await exerciseEventsRepo.get(user?.userId);
   const profile = await profileRepo.getOne(user?.userId);
-  const exercises = await exerciseRepo.getSelect({
-    _count: {
-      select: {
-        exerciseEvents: true,
-      },
-    },
-    id: true,
-    name: true,
-    fieldsToShow: true,
+  const exercises = await exerciseRepo.getMany({
+    select: ExerciseRepo.selectMinimal,
   });
 
   const activeCycles = await trainingCycleRepo.getManyForUser({

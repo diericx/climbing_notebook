@@ -18,15 +18,8 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
     userId: user.userId,
   });
 
-  const exercises = await exerciseRepo.getSelect({
-    _count: {
-      select: {
-        exerciseEvents: true,
-      },
-    },
-    id: true,
-    name: true,
-    fieldsToShow: true,
+  const exercises = await exerciseRepo.getMany({
+    select: ExerciseRepo.selectMinimal,
   });
 
   // Manually override breadcrumbs to show training program path

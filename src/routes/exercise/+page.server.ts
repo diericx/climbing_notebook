@@ -10,7 +10,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const { user } = await getSessionOrRedirect({ locals, url });
 
   const exerciseRepo = new ExerciseRepo(prisma);
-  const exercises = await exerciseRepo.get();
+  const exercises = await exerciseRepo.getMany({
+    select: ExerciseRepo.selectMinimal,
+  });
   return {
     exercises,
     user,

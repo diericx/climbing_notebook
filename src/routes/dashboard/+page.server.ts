@@ -28,15 +28,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
   const profile = await profileRepo.getOne(user?.userId);
   const exerciseEvents = await exerciseEventRepo.get(user?.userId);
-  const exercises = await exerciseRepo.getSelect({
-    _count: {
-      select: {
-        exerciseEvents: true,
-      },
-    },
-    id: true,
-    name: true,
-    fieldsToShow: true,
+  const exercises = await exerciseRepo.getMany({
+    select: ExerciseRepo.selectMinimal,
   });
   // Get metris in the past month for the charts
   const metrics = await metricRepo.get(user?.userId);

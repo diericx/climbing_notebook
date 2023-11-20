@@ -11,7 +11,13 @@ export interface Repo<ResourceType, ResourceSelectType> {
     select: S;
     userId: string | undefined;
   }): Promise<any>;
-  getManyForUser<S extends ResourceSelectType>(options: {
+  getManyForUser?<S extends ResourceSelectType>(options: {
+    userId: string;
+    query: string;
+    select: S;
+    extraFilters?: any;
+  }): Promise<any[]>;
+  getMany?<S extends ResourceSelectType>(options: {
     userId: string;
     query: string;
     select: S;
