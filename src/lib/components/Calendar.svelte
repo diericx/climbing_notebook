@@ -74,8 +74,8 @@
 
   $: journalEntryEvents = journalEntries.map((j) => {
     return {
-      start: dayjs.tz(j.date, 'UTC').startOf('day').toDate(),
-      end: dayjs.tz(j.date, 'UTC').startOf('day').toDate(),
+      start: dayjs.tz(j.date, 'UTC').startOf('day').format(),
+      end: dayjs.tz(j.date, 'UTC').startOf('day').format(),
       backgroundColor: '#7dd3fc',
       allDay: true,
       title: j.content.substring(0, 15),
@@ -94,8 +94,8 @@
   });
 
   $: _calendarEvents = calendarEvents.map((e) => ({
-    start: dayjs.tz(e.dateStart, 'UTC').startOf('day').toDate(),
-    end: dayjs.tz(e.dateEnd, 'UTC').startOf('day').toDate(),
+    start: dayjs.tz(e.dateStart, 'UTC').startOf('day').format(),
+    end: dayjs.tz(e.dateEnd, 'UTC').startOf('day').format(),
     backgroundColor: e.color,
     allDay: true,
     title: e.title,
@@ -113,8 +113,8 @@
   }));
 
   $: _exerciseEvents = exerciseEvents.map((e) => ({
-    start: e.date,
-    end: e.date,
+    start: dayjs.tz(e.date, 'UTC').startOf('day').format(),
+    end: dayjs.tz(e.date, 'UTC').startOf('day').format(),
     backgroundColor: 'transparent',
     allDay: false,
     title: e.exercise?.name,
@@ -149,7 +149,7 @@
       trainingProgramScheduledSlots.forEach((s, i) => {
         let endDate = startDate.add(s.duration, 'weeks');
         trainingProgramActivationEvents.push({
-          start: startDate.startOf('day').toDate(),
+          start: startDate.startOf('day').format(),
           // Subtract one day from the end date if it is not the last one so there
           // is no overlap in the calendar view
           end: (i != trainingProgramScheduledSlots.length - 1
@@ -157,7 +157,7 @@
             : endDate
           )
             .startOf('day')
-            .toDate(),
+            .format(),
           backgroundColor: '#8bfca9',
           allDay: true,
           title: `${a.trainingProgram.name} - ${s.trainingCycles[0].name} `,
