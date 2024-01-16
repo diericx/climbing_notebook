@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { CalendarEventRepo } from '$lib/calendarEvent';
   import type { CustomQueryResults } from '$lib/customQuery';
+  import type { ExerciseEventRepo } from '$lib/exerciseEvent';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { JournalEntry, Prisma, TrainingProgram } from '@prisma/client';
@@ -56,16 +57,9 @@
   >[];
   export let journalEntries: JournalEntry[];
   export let trainingCycles: Prisma.TrainingCycleGetPayload<{ select: { name: true } }>[];
-  export let exerciseEvents: Prisma.ExerciseEventGetPayload<{
-    include: {
-      exercise: {
-        select: {
-          name: true;
-          type: true;
-        };
-      };
-    };
-  }>[];
+  export let exerciseEvents: Prisma.ExerciseEventGetPayload<
+    typeof ExerciseEventRepo.selectMinimalValidator
+  >[];
   export let exercises: Prisma.ExerciseGetPayload<{
     select: {
       _count: {

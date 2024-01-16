@@ -1,6 +1,7 @@
 import { Prisma, type PrismaClient, type TrainingCycle } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
+import { ExerciseEventRepo } from './exerciseEvent';
 import type { ExerciseGroupSchema } from './exerciseGroup';
 import type { Repo } from './repo';
 import type { TrainingCycleDaySchema } from './trainingCycleDay';
@@ -72,12 +73,8 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
     exerciseGroups: {
       include: {
         exercises: {
-          include: {
-            exercise: {
-              select: {
-                name: true,
-              },
-            },
+          select: {
+            ...ExerciseEventRepo.selectEverything,
           },
           orderBy: {
             name: 'asc',
@@ -91,12 +88,8 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
     days: {
       include: {
         exercises: {
-          include: {
-            exercise: {
-              select: {
-                name: true,
-              },
-            },
+          select: {
+            ...ExerciseEventRepo.selectEverything,
           },
           orderBy: {
             name: 'asc',
@@ -108,12 +101,8 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
           },
           include: {
             exercises: {
-              include: {
-                exercise: {
-                  select: {
-                    name: true,
-                  },
-                },
+              select: {
+                ...ExerciseEventRepo.selectEverything,
               },
               orderBy: {
                 name: 'asc',
@@ -127,6 +116,9 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
         dayOfTheWeek: 'asc',
       },
     },
+  });
+  static selectEverythingValidator = Prisma.validator<Prisma.TrainingCycleDefaultArgs>()({
+    select: TrainingCycleRepo.selectEverything,
   });
 
   canUserRead(

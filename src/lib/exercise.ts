@@ -1,6 +1,7 @@
 import { Prisma, type Exercise, type PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
+import { ExerciseEventRepo } from './exerciseEvent';
 import type { Repo } from './repo';
 import {
   difficulties,
@@ -53,6 +54,11 @@ export class ExerciseRepo implements Repo<Exercise, Prisma.ExerciseSelect> {
     videoUrl: true,
     name: true,
     createdAt: true,
+    exerciseEvents: {
+      select: {
+        ...ExerciseEventRepo.selectEverything,
+      },
+    },
     _count: {
       select: {
         exerciseEvents: true,
@@ -75,7 +81,7 @@ export class ExerciseRepo implements Repo<Exercise, Prisma.ExerciseSelect> {
     },
   });
   static selectMinimalValidator = Prisma.validator<Prisma.ExerciseDefaultArgs>()({
-    select: ExerciseRepo.selectEverything,
+    select: ExerciseRepo.selectMinimal,
   });
 
   canUserRead() {

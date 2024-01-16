@@ -1,25 +1,16 @@
 <script lang="ts">
   import { enhance } from '$app/forms';
+  import type { ExerciseRepo } from '$lib/exercise';
+  import type { ExerciseEventRepo } from '$lib/exerciseEvent';
   import type { Prisma } from '@prisma/client';
   import type { PopupSettings } from '@skeletonlabs/skeleton';
   import { modalStore, popup } from '@skeletonlabs/skeleton';
 
-  // Generate partial prisma types
-  export let exerciseEvent: Prisma.ExerciseEventGetPayload<{
-    include: {
-      exercise: {
-        select: {
-          name: true;
-        };
-      };
-    };
-  }>;
+  export let exerciseEvent: Prisma.ExerciseEventGetPayload<
+    typeof ExerciseEventRepo.selectEverythingValidator
+  >;
   export let exercises:
-    | Prisma.ExerciseGetPayload<{
-        select: {
-          name: true;
-        };
-      }>[]
+    | Prisma.ExerciseGetPayload<typeof ExerciseRepo.selectMinimalValidator>[]
     | undefined = undefined;
   export let date: Date;
   export let disableActionButtons = false;

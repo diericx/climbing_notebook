@@ -1,55 +1,19 @@
 <script lang="ts">
   import CalExerciseEvent from '$lib/components/WeeklyCalendarExerciseEvent.svelte';
+  import type { ExerciseRepo } from '$lib/exercise';
+  import type { TrainingCycleRepo } from '$lib/trainingCycle';
   import { daysFromToday, getDayWeekStartsMonday } from '$lib/utils';
   import type { Prisma } from '@prisma/client';
   import { onMount } from 'svelte';
 
-  export let trainingCycle: Prisma.TrainingCycleGetPayload<{
-    select: {
-      days: {
-        include: {
-          exercises: {
-            include: {
-              exercise: {
-                select: {
-                  name: true;
-                };
-              };
-            };
-          };
-          exerciseGroups: {
-            include: {
-              exercises: {
-                include: {
-                  exercise: {
-                    select: {
-                      name: true;
-                    };
-                  };
-                };
-              };
-            };
-          };
-        };
-      };
-    };
-  }>;
+  export let trainingCycle: Prisma.TrainingCycleGetPayload<
+    typeof TrainingCycleRepo.selectEverythingValidator
+  >;
   export let shouldScrollIntoView = false;
   export let disableActionButtons = false;
   export let showMarkedCompleted = true;
   export let exercises:
-    | Prisma.ExerciseGetPayload<{
-        select: {
-          _count: {
-            select: {
-              exerciseEvents: true;
-            };
-          };
-          id: true;
-          name: true;
-          fieldsToShow: true;
-        };
-      }>[]
+    | Prisma.ExerciseGetPayload<typeof ExerciseRepo.selectMinimalValidator>[]
     | undefined = undefined;
   export let height = '425px;';
 

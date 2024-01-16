@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { CalendarEventRepo } from '$lib/calendarEvent';
   import dayjs from '$lib/dayjs';
+  import type { ExerciseEventRepo } from '$lib/exerciseEvent';
   import { exerciseTypeColors } from '$lib/utils';
   // @ts-ignore
   import Calendar from '@event-calendar/core';
@@ -36,16 +37,9 @@
       };
     };
   }>[];
-  export let exerciseEvents: Prisma.ExerciseEventGetPayload<{
-    include: {
-      exercise: {
-        select: {
-          name: true;
-          type: true;
-        };
-      };
-    };
-  }>[];
+  export let exerciseEvents: Prisma.ExerciseEventGetPayload<
+    typeof ExerciseEventRepo.selectMinimalValidator
+  >[];
 
   // For the activation modal program select
   export let ownedTrainingPrograms: TrainingProgram[];

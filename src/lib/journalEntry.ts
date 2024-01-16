@@ -1,6 +1,7 @@
-import type { JournalEntry, PrismaClient } from '@prisma/client';
+import { Prisma, type JournalEntry, type PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
+import type { Repo } from './repo';
 import { matchMetricsInString, parseMetricStrings, toNum } from './utils';
 
 export const journalEntrySchema = z.object({
@@ -10,8 +11,62 @@ export const journalEntrySchema = z.object({
 });
 export type JournalEntrySchema = typeof journalEntrySchema;
 
-export class JournalEntryRepo {
+export class JournalEntryRepo implements Repo<JournalEntry, Prisma.JournalEntrySelect> {
   constructor(private readonly prisma: PrismaClient) {}
+
+  static makeSelect<T extends Prisma.JournalEntrySelect>(
+    select: Prisma.Subset<T, Prisma.JournalEntrySelect>
+  ): T {
+    return select;
+  }
+
+  static selectEverything = this.makeSelect({
+    id: true,
+    date: true,
+    content: true,
+    createdAt: true,
+    owner: true,
+  });
+  static selectEverythingValidator = Prisma.validator<Prisma.JournalEntryDefaultArgs>()({
+    select: JournalEntryRepo.selectEverything,
+  });
+
+  static selectMinimal = this.makeSelect({
+    id: true,
+    date: true,
+    content: true,
+  });
+  static selectMinimalValidator = Prisma.validator<Prisma.JournalEntryDefaultArgs>()({
+    select: JournalEntryRepo.selectEverything,
+  });
+
+  canUserRead(
+    userId: string | undefined,
+    journalEntry: Prisma.JournalEntryGetPayload<{
+      select: { ownerId: true };
+    }>
+  ) {
+    return journalEntry.ownerId == userId;
+  }
+
+  canUserUpdate(
+    userId: string | undefined,
+    journalEntry: Prisma.JournalEntryGetPayload<{
+      select: { ownerId: true };
+    }>
+  ) {
+    return journalEntry.ownerId == userId;
+  }
+
+  canUserDelete(
+    userId: string | undefined,
+    journalEntry: Prisma.JournalEntryGetPayload<{
+      select: { ownerId: true };
+    }>
+  ) {
+    return journalEntry.ownerId == userId;
+  }
+
   async new(data: z.infer<JournalEntrySchema>, ownerId: string) {
     const minDate = new Date(data.date.toISOString().split('T')[0]);
     const maxDate = new Date(data.date.toISOString().split('T')[0]);
@@ -65,49 +120,56 @@ export class JournalEntryRepo {
     return journalEntry;
   }
 
-  async get(ownerId: string) {
+  async getOne<S extends Prisma.JournalEntrySelect>(options: {
+    id: number;
+    userId: string;
+    select: S;
+  }) {
+    const { id, userId, select } = options;
+    const journalEntry = await this.prisma.journalEntry.findUnique({
+      where: {
+        id,
+      },
+      select: { ...select, ownerId: true } as S,
+    });
+    if (journalEntry == null) {
+      throw new APIError('NOT_FOUND', 'Resource not found');
+    }
+
+    const _journalEntry = journalEntry as Prisma.JournalEntryGetPayload<{
+      select: S;
+    }> &
+      Prisma.JournalEntryGetPayload<{
+        select: { ownerId: true };
+      }>;
+    if (!this.canUserRead(userId, _journalEntry)) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
+
+    return _journalEntry;
+  }
+
+  async getManyForUser<S extends Prisma.JournalEntrySelect>(options: {
+    userId: string;
+    select: S;
+  }) {
+    const { userId, select } = options;
+
     return (await this.prisma.journalEntry.findMany({
       where: {
-        ownerId: ownerId,
+        ownerId: userId,
       },
       orderBy: {
         date: 'desc',
       },
+      select: { ...select, ownerId: true } as S,
     })) as JournalEntry[];
   }
 
-  async getOne(id: number) {
-    const journalEntry = await this.prisma.journalEntry.findUnique({
-      where: {
-        id,
-      },
-    });
-    if (journalEntry == null) {
-      throw new APIError('NOT_FOUND', 'Resource not found');
-    }
-    return journalEntry;
-  }
-
-  async getOneAndValidateOwner(id: number, ownerId: string) {
-    const journalEntry = await this.getOne(id);
-    if (journalEntry.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
-    }
-
-    return journalEntry;
-  }
-
-  async update(data: z.infer<JournalEntrySchema>, id: number, ownerId: string) {
-    const journalEntry = await this.prisma.journalEntry.findUnique({
-      where: {
-        id,
-      },
-    });
-    if (journalEntry == null) {
-      throw new APIError('NOT_FOUND', 'Resource not found');
-    }
-    if (journalEntry.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
+  async update(data: z.infer<JournalEntrySchema>, id: number, userId: string) {
+    const journalEntry = await this.getOne({ id, userId, select: { id: true } });
+    if (!this.canUserUpdate(userId, journalEntry)) {
+      throw new APIError('INVALID_PERMISSIONS');
     }
 
     const journalUpdateResult = await this.prisma.journalEntry.update({
@@ -124,7 +186,7 @@ export class JournalEntryRepo {
     const metrics = parseMetricStrings(matchMetricsInString(data.content));
     const deleteMetrics = this.prisma.metric.deleteMany({
       where: {
-        ownerId,
+        ownerId: userId,
         journalEntryId: Number(journalEntry.id),
       },
     });
@@ -135,7 +197,7 @@ export class JournalEntryRepo {
         value: toNum(m.value, 0),
         date: new Date(data.date),
         journalEntryId: Number(journalEntry.id),
-        ownerId: ownerId,
+        ownerId: userId,
       })),
     });
     await this.prisma.$transaction([deleteMetrics, createMetrics]);
@@ -143,17 +205,10 @@ export class JournalEntryRepo {
     return journalUpdateResult;
   }
 
-  async delete(id: number, ownerId: string) {
-    const journalEntry = await this.prisma.journalEntry.findUnique({
-      where: {
-        id,
-      },
-    });
-    if (journalEntry == null) {
-      throw new APIError('NOT_FOUND', 'Resource not found');
-    }
-    if (journalEntry.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
+  async delete(id: number, userId: string) {
+    const journalEntry = await this.getOne({ id, userId, select: { id: true } });
+    if (!this.canUserDelete(userId, journalEntry)) {
+      throw new APIError('INVALID_PERMISSIONS');
     }
 
     return await this.prisma.journalEntry.delete({

@@ -20,7 +20,7 @@ export const exerciseEventSchema = z.object({
 });
 export type ExerciseEventSchema = typeof exerciseEventSchema;
 
-export class ExerciseEventRepo implements Repo<ExerciseEvent, Prisma.ExerciseSelect> {
+export class ExerciseEventRepo implements Repo<ExerciseEvent, Prisma.ExerciseEventSelect> {
   constructor(private readonly prisma: PrismaClient) {}
   static makeSelect<T extends Prisma.ExerciseEventSelect>(
     select: Prisma.Subset<T, Prisma.ExerciseEventSelect>
@@ -44,6 +44,7 @@ export class ExerciseEventRepo implements Repo<ExerciseEvent, Prisma.ExerciseSel
     markedCompletions: true,
     exerciseGroup: true,
     trainingCycleDay: true,
+    exerciseId: true,
   });
   static selectEverythingValidator = Prisma.validator<Prisma.ExerciseEventDefaultArgs>()({
     select: ExerciseEventRepo.selectEverything,
@@ -51,10 +52,12 @@ export class ExerciseEventRepo implements Repo<ExerciseEvent, Prisma.ExerciseSel
 
   static selectMinimal = this.makeSelect({
     id: true,
+    name: true,
     date: true,
     exercise: {
       select: {
         name: true,
+        type: true,
       },
     },
     // This is used for the drop downs to select exercise AND to detect
@@ -69,7 +72,7 @@ export class ExerciseEventRepo implements Repo<ExerciseEvent, Prisma.ExerciseSel
     weight: true,
   });
   static selectMinimalValidator = Prisma.validator<Prisma.ExerciseEventDefaultArgs>()({
-    select: ExerciseEventRepo.selectEverything,
+    select: ExerciseEventRepo.selectMinimal,
   });
 
   canUserRead(
