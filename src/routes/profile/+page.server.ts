@@ -21,7 +21,10 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const metricsRepo = new MetricRepo(prisma);
 
   const profile = await profileRepo.getOne(user?.userId);
-  const exerciseEvents = await exerciseEventRepo.get(user?.userId);
+  const exerciseEvents = await exerciseEventRepo.getManyForUser({
+    userId: user?.userId,
+    select: ExerciseEventRepo.selectMinimal,
+  });
   const journalEntries = await journalEntryRepo.get(user?.userId);
   const metrics = await metricsRepo.get(user?.userId);
 

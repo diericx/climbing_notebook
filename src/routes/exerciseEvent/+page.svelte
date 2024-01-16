@@ -8,6 +8,7 @@
     isDateInTheSameDayAsToday,
   } from '$lib/utils';
   import Icon from '@iconify/svelte';
+  import type { ExerciseEvent } from '@prisma/client';
   import { Tab, TabGroup, modalStore } from '@skeletonlabs/skeleton';
 
   export let data: PageData;
@@ -17,7 +18,7 @@
   $: exercises = data.exercises;
 
   // Filter out only todays exercise events
-  $: todaysExerciseEvents = exerciseEvents.filter((e) => {
+  $: todaysExerciseEvents = exerciseEvents.filter((e: ExerciseEvent) => {
     if (e.date == undefined) {
       return false;
     }
@@ -25,7 +26,7 @@
   });
 
   // Filter out only exercise events that aren't today
-  $: pastExerciseEvents = exerciseEvents.filter((e) => {
+  $: pastExerciseEvents = exerciseEvents.filter((e: ExerciseEvent) => {
     if (!e.date) {
       return false;
     }

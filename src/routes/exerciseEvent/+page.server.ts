@@ -21,7 +21,10 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
   const trainingProgramActivationRepo = new TrainingProgramActivationRepo(prisma);
 
-  const exerciseEvents = await exerciseEventsRepo.get(user?.userId);
+  const exerciseEvents = await exerciseEventsRepo.getManyForUser({
+    userId: user?.userId,
+    select: ExerciseEventRepo.selectMinimal,
+  });
   const profile = await profileRepo.getOne(user?.userId);
   const exercises = await exerciseRepo.getMany({
     select: ExerciseRepo.selectMinimal,
