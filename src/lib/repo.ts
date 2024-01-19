@@ -7,7 +7,7 @@ export interface Repo<ResourceType, ResourceSelectType> {
   // TODO: make this any return type more specific
   // Note: we use objects here so that the optional fields don't need to be ordered
   getOne<S extends ResourceSelectType>(options: {
-    id: number | string;
+    id: any;
     select: S;
     userId: string | undefined;
   }): Promise<any>;
@@ -16,6 +16,8 @@ export interface Repo<ResourceType, ResourceSelectType> {
     query: string;
     select: S;
     extraFilters?: any;
+    // TODO: make this type more specific
+    where: any;
   }): Promise<any[]>;
   getMany?<S extends ResourceSelectType>(options: {
     userId: string;
@@ -24,6 +26,6 @@ export interface Repo<ResourceType, ResourceSelectType> {
     extraFilters?: any;
   }): Promise<any[]>;
   // Actions
-  update(data: any, id: number | string, ownerId: string): any;
-  delete(id: number | string, ownerId: string): any;
+  update(data: any, id: any, ownerId: string): any;
+  delete(id: any, ownerId: string): any;
 }
