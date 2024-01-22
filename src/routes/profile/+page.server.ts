@@ -25,7 +25,10 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     userId: user?.userId,
     select: ExerciseEventRepo.selectMinimal,
   });
-  const journalEntries = await journalEntryRepo.get(user?.userId);
+  const journalEntries = await journalEntryRepo.getManyForUser({
+    userId: user?.userId,
+    select: JournalEntryRepo.selectMinimal,
+  });
   const metrics = await metricsRepo.get(user?.userId);
 
   const { s3ObjectMetadatas, s3ObjectUrls } = await getSignedUrlsAndMetadata(

@@ -10,7 +10,11 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const { user } = await getSessionOrRedirect({ locals, url });
 
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
-  const trainingProgram = await trainingProgramRepo.getOneAndValidateOwner(params.id, user.userId);
+  const trainingProgram = await trainingProgramRepo.getOne({
+    id: params.id,
+    userId: user.userId,
+    select: TrainingProgramRepo.selectMinimal,
+  });
   return { trainingProgram };
 };
 

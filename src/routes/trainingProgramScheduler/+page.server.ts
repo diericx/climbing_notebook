@@ -8,15 +8,13 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
 
-  const ownedTrainingPrograms = await trainingProgramRepo.get({
-    ownerId: user.userId,
+  const ownedTrainingPrograms = await trainingProgramRepo.getManyForUser({
+    userId: user.userId,
+    select: TrainingProgramRepo.selectEverything,
   });
-  const savedTrainingPrograms = await trainingProgramRepo.get({
-    saves: {
-      some: {
-        userId: user.userId,
-      },
-    },
+  const savedTrainingPrograms = await trainingProgramRepo.getManySavedForUser({
+    userId: user.userId,
+    select: TrainingProgramRepo.selectEverything,
   });
 
   const trainingProgramActivations = await trainingProgramRepo.getActivations(user?.userId);

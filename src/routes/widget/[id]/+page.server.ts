@@ -16,7 +16,11 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
   const id = params.id;
 
-  const widget = await widgetRepo.getOne(id);
+  const widget = await widgetRepo.getOne({
+    id,
+    userId: undefined,
+    select: WidgetRepo.selectEverything,
+  });
   // This page is only for template widgets
   if (!widget.isTemplate) {
     throw new APIError('INVALID_INPUT', 'Only template widgets can be viewed individually');

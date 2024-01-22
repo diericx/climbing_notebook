@@ -16,7 +16,11 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const id = params.id;
 
   // Editing can only be done by the owner
-  const widget = await widgetRepo.getOneAndValidateOwner(id, user?.userId);
+  const widget = await widgetRepo.getOne({
+    id,
+    userId: user.userId,
+    select: WidgetRepo.selectEverything,
+  });
 
   const trainingCycles = await trainingCycleRepo.getManyForUser({
     userId: user.userId,

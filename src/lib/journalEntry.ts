@@ -37,7 +37,7 @@ export class JournalEntryRepo implements Repo<JournalEntry, Prisma.JournalEntryS
     content: true,
   });
   static selectMinimalValidator = Prisma.validator<Prisma.JournalEntryDefaultArgs>()({
-    select: JournalEntryRepo.selectEverything,
+    select: JournalEntryRepo.selectMinimal,
   });
 
   canUserRead(

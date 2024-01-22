@@ -2,6 +2,7 @@
   import type { CalendarEventRepo } from '$lib/calendarEvent';
   import dayjs from '$lib/dayjs';
   import type { ExerciseEventRepo } from '$lib/exerciseEvent';
+  import type { JournalEntryRepo } from '$lib/journalEntry';
   import { exerciseTypeColors } from '$lib/utils';
   // @ts-ignore
   import Calendar from '@event-calendar/core';
@@ -10,14 +11,18 @@
   // @ts-ignore
   import Interaction from '@event-calendar/interaction';
   // @ts-ignore
+  import type { TrainingProgramRepo } from '$lib/trainingProgram';
+  // @ts-ignore
   import TimeGrid from '@event-calendar/time-grid';
-  import type { JournalEntry, Prisma, TrainingProgram } from '@prisma/client';
+  import type { Prisma } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
 
   export let calendarEvents: Prisma.CalendarEventGetPayload<
     typeof CalendarEventRepo.selectEverythingValidator
   >[];
-  export let journalEntries: JournalEntry[];
+  export let journalEntries: Prisma.JournalEntryGetPayload<
+    typeof JournalEntryRepo.selectMinimalValidator
+  >[];
   export let trainingProgramActivations: Prisma.TrainingProgramActivationGetPayload<{
     include: {
       trainingProgram: {
@@ -42,8 +47,12 @@
   >[];
 
   // For the activation modal program select
-  export let ownedTrainingPrograms: TrainingProgram[];
-  export let savedTrainingPrograms: TrainingProgram[];
+  export let ownedTrainingPrograms: Prisma.TrainingProgramGetPayload<
+    typeof TrainingProgramRepo.selectEverythingValidator
+  >[];
+  export let savedTrainingPrograms: Prisma.TrainingProgramGetPayload<
+    typeof TrainingProgramRepo.selectEverythingValidator
+  >[];
   // For the exercise event form modals
   export let exercises: Prisma.ExerciseGetPayload<{
     select: {

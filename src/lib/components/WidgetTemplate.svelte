@@ -3,6 +3,7 @@
 <script lang="ts">
   import type { CustomQueryResults } from '$lib/customQuery';
   import { confirmDelete } from '$lib/utils';
+  import type { WidgetRepo } from '$lib/widget';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
   import { popup } from '@skeletonlabs/skeleton';
@@ -11,26 +12,7 @@
   import S3Avatar from './S3Avatar.svelte';
   import FormButton from './forms/FormButton.svelte';
 
-  type Widget = Prisma.WidgetGetPayload<{
-    include: {
-      owner: {
-        include: {
-          profile: true;
-        };
-      };
-      datasets: {
-        include: {
-          customQueries: {
-            include: {
-              conditions: true;
-            };
-          };
-        };
-      };
-    };
-  }>;
-
-  export let widget: Widget;
+  export let widget: Prisma.WidgetGetPayload<typeof WidgetRepo.selectEverythingValidator>;
   export let customQueryResults: CustomQueryResults[];
   export let user: any;
   export let s3ObjectUrlPromises: { [key: string]: Promise<string> };
@@ -52,7 +34,7 @@
 
           <button
             class={`btn !bg-transparent justify-between ${
-              widget.owner.id == user.userId ? '' : 'hidden'
+              widget.ownerId == user.userId ? '' : 'hidden'
             }`}
             use:popup={{
               event: 'click',

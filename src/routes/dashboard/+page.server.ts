@@ -36,60 +36,28 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   });
   // Get metris in the past month for the charts
   const metrics = await metricRepo.get(user?.userId);
-  const journalEntries = await journalEntryRepo.get(user?.userId);
-  const calendarEvents = await calendarEventRepo.getManyForUser({
+  const journalEntries = await journalEntryRepo.getManyForUser({
     userId: user?.userId,
+    select: JournalEntryRepo.selectMinimal,
+  });
+  const calendarEvents = await calendarEventRepo.getManyForUser({
+    userId: user.userId,
     select: CalendarEventRepo.selectEverything,
   });
-  const ownedTrainingPrograms = await trainingProgramRepo.get({
-    ownerId: user.userId,
+  const ownedTrainingPrograms = await trainingProgramRepo.getManyForUser({
+    userId: user.userId,
+    select: TrainingProgramRepo.selectEverything,
   });
-  const savedTrainingPrograms = await trainingProgramRepo.get({
-    saves: {
-      some: {
-        userId: user.userId,
-      },
-    },
+  const savedTrainingPrograms = await trainingProgramRepo.getManySavedForUser({
+    userId: user.userId,
+    select: TrainingProgramRepo.selectEverything,
   });
   const trainingProgramActivations = trainingProgramRepo.getActivations(user?.userId);
 
-  const widgets = await widgetRepo.getAllDashboardWidgetsForUser(user.userId, {
-    owner: true,
-    trainingCycle: {
-      include: {
-        days: {
-          include: {
-            exercises: {
-              include: {
-                exercise: true,
-              },
-            },
-            exerciseGroups: {
-              include: {
-                exercises: {
-                  include: {
-                    exercise: true,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    datasets: {
-      include: {
-        customQueries: {
-          include: {
-            conditions: true,
-          },
-        },
-      },
-      orderBy: {
-        name: 'asc',
-      },
-    },
-  });
+  const widgets = await widgetRepo.getManyForUserDashboardWidgets(
+    user.userId,
+    WidgetRepo.selectEverything
+  );
 
   const trainingCycles = await trainingCycleRepo.getManyForUser({
     userId: user.userId,

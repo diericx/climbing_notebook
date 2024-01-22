@@ -25,7 +25,8 @@ export interface Repo<ResourceType, ResourceSelectType> {
   }): Promise<any>;
   getManyForUser?<S extends ResourceSelectType>(options: {
     userId: string;
-    query: string;
+    // TODO: can we make this a generic enum to support any variation of "string1" | "string2"?
+    query: any;
     select: S;
     extraFilters?: any;
     // TODO: make this type more specific
