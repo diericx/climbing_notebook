@@ -3,6 +3,7 @@ import cuid from 'cuid';
 import { z } from 'zod';
 import { APIError } from './errors';
 import type { Repo } from './repo';
+import { TrainingCycleRepo } from './trainingCycle';
 
 export const trainingProgramSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -35,13 +36,16 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
     return select;
   }
 
-  static selectEverything = this.makeSelect({
+  static selectMinimal = this.makeSelect({
     id: true,
-    createdAt: true,
     name: true,
-    trainingProgramActivations: true,
+    isPublic: true,
+    description: true,
+    privateAccessToken: true,
+    ownerId: true,
     owner: {
       select: {
+        username: true,
         profile: {
           select: {
             imageS3ObjectKey: true,
@@ -49,103 +53,70 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
         },
       },
     },
+    _count: {
+      select: {
+        saves: true,
+      },
+    },
+    saves: {
+      select: {
+        userId: true,
+      },
+    },
+  });
+  static selectMinimalValidator = Prisma.validator<Prisma.TrainingProgramDefaultArgs>()({
+    select: TrainingProgramRepo.selectMinimal,
+  });
+
+  static selectEverything = this.makeSelect({
+    ...this.selectMinimal,
+    createdAt: true,
+    trainingProgramActivations: true,
     trainingProgramScheduledSlots: {
       orderBy: {
         order: 'asc',
       },
       select: {
+        id: true,
+        order: true,
+        duration: true,
         trainingCycles: {
-          select: {
-            owner: true,
-            trainingProgramScheduledSlots: true,
-            exerciseGroups: {
-              select: {
-                exercises: {
-                  select: {
-                    exercise: {
-                      select: {
-                        name: true,
-                      },
-                    },
-                  },
-                  orderBy: {
-                    name: 'asc',
-                  },
-                },
-              },
-              orderBy: {
-                name: 'asc',
-              },
-            },
-            days: {
-              select: {
-                exercises: {
-                  select: {
-                    exercise: {
-                      select: {
-                        name: true,
-                      },
-                    },
-                  },
-                  orderBy: {
-                    name: 'asc',
-                  },
-                },
-                exerciseGroups: {
-                  orderBy: {
-                    name: 'asc',
-                  },
-                  select: {
-                    exercises: {
-                      select: {
-                        exercise: {
-                          select: {
-                            name: true,
-                          },
-                        },
-                      },
-                      orderBy: {
-                        name: 'asc',
-                      },
-                    },
-                  },
-                },
-              },
-              orderBy: {
-                // Note: ui depends on this being sorted in this way
-                dayOfTheWeek: 'asc',
-              },
-            },
-          },
+          select: TrainingCycleRepo.selectEverything,
         },
       },
     },
-    trainingCycles: true,
-    _count: {
-      select: {
-        saves: true,
-      },
+    trainingCycles: {
+      select: TrainingCycleRepo.selectEverything,
     },
   });
   static selectEverythingValidator = Prisma.validator<Prisma.TrainingProgramDefaultArgs>()({
     select: TrainingProgramRepo.selectEverything,
   });
 
-  static selectMinimal = this.makeSelect({
-    id: true,
-    name: true,
-  });
-  static selectMinimalValidator = Prisma.validator<Prisma.TrainingProgramDefaultArgs>()({
-    select: TrainingProgramRepo.selectMinimal,
-  });
-
   canUserRead(
     userId: string | undefined,
     trainingProgram: Prisma.TrainingProgramGetPayload<{
-      select: { ownerId: true };
-    }>
+      select: { ownerId: true; privateAccessToken: true; isPublic: true };
+    }>,
+    otherOptions?: {
+      privateAccessToken: string;
+    }
   ) {
-    return trainingProgram.ownerId == userId;
+    // if it is public anyone can read
+    if (trainingProgram.isPublic) {
+      return true;
+    }
+    // users with private access token can read
+    if (otherOptions?.privateAccessToken == trainingProgram.privateAccessToken) {
+      return true;
+    }
+    // owner can always read
+    if (userId !== undefined) {
+      if (trainingProgram.ownerId == userId) {
+        return true;
+      }
+    }
+    return false;
   }
 
   canUserUpdate(
@@ -178,7 +149,7 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
 
   async getOne<S extends Prisma.TrainingProgramSelect>(options: {
     id: string;
-    userId: string;
+    userId?: string;
     select: S;
   }) {
     const { id, userId, select } = options;
@@ -187,7 +158,7 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
       where: {
         id,
       },
-      select: { ...select, ownerId: true } as S,
+      select: { ...select, ownerId: true, isPublic: true, privateAccessToken: true } as S,
     });
     if (trainingProgram == null) {
       throw new APIError('NOT_FOUND');
@@ -197,11 +168,17 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
       select: S;
     }> &
       Prisma.TrainingProgramGetPayload<{
-        select: { ownerId: true };
+        select: { ownerId: true; privateAccessToken: true; isPublic: true };
       }>;
     if (!this.canUserRead(userId, _trainingProgram)) {
       throw new APIError('INVALID_PERMISSIONS');
     }
+
+    // TODO: validate this works!!
+    // // Do not send privateAccessToken unless this is the owner
+    // if (userId != _trainingProgram.ownerId) {
+    //   _trainingProgram.privateAccessToken = null;
+    // }
 
     return _trainingProgram;
   }
@@ -215,7 +192,8 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
   async getManyForUser<S extends Prisma.TrainingProgramSelect>(options: {
     userId: string;
     select: S;
-    where: Prisma.TrainingProgramWhereInput;
+    // TODO: Delete this where input?
+    where?: Prisma.TrainingProgramWhereInput;
   }) {
     const { userId, select, where } = options;
     // Fetch all
@@ -223,6 +201,43 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
       where: {
         ownerId: userId,
         ...where,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      select: { ...select, ownerId: true } as S,
+    });
+  }
+
+  async getManySavedForUser<S extends Prisma.TrainingProgramSelect>(options: {
+    userId: string;
+    select: S;
+  }) {
+    const { userId, select } = options;
+    // Fetch all
+    return await this.prisma.trainingProgram.findMany({
+      where: {
+        ownerId: userId,
+        saves: {
+          some: {
+            // Default to empty string so query defaults to returning empty array
+            userId,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      select: { ...select, ownerId: true } as S,
+    });
+  }
+
+  async getManyPublic<S extends Prisma.TrainingProgramSelect>(options: { select: S }) {
+    const { select } = options;
+    // Fetch all
+    return await this.prisma.trainingProgram.findMany({
+      where: {
+        isPublic: true,
       },
       orderBy: {
         createdAt: 'desc',

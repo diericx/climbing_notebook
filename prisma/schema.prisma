@@ -145,7 +145,9 @@ model TrainingProgram {
   description        String?
   duplications       Int     @default(0) @map("use_count")
   parentId           String? @map("parent_id")
-  privateAccessToken String  @default(dbgenerated("gen_random_uuid()")) @map("private_access_token") @db.Uuid
+  // Only optional in schema so we can unset it in a typesafe way before sending data to client
+  // if the user is not the owner
+  privateAccessToken String? @default(dbgenerated("gen_random_uuid()")) @map("private_access_token") @db.Uuid
 
   ownerId                       String                         @map("owner_id")
   owner                         AuthUser                       @relation(fields: [ownerId], references: [id])

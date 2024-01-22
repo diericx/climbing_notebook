@@ -27,29 +27,6 @@ export class ExerciseEventRepo implements Repo<ExerciseEvent, Prisma.ExerciseEve
   ): T {
     return select;
   }
-  static selectEverything = this.makeSelect({
-    id: true,
-    createdAt: true,
-    date: true,
-    name: true,
-    sets: true,
-    reps: true,
-    weight: true,
-    seconds: true,
-    minutes: true,
-    difficulty: true,
-    notes: true,
-    exercise: true,
-    owner: true,
-    markedCompletions: true,
-    exerciseGroup: true,
-    trainingCycleDay: true,
-    exerciseId: true,
-  });
-  static selectEverythingValidator = Prisma.validator<Prisma.ExerciseEventDefaultArgs>()({
-    select: ExerciseEventRepo.selectEverything,
-  });
-
   static selectMinimal = this.makeSelect({
     id: true,
     name: true,
@@ -70,9 +47,22 @@ export class ExerciseEventRepo implements Repo<ExerciseEvent, Prisma.ExerciseEve
     seconds: true,
     difficulty: true,
     weight: true,
+    notes: true,
   });
   static selectMinimalValidator = Prisma.validator<Prisma.ExerciseEventDefaultArgs>()({
     select: ExerciseEventRepo.selectMinimal,
+  });
+
+  static selectEverything = this.makeSelect({
+    ...this.selectMinimal,
+    createdAt: true,
+    owner: true,
+    markedCompletions: true,
+    exerciseGroup: true,
+    trainingCycleDay: true,
+  });
+  static selectEverythingValidator = Prisma.validator<Prisma.ExerciseEventDefaultArgs>()({
+    select: ExerciseEventRepo.selectEverything,
   });
 
   canUserRead(

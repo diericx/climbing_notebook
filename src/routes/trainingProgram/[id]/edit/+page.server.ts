@@ -11,7 +11,11 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
 
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
-  const trainingProgram = await trainingProgramRepo.getOneAndValidateOwner(id, user?.userId);
+  const trainingProgram = await trainingProgramRepo.getOne({
+    id,
+    userId: user?.userId,
+    select: TrainingProgramRepo.selectEverything,
+  });
   const ownedTrainingCycles = await trainingCycleRepo.getManyForUser({
     userId: user.userId,
     query: 'owned',
