@@ -174,11 +174,10 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
       throw new APIError('INVALID_PERMISSIONS');
     }
 
-    // TODO: validate this works!!
-    // // Do not send privateAccessToken unless this is the owner
-    // if (userId != _trainingProgram.ownerId) {
-    //   _trainingProgram.privateAccessToken = null;
-    // }
+    // Do not send privateAccessToken unless this is the owner
+    if (userId != _trainingProgram.ownerId) {
+      _trainingProgram.privateAccessToken = null;
+    }
 
     return _trainingProgram;
   }
