@@ -36,9 +36,6 @@
   export let s3ObjectUrlPromises: { [key: string]: Promise<string> };
 
   $: saves = trainingCycle.saves;
-  $: {
-    console.log(trainingCycle);
-  }
   $: isTrainingCycleSavedByUser = () => {
     return saves.find((s) => s.userId == session?.user.userId);
   };

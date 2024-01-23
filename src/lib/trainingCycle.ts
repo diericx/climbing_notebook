@@ -171,7 +171,7 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
       where: {
         id,
       },
-      select: { ...select, isPublic: true, userId: true } as S,
+      select: { ...select, isPublic: true, ownerId: true } as S,
     });
     if (trainingCycle == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
@@ -454,6 +454,7 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
         _count: {
           select: {
             trainingProgramScheduledSlots: true,
+            activations: true,
           },
         },
       },

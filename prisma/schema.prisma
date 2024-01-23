@@ -232,7 +232,7 @@ model TrainingCycleSave {
 }
 
 model TrainingCycleActivation {
-  trainingCycle   TrainingCycle @relation(fields: [trainingCycleId], references: [id])
+  trainingCycle   TrainingCycle @relation(fields: [trainingCycleId], references: [id], onDelete: Cascade)
   trainingCycleId Int           @map("training_cycle_id")
   user            AuthUser      @relation(fields: [userId], references: [id])
   userId          String        @map("user_id")
