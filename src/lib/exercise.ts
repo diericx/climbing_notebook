@@ -125,7 +125,7 @@ export class ExerciseRepo implements Repo<Exercise, Prisma.ExerciseSelect> {
       where: {
         id,
       },
-      select: { ...select, ownerId: true } as S,
+      select: { ...select } as S,
     });
     if (exercise == null) {
       throw new APIError('NOT_FOUND');
