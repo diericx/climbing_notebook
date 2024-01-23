@@ -136,6 +136,7 @@ export class CustomQueryRepo implements Repo<CustomQuery, Prisma.CustomQuerySele
   }
 
   async new(data: z.infer<CustomQuerySchema>, datasetId: string, userId: string) {
+    // throw new APIError('INVALID_ACTION');
     return (await this.prisma.customQuery.create({
       data: {
         ...data,
@@ -235,28 +236,18 @@ export class CustomQueryRepo implements Repo<CustomQuery, Prisma.CustomQuerySele
   }
 
   async runCustomQuery(id: string, userId: string) {
-    // Set up types for this one off query
-    const queryWithWidget = Prisma.validator<Prisma.CustomQueryArgs>()({
-      include: {
-        dataset: {
-          include: {
-            widget: true,
-          },
-        },
-        conditions: true,
-      },
-    });
-    type QueryWithWidget = Prisma.CustomQueryGetPayload<typeof queryWithWidget>;
-
     // Get the widget
-    const query = (await this.getOne({
+    const query = await this.getOne({
       id,
       userId,
       select: {
-        dataset: { include: { widget: true } },
+        table: true,
+        exerciseId: true,
+        metric: true,
+        dataset: { select: { widget: true } },
         conditions: true,
       },
-    })) as QueryWithWidget;
+    });
 
     // Permissions: if it is not a template, only the owner can run the query
     if (!query.dataset.widget.isTemplate) {
