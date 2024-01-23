@@ -16,7 +16,7 @@ Create week long Training Cycles or chain multiple cycles into a Training Progra
 
 ### Use Widgets to visualize your data
 
-Use widgets to visualize the data from your exercise history. 
+Use widgets to visualize the data from your exercise history.
 
 Here is an example of a chart that captures specific data from metrics and exercises.
 
