@@ -22,12 +22,12 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
     extraFilters: {
       isTemplate: true,
     },
-    select: TrainingCycleRepo.selectNameOnly,
+    select: TrainingCycleRepo.selectNameAndIdOnly,
   });
   const savedTrainingCycles = await trainingCycleRepo.getManyForUser({
     userId: user.userId,
     query: 'saved',
-    select: TrainingCycleRepo.selectNameOnly,
+    select: TrainingCycleRepo.selectNameAndIdOnly,
   });
 
   return {

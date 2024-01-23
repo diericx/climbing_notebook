@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const trainingCycles = await trainingCycleRepo.getManyForUser({
     userId: user.userId,
     query: 'owned',
-    select: TrainingCycleRepo.selectNameOnly,
+    select: TrainingCycleRepo.selectNameAndIdOnly,
   });
   // compile datasets for widgets
   const customQueryResults: CustomQueryResults[] = [];

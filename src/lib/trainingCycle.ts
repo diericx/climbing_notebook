@@ -30,8 +30,9 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
     return select;
   }
 
-  static selectNameOnly = this.makeSelect({
+  static selectNameAndIdOnly = this.makeSelect({
     name: true,
+    id: true,
   });
 
   static selectMinimal = this.makeSelect({
