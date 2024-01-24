@@ -20,10 +20,9 @@
       select: {
         saves: true;
         activations: true;
+        privateAccessToken: true;
       };
-    }> & {
-      privateAccessToken?: string;
-    };
+    }>;
 
   export const findSingleLocationSelect = {
     id: true,

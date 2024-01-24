@@ -41,6 +41,7 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
     name: true,
     description: true,
     isPublic: true,
+    privateAccessToken: true,
     owner: {
       select: {
         username: true,
