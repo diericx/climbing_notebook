@@ -23,14 +23,8 @@ export const load: PageServerLoad = async ({ url, locals, params }) => {
       },
     },
     userId: session?.user.userId,
+    privateAccessToken: token || undefined,
   });
-
-  // If no user is not signed in and the training program is not public, error out
-  if (session === null) {
-    if (!trainingCycle.isPublic && token != trainingCycle.privateAccessToken) {
-      throw new APIError('INVALID_PERMISSIONS', 'This Training Cycle is private');
-    }
-  }
 
   // Manually override breadcrumbs to show training program path
   // if this is an embedded cycle.

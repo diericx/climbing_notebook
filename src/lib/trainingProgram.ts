@@ -99,7 +99,7 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
       select: { ownerId: true; privateAccessToken: true; isPublic: true };
     }>,
     otherOptions?: {
-      privateAccessToken: string;
+      privateAccessToken?: string;
     }
   ) {
     // if it is public anyone can read
@@ -149,10 +149,11 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
 
   async getOne<S extends Prisma.TrainingProgramSelect>(options: {
     id: string;
-    userId?: string;
     select: S;
+    userId?: string;
+    privateAccessToken?: string;
   }) {
-    const { id, userId, select } = options;
+    const { id, userId, select, privateAccessToken } = options;
     const trainingProgram = await this.prisma.trainingProgram.findUnique({
       where: {
         id,
@@ -169,7 +170,7 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
       Prisma.TrainingProgramGetPayload<{
         select: { ownerId: true; privateAccessToken: true; isPublic: true };
       }>;
-    if (!this.canUserRead(userId, _trainingProgram)) {
+    if (!this.canUserRead(userId, _trainingProgram, { privateAccessToken })) {
       throw new APIError('INVALID_PERMISSIONS');
     }
 

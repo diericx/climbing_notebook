@@ -21,14 +21,8 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
     id: params.id,
     userId: session?.user.userId,
     select: TrainingProgramRepo.selectEverything,
+    privateAccessToken: token || undefined,
   });
-
-  // If no user is not signed in and the training program is not public, error out
-  if (session === null) {
-    if (!trainingProgram.isPublic && token != trainingProgram.privateAccessToken) {
-      throw new APIError('INVALID_PERMISSIONS', 'This Training Program is private');
-    }
-  }
 
   const s3ObjectUrlPromises = getSignedUrlPromises(
     trainingProgram.owner.profile?.imageS3ObjectKey

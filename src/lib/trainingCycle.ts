@@ -125,14 +125,22 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
   canUserRead(
     userId: string | undefined,
     trainingCycle: Prisma.TrainingCycleGetPayload<{
-      select: { isPublic: true; ownerId: true };
-    }>
+      select: { isPublic: true; ownerId: true; privateAccessToken: true };
+    }>,
+    otherOptions?: {
+      privateAccessToken?: string;
+    }
   ) {
-    if (userId === undefined) {
-      if (trainingCycle.isPublic) {
-        return true;
-      }
-    } else {
+    // if it is public anyone can read
+    if (trainingCycle.isPublic) {
+      return true;
+    }
+    // users with private access token can read
+    if (otherOptions?.privateAccessToken == trainingCycle.privateAccessToken) {
+      return true;
+    }
+    // owner can always read
+    if (userId !== undefined) {
       if (trainingCycle.ownerId == userId) {
         return true;
       }
@@ -165,9 +173,10 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
   async getOne<S extends Prisma.TrainingCycleSelect>(options: {
     id: number;
     select: S;
-    userId: string | undefined;
+    userId?: string;
+    privateAccessToken?: string;
   }) {
-    const { id, select, userId } = options;
+    const { id, select, userId, privateAccessToken } = options;
     const trainingCycle = await this.prisma.trainingCycle.findUnique({
       where: {
         id,
@@ -182,11 +191,16 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
       select: S;
     }> &
       Prisma.TrainingCycleGetPayload<{
-        select: { isPublic: true; ownerId: true };
+        select: { isPublic: true; ownerId: true; privateAccessToken: true };
       }>;
 
-    if (!this.canUserRead(userId, _trainingCycle)) {
+    if (!this.canUserRead(userId, _trainingCycle, { privateAccessToken })) {
       throw new APIError('INVALID_PERMISSIONS');
+    }
+
+    // Do not send privateAccessToken unless this is the owner
+    if (userId != _trainingCycle.ownerId) {
+      _trainingCycle.privateAccessToken = null;
     }
 
     return _trainingCycle;
