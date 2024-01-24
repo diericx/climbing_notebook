@@ -16,20 +16,20 @@ export interface Repo<ResourceType, ResourceSelectType> {
     otherOptions?: any
   ): boolean;
   // Queries
-  // TODO: make this any return type more specific
   // Note: we use objects here so that the optional fields don't need to be ordered
   getOne<S extends ResourceSelectType>(options: {
-    id: any;
+    id: any; // any because it can either be a number or string
     select: S;
     userId: string | undefined;
   }): Promise<any>;
   getManyForUser?<S extends ResourceSelectType>(options: {
     userId: string;
-    // TODO: can we make this a generic enum to support any variation of "string1" | "string2"?
+    // Any because it is generally a string but is an enum style string to
+    // add code completion.
     query: any;
     select: S;
     extraFilters?: any;
-    // TODO: make this type more specific
+    // TODO: remove this where?
     where: any;
   }): Promise<any[]>;
   getMany?<S extends ResourceSelectType>(options: {

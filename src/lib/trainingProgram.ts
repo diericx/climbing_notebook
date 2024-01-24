@@ -153,7 +153,6 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
     select: S;
   }) {
     const { id, userId, select } = options;
-    // TODO: push saves up to be added in the page level query or in selectEverything
     const trainingProgram = await this.prisma.trainingProgram.findUnique({
       where: {
         id,
