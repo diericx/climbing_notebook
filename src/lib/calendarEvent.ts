@@ -17,13 +17,13 @@ export type CalendarEventPartialSchema = typeof calendarEventPartialSchema;
 export class CalendarEventRepo implements Repo<CalendarEvent, Prisma.CalendarEventSelect> {
   constructor(private readonly prisma: PrismaClient) {}
 
-  static makeCalendarEventSelect<T extends Prisma.CalendarEventSelect>(
+  static makeSelect<T extends Prisma.CalendarEventSelect>(
     select: Prisma.Subset<T, Prisma.CalendarEventSelect>
   ): T {
     return select;
   }
 
-  static selectEverything = this.makeCalendarEventSelect({
+  static selectEverything = this.makeSelect({
     id: true,
     ownerId: true,
     dateStart: true,

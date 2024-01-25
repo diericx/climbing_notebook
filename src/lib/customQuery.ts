@@ -86,13 +86,13 @@ export type CustomQueryResults = {
 
 export class CustomQueryRepo implements Repo<CustomQuery, Prisma.CustomQuerySelect> {
   constructor(private readonly prisma: PrismaClient) {}
-  static makeCustomQuerySelect<T extends Prisma.CustomQuerySelect>(
+  static makeSelect<T extends Prisma.CustomQuerySelect>(
     select: Prisma.Subset<T, Prisma.CustomQuerySelect>
   ): T {
     return select;
   }
 
-  static selectEverything = this.makeCustomQuerySelect({
+  static selectEverything = this.makeSelect({
     id: true,
     ownerId: true,
     name: true,
