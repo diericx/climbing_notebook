@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { calendarEventSchema } from '$lib/calendarEvent';
   import Form from '$lib/components/forms/Form.svelte';
   import FormBodyCalendarEvent from '$lib/components/forms/bodies/FormBodyCalendarEvent.svelte';
+  import { calendarEventSchema } from '$lib/zodSchemas';
   import type { PageData } from './$types';
 
   export let data: PageData;

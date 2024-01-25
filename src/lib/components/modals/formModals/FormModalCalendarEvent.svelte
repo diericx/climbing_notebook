@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { calendarEventSchema } from '$lib/calendarEvent';
+  import { calendarEventSchema } from '$lib/zodSchemas';
   import FormBodyCalendarEvent from '../../forms/bodies/FormBodyCalendarEvent.svelte';
   import FormModal from './FormModal.svelte';
 </script>

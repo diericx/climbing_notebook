@@ -1,18 +1,8 @@
 import { Prisma, type CalendarEvent, type PrismaClient } from '@prisma/client';
-import { z } from 'zod';
+import type { z } from 'zod';
 import { APIError } from './errors';
 import type { Repo } from './repo';
-
-export const calendarEventSchema = z.object({
-  dateStart: z.date().default(new Date()),
-  dateEnd: z.date().default(new Date()),
-  title: z.string().min(1).default(''),
-  content: z.string().nullish(),
-  color: z.string().default('green'),
-});
-export const calendarEventPartialSchema = calendarEventSchema.partial();
-export type CalendarEventSchema = typeof calendarEventSchema;
-export type CalendarEventPartialSchema = typeof calendarEventPartialSchema;
+import type { CalendarEventPartialSchema, CalendarEventSchema } from './zodSchemas';
 
 export class CalendarEventRepo implements Repo<CalendarEvent, Prisma.CalendarEventSelect> {
   constructor(private readonly prisma: PrismaClient) {}

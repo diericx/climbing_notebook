@@ -1,24 +1,9 @@
 import { Prisma, type ExerciseEvent, type PrismaClient } from '@prisma/client';
-import { z } from 'zod';
+import type { z } from 'zod';
 import { APIError } from './errors';
 import type { Repo } from './repo';
 import { isDateInTheSameWeekAsToday } from './utils';
-
-export const exerciseEventSchema = z.object({
-  date: z.date().default(new Date()).nullish(),
-  name: z.string().nullish().default(''),
-  sets: z.number().default(0),
-  reps: z.number().default(0),
-  weight: z.number().default(0),
-  seconds: z.number().default(0),
-  minutes: z.number().default(0),
-  difficulty: z.number().default(0).nullish(),
-  notes: z.string().nullish(),
-  trainingCycleDayId: z.number().nullish(),
-  exerciseGroupId: z.number().nullish(),
-  exerciseId: z.string().min(1, { message: 'Exercise is required' }),
-});
-export type ExerciseEventSchema = typeof exerciseEventSchema;
+import type { ExerciseEventSchema } from './zodSchemas';
 
 export class ExerciseEventRepo implements Repo<ExerciseEvent, Prisma.ExerciseEventSelect> {
   constructor(private readonly prisma: PrismaClient) {}

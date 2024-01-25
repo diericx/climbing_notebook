@@ -1,6 +1,7 @@
-import { CalendarEventRepo, calendarEventSchema } from '$lib/calendarEvent';
+import { CalendarEventRepo } from '$lib/calendarEvent';
 import { prisma } from '$lib/prisma';
 import { getSessionOrRedirect } from '$lib/utils';
+import { calendarEventSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions } from './$types';
