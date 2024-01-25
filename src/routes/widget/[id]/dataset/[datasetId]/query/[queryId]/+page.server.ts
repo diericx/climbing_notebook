@@ -1,6 +1,7 @@
-import { CustomQueryRepo, customQuerySchema } from '$lib/customQuery';
+import { CustomQueryRepo } from '$lib/customQuery';
 import { prisma } from '$lib/prisma';
 import { getSessionOrRedirect } from '$lib/utils';
+import { customQuerySchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions } from './$types';

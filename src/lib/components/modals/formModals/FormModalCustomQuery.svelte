@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { customQuerySchema } from '$lib/customQuery';
+  import { customQuerySchema } from '$lib/zodSchemas';
   import FormBodyCustomQuery from '../../forms/bodies/FormBodyCustomQuery.svelte';
   import FormModal from './FormModal.svelte';
 </script>

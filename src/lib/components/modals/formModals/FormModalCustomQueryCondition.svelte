@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { customQueryConditionSchema } from '$lib/customQuery';
+  import { customQueryConditionSchema } from '$lib/zodSchemas';
   import FormBodyCustomQueryCondition from '../../forms/bodies/FormBodyCustomQueryCondition.svelte';
   import FormModal from './FormModal.svelte';
 </script>
