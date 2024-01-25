@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { widgetTemplateSchema } from '$lib/widget';
+  import { widgetTemplateSchema } from '$lib/zodSchemas';
   import FormBodyWidgetTemplate from '../../forms/bodies/FormBodyWidgetTemplate.svelte';
   import FormModal from './FormModal.svelte';
 </script>

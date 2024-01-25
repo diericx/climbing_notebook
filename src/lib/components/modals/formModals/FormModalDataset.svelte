@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { datasetSchema } from '$lib/widget';
+  import { datasetSchema } from '$lib/zodSchemas';
   import FormBodyDataset from '../../forms/bodies/FormBodyDataset.svelte';
   import FormModal from './FormModal.svelte';
 </script>

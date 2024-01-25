@@ -1,44 +1,14 @@
 import { Prisma, type PrismaClient, type Widget } from '@prisma/client';
-import { z } from 'zod';
+import type { z } from 'zod';
 import { APIError } from './errors';
 import type { Repo } from './repo';
 import { TrainingCycleRepo } from './trainingCycle';
-import { widgetSchemaBase, widgetSchemaBasePartial } from './zodSchemas';
-
-// Split out the refinement function so we can reuse it to compose a partial schema
-// below
-function refinementFunc(
-  val: z.infer<typeof widgetSchemaBase> | z.infer<typeof widgetSchemaBasePartial>,
-  ctx: z.RefinementCtx
-) {
-  if (val.isTemplate) {
-    if (!val.description) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: `Description is required`,
-        path: ['description'],
-      });
-    }
-  }
-}
-export const widgetSchema = widgetSchemaBase.superRefine(refinementFunc);
-export type WidgetSchema = typeof widgetSchema;
-
-export const widgetSchemaPartial = widgetSchemaBasePartial.superRefine(refinementFunc);
-export type WidgetSchemaPartial = typeof widgetSchemaPartial;
-
-export const widgetTemplateSchema = z.object({
-  name: z.string().min(1, { message: 'Name is required' }),
-  description: z.string().min(1, { message: 'Description is required' }),
-});
-export type WidgetTemplateSchema = typeof widgetTemplateSchema;
-
-export const datasetSchema = z.object({
-  type: z.enum(['line', 'bar']).default('line'),
-  color: z.string(),
-  name: z.string().min(1, { message: 'Name is required' }),
-});
-export type DatasetSchema = typeof datasetSchema;
+import type {
+  DatasetSchema,
+  WidgetSchema,
+  WidgetSchemaPartial,
+  WidgetTemplateSchema,
+} from './zodSchemas';
 
 export class WidgetRepo implements Repo<Widget, Prisma.WidgetSelect> {
   constructor(private readonly prisma: PrismaClient) {}
