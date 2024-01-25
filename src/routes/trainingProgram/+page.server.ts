@@ -1,12 +1,9 @@
 import { getSignedUrlPromises } from '$lib/aws/s3';
 import dayjs from '$lib/dayjs';
 import { prisma } from '$lib/prisma';
-import {
-  trainingProgramActivationSchema,
-  TrainingProgramRepo,
-  trainingProgramSchema,
-} from '$lib/trainingProgram';
+import { TrainingProgramRepo } from '$lib/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
+import { trainingProgramActivationSchema, trainingProgramSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
 import { setError, superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';

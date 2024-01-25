@@ -2,13 +2,13 @@ import { getSignedUrlPromises } from '$lib/aws/s3';
 import { APIError } from '$lib/errors';
 import { prisma } from '$lib/prisma';
 import { TrainingCycleRepo } from '$lib/trainingCycle';
+import { TrainingProgramRepo } from '$lib/trainingProgram';
+import { getSessionOrRedirect } from '$lib/utils';
 import {
-  TrainingProgramRepo,
+  trainingCycleSchema,
   trainingProgramScheduledSlotSchema,
   trainingProgramSchema,
-} from '$lib/trainingProgram';
-import { getSessionOrRedirect } from '$lib/utils';
-import { trainingCycleSchema } from '$lib/zodSchemas';
+} from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';

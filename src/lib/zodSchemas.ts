@@ -218,3 +218,25 @@ export const trainingCycleDaySchema = z.object({
   description: z.string().optional(),
 });
 export type TrainingCycleDaySchema = typeof trainingCycleDaySchema;
+
+export const trainingProgramSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  description: z.string().nullish(),
+  isPublic: z.boolean().optional().default(false),
+});
+export const trainingProgramPartialSchema = trainingProgramSchema.partial();
+export type TrainingProgramSchema = typeof trainingProgramSchema;
+export type TrainingProgramPartialSchema = typeof trainingProgramPartialSchema;
+
+export const trainingProgramScheduledSlotSchema = z.object({
+  duration: z.number().min(1, 'Duration must be greater than 0'),
+  order: z.number(),
+  trainingCycleId: z.number(),
+});
+export type TrainingProgramScheduledSlotSchema = typeof trainingProgramScheduledSlotSchema;
+
+export const trainingProgramActivationSchema = z.object({
+  startDate: z.date().default(new Date()),
+  trainingProgramId: z.string(),
+});
+export type TrainingProgramActivationSchema = typeof trainingProgramActivationSchema;

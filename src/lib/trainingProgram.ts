@@ -1,31 +1,15 @@
 import { Prisma, type PrismaClient, type TrainingProgram } from '@prisma/client';
 import cuid from 'cuid';
-import { z } from 'zod';
+import type { z } from 'zod';
 import { APIError } from './errors';
 import type { Repo } from './repo';
 import { TrainingCycleRepo } from './trainingCycle';
-
-export const trainingProgramSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  description: z.string().nullish(),
-  isPublic: z.boolean().optional().default(false),
-});
-export const trainingProgramPartialSchema = trainingProgramSchema.partial();
-export type TrainingProgramSchema = typeof trainingProgramSchema;
-export type TrainingProgramPartialSchema = typeof trainingProgramPartialSchema;
-
-export const trainingProgramScheduledSlotSchema = z.object({
-  duration: z.number().min(1, 'Duration must be greater than 0'),
-  order: z.number(),
-  trainingCycleId: z.number(),
-});
-export type TrainingProgramScheduledSlotSchema = typeof trainingProgramScheduledSlotSchema;
-
-export const trainingProgramActivationSchema = z.object({
-  startDate: z.date().default(new Date()),
-  trainingProgramId: z.string(),
-});
-export type TrainingProgramActivationSchema = typeof trainingProgramActivationSchema;
+import type {
+  TrainingProgramActivationSchema,
+  TrainingProgramPartialSchema,
+  TrainingProgramScheduledSlotSchema,
+  TrainingProgramSchema,
+} from './zodSchemas';
 
 export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.TrainingProgramSelect> {
   constructor(private readonly prisma: PrismaClient) {}

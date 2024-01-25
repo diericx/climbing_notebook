@@ -1,6 +1,7 @@
 import { prisma } from '$lib/prisma';
-import { TrainingProgramRepo, trainingProgramScheduledSlotSchema } from '$lib/trainingProgram';
+import { TrainingProgramRepo } from '$lib/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
+import { trainingProgramScheduledSlotSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/client';
 import type { Actions, PageServerLoad } from './$types';
