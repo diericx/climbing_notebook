@@ -2,7 +2,7 @@ import { createSendEmailCommand, sesClient } from '$lib/aws/ses';
 import { APIError } from '$lib/errors';
 import { PasswordResetRepo } from '$lib/passwordReset';
 import { prisma } from '$lib/prisma';
-import { requestPasswordResetSchema } from '$lib/user';
+import { requestPasswordResetSchema } from '$lib/zodSchemas';
 import { fail, redirect } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import type { Actions } from './$types';

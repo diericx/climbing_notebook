@@ -1,7 +1,7 @@
 import { SERVER_ERROR } from '$lib/helperTypes';
 import { prisma } from '$lib/prisma';
 import { auth } from '$lib/server/lucia';
-import { loginSchema, signupSchema } from '$lib/user';
+import { loginSchema, signupSchema } from '$lib/zodSchemas';
 import { Prisma } from '@prisma/client';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { LuciaError } from 'lucia';
