@@ -144,3 +144,12 @@ export const journalEntrySchema = z.object({
   type: z.string().default('climbing'),
 });
 export type JournalEntrySchema = typeof journalEntrySchema;
+
+export const profileSchema = z.object({
+  goals: z.string().optional(),
+  imageS3ObjectKey: z.string().nullish(),
+});
+export type ProfileSchema = typeof profileSchema;
+
+export const profilePartialSchema = profileSchema.partial();
+export type ProfilePartialSchema = typeof profilePartialSchema;
