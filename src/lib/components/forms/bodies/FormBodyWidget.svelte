@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { isSimpleFieldInUse } from '$lib/widget';
   import type { Prisma, TrainingCycle } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
   import type { SuperForm } from 'sveltekit-superforms/client';
@@ -9,6 +8,31 @@
   import SubmitButton from '../fields/SubmitButton.svelte';
   import TextArea from '../fields/TextArea.svelte';
   import TextField from '../fields/TextField.svelte';
+
+  function isSimpleFieldInUse(
+    widget: Prisma.WidgetGetPayload<{
+      select: {
+        datasets: {
+          select: {
+            customQueries: {
+              select: {
+                conditions: true;
+              };
+            };
+          };
+        };
+      };
+    }>,
+    field: string
+  ) {
+    return (
+      widget.datasets.find((d) =>
+        d.customQueries.find((q) =>
+          q.conditions.find((c) => c.useWidgetField === true && c.widgetFieldToUse === field)
+        )
+      ) !== undefined
+    );
+  }
 
   // Form action to execute
   export let superForm: SuperForm<z.AnyZodObject, any>;
