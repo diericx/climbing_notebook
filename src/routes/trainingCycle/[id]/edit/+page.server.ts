@@ -12,16 +12,14 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
 
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
   const exerciseRepo = new ExerciseRepo(prisma);
-  const trainingCycle = await trainingCycleRepo.getOneAndValidateOwner(Number(id), user?.userId);
-  const exercises = await exerciseRepo.getSelect({
-    _count: {
-      select: {
-        exerciseEvents: true,
-      },
-    },
-    id: true,
-    name: true,
-    fieldsToShow: true,
+  const trainingCycle = await trainingCycleRepo.getOne({
+    id: Number(id),
+    select: TrainingCycleRepo.selectEverything,
+    userId: user.userId,
+  });
+
+  const exercises = await exerciseRepo.getMany({
+    select: ExerciseRepo.selectMinimal,
   });
 
   // Manually override breadcrumbs to show training program path

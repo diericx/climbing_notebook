@@ -16,10 +16,16 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const id = params.id;
 
   // Editing can only be done by the owner
-  const widget = await widgetRepo.getOneAndValidateOwner(id, user?.userId);
+  const widget = await widgetRepo.getOne({
+    id,
+    userId: user.userId,
+    select: WidgetRepo.selectEverything,
+  });
 
-  const trainingCycles = await trainingCycleRepo.get({
-    ownerId: user.userId,
+  const trainingCycles = await trainingCycleRepo.getManyForUser({
+    userId: user.userId,
+    query: 'owned',
+    select: TrainingCycleRepo.selectNameAndIdOnly,
   });
   // compile datasets for widgets
   const customQueryResults: CustomQueryResults[] = [];
@@ -41,15 +47,8 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
     }
   }
 
-  const exercises = await exerciseRepo.getSelect({
-    _count: {
-      select: {
-        exerciseEvents: true,
-      },
-    },
-    id: true,
-    name: true,
-    fieldsToShow: true,
+  const exercises = await exerciseRepo.getMany({
+    select: ExerciseRepo.selectMinimal,
   });
 
   return {

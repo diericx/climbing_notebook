@@ -9,11 +9,8 @@ import {
   getSessionOrRedirect,
 } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
-import dayjs from 'dayjs';
-import weekOfYear from 'dayjs/plugin/weekOfYear';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
-dayjs.extend(weekOfYear);
 
 export const load: PageServerLoad = async ({ locals, url }) => {
   const { user } = await getSessionOrRedirect({ locals, url });
@@ -24,25 +21,19 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
   const trainingProgramActivationRepo = new TrainingProgramActivationRepo(prisma);
 
-  const exerciseEvents = await exerciseEventsRepo.get(user?.userId);
+  const exerciseEvents = await exerciseEventsRepo.getManyForUser({
+    userId: user?.userId,
+    select: ExerciseEventRepo.selectMinimal,
+  });
   const profile = await profileRepo.getOne(user?.userId);
-  const exercises = await exerciseRepo.getSelect({
-    _count: {
-      select: {
-        exerciseEvents: true,
-      },
-    },
-    id: true,
-    name: true,
-    fieldsToShow: true,
+  const exercises = await exerciseRepo.getMany({
+    select: ExerciseRepo.selectMinimal,
   });
 
-  const activeCycles = await trainingCycleRepo.get({
-    activations: {
-      some: {
-        userId: user.userId,
-      },
-    },
+  const activeCycles = await trainingCycleRepo.getManyForUser({
+    userId: user.userId,
+    query: 'owned',
+    select: TrainingCycleRepo.selectEverything,
   });
 
   // Note: this does not filter for training programs that are active yet have

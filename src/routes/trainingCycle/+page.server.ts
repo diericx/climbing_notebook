@@ -11,36 +11,44 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
 
-  const ownedTrainingCycles = await trainingCycleRepo.get(
-    {
-      // Default to empty string so query defaults to returning empty array
-      ownerId: session?.user.userId || '',
-      trainingProgramId: null,
-    },
-    undefined,
-    session ? { where: { userId: session.user.userId } } : undefined
-  );
+  const ownedTrainingCycles =
+    session === null
+      ? []
+      : await trainingCycleRepo.getManyForUser({
+          userId: session.user.userId,
+          query: 'owned',
+          extraFilters: {
+            isTemplate: true,
+          },
+          select: {
+            ...TrainingCycleRepo.selectMinimal,
+            privateAccessToken: true,
+            saves: { where: { userId: session.user.userId } },
+            activations: { where: { userId: session.user.userId } },
+          },
+        });
 
-  const savedTrainingCycles = await trainingCycleRepo.get(
-    {
-      saves: {
-        some: {
-          // Default to empty string so query defaults to returning empty array
-          userId: session?.user.userId || '',
-        },
-      },
-    },
-    session ? { where: { userId: session.user.userId } } : undefined,
-    session ? { where: { userId: session.user.userId } } : undefined
-  );
+  const savedTrainingCycles =
+    session === null
+      ? []
+      : await trainingCycleRepo.getManyForUser({
+          userId: session.user.userId,
+          query: 'saved',
+          select: {
+            ...TrainingCycleRepo.selectMinimal,
+            saves: { where: { userId: session?.user.userId } },
+            activations: { where: { userId: session?.user.userId } },
+          },
+        });
 
-  const publicTrainingCycles = await trainingCycleRepo.get(
-    {
-      isPublic: true,
-    },
-    session ? { where: { userId: session.user.userId } } : undefined,
-    session ? { where: { userId: session.user.userId } } : undefined
-  );
+  const publicTrainingCycles = await trainingCycleRepo.getAllPublic({
+    ...TrainingCycleRepo.selectMinimal,
+    // NOTE: it would be ideal to not include this in the query if the user is null,
+    // but if we set this to an optional variable the type is defined as always having
+    // this value which makes it difficult to develop the front end.
+    saves: { where: { userId: session?.user.userId || '' } },
+    activations: { where: { userId: session?.user.userId || '' } },
+  });
 
   const s3ObjectUrlPromises = getSignedUrlPromises([
     ...ownedTrainingCycles.reduce((acc, cur) => {

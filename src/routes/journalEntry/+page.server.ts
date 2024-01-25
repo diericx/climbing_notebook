@@ -11,7 +11,10 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const { user } = await getSessionOrRedirect({ locals, url });
 
   const repo = new JournalEntryRepo(prisma);
-  const journalEntries = await repo.get(user?.userId);
+  const journalEntries = await repo.getManyForUser({
+    userId: user?.userId,
+    select: JournalEntryRepo.selectMinimal,
+  });
 
   return {
     journalEntries,

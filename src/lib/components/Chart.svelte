@@ -1,6 +1,7 @@
 <script lang="ts">
   // @ts-nocheck
   import type { CustomQueryResults } from '$lib/customQuery';
+  import type { WidgetRepo } from '$lib/widget';
   import type { ExerciseEvent, Metric, Prisma } from '@prisma/client';
   import {
     BarController,
@@ -48,14 +49,11 @@
     backgroundColor: string;
   };
 
-  type Dataset = Prisma.DatasetGetPayload<{
-    include: {
-      customQueries: true;
-    };
-  }>;
+  export let datasets: Prisma.DatasetGetPayload<
+    typeof WidgetRepo.selectEverythingValidator.select.datasets
+  >[];
 
   export let customQueryResults: CustomQueryResults[];
-  export let datasets: Dataset[];
 
   let equationErrorMessage: string | undefined = undefined;
 

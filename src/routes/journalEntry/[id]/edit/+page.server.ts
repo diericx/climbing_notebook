@@ -9,7 +9,11 @@ export const load: PageServerLoad = async ({ locals, params }) => {
   const id = Number(params.id);
 
   const repo = new JournalEntryRepo(prisma);
-  const journalEntry = await repo.getOneAndValidateOwner(id, user?.userId);
+  const journalEntry = await repo.getOne({
+    id,
+    userId: user?.userId,
+    select: JournalEntryRepo.selectEverything,
+  });
   return {
     journalEntry,
   };

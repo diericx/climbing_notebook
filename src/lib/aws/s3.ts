@@ -1,4 +1,5 @@
 // Create S3 service object
+import dayjs from '$lib/dayjs';
 import {
   DeleteObjectCommand,
   GetObjectCommand,
@@ -7,7 +8,6 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import dayjs from 'dayjs';
 const client = new S3Client({ region: 'us-west-2' });
 const bucket = 'cn-uploads-prod';
 

@@ -1,6 +1,8 @@
-import type { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, type PrismaClient, type Widget } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
+import type { Repo } from './repo';
+import { TrainingCycleRepo } from './trainingCycle';
 
 export const widgetSchemaBase = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
@@ -55,78 +57,115 @@ export const datasetSchema = z.object({
 });
 export type DatasetSchema = typeof datasetSchema;
 
-export const widgetInclude = {
-  owner: {
-    include: {
-      profile: {
-        select: {
-          imageS3ObjectKey: true,
-        },
-      },
-    },
-  },
-  datasets: {
-    include: {
-      customQueries: {
-        include: {
-          conditions: true,
-          exercise: {
-            select: {
-              name: true,
-            },
+export class WidgetRepo implements Repo<Widget, Prisma.WidgetSelect> {
+  constructor(private readonly prisma: PrismaClient) {}
+
+  static makeSelect<T extends Prisma.WidgetSelect>(
+    select: Prisma.Subset<T, Prisma.WidgetSelect>
+  ): T {
+    return select;
+  }
+
+  static selectEverything = this.makeSelect({
+    id: true,
+    useCount: true,
+    isPublished: true,
+    isTemplate: true,
+    name: true,
+    description: true,
+    ownerId: true,
+    width: true,
+    order: true,
+    type: true,
+    sets: true,
+    reps: true,
+    weight: true,
+    minutes: true,
+    seconds: true,
+    owner: {
+      select: {
+        username: true,
+        profile: {
+          select: {
+            imageS3ObjectKey: true,
           },
         },
       },
     },
-    orderBy: {
-      name: 'asc',
-    },
-  },
-  trainingCycle: {
-    include: {
-      exerciseGroups: {
-        include: {
-          exercises: {
-            orderBy: {
-              name: 'asc',
-            },
-          },
-        },
-        orderBy: {
-          name: 'asc',
-        },
-      },
-      days: {
-        include: {
-          exercises: {
-            orderBy: {
-              name: 'asc',
-            },
-          },
-          exerciseGroups: {
-            orderBy: {
-              name: 'asc',
-            },
-            include: {
-              exercises: {
-                orderBy: {
-                  name: 'asc',
-                },
+    datasets: {
+      select: {
+        id: true,
+        type: true,
+        color: true,
+        name: true,
+        widgetId: true,
+        customQueries: {
+          select: {
+            name: true,
+            datasetId: true,
+            id: true,
+            table: true,
+            equation: true,
+            metric: true,
+            conditions: true,
+            exerciseId: true,
+            exercise: {
+              select: {
+                name: true,
               },
             },
           },
         },
-        orderBy: {
-          // Note: ui depends on this being sorted in this way
-          dayOfTheWeek: 'asc',
-        },
+      },
+      orderBy: {
+        name: 'asc',
       },
     },
-  },
-} satisfies Prisma.WidgetInclude;
+    trainingCycle: {
+      select: TrainingCycleRepo.selectEverything,
+    },
+  });
+  static selectEverythingValidator = Prisma.validator<Prisma.WidgetDefaultArgs>()({
+    select: WidgetRepo.selectEverything,
+  });
 
-export class WidgetRepo {
-  constructor(private readonly prisma: PrismaClient) {}
+  canUserRead(
+    userId: string | undefined,
+    widget: Prisma.WidgetGetPayload<{
+      select: { ownerId: true; isPublished: true };
+    }>
+  ) {
+    // if it is public anyone can read
+    if (widget.isPublished) {
+      return true;
+    }
+    // owner can always read
+    if (userId !== undefined) {
+      if (widget.ownerId == userId) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  canUserUpdate(
+    userId: string | undefined,
+    widget: Prisma.WidgetGetPayload<{
+      select: { ownerId: true };
+    }>
+  ) {
+    return widget.ownerId == userId;
+  }
+
+  canUserDelete(
+    userId: string | undefined,
+    widget: Prisma.WidgetGetPayload<{
+      select: { ownerId: true };
+    }>
+  ) {
+    return widget.ownerId == userId;
+  }
+
   async new(data: z.infer<WidgetSchema>, ownerId: string) {
     return await this.prisma.widget.create({
       data: {
@@ -138,8 +177,16 @@ export class WidgetRepo {
   }
 
   // Create a new template from a given widget
-  async newTemplate(data: z.infer<WidgetTemplateSchema>, id: string, ownerId: string) {
-    const source = await this.getOneAndValidateOwner(id, ownerId);
+  async newTemplate(data: z.infer<WidgetTemplateSchema>, id: string, userId: string) {
+    const source = await this.getOne({
+      id,
+      userId,
+      select: WidgetRepo.selectEverything,
+    });
+    if (!this.canUserUpdate(userId, source)) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
+
     return await this.prisma.widget.create({
       data: {
         ...source,
@@ -156,10 +203,12 @@ export class WidgetRepo {
               ...d,
               id: undefined,
               widgetId: undefined,
+              ownerId: userId,
               customQueries: {
                 create: d.customQueries.map((customQuery) => {
                   return {
                     ...customQuery,
+                    ownerId: userId,
                     id: undefined,
                     datasetId: undefined,
                     conditions: {
@@ -179,32 +228,34 @@ export class WidgetRepo {
     });
   }
 
-  async getOne(id: string) {
+  async getOne<S extends Prisma.WidgetSelect>(options: { id: string; userId?: string; select: S }) {
+    const { id, userId, select } = options;
     const widget = await this.prisma.widget.findUnique({
       where: {
         id,
       },
-      include: widgetInclude,
+      select: { ...select, ownerId: true, isPublished: true } as S,
     });
     if (widget == null) {
-      throw new APIError('NOT_FOUND', 'Resource not found');
-    }
-    return widget;
-  }
-
-  // Only returns successfully if you are the owner of this widget
-  async getOneAndValidateOwner(id: string, ownerId: string) {
-    const widget = await this.getOne(id);
-    if (widget.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
+      throw new APIError('NOT_FOUND');
     }
 
-    return widget;
+    const _widget = widget as Prisma.WidgetGetPayload<{
+      select: S;
+    }> &
+      Prisma.WidgetGetPayload<{
+        select: { ownerId: true; isPublished: true };
+      }>;
+    if (!this.canUserRead(userId, _widget)) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
+
+    return _widget;
   }
 
-  async getAllPublishedOrOwnedTemplates<S extends Prisma.WidgetInclude>(
-    ownerId: string,
-    include: Prisma.Subset<S, Prisma.WidgetInclude>
+  async getManyForUserPublishedOrOwnedTemplates<S extends Prisma.WidgetSelect>(
+    userId: string,
+    select: S
   ) {
     return await this.prisma.widget.findMany({
       where: {
@@ -212,7 +263,7 @@ export class WidgetRepo {
         OR: [
           {
             isTemplate: true,
-            ownerId: ownerId,
+            ownerId: userId,
           },
           {
             isTemplate: true,
@@ -223,14 +274,11 @@ export class WidgetRepo {
       orderBy: {
         useCount: 'desc',
       },
-      include: include || {},
+      select,
     });
   }
 
-  async getAllDashboardWidgetsForUser<S extends Prisma.WidgetInclude>(
-    ownerId: string,
-    include: Prisma.Subset<S, Prisma.WidgetInclude>
-  ) {
+  async getManyForUserDashboardWidgets<S extends Prisma.WidgetSelect>(ownerId: string, select: S) {
     return await this.prisma.widget.findMany({
       where: {
         isTemplate: false,
@@ -239,12 +287,23 @@ export class WidgetRepo {
       orderBy: {
         order: 'asc',
       },
-      include,
+      select,
     });
   }
 
-  async update(data: z.infer<WidgetSchemaPartial>, id: string, ownerId: string) {
-    const widget = await this.getOneAndValidateOwner(id, ownerId);
+  async update(data: z.infer<WidgetSchemaPartial>, id: string, userId: string) {
+    const widget = await this.getOne({
+      id,
+      userId,
+      select: {
+        datasets: {
+          ...WidgetRepo.selectEverything.datasets,
+        },
+      },
+    });
+    if (!this.canUserUpdate(userId, widget)) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
 
     // Check to make sure we aren't removing a field that is currently in use
     if (
@@ -267,8 +326,15 @@ export class WidgetRepo {
     });
   }
 
-  async delete(id: string, ownerId: string) {
-    await this.getOneAndValidateOwner(id, ownerId);
+  async delete(id: string, userId: string) {
+    const widget = await this.getOne({
+      id,
+      userId,
+      select: {},
+    });
+    if (!this.canUserDelete(userId, widget)) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
 
     return await this.prisma.widget.delete({
       where: {
@@ -277,15 +343,22 @@ export class WidgetRepo {
     });
   }
 
-  async addDataset(data: z.infer<DatasetSchema>, id: string, ownerId: string) {
-    await this.getOneAndValidateOwner(id, ownerId);
+  async addDataset(data: z.infer<DatasetSchema>, id: string, userId: string) {
+    const widget = await this.getOne({
+      id,
+      userId,
+      select: {},
+    });
+    if (!this.canUserUpdate(userId, widget)) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
 
     return await this.prisma.widget.update({
       data: {
         datasets: {
           create: {
             ...data,
-            ownerId,
+            ownerId: userId,
           },
         },
       },
@@ -299,9 +372,16 @@ export class WidgetRepo {
     data: z.infer<DatasetSchema>,
     widgetId: string,
     datasetId: string,
-    ownerId: string
+    userId: string
   ) {
-    await this.getOneAndValidateOwner(widgetId, ownerId);
+    const widget = await this.getOne({
+      id: widgetId,
+      userId,
+      select: {},
+    });
+    if (!this.canUserUpdate(userId, widget)) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
 
     return await this.prisma.widget.update({
       data: {
@@ -320,8 +400,15 @@ export class WidgetRepo {
     });
   }
 
-  async deleteDataset(widgetId: string, datasetId: string, ownerId: string) {
-    await this.getOneAndValidateOwner(widgetId, ownerId);
+  async deleteDataset(widgetId: string, datasetId: string, userId: string) {
+    const widget = await this.getOne({
+      id: widgetId,
+      userId,
+      select: {},
+    });
+    if (!this.canUserUpdate(userId, widget)) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
 
     return await this.prisma.widget.update({
       data: {
@@ -338,7 +425,12 @@ export class WidgetRepo {
   }
 
   async duplicateTemplateAsDashboardWidget(widgetId: string, userId: string) {
-    const sourceWidget = await this.getOne(widgetId);
+    const sourceWidget = await this.getOne({
+      id: widgetId,
+      userId,
+      select: WidgetRepo.selectEverything,
+    });
+
     // Can only be done on templates
     if (!sourceWidget.isTemplate) {
       throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
@@ -407,11 +499,11 @@ export class WidgetRepo {
 
 export function isSimpleFieldInUse(
   widget: Prisma.WidgetGetPayload<{
-    include: {
+    select: {
       datasets: {
-        include: {
+        select: {
           customQueries: {
-            include: {
+            select: {
               conditions: true;
             };
           };

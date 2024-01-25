@@ -1,14 +1,13 @@
 <script lang="ts">
+  import type { CalendarEventRepo } from '$lib/calendarEvent';
   import type { CustomQueryResults } from '$lib/customQuery';
+  import type { ExerciseEventRepo } from '$lib/exerciseEvent';
+  import type { JournalEntryRepo } from '$lib/journalEntry';
+  import type { TrainingProgramRepo } from '$lib/trainingProgram';
   import { confirmDelete } from '$lib/utils';
+  import type { WidgetRepo } from '$lib/widget';
   import Icon from '@iconify/svelte';
-  import type {
-    CalendarEvent,
-    JournalEntry,
-    Prisma,
-    TrainingCycle,
-    TrainingProgram,
-  } from '@prisma/client';
+  import type { Prisma } from '@prisma/client';
   import { modalStore, popup } from '@skeletonlabs/skeleton';
   import Calendar from './Calendar.svelte';
   import Chart from './Chart.svelte';
@@ -17,58 +16,18 @@
   import FormButton from './forms/FormButton.svelte';
 
   // Generate partial prisma types
-  type Widget = Prisma.WidgetGetPayload<{
-    include: {
-      owner: true;
-      datasets: {
-        include: {
-          customQueries: {
-            include: {
-              conditions: true;
-            };
-          };
-        };
-      };
-      trainingCycle: {
-        include: {
-          days: {
-            include: {
-              exercises: {
-                include: {
-                  exercise: true;
-                };
-              };
-              exerciseGroups: {
-                include: {
-                  exercises: {
-                    include: {
-                      exercise: true;
-                    };
-                  };
-                };
-              };
-            };
-          };
-        };
-      };
-    };
-  }>;
-
-  export let widget: Widget;
+  export let widget: Prisma.WidgetGetPayload<typeof WidgetRepo.selectEverythingValidator>;
   export let customQueryResults: CustomQueryResults[];
-  export let calendarEvents: CalendarEvent[];
-  export let journalEntries: JournalEntry[];
-  export let trainingCycles: TrainingCycle[];
-  export let exerciseEvents: Prisma.ExerciseEventGetPayload<{
-    include: {
-      exercise: {
-        select: {
-          name: true;
-          type: true;
-        };
-      };
-    };
-  }>[];
+  export let calendarEvents: Prisma.CalendarEventGetPayload<
+    typeof CalendarEventRepo.selectEverythingValidator
+  >[];
+  export let journalEntries: Prisma.JournalEntryGetPayload<
+    typeof JournalEntryRepo.selectMinimalValidator
+  >[];
+  export let trainingCycles: Prisma.TrainingCycleGetPayload<{ select: { name: true } }>[];
+  export let exerciseEvents: Prisma.ExerciseEventGetPayload<
+    typeof ExerciseEventRepo.selectMinimalValidator
+  >[];
   export let exercises: Prisma.ExerciseGetPayload<{
     select: {
       _count: {
@@ -102,8 +61,12 @@
     };
   }>[] = [];
   // For the activation modal program select
-  export let ownedTrainingPrograms: TrainingProgram[] = [];
-  export let savedTrainingPrograms: TrainingProgram[] = [];
+  export let ownedTrainingPrograms: Prisma.TrainingProgramGetPayload<
+    typeof TrainingProgramRepo.selectEverythingValidator
+  >[];
+  export let savedTrainingPrograms: Prisma.TrainingProgramGetPayload<
+    typeof TrainingProgramRepo.selectEverythingValidator
+  >[];
 </script>
 
 <div class="card p-4">

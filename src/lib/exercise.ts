@@ -1,6 +1,8 @@
-import type { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, type Exercise, type PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
+import { ExerciseEventRepo } from './exerciseEvent';
+import type { Repo } from './repo';
 import {
   difficulties,
   equipments,
@@ -28,16 +30,84 @@ export const exerciseSchema = z.object({
 });
 export type ExerciseSchema = typeof exerciseSchema;
 
-export class ExerciseRepo {
+export class ExerciseRepo implements Repo<Exercise, Prisma.ExerciseSelect> {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async new(data: z.infer<ExerciseSchema>, creatorId: string) {
+  static makeSelect<T extends Prisma.ExerciseSelect>(
+    select: Prisma.Subset<T, Prisma.ExerciseSelect>
+  ): T {
+    return select;
+  }
+
+  static selectEverything = this.makeSelect({
+    id: true,
+    createdByAuthUserId: true,
+    type: true,
+    difficulty: true,
+    muscleGroup: true,
+    primeMoverMuscle: true,
+    secondaryMuscle: true,
+    tertiaryMuscle: true,
+    primaryEquipment: true,
+    posture: true,
+    fieldsToShow: true,
+    videoUrl: true,
+    name: true,
+    createdAt: true,
+    exerciseEvents: {
+      select: {
+        ...ExerciseEventRepo.selectEverything,
+      },
+    },
+    _count: {
+      select: {
+        exerciseEvents: true,
+      },
+    },
+  });
+  static selectEverythingValidator = Prisma.validator<Prisma.ExerciseDefaultArgs>()({
+    select: ExerciseRepo.selectEverything,
+  });
+
+  static selectMinimal = this.makeSelect({
+    id: true,
+    createdByAuthUserId: true,
+    name: true,
+    fieldsToShow: true,
+    _count: {
+      select: {
+        exerciseEvents: true,
+      },
+    },
+  });
+  static selectMinimalValidator = Prisma.validator<Prisma.ExerciseDefaultArgs>()({
+    select: ExerciseRepo.selectMinimal,
+  });
+
+  canUserRead() {
+    return true;
+  }
+
+  canUserUpdate() {
+    return true;
+  }
+
+  canUserDelete(
+    userId: string | undefined,
+    exercise: Prisma.ExerciseGetPayload<{
+      select: { createdByAuthUserId: true };
+    }>
+  ) {
+    return exercise.createdByAuthUserId == userId;
+  }
+
+  async new(data: z.infer<ExerciseSchema>, userId: string) {
     return await this.prisma.exercise.create({
       data: {
         ...data,
         createdBy: {
           connect: {
-            id: creatorId,
+            id: userId,
           },
         },
         createdAt: new Date(),
@@ -45,46 +115,47 @@ export class ExerciseRepo {
     });
   }
 
-  async getSelect<S extends Prisma.ExerciseSelect>(
-    select: Prisma.Subset<S, Prisma.ExerciseSelect>
-  ) {
-    return await this.prisma.exercise.findMany({
-      orderBy: {
-        exerciseEvents: {
-          _count: 'desc',
-        },
-      },
-      select: select,
-    });
-  }
-
-  async get() {
-    return await this.prisma.exercise.findMany({
-      orderBy: {
-        exerciseEvents: {
-          _count: 'desc',
-        },
-      },
-      include: {
-        _count: {
-          select: {
-            exerciseEvents: true,
-          },
-        },
-      },
-    });
-  }
-
-  async getOne(id: string) {
+  async getOne<S extends Prisma.ExerciseSelect>(options: {
+    id: string;
+    userId: string;
+    select: S;
+  }) {
+    const { id, select } = options;
     const exercise = await this.prisma.exercise.findUnique({
       where: {
         id,
       },
+      select: { ...select } as S,
     });
     if (exercise == null) {
-      throw new APIError('NOT_FOUND', 'Resource not found');
+      throw new APIError('NOT_FOUND');
     }
-    return exercise;
+
+    const _exercise = exercise as Prisma.ExerciseGetPayload<{
+      select: S;
+    }> &
+      Prisma.ExerciseGetPayload<{
+        select: { createdByAuthUserId: true };
+      }>;
+
+    if (!this.canUserRead()) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
+
+    return _exercise;
+  }
+
+  async getMany<S extends Prisma.ExerciseSelect>(options: { select: S }) {
+    const { select } = options;
+    // Fetch all
+    return await this.prisma.exercise.findMany({
+      orderBy: {
+        exerciseEvents: {
+          _count: 'desc',
+        },
+      },
+      select,
+    });
   }
 
   async update(data: z.infer<ExerciseSchema>, id: string) {
@@ -99,11 +170,12 @@ export class ExerciseRepo {
   }
 
   async delete(id: string, userId: string) {
-    const exercise = await this.getOne(id);
+    const exercise = await this.getOne({ id, userId, select: {} });
     if (exercise.createdByAuthUserId != userId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
+      throw new APIError('INVALID_PERMISSIONS');
     }
 
+    // Users cannot delete an exercise if any exercise events depend on it
     const dependingExerciseEvent = await this.prisma.exerciseEvent.findFirst({
       where: {
         exerciseId: id,

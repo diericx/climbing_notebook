@@ -1,5 +1,5 @@
 <script context="module">
-  export const pageTitle = 'Programs';
+  export const pageTitle = 'Training Programs';
 </script>
 
 <script lang="ts">
@@ -8,11 +8,7 @@
   import ListItemTrainingProgram from '$lib/components/listItems/ListItemTrainingProgram.svelte';
   import Icon from '@iconify/svelte';
   import { Tab, TabGroup, modalStore } from '@skeletonlabs/skeleton';
-  import dayjs from 'dayjs';
-  import localizedFormat from 'dayjs/plugin/localizedFormat';
   import type { PageData } from './$types';
-
-  dayjs.extend(localizedFormat);
 
   export let data: PageData;
 

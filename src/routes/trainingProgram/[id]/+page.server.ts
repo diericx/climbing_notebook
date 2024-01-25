@@ -17,18 +17,12 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const token = url.searchParams.get('token');
 
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
-  const trainingProgram = await trainingProgramRepo.getOne(params.id, {
-    where: {
-      userId: session?.user.userId,
-    },
+  const trainingProgram = await trainingProgramRepo.getOne({
+    id: params.id,
+    userId: session?.user.userId,
+    select: TrainingProgramRepo.selectEverything,
+    privateAccessToken: token || undefined,
   });
-
-  // If no user is not signed in and the training program is not public, error out
-  if (session === null) {
-    if (!trainingProgram.isPublic && token != trainingProgram.privateAccessToken) {
-      throw new APIError('INVALID_PERMISSIONS', 'This Training Program is private');
-    }
-  }
 
   const s3ObjectUrlPromises = getSignedUrlPromises(
     trainingProgram.owner.profile?.imageS3ObjectKey
@@ -108,8 +102,14 @@ export const actions: Actions = {
 
     const repo = new TrainingProgramRepo(prisma);
 
-    const program = await repo.getOneAndValidateOwner(id, user.userId);
-    if (!program.description) {
+    // Published programs require a desc, so get the program and validate this first
+    const trainingProgramRepo = new TrainingProgramRepo(prisma);
+    const trainingProgram = await trainingProgramRepo.getOne({
+      id: params.id,
+      userId: user.userId,
+      select: TrainingProgramRepo.selectEverything,
+    });
+    if (!trainingProgram.description) {
       throw new APIError(
         'INVALID_INPUT',
         'Training Program requires a description to be published. Be as descriptive as possible.'

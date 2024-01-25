@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import { evaluate } from 'mathjs';
 import { z } from 'zod';
 import { APIError } from './errors';
+import type { Repo } from './repo';
 
 export const customQuerySchema = z
   .object({
@@ -83,9 +84,59 @@ export type CustomQueryResults = {
   data: ExerciseEvent[] | Metric[];
 };
 
-export class CustomQueryRepo {
+export class CustomQueryRepo implements Repo<CustomQuery, Prisma.CustomQuerySelect> {
   constructor(private readonly prisma: PrismaClient) {}
-  async new(data: z.infer<CustomQuerySchema>, datasetId: string, ownerId: string) {
+  static makeCustomQuerySelect<T extends Prisma.CustomQuerySelect>(
+    select: Prisma.Subset<T, Prisma.CustomQuerySelect>
+  ): T {
+    return select;
+  }
+
+  static selectEverything = this.makeCustomQuerySelect({
+    id: true,
+    ownerId: true,
+    name: true,
+    table: true,
+    equation: true,
+    metric: true,
+    conditions: true,
+    dataset: true,
+    createdAt: true,
+    exercise: true,
+  });
+  static selectEverythingValidator = Prisma.validator<Prisma.CustomQueryDefaultArgs>()({
+    select: CustomQueryRepo.selectEverything,
+  });
+
+  canUserRead(
+    userId: string | undefined,
+    customQuery: Prisma.CustomQueryGetPayload<{
+      select: { ownerId: true };
+    }>
+  ) {
+    return customQuery.ownerId == userId;
+  }
+
+  canUserUpdate(
+    userId: string | undefined,
+    customQuery: Prisma.CustomQueryGetPayload<{
+      select: { ownerId: true };
+    }>
+  ) {
+    return customQuery.ownerId == userId;
+  }
+
+  canUserDelete(
+    userId: string | undefined,
+    customQuery: Prisma.CustomQueryGetPayload<{
+      select: { ownerId: true };
+    }>
+  ) {
+    return customQuery.ownerId == userId;
+  }
+
+  async new(data: z.infer<CustomQuerySchema>, datasetId: string, userId: string) {
+    // throw new APIError('INVALID_ACTION');
     return (await this.prisma.customQuery.create({
       data: {
         ...data,
@@ -102,34 +153,105 @@ export class CustomQueryRepo {
             id: datasetId,
           },
         },
-        ownerId: ownerId,
+        ownerId: userId,
         createdAt: new Date(),
       },
     })) as CustomQuery;
   }
 
-  async runCustomQuery(id: string, ownerId: string) {
-    // Set up types for this one off query
-    const queryWithWidget = Prisma.validator<Prisma.CustomQueryArgs>()({
-      include: {
-        dataset: {
-          include: {
-            widget: true,
-          },
-        },
+  async getOne<S extends Prisma.CustomQuerySelect>(options: {
+    id: string;
+    userId: string;
+    select: S;
+  }) {
+    const { id, userId, select } = options;
+    const customQuery = await this.prisma.customQuery.findUnique({
+      where: {
+        id,
+      },
+      select: { ...select, ownerId: true } as S,
+    });
+    if (customQuery == null) {
+      throw new APIError('NOT_FOUND');
+    }
+
+    const _customQuery = customQuery as Prisma.CustomQueryGetPayload<{
+      select: S;
+    }> &
+      Prisma.CustomQueryGetPayload<{
+        select: { ownerId: true };
+      }>;
+
+    if (!this.canUserRead(userId, _customQuery)) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
+
+    return _customQuery;
+  }
+
+  async getManyForUser<S extends Prisma.CalendarEventSelect>(options: {
+    userId: string;
+    select: S;
+  }) {
+    const { userId, select } = options;
+    // Fetch all
+    return await this.prisma.trainingCycle.findMany({
+      where: {
+        ownerId: userId,
+      },
+      orderBy: {
+        name: 'asc',
+      },
+      select,
+    });
+  }
+
+  async update(data: z.infer<CustomQuerySchema>, id: string, userId: string) {
+    const customQuery = await this.getOne({ id, userId, select: {} });
+    if (!this.canUserUpdate(userId, customQuery)) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
+
+    return await this.prisma.customQuery.update({
+      data: {
+        ...data,
+      },
+      where: {
+        id,
+      },
+    });
+  }
+
+  async delete(id: string, userId: string) {
+    const customQuery = await this.getOne({ id, userId, select: {} });
+    if (!this.canUserDelete(userId, customQuery)) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
+
+    return await this.prisma.customQuery.delete({
+      where: {
+        id,
+      },
+    });
+  }
+
+  async runCustomQuery(id: string, userId: string) {
+    // Get the widget
+    const query = await this.getOne({
+      id,
+      userId,
+      select: {
+        table: true,
+        exerciseId: true,
+        metric: true,
+        dataset: { select: { widget: true } },
         conditions: true,
       },
     });
-    type QueryWithWidget = Prisma.CustomQueryGetPayload<typeof queryWithWidget>;
-    // Get the widget
-    const query = (await this.getOne(id, {
-      dataset: { include: { widget: true } },
-      conditions: true,
-    })) as QueryWithWidget;
 
     // Permissions: if it is not a template, only the owner can run the query
     if (!query.dataset.widget.isTemplate) {
-      if (query.ownerId != ownerId) {
+      if (query.ownerId != userId) {
         throw new APIError(
           'INVALID_PERMISSIONS',
           'You do not have permission to edit this object.'
@@ -141,7 +263,7 @@ export class CustomQueryRepo {
     if (query.table == 'exerciseEvent') {
       return this.prisma.exerciseEvent.findMany({
         where: {
-          ownerId,
+          ownerId: userId,
           // Add each query condition
           AND: [
             ...query.conditions.map((c) => ({
@@ -174,7 +296,7 @@ export class CustomQueryRepo {
     } else if (query.table == 'metric') {
       return await this.prisma.metric.findMany({
         where: {
-          ownerId,
+          ownerId: userId,
           AND: [
             // Add each query condition
             ...query.conditions.map((c) => {
@@ -197,83 +319,19 @@ export class CustomQueryRepo {
     }
   }
 
-  async get(ownerId: string) {
-    return await this.prisma.customQuery.findMany({
-      where: {
-        ownerId: ownerId,
-      },
-      orderBy: {
-        name: 'asc',
-      },
-      include: {
-        conditions: true,
-        exercise: true,
-      },
-    });
-  }
-
-  async getOne(id: string, include: Prisma.CustomQueryInclude = {}) {
-    const query = await this.prisma.customQuery.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        conditions: true,
-        exercise: true,
-        ...include,
-        dataset: {
-          include: {
-            widget: true,
-          },
-        },
-      },
-    });
-    if (query == null) {
-      throw new APIError('NOT_FOUND', 'Resource not found');
-    }
-    return query;
-  }
-  async getOneAndValidateOwner(id: string, ownerId: string) {
-    const query = await this.getOne(id);
-    if (query.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
+  async addCondition(data: z.infer<CustomQueryConditionSchema>, id: string, userId: string) {
+    const customQuery = await this.getOne({ id, userId, select: {} });
+    if (!this.canUserUpdate(userId, customQuery)) {
+      throw new APIError('INVALID_PERMISSIONS');
     }
 
-    return query;
-  }
-
-  async update(data: z.infer<CustomQuerySchema>, id: string, ownerId: string) {
-    await this.getOneAndValidateOwner(id, ownerId);
-
-    return await this.prisma.customQuery.update({
-      data: {
-        ...data,
-      },
-      where: {
-        id,
-      },
-    });
-  }
-
-  async delete(id: string, ownerId: string) {
-    await this.getOneAndValidateOwner(id, ownerId);
-
-    return await this.prisma.customQuery.delete({
-      where: {
-        id,
-      },
-    });
-  }
-
-  async addCondition(data: z.infer<CustomQueryConditionSchema>, id: string, ownerId: string) {
-    await this.getOneAndValidateOwner(id, ownerId);
     return await this.prisma.customQuery.update({
       data: {
         conditions: {
           create: [
             {
               ...data,
-              ownerId: ownerId,
+              ownerId: userId,
               createdAt: new Date(),
             },
           ],
@@ -285,8 +343,12 @@ export class CustomQueryRepo {
     });
   }
 
-  async deleteCondition(queryId: string, conditionId: string, ownerId: string) {
-    await this.getOneAndValidateOwner(queryId, ownerId);
+  async deleteCondition(queryId: string, conditionId: string, userId: string) {
+    const customQuery = await this.getOne({ id: queryId, userId, select: {} });
+    if (!this.canUserUpdate(userId, customQuery)) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
+
     return (await this.prisma.customQuery.update({
       data: {
         conditions: {
@@ -305,9 +367,13 @@ export class CustomQueryRepo {
     data: z.infer<CustomQueryConditionSchema>,
     queryId: string,
     conditionId: string,
-    ownerId: string
+    userId: string
   ) {
-    await this.getOneAndValidateOwner(queryId, ownerId);
+    const customQuery = await this.getOne({ id: queryId, userId, select: {} });
+    if (!this.canUserUpdate(userId, customQuery)) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
+
     return (await this.prisma.customQuery.update({
       data: {
         conditions: {

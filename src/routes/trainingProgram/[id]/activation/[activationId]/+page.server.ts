@@ -1,8 +1,8 @@
+import dayjs from '$lib/dayjs';
 import { prisma } from '$lib/prisma';
 import { trainingProgramActivationSchema, TrainingProgramRepo } from '$lib/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
-import dayjs from 'dayjs';
 import { setError, superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -10,7 +10,11 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const { user } = await getSessionOrRedirect({ locals, url });
 
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
-  const trainingProgram = await trainingProgramRepo.getOneAndValidateOwner(params.id, user.userId);
+  const trainingProgram = await trainingProgramRepo.getOne({
+    id: params.id,
+    userId: user.userId,
+    select: TrainingProgramRepo.selectMinimal,
+  });
   return { trainingProgram };
 };
 

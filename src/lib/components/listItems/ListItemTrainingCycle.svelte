@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { TrainingCycleRepo } from '$lib/trainingCycle';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
@@ -8,26 +9,26 @@
   import S3Avatar from '../S3Avatar.svelte';
   import FormButton from '../forms/FormButton.svelte';
 
-  export let trainingCycle: Prisma.TrainingCycleGetPayload<{
-    include: {
-      owner: {
-        include: {
-          profile: {
-            select: {
-              imageS3ObjectKey: true;
-            };
-          };
-        };
+  // We need to combine the minimal type with the optional privateAccessToken
+  // because only the private cycles have this token and there doesn't seem
+  // to be any way to generate types with optional values directly via
+  // Prisma.
+  export let trainingCycle: Prisma.TrainingCycleGetPayload<
+    typeof TrainingCycleRepo.selectMinimalValidator
+  > &
+    Prisma.TrainingCycleGetPayload<{
+      select: {
+        saves: true;
+        activations: true;
+        privateAccessToken: true;
       };
-      _count: {
-        select: {
-          saves: true;
-        };
-      };
-      saves: true;
-      activations: true;
-    };
-  }>;
+    }>;
+
+  export const findSingleLocationSelect = {
+    id: true,
+    quantity: true,
+  };
+
   export let session: Session | null;
   export let showVisibility = false;
   export let onSuccessDuplicate = () => {};

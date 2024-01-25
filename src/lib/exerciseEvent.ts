@@ -1,6 +1,7 @@
-import type { PrismaClient } from '@prisma/client';
+import { Prisma, type ExerciseEvent, type PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
+import type { Repo } from './repo';
 import { isDateInTheSameWeekAsToday } from './utils';
 
 export const exerciseEventSchema = z.object({
@@ -19,27 +20,76 @@ export const exerciseEventSchema = z.object({
 });
 export type ExerciseEventSchema = typeof exerciseEventSchema;
 
-export class ExerciseEventRepo {
+export class ExerciseEventRepo implements Repo<ExerciseEvent, Prisma.ExerciseEventSelect> {
   constructor(private readonly prisma: PrismaClient) {}
-
-  async getOne(id: number) {
-    const exerciseEvent = await this.prisma.exerciseEvent.findUnique({
-      where: {
-        id: Number(id),
+  static makeSelect<T extends Prisma.ExerciseEventSelect>(
+    select: Prisma.Subset<T, Prisma.ExerciseEventSelect>
+  ): T {
+    return select;
+  }
+  static selectMinimal = this.makeSelect({
+    id: true,
+    name: true,
+    date: true,
+    exercise: {
+      select: {
+        name: true,
+        type: true,
       },
-    });
-    if (exerciseEvent == null) {
-      throw new APIError('NOT_FOUND', 'Resource not found');
-    }
-    return exerciseEvent;
+    },
+    // This is used for the drop downs to select exercise AND to detect
+    // migration status from legacy exercise
+    exerciseId: true,
+    ownerId: true,
+    reps: true,
+    sets: true,
+    minutes: true,
+    seconds: true,
+    difficulty: true,
+    weight: true,
+    notes: true,
+  });
+  static selectMinimalValidator = Prisma.validator<Prisma.ExerciseEventDefaultArgs>()({
+    select: ExerciseEventRepo.selectMinimal,
+  });
+
+  static selectEverything = this.makeSelect({
+    ...this.selectMinimal,
+    createdAt: true,
+    owner: true,
+    markedCompletions: true,
+    exerciseGroup: true,
+    trainingCycleDay: true,
+  });
+  static selectEverythingValidator = Prisma.validator<Prisma.ExerciseEventDefaultArgs>()({
+    select: ExerciseEventRepo.selectEverything,
+  });
+
+  canUserRead(
+    userId: string | undefined,
+    exerciseEvent: Prisma.ExerciseEventGetPayload<{
+      select: { ownerId: true };
+    }>
+  ) {
+    return exerciseEvent.ownerId == userId;
   }
 
-  async getOneAndValidateOwner(id: number, ownerId: string) {
-    const exerciseEvent = await this.getOne(id);
-    if (exerciseEvent.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
-    }
-    return exerciseEvent;
+  canUserUpdate(
+    userId: string | undefined,
+    exerciseEvent: Prisma.ExerciseEventGetPayload<{
+      select: { ownerId: true };
+    }>
+  ) {
+    return exerciseEvent.ownerId == userId;
+  }
+
+  canUserDelete(
+    userId: string | undefined,
+    exerciseEvent: Prisma.ExerciseEventGetPayload<{
+      select: { ownerId: true };
+    }>
+  ) {
+    return exerciseEvent.ownerId == userId;
   }
 
   async new(data: z.infer<ExerciseEventSchema>, ownerId: string) {
@@ -72,6 +122,7 @@ export class ExerciseEventRepo {
         );
       }
     }
+
     return await this.prisma.exerciseEvent.create({
       data: {
         ...data,
@@ -81,11 +132,46 @@ export class ExerciseEventRepo {
     });
   }
 
-  async get(ownerId: string, dateMin?: Date | undefined, dateMax?: Date | undefined) {
+  async getOne<S extends Prisma.ExerciseEventSelect>(options: {
+    id: number;
+    userId: string;
+    select: S;
+  }) {
+    const { id, userId, select } = options;
+    const exerciseEvent = await this.prisma.exerciseEvent.findUnique({
+      where: {
+        id: Number(id),
+      },
+      select: { ...select, ownerId: true } as S,
+    });
+    if (exerciseEvent == null) {
+      throw new APIError('NOT_FOUND');
+    }
+
+    const _exerciseEvent = exerciseEvent as Prisma.ExerciseEventGetPayload<{
+      select: S;
+    }> &
+      Prisma.ExerciseEventGetPayload<{
+        select: { ownerId: true };
+      }>;
+    if (!this.canUserRead(userId, _exerciseEvent)) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
+
+    return _exerciseEvent;
+  }
+
+  async getManyForUser<S extends Prisma.ExerciseEventSelect>(options: {
+    userId: string;
+    dateMin?: Date | undefined;
+    dateMax?: Date | undefined;
+    select: S;
+  }) {
+    const { userId, dateMin, dateMax, select } = options;
     // Fetch all
     return await this.prisma.exerciseEvent.findMany({
       where: {
-        ownerId: ownerId,
+        ownerId: userId,
         trainingCycleDay: null,
         exerciseGroup: null,
         date: {
@@ -96,29 +182,20 @@ export class ExerciseEventRepo {
       orderBy: {
         date: 'desc',
       },
-      include: {
-        exercise: true,
-      },
-    });
-  }
-
-  async getOneThatNeedsExerciseMigration() {
-    return this.prisma.exerciseEvent.findFirst({
-      where: {
-        exercise: {
-          is: null,
-        },
-      },
+      select: { ...select, ownerId: true } as S,
     });
   }
 
   async update(
     data: z.infer<ExerciseEventSchema>,
     id: number,
-    ownerId: string,
+    userId: string,
     shouldApplyMigrationToAll = false
   ) {
-    const original = await this.getOneAndValidateOwner(id, ownerId);
+    const original = await this.getOne({ id, userId, select: { exerciseId: true, name: true } });
+    if (!this.canUserUpdate(userId, original)) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
 
     // Propogate this migration to all other exercises with the same name
     if (original.exerciseId == null && shouldApplyMigrationToAll) {
@@ -127,7 +204,7 @@ export class ExerciseEventRepo {
           name: {
             equals: original.name,
           },
-          ownerId,
+          ownerId: userId,
         },
         data: {
           exerciseId: data.exerciseId,
@@ -145,8 +222,11 @@ export class ExerciseEventRepo {
     });
   }
 
-  async delete(id: number, ownerId: string) {
-    await this.getOneAndValidateOwner(id, ownerId);
+  async delete(id: number, userId: string) {
+    const exerciseEvent = await this.getOne({ id, userId, select: {} });
+    if (!this.canUserUpdate(userId, exerciseEvent)) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
 
     return await this.prisma.exerciseEvent.delete({
       where: {
@@ -155,8 +235,21 @@ export class ExerciseEventRepo {
     });
   }
 
-  async setCompleted(id: number, ownerId: string, newDate: Date, isCompleted: boolean) {
-    const e = await this.getOneAndValidateOwner(id, ownerId);
+  async getOneThatNeedsExerciseMigration() {
+    return this.prisma.exerciseEvent.findFirst({
+      where: {
+        exercise: {
+          is: null,
+        },
+      },
+    });
+  }
+
+  async setCompleted(id: number, userId: string, newDate: Date, isCompleted: boolean) {
+    const e = await this.getOne({ id, userId, select: { markedCompletions: true } });
+    if (!this.canUserUpdate(userId, e)) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
     const newDateStr = newDate.toISOString().split('T')[0];
     const strippedDate = new Date(newDateStr);
 

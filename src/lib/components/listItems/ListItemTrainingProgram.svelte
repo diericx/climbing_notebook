@@ -1,4 +1,5 @@
 <script lang="ts">
+  import type { TrainingProgramRepo } from '$lib/trainingProgram';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
@@ -8,25 +9,9 @@
   import S3Avatar from '../S3Avatar.svelte';
   import FormButton from '../forms/FormButton.svelte';
 
-  export let trainingProgram: Prisma.TrainingProgramGetPayload<{
-    include: {
-      owner: {
-        include: {
-          profile: {
-            select: {
-              imageS3ObjectKey: true;
-            };
-          };
-        };
-      };
-      _count: {
-        select: {
-          saves: true;
-        };
-      };
-      saves: true;
-    };
-  }>;
+  export let trainingProgram: Prisma.TrainingProgramGetPayload<
+    typeof TrainingProgramRepo.selectMinimalValidator
+  >;
   export let session: Session | null;
   export let showVisibility = false;
   export let onSuccessDuplicate = () => {};

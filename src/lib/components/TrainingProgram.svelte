@@ -1,50 +1,14 @@
 <script lang="ts">
+  import type { TrainingProgramRepo } from '$lib/trainingProgram';
   import type { Prisma } from '@prisma/client';
   import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
   import List from './List.svelte';
   import ListItem from './ListItem.svelte';
   import WeeklyCalendar from './WeeklyCalendar.svelte';
 
-  export let trainingProgram: Prisma.TrainingProgramGetPayload<{
-    include: {
-      owner: true;
-      trainingProgramScheduledSlots: {
-        include: {
-          trainingCycles: {
-            include: {
-              days: {
-                include: {
-                  exercises: {
-                    include: {
-                      exercise: {
-                        select: {
-                          name: true;
-                        };
-                      };
-                    };
-                  };
-                  exerciseGroups: {
-                    include: {
-                      exercises: {
-                        include: {
-                          exercise: {
-                            select: {
-                              name: true;
-                            };
-                          };
-                        };
-                      };
-                    };
-                  };
-                };
-              };
-            };
-          };
-        };
-      };
-      trainingCycles: true;
-    };
-  }>;
+  export let trainingProgram: Prisma.TrainingProgramGetPayload<
+    typeof TrainingProgramRepo.selectEverythingValidator
+  >;
 </script>
 
 <div class="mb-12">

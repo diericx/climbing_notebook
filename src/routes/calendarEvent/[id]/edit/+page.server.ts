@@ -9,7 +9,11 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const id = Number(params.id);
 
   const repo = new CalendarEventRepo(prisma);
-  const calendarEvent = await repo.getOneAndValidateOwner(id, user.userId);
+  const calendarEvent = await repo.getOne({
+    id,
+    userId: user.userId,
+    select: CalendarEventRepo.selectEverything,
+  });
 
   return {
     calendarEvent,

@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@prisma/client';
-import dayjs from 'dayjs';
+import dayjs from './dayjs';
 import { APIError } from './errors';
 
 export class PasswordResetRepo {

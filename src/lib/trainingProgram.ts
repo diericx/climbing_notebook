@@ -1,7 +1,9 @@
-import type { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, type PrismaClient, type TrainingProgram } from '@prisma/client';
 import cuid from 'cuid';
 import { z } from 'zod';
 import { APIError } from './errors';
+import type { Repo } from './repo';
+import { TrainingCycleRepo } from './trainingCycle';
 
 export const trainingProgramSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -25,116 +27,114 @@ export const trainingProgramActivationSchema = z.object({
 });
 export type TrainingProgramActivationSchema = typeof trainingProgramActivationSchema;
 
-export class TrainingProgramRepo {
+export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.TrainingProgramSelect> {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async getOne(id: string, saves?: Prisma.TrainingProgram$savesArgs) {
-    const trainingProgram = await this.prisma.trainingProgram.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        owner: {
-          include: {
-            profile: {
-              select: {
-                imageS3ObjectKey: true,
-              },
-            },
-          },
-        },
-        trainingProgramScheduledSlots: {
-          orderBy: {
-            order: 'asc',
-          },
-          include: {
-            trainingCycles: {
-              include: {
-                owner: true,
-                trainingProgramScheduledSlots: true,
-                exerciseGroups: {
-                  include: {
-                    exercises: {
-                      include: {
-                        exercise: {
-                          select: {
-                            name: true,
-                          },
-                        },
-                      },
-                      orderBy: {
-                        name: 'asc',
-                      },
-                    },
-                  },
-                  orderBy: {
-                    name: 'asc',
-                  },
-                },
-                days: {
-                  include: {
-                    exercises: {
-                      include: {
-                        exercise: {
-                          select: {
-                            name: true,
-                          },
-                        },
-                      },
-                      orderBy: {
-                        name: 'asc',
-                      },
-                    },
-                    exerciseGroups: {
-                      orderBy: {
-                        name: 'asc',
-                      },
-                      include: {
-                        exercises: {
-                          include: {
-                            exercise: {
-                              select: {
-                                name: true,
-                              },
-                            },
-                          },
-                          orderBy: {
-                            name: 'asc',
-                          },
-                        },
-                      },
-                    },
-                  },
-                  orderBy: {
-                    // Note: ui depends on this being sorted in this way
-                    dayOfTheWeek: 'asc',
-                  },
-                },
-              },
-            },
-          },
-        },
-        trainingCycles: true,
-        saves,
-        _count: {
-          select: {
-            saves: true,
-          },
-        },
-      },
-    });
-    if (trainingProgram == null) {
-      throw new APIError('NOT_FOUND', 'Resource not found');
-    }
-    return trainingProgram;
+  static makeSelect<T extends Prisma.TrainingProgramSelect>(
+    select: Prisma.Subset<T, Prisma.TrainingProgramSelect>
+  ): T {
+    return select;
   }
 
-  async getOneAndValidateOwner(id: string, ownerId: string) {
-    const trainingProgram = await this.getOne(id);
-    if (trainingProgram.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this object.');
+  static selectMinimal = this.makeSelect({
+    id: true,
+    name: true,
+    isPublic: true,
+    description: true,
+    privateAccessToken: true,
+    ownerId: true,
+    owner: {
+      select: {
+        username: true,
+        profile: {
+          select: {
+            imageS3ObjectKey: true,
+          },
+        },
+      },
+    },
+    _count: {
+      select: {
+        saves: true,
+      },
+    },
+    saves: {
+      select: {
+        userId: true,
+      },
+    },
+  });
+  static selectMinimalValidator = Prisma.validator<Prisma.TrainingProgramDefaultArgs>()({
+    select: TrainingProgramRepo.selectMinimal,
+  });
+
+  static selectEverything = this.makeSelect({
+    ...this.selectMinimal,
+    createdAt: true,
+    trainingProgramActivations: true,
+    trainingProgramScheduledSlots: {
+      orderBy: {
+        order: 'asc',
+      },
+      select: {
+        id: true,
+        order: true,
+        duration: true,
+        trainingCycles: {
+          select: TrainingCycleRepo.selectEverything,
+        },
+      },
+    },
+    trainingCycles: {
+      select: TrainingCycleRepo.selectEverything,
+    },
+  });
+  static selectEverythingValidator = Prisma.validator<Prisma.TrainingProgramDefaultArgs>()({
+    select: TrainingProgramRepo.selectEverything,
+  });
+
+  canUserRead(
+    userId: string | undefined,
+    trainingProgram: Prisma.TrainingProgramGetPayload<{
+      select: { ownerId: true; privateAccessToken: true; isPublic: true };
+    }>,
+    otherOptions?: {
+      privateAccessToken?: string;
     }
-    return trainingProgram;
+  ) {
+    // if it is public anyone can read
+    if (trainingProgram.isPublic) {
+      return true;
+    }
+    // users with private access token can read
+    if (otherOptions?.privateAccessToken == trainingProgram.privateAccessToken) {
+      return true;
+    }
+    // owner can always read
+    if (userId !== undefined) {
+      if (trainingProgram.ownerId == userId) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  canUserUpdate(
+    userId: string | undefined,
+    trainingProgram: Prisma.TrainingProgramGetPayload<{
+      select: { ownerId: true };
+    }>
+  ) {
+    return trainingProgram.ownerId == userId;
+  }
+
+  canUserDelete(
+    userId: string | undefined,
+    trainingProgram: Prisma.TrainingProgramGetPayload<{
+      select: { ownerId: true };
+    }>
+  ) {
+    return trainingProgram.ownerId == userId;
   }
 
   async new(data: z.infer<TrainingProgramSchema>, ownerId: string) {
@@ -147,51 +147,112 @@ export class TrainingProgramRepo {
     });
   }
 
-  async get(
-    where: Prisma.TrainingProgramWhereInput,
-    savesWhere?: Prisma.TrainingProgramSaveWhereInput
-  ) {
-    // Fetch all
-    return await this.prisma.trainingProgram.findMany({
-      where,
-      orderBy: {
-        createdAt: 'desc',
-      },
-      include: {
-        owner: {
-          include: {
-            profile: {
-              select: {
-                imageS3ObjectKey: true,
-              },
-            },
-          },
-        },
-        trainingProgramScheduledSlots: true,
-        trainingCycles: true,
-        trainingProgramActivations: true,
-        saves: savesWhere ? { where: savesWhere } : undefined,
-        _count: {
-          select: {
-            saves: true,
-          },
-        },
-      },
-    });
-  }
-
-  async update(data: z.infer<TrainingProgramPartialSchema>, id: string, ownerId: string) {
-    // Get current training program
+  async getOne<S extends Prisma.TrainingProgramSelect>(options: {
+    id: string;
+    select: S;
+    userId?: string;
+    privateAccessToken?: string;
+  }) {
+    const { id, userId, select, privateAccessToken } = options;
     const trainingProgram = await this.prisma.trainingProgram.findUnique({
       where: {
         id,
       },
+      select: { ...select, ownerId: true, isPublic: true, privateAccessToken: true } as S,
     });
     if (trainingProgram == null) {
-      throw new APIError('NOT_FOUND', 'Resource not found');
+      throw new APIError('NOT_FOUND');
     }
-    if (trainingProgram.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
+
+    const _trainingProgram = trainingProgram as Prisma.TrainingProgramGetPayload<{
+      select: S;
+    }> &
+      Prisma.TrainingProgramGetPayload<{
+        select: { ownerId: true; privateAccessToken: true; isPublic: true };
+      }>;
+    if (!this.canUserRead(userId, _trainingProgram, { privateAccessToken })) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
+
+    // Do not send privateAccessToken unless this is the owner
+    if (userId != _trainingProgram.ownerId) {
+      _trainingProgram.privateAccessToken = null;
+    }
+
+    return _trainingProgram;
+  }
+
+  // Wrapper function to make code more readable. Get one does all the same logic required
+  // to simply check if a user has read access to a resource which is a common requirement.
+  async validateReadAccess(id: string, userId: string) {
+    return this.getOne({ id, userId, select: {} });
+  }
+
+  async getManyForUser<S extends Prisma.TrainingProgramSelect>(options: {
+    userId: string;
+    select: S;
+    // TODO: Delete this where input?
+    where?: Prisma.TrainingProgramWhereInput;
+  }) {
+    const { userId, select, where } = options;
+    // Fetch all
+    return await this.prisma.trainingProgram.findMany({
+      where: {
+        ownerId: userId,
+        ...where,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      select: { ...select, ownerId: true } as S,
+    });
+  }
+
+  async getManySavedForUser<S extends Prisma.TrainingProgramSelect>(options: {
+    userId: string;
+    select: S;
+  }) {
+    const { userId, select } = options;
+    // Fetch all
+    return await this.prisma.trainingProgram.findMany({
+      where: {
+        ownerId: userId,
+        saves: {
+          some: {
+            // Default to empty string so query defaults to returning empty array
+            userId,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      select: { ...select, ownerId: true } as S,
+    });
+  }
+
+  async getManyPublic<S extends Prisma.TrainingProgramSelect>(options: { select: S }) {
+    const { select } = options;
+    // Fetch all
+    return await this.prisma.trainingProgram.findMany({
+      where: {
+        isPublic: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      select: { ...select, ownerId: true } as S,
+    });
+  }
+
+  async update(data: z.infer<TrainingProgramPartialSchema>, id: string, userId: string) {
+    const trainingProgram = await this.getOne({
+      id,
+      userId,
+      select: {},
+    });
+    if (!this.canUserUpdate(userId, trainingProgram)) {
+      throw new APIError('INVALID_PERMISSIONS');
     }
 
     // Update training program
@@ -205,13 +266,14 @@ export class TrainingProgramRepo {
     });
   }
 
-  async duplicate(id: string, ownerId: string, data?: { name?: string }) {
-    const trainingProgram = await this.prisma.trainingProgram.findUnique({
-      where: {
-        id,
-      },
-      include: {
+  async duplicate(id: string, userId: string, data?: { name?: string }) {
+    const trainingProgram = await this.getOne({
+      id,
+      userId,
+      select: {
         trainingCycles: true,
+        name: true,
+        id: true,
         trainingProgramScheduledSlots: {
           include: {
             trainingCycles: {
@@ -223,13 +285,6 @@ export class TrainingProgramRepo {
         },
       },
     });
-    if (trainingProgram == null) {
-      throw new APIError('NOT_FOUND', 'Resource not found');
-    }
-    // Auth checks; only owner can duplicate, unless public
-    if (trainingProgram.ownerId != ownerId && !trainingProgram.isPublic) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
-    }
 
     // Note: id must be manually generated here so we can use it in the nested connect
     // below
@@ -241,13 +296,13 @@ export class TrainingProgramRepo {
         id: newTrainingProgramId,
         name: data?.name || trainingProgram.name + ' Duplicate',
         parentId: trainingProgram.id,
-        ownerId,
+        ownerId: userId,
         // Dupes always start private
         isPublic: false,
         trainingCycles: {
           create: trainingProgram.trainingCycles.map((c) => ({
             ...c,
-            ownerId,
+            ownerId: userId,
             id: undefined,
             trainingProgramId: undefined,
           })),
@@ -299,11 +354,8 @@ export class TrainingProgramRepo {
     return updatedProgram;
   }
 
-  async save(id: string, ownerId: string) {
-    const trainingProgram = await this.getOne(id);
-    if (!trainingProgram.isPublic && trainingProgram.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this program');
-    }
+  async save(id: string, userId: string) {
+    this.validateReadAccess(id, userId);
 
     await this.prisma.trainingProgram.update({
       where: {
@@ -315,11 +367,11 @@ export class TrainingProgramRepo {
             where: {
               trainingProgramId_userId: {
                 trainingProgramId: id,
-                userId: ownerId,
+                userId: userId,
               },
             },
             create: {
-              userId: ownerId,
+              userId: userId,
             },
           },
         },
@@ -327,11 +379,8 @@ export class TrainingProgramRepo {
     });
   }
 
-  async unsave(id: string, ownerId: string) {
-    const trainingProgram = await this.getOne(id);
-    if (!trainingProgram.isPublic && trainingProgram.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to view this program');
-    }
+  async unsave(id: string, userId: string) {
+    this.validateReadAccess(id, userId);
 
     await this.prisma.trainingProgram.update({
       where: {
@@ -342,7 +391,7 @@ export class TrainingProgramRepo {
           delete: {
             trainingProgramId_userId: {
               trainingProgramId: id,
-              userId: ownerId,
+              userId,
             },
           },
         },
@@ -353,22 +402,15 @@ export class TrainingProgramRepo {
   async addTrainingProgramScheduledSlot(
     data: z.infer<TrainingProgramScheduledSlotSchema>,
     id: string,
-    ownerId: string
+    userId: string
   ) {
-    // Get current training program
-    const trainingProgram = await this.prisma.trainingProgram.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        trainingProgramScheduledSlots: true,
-      },
+    const trainingProgram = await this.getOne({
+      id,
+      userId,
+      select: { trainingProgramScheduledSlots: true },
     });
-    if (trainingProgram == null) {
-      throw new APIError('NOT_FOUND', 'Resource not found');
-    }
-    if (trainingProgram.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
+    if (!this.canUserUpdate(userId, trainingProgram)) {
+      throw new APIError('INVALID_PERMISSIONS');
     }
 
     // Cannot add a slot with an order less than 0 or beyond the current size.
@@ -416,24 +458,17 @@ export class TrainingProgramRepo {
   }
 
   async deleteTrainingProgramScheduledSlot(
-    trainingPrgramId: string,
+    trainingProgramId: string,
     trainingProgramScheduledSlotId: string,
-    ownerId: string
+    userId: string
   ) {
-    // Get current training program
-    const trainingProgram = await this.prisma.trainingProgram.findUnique({
-      where: {
-        id: trainingPrgramId,
-      },
-      include: {
-        trainingProgramScheduledSlots: true,
-      },
+    const trainingProgram = await this.getOne({
+      id: trainingProgramId,
+      userId,
+      select: { trainingProgramScheduledSlots: true },
     });
-    if (trainingProgram == null) {
-      throw new APIError('NOT_FOUND', 'Resource not found');
-    }
-    if (trainingProgram.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
+    if (!this.canUserUpdate(userId, trainingProgram)) {
+      throw new APIError('INVALID_PERMISSIONS');
     }
 
     const trainingProgramScheduledSlot = await this.prisma.trainingProgramScheduledSlot.findUnique({
@@ -468,7 +503,7 @@ export class TrainingProgramRepo {
         },
       },
       where: {
-        id: trainingPrgramId,
+        id: trainingProgramId,
       },
     });
 
@@ -479,19 +514,15 @@ export class TrainingProgramRepo {
     data: z.infer<TrainingProgramScheduledSlotSchema>,
     trainingProgramId: string,
     slotId: string,
-    ownerId: string
+    userId: string
   ) {
-    // Get current training program
-    const trainingProgram = await this.prisma.trainingProgram.findUnique({
-      where: {
-        id: trainingProgramId,
-      },
+    const trainingProgram = await this.getOne({
+      id: trainingProgramId,
+      userId,
+      select: { trainingProgramScheduledSlots: true },
     });
-    if (trainingProgram == null) {
-      throw new APIError('NOT_FOUND', 'Resource not found');
-    }
-    if (trainingProgram.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
+    if (!this.canUserUpdate(userId, trainingProgram)) {
+      throw new APIError('INVALID_PERMISSIONS');
     }
 
     const trainingProgramScheduledSlot = await this.prisma.trainingProgramScheduledSlot.findUnique({
@@ -530,25 +561,18 @@ export class TrainingProgramRepo {
   }
 
   async moveTrainingProgramScheduledSlot(
-    trainingPrgramId: string,
+    trainingProgramId: string,
     trainingProgramScheduledSlotId: string,
     order: number,
-    ownerId: string
+    userId: string
   ) {
-    // Get current training program
-    const trainingProgram = await this.prisma.trainingProgram.findUnique({
-      where: {
-        id: trainingPrgramId,
-      },
-      include: {
-        trainingProgramScheduledSlots: true,
-      },
+    const trainingProgram = await this.getOne({
+      id: trainingProgramId,
+      userId,
+      select: { trainingProgramScheduledSlots: true },
     });
-    if (trainingProgram == null) {
-      throw new APIError('NOT_FOUND', 'Resource not found');
-    }
-    if (trainingProgram.ownerId != ownerId) {
-      throw new APIError('INVALID_PERMISSIONS', 'You do not have permission to edit this object.');
+    if (!this.canUserUpdate(userId, trainingProgram)) {
+      throw new APIError('INVALID_PERMISSIONS');
     }
 
     const trainingProgramScheduledSlot = await this.prisma.trainingProgramScheduledSlot.findUnique({
@@ -636,15 +660,15 @@ export class TrainingProgramRepo {
     });
   }
 
-  async newActivation(data: z.infer<TrainingProgramActivationSchema>, ownerId: string) {
-    this.getOneAndValidateOwner(data.trainingProgramId, ownerId);
+  async newActivation(data: z.infer<TrainingProgramActivationSchema>, userId: string) {
+    this.validateReadAccess(data.trainingProgramId, userId);
 
     return await this.prisma.trainingProgramActivation.create({
       data: {
         startDate: data.startDate,
         owner: {
           connect: {
-            id: ownerId,
+            id: userId,
           },
         },
         trainingProgram: {
@@ -659,9 +683,9 @@ export class TrainingProgramRepo {
   async updateActivation(
     data: z.infer<TrainingProgramActivationSchema>,
     activationId: string,
-    ownerId: string
+    userId: string
   ) {
-    this.getOneAndValidateOwner(data.trainingProgramId, ownerId);
+    this.validateReadAccess(data.trainingProgramId, userId);
 
     return await this.prisma.trainingProgramActivation.update({
       where: {
@@ -678,8 +702,8 @@ export class TrainingProgramRepo {
     });
   }
 
-  async deleteActivation(trainingProgramId: string, activationId: string, ownerId: string) {
-    this.getOneAndValidateOwner(trainingProgramId, ownerId);
+  async deleteActivation(trainingProgramId: string, activationId: string, userId: string) {
+    this.validateReadAccess(trainingProgramId, userId);
 
     return await this.prisma.trainingProgramActivation.delete({
       where: {
@@ -688,8 +712,8 @@ export class TrainingProgramRepo {
     });
   }
 
-  async delete(id: string, ownerId: string) {
-    await this.getOneAndValidateOwner(id, ownerId);
+  async delete(id: string, userId: string) {
+    this.validateReadAccess(id, userId);
 
     return await this.prisma.trainingProgram.delete({
       where: {

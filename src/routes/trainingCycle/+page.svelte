@@ -8,11 +8,7 @@
   import ListItemTrainingCycle from '$lib/components/listItems/ListItemTrainingCycle.svelte';
   import Icon from '@iconify/svelte';
   import { Tab, TabGroup, modalStore } from '@skeletonlabs/skeleton';
-  import dayjs from 'dayjs';
-  import localizedFormat from 'dayjs/plugin/localizedFormat';
   import type { PageData } from './$types';
-
-  dayjs.extend(localizedFormat);
 
   export let data: PageData;
 

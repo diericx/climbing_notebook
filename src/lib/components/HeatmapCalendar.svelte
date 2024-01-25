@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { CustomQueryResults } from '$lib/customQuery';
+  import type { WidgetRepo } from '$lib/widget';
   import type { ExerciseEvent, Metric, Prisma } from '@prisma/client';
   import { default as CalHeatmap } from 'cal-heatmap';
   import 'cal-heatmap/cal-heatmap.css';
@@ -11,14 +12,10 @@
   import type dayjs from 'dayjs';
   import { onMount } from 'svelte';
 
-  type Dataset = Prisma.DatasetGetPayload<{
-    include: {
-      customQueries: true;
-    };
-  }>;
-
   export let customQueryResults: CustomQueryResults[];
-  export let datasets: Dataset[];
+  export let datasets: Prisma.DatasetGetPayload<
+    typeof WidgetRepo.selectEverythingValidator.select.datasets
+  >[];
 
   let domain: String[] = [...datasets.map((d) => d.name), 'combo'];
   let chartData: DataRecord[];

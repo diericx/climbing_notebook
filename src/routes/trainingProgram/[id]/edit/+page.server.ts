@@ -11,17 +11,23 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
 
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
-  const trainingProgram = await trainingProgramRepo.getOneAndValidateOwner(id, user?.userId);
-  const ownedTrainingCycles = await trainingCycleRepo.get({
-    ownerId: user.userId,
-    trainingProgramId: null,
+  const trainingProgram = await trainingProgramRepo.getOne({
+    id,
+    userId: user?.userId,
+    select: TrainingProgramRepo.selectEverything,
   });
-  const savedTrainingCycles = await trainingCycleRepo.get({
-    saves: {
-      some: {
-        userId: user.userId,
-      },
+  const ownedTrainingCycles = await trainingCycleRepo.getManyForUser({
+    userId: user.userId,
+    query: 'owned',
+    extraFilters: {
+      isTemplate: true,
     },
+    select: TrainingCycleRepo.selectNameAndIdOnly,
+  });
+  const savedTrainingCycles = await trainingCycleRepo.getManyForUser({
+    userId: user.userId,
+    query: 'saved',
+    select: TrainingCycleRepo.selectNameAndIdOnly,
   });
 
   return {

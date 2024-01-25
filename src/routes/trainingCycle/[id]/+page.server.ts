@@ -14,16 +14,17 @@ export const load: PageServerLoad = async ({ url, locals, params }) => {
   const token = url.searchParams.get('token');
 
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
-  const trainingCycle = await trainingCycleRepo.getOne(Number(params.id), {
-    where: session ? { userId: session.user.userId } : undefined,
+  const trainingCycle = await trainingCycleRepo.getOne({
+    id: Number(params.id),
+    select: {
+      ...TrainingCycleRepo.selectEverything,
+      saves: {
+        where: session ? { userId: session.user.userId } : undefined,
+      },
+    },
+    userId: session?.user.userId,
+    privateAccessToken: token || undefined,
   });
-
-  // If no user is not signed in and the training program is not public, error out
-  if (session === null) {
-    if (!trainingCycle.isPublic && token != trainingCycle.privateAccessToken) {
-      throw new APIError('INVALID_PERMISSIONS', 'This Training Cycle is private');
-    }
-  }
 
   // Manually override breadcrumbs to show training program path
   // if this is an embedded cycle.
@@ -127,7 +128,15 @@ export const actions: Actions = {
     const id = Number(params.id);
 
     const repo = new TrainingCycleRepo(prisma);
-    const cycle = await repo.getOneAndValidateOwner(id, user.userId);
+    const cycle = await repo.getOne({
+      id,
+      select: { ownerId: true, description: true },
+      userId: user.userId,
+    });
+    if (cycle.ownerId != user.userId) {
+      throw new APIError('INVALID_PERMISSIONS');
+    }
+
     if (!cycle.description) {
       throw new APIError(
         'INVALID_INPUT',
