@@ -2,9 +2,9 @@ import { Prisma, type PrismaClient, type TrainingCycle } from '@prisma/client';
 import { z } from 'zod';
 import { APIError } from './errors';
 import { ExerciseEventRepo } from './exerciseEvent';
-import type { ExerciseGroupSchema } from './exerciseGroup';
 import type { Repo } from './repo';
 import type { TrainingCycleDaySchema } from './trainingCycleDay';
+import type { ExerciseGroupSchema } from './zodSchemas';
 
 export const trainingCycleSchema = z.object({
   name: z.string().min(1),
