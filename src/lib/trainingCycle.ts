@@ -3,9 +3,9 @@ import type { z } from 'zod';
 import { APIError } from './errors';
 import { ExerciseEventRepo } from './exerciseEvent';
 import type { Repo } from './repo';
-import type { TrainingCycleDaySchema } from './trainingCycleDay';
 import type {
   ExerciseGroupSchema,
+  TrainingCycleDaySchema,
   TrainingCyclePartialSchema,
   TrainingCycleSchema,
 } from './zodSchemas';

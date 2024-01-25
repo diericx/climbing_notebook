@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { trainingCycleDaySchema } from '$lib/trainingCycleDay';
+  import { trainingCycleDaySchema } from '$lib/zodSchemas';
   import FormBodyTrainingCycleDay from '../../forms/bodies/FormBodyTrainingCycleDay.svelte';
   import FormModal from './FormModal.svelte';
 </script>

@@ -213,3 +213,8 @@ export const trainingCycleTemplateSchema = z.object({
   description: z.string().min(1, 'Description is required'),
 });
 export type TrainingCycleTemplateSchema = typeof trainingCycleTemplateSchema;
+
+export const trainingCycleDaySchema = z.object({
+  description: z.string().optional(),
+});
+export type TrainingCycleDaySchema = typeof trainingCycleDaySchema;

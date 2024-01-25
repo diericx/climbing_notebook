@@ -1,9 +1,8 @@
 import { ExerciseEventRepo } from '$lib/exerciseEvent';
 import { prisma } from '$lib/prisma';
 import { TrainingCycleRepo } from '$lib/trainingCycle';
-import { trainingCycleDaySchema } from '$lib/trainingCycleDay';
 import { getSessionOrRedirect } from '$lib/utils';
-import { exerciseEventSchema } from '$lib/zodSchemas';
+import { exerciseEventSchema, trainingCycleDaySchema } from '$lib/zodSchemas';
 import { fail, type Actions } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 
