@@ -137,3 +137,10 @@ export const fileUploadSchema = z.object({
   file: z.any(),
 });
 export type FileUploadSchema = typeof fileUploadSchema;
+
+export const journalEntrySchema = z.object({
+  date: z.date().default(new Date()),
+  content: z.string().min(1, { message: 'Journal entry content is required' }),
+  type: z.string().default('climbing'),
+});
+export type JournalEntrySchema = typeof journalEntrySchema;

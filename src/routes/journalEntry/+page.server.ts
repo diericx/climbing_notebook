@@ -1,8 +1,9 @@
 import { APIError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
-import { JournalEntryRepo, journalEntrySchema } from '$lib/journalEntry';
+import { JournalEntryRepo } from '$lib/journalEntry';
 import { prisma } from '$lib/prisma';
 import { getSessionOrRedirect } from '$lib/utils';
+import { journalEntrySchema } from '$lib/zodSchemas';
 import { error, fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
