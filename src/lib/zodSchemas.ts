@@ -271,3 +271,21 @@ export const signupSchema = z.object({
   password: z.string().min(5, { message: 'Password must be at least 5 characters long' }),
 });
 export type SignupSchema = typeof signupSchema;
+
+export const widgetSchemaBase = z.object({
+  name: z.string().min(1, { message: 'Name is required' }),
+  description: z.string().nullish(),
+  width: z.enum(['half', 'full']).default('half'),
+  order: z.number(),
+  type: z.enum(['chart', 'calendar', 'heatmapCalendar', 'dailyExerciseCalendar']).default('chart'),
+  isTemplate: z.boolean(),
+  sets: z.number().nullish(),
+  reps: z.number().nullish(),
+  weight: z.number().nullish(),
+  seconds: z.number().nullish(),
+  minutes: z.number().nullish(),
+  trainingCycleId: z.number().nullish(),
+  parentId: z.string().nullish(),
+  isPublished: z.boolean().optional(),
+});
+export const widgetSchemaBasePartial = widgetSchemaBase.partial();

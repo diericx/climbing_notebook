@@ -3,24 +3,7 @@ import { z } from 'zod';
 import { APIError } from './errors';
 import type { Repo } from './repo';
 import { TrainingCycleRepo } from './trainingCycle';
-
-export const widgetSchemaBase = z.object({
-  name: z.string().min(1, { message: 'Name is required' }),
-  description: z.string().nullish(),
-  width: z.enum(['half', 'full']).default('half'),
-  order: z.number(),
-  type: z.enum(['chart', 'calendar', 'heatmapCalendar', 'dailyExerciseCalendar']).default('chart'),
-  isTemplate: z.boolean(),
-  sets: z.number().nullish(),
-  reps: z.number().nullish(),
-  weight: z.number().nullish(),
-  seconds: z.number().nullish(),
-  minutes: z.number().nullish(),
-  trainingCycleId: z.number().nullish(),
-  parentId: z.string().nullish(),
-  isPublished: z.boolean().optional(),
-});
-export const widgetSchemaBasePartial = widgetSchemaBase.partial();
+import { widgetSchemaBase, widgetSchemaBasePartial } from './zodSchemas';
 
 // Split out the refinement function so we can reuse it to compose a partial schema
 // below
