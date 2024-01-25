@@ -1,13 +1,14 @@
 import { getSignedUrlPromises } from '$lib/aws/s3';
 import { APIError } from '$lib/errors';
 import { prisma } from '$lib/prisma';
-import { TrainingCycleRepo, trainingCycleSchema } from '$lib/trainingCycle';
+import { TrainingCycleRepo } from '$lib/trainingCycle';
 import {
   TrainingProgramRepo,
   trainingProgramScheduledSlotSchema,
   trainingProgramSchema,
 } from '$lib/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
+import { trainingCycleSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';

@@ -198,3 +198,18 @@ export const projectSessionSchema = z.object({
   sent: z.boolean().default(false).optional(),
 });
 export type ProjectSessionSchema = typeof projectSessionSchema;
+
+export const trainingCycleSchema = z.object({
+  name: z.string().min(1),
+  description: z.string().nullish(),
+  isPublic: z.boolean().optional().default(false),
+});
+export const trainingCyclePartialSchema = trainingCycleSchema.partial();
+export type TrainingCycleSchema = typeof trainingCycleSchema;
+export type TrainingCyclePartialSchema = typeof trainingCyclePartialSchema;
+
+export const trainingCycleTemplateSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  description: z.string().min(1, 'Description is required'),
+});
+export type TrainingCycleTemplateSchema = typeof trainingCycleTemplateSchema;

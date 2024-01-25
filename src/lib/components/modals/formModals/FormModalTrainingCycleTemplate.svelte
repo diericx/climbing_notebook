@@ -1,6 +1,6 @@
 <script lang="ts">
   import FormBodyTrainingCycleTemplate from '$lib/components/forms/bodies/FormBodyTrainingCycleTemplate.svelte';
-  import { trainingCycleTemplateSchema } from '$lib/trainingCycle';
+  import { trainingCycleTemplateSchema } from '$lib/zodSchemas';
   import FormModal from './FormModal.svelte';
 </script>
 

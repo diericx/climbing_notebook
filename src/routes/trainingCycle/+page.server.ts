@@ -1,7 +1,8 @@
 import { getSignedUrlPromises } from '$lib/aws/s3';
 import { prisma } from '$lib/prisma';
-import { TrainingCycleRepo, trainingCycleSchema } from '$lib/trainingCycle';
+import { TrainingCycleRepo } from '$lib/trainingCycle';
 import { getSessionOrRedirect } from '$lib/utils';
+import { trainingCycleSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
