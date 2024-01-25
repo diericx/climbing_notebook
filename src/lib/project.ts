@@ -1,50 +1,7 @@
 import type { PrismaClient } from '@prisma/client';
-import { z } from 'zod';
+import type { z } from 'zod';
 import { APIError } from './errors';
-import { grades, gradeSystems } from './utils';
-
-const projectBaseSchema = z.object({
-  name: z.string().min(1),
-  notes: z.string().nullish(),
-  grade: z.string(),
-  gradeSystem: z.string(),
-  url: z.string().nullish(),
-  imageS3ObjectKey: z.string().nullish(),
-});
-export const projectPartialBaseSchema = projectBaseSchema.partial();
-
-const projectSchemaChecks = (
-  val: z.infer<typeof projectBaseSchema> | z.infer<typeof projectPartialBaseSchema>,
-  ctx: z.RefinementCtx
-) => {
-  if (val.gradeSystem && !gradeSystems.includes(val.gradeSystem)) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: `Invalid grade system`,
-      path: ['gradeSystem'],
-    });
-  }
-  if (val.gradeSystem && val.grade && !grades[val.gradeSystem].includes(val.grade)) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: `Grade is required and must be a valid grade for the selected system`,
-      path: ['grade'],
-    });
-  }
-};
-
-export const projectSchema = projectBaseSchema.superRefine(projectSchemaChecks);
-export type ProjectSchema = typeof projectSchema;
-
-export const projectPartialSchema = projectPartialBaseSchema.superRefine(projectSchemaChecks);
-export type ProjectPartialSchema = typeof projectPartialSchema;
-
-export const projectSessionSchema = z.object({
-  notes: z.string().nullish(),
-  date: z.date(),
-  sent: z.boolean().default(false).optional(),
-});
-export type ProjectSessionSchema = typeof projectSessionSchema;
+import type { ProjectPartialSchema, ProjectSchema, ProjectSessionSchema } from './zodSchemas';
 
 export class ProjectRepo {
   constructor(private readonly prisma: PrismaClient) {}

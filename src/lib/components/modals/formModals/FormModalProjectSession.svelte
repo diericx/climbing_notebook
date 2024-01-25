@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { projectSessionSchema } from '$lib/project';
+  import { projectSessionSchema } from '$lib/zodSchemas';
   import FormBodyProjectSession from '../../forms/bodies/FormBodyProjectSession.svelte';
   import FormModal from './FormModal.svelte';
 </script>

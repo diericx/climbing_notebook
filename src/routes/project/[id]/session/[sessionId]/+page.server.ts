@@ -1,6 +1,7 @@
 import { prisma } from '$lib/prisma';
-import { ProjectRepo, projectSessionSchema } from '$lib/project';
+import { ProjectRepo } from '$lib/project';
 import { getSessionOrRedirect } from '$lib/utils';
+import { projectSessionSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions } from './$types';
