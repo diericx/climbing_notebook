@@ -1,6 +1,7 @@
-import { ExerciseRepo, exerciseSchema } from '$lib/exercise';
+import { ExerciseRepo } from '$lib/exercise';
 import { prisma } from '$lib/prisma';
 import { getSessionOrRedirect } from '$lib/utils';
+import { exerciseSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions } from './$types';

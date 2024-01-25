@@ -1,34 +1,9 @@
 import { Prisma, type Exercise, type PrismaClient } from '@prisma/client';
-import { z } from 'zod';
+import type { z } from 'zod';
 import { APIError } from './errors';
 import { ExerciseEventRepo } from './exerciseEvent';
 import type { Repo } from './repo';
-import {
-  difficulties,
-  equipments,
-  exerciseEventFieldsToShow,
-  exerciseTypes,
-  muscleGroups,
-  muscles,
-  postures,
-} from './utils';
-
-export const exerciseSchema = z.object({
-  name: z.string().min(1),
-  type: z.enum(exerciseTypes),
-  difficulty: z.enum(difficulties).nullish(),
-  videoUrl: z.string().nullish(),
-  muscleGroup: z.enum(muscleGroups).nullish().default(null),
-  primeMoverMuscle: z.enum(muscles).nullish().default(null),
-  secondaryMuscle: z.enum(muscles).nullish().default(null),
-  tertiaryMuscle: z.enum(muscles).nullish().default(null),
-  primaryEquipment: z.enum(equipments).nullish().default(null),
-  posture: z.enum(postures).nullish().default(null),
-  fieldsToShow: z.array(z.enum(exerciseEventFieldsToShow)).refine((val) => val.length > 0, {
-    message: 'At least one field is required',
-  }),
-});
-export type ExerciseSchema = typeof exerciseSchema;
+import type { ExerciseSchema } from './zodSchemas';
 
 export class ExerciseRepo implements Repo<Exercise, Prisma.ExerciseSelect> {
   constructor(private readonly prisma: PrismaClient) {}
