@@ -1,8 +1,8 @@
 import { deleteFile, getSignedUrlsAndMetadata, uploadFile } from '$lib/aws/s3';
-import { fileUploadSchema } from '$lib/file';
 import { prisma } from '$lib/prisma';
 import { projectPartialSchema, ProjectRepo } from '$lib/project';
 import { getSessionOrRedirect } from '$lib/utils';
+import { fileUploadSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
 import sharp from 'sharp';
 import { setError, superValidate } from 'sveltekit-superforms/server';

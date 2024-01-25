@@ -132,3 +132,8 @@ export const exerciseGroupSchema = z.object({
   name: z.string().min(1),
 });
 export type ExerciseGroupSchema = typeof exerciseGroupSchema;
+
+export const fileUploadSchema = z.object({
+  file: z.any(),
+});
+export type FileUploadSchema = typeof fileUploadSchema;

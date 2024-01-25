@@ -10,8 +10,8 @@
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import FormBodyFileUpload from '$lib/components/forms/bodies/FormBodyFileUpload.svelte';
   import dayjs from '$lib/dayjs';
-  import { fileUploadSchema } from '$lib/file';
   import { confirmDelete } from '$lib/utils';
+  import { fileUploadSchema } from '$lib/zodSchemas';
   import Icon from '@iconify/svelte';
   import { modalStore } from '@skeletonlabs/skeleton';
   import type { PageData } from './$types';

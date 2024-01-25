@@ -3,8 +3,8 @@
   import Form from '$lib/components/forms/Form.svelte';
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import FormBodyFileUpload from '$lib/components/forms/bodies/FormBodyFileUpload.svelte';
-  import { fileUploadSchema } from '$lib/file';
   import { confirmDelete } from '$lib/utils';
+  import { fileUploadSchema } from '$lib/zodSchemas';
   import Icon from '@iconify/svelte';
   import { json2csv } from 'json-2-csv';
   import type { PageData } from './$types';
