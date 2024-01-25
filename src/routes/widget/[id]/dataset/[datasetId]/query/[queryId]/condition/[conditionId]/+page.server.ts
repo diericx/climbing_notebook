@@ -1,5 +1,5 @@
 import { CustomQueryRepo } from '$lib/customQuery';
-import { prisma } from '$lib/prisma';
+import { prisma } from '$lib/server/prisma';
 import { getSessionOrRedirect } from '$lib/utils';
 import { customQueryConditionSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';

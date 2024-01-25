@@ -1,5 +1,5 @@
 import dayjs from '$lib/dayjs';
-import { prisma } from '$lib/prisma';
+import { prisma } from '$lib/server/prisma';
 import { TrainingProgramRepo } from '$lib/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
 import { trainingProgramActivationSchema } from '$lib/zodSchemas';

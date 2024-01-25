@@ -1,5 +1,5 @@
 import { ExerciseEventRepo } from '$lib/exerciseEvent';
-import { prisma } from '$lib/prisma';
+import { prisma } from '$lib/server/prisma';
 import { getSessionOrRedirect } from '$lib/utils';
 import { exerciseEventSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';

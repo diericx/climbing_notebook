@@ -3,6 +3,7 @@ import type { z } from 'zod';
 import { APIError } from './errors';
 import type { Repo } from './repo';
 import { TrainingCycleRepo } from './trainingCycle';
+import { isSimpleFieldInUse } from './widgetHelpers';
 import type {
   DatasetSchema,
   WidgetSchema,

@@ -1,5 +1,5 @@
 import { ExerciseEventRepo } from '$lib/exerciseEvent';
-import { prisma } from '$lib/prisma';
+import { prisma } from '$lib/server/prisma';
 import { TrainingCycleRepo } from '$lib/trainingCycle';
 import { getSessionOrRedirect } from '$lib/utils';
 import { exerciseEventSchema, trainingCycleDaySchema } from '$lib/zodSchemas';

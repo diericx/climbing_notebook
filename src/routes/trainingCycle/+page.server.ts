@@ -1,5 +1,5 @@
 import { getSignedUrlPromises } from '$lib/aws/s3';
-import { prisma } from '$lib/prisma';
+import { prisma } from '$lib/server/prisma';
 import { TrainingCycleRepo } from '$lib/trainingCycle';
 import { getSessionOrRedirect } from '$lib/utils';
 import { trainingCycleSchema } from '$lib/zodSchemas';

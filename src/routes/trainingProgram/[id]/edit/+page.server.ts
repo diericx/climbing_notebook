@@ -1,4 +1,4 @@
-import { prisma } from '$lib/prisma';
+import { prisma } from '$lib/server/prisma';
 import { TrainingCycleRepo } from '$lib/trainingCycle';
 import { TrainingProgramRepo } from '$lib/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';

@@ -1,5 +1,5 @@
 import { ExerciseRepo } from '$lib/exercise';
-import { prisma } from '$lib/prisma';
+import { prisma } from '$lib/server/prisma';
 import { getSessionOrRedirect } from '$lib/utils';
 import { exerciseSchema } from '$lib/zodSchemas';
 import { Prisma } from '@prisma/client';

@@ -1,6 +1,6 @@
 // lib/server/lucia.ts
 import { dev } from '$app/environment';
-import { prisma } from '$lib/prisma';
+import { prisma } from '$lib/server/prisma';
 import { prisma as prismaAdapter } from '@lucia-auth/adapter-prisma';
 import { lucia } from 'lucia';
 import { sveltekit } from 'lucia/middleware';

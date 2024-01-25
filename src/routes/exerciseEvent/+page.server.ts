@@ -1,7 +1,7 @@
 import { ExerciseRepo } from '$lib/exercise';
 import { ExerciseEventRepo } from '$lib/exerciseEvent';
-import { prisma } from '$lib/prisma';
 import { ProfileRepo } from '$lib/profile';
+import { prisma } from '$lib/server/prisma';
 import { TrainingCycleRepo } from '$lib/trainingCycle';
 import { TrainingProgramActivationRepo } from '$lib/trainingProgramActivation';
 import {

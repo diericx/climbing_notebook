@@ -1,5 +1,5 @@
 import { JournalEntryRepo } from '$lib/journalEntry';
-import { prisma } from '$lib/prisma';
+import { prisma } from '$lib/server/prisma';
 import { getSessionOrRedirect } from '$lib/utils';
 import type { PageServerLoad } from './$types';
 

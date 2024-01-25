@@ -1,6 +1,6 @@
 import { getSignedUrlPromises } from '$lib/aws/s3';
 import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
-import { prisma } from '$lib/prisma';
+import { prisma } from '$lib/server/prisma';
 import { getSessionOrRedirect } from '$lib/utils';
 import { WidgetRepo } from '$lib/widget';
 import { widgetSchema } from '$lib/zodSchemas';

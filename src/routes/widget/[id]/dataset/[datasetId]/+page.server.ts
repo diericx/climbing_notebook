@@ -1,4 +1,4 @@
-import { prisma } from '$lib/prisma';
+import { prisma } from '$lib/server/prisma';
 import { getSessionOrRedirect } from '$lib/utils';
 import { WidgetRepo } from '$lib/widget';
 import { datasetSchema } from '$lib/zodSchemas';
