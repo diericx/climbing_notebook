@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { CalendarEventRepo } from '$lib/calendarEvent';
   import type { CustomQueryResults } from '$lib/customQuery';
   import type { JournalEntryRepo } from '$lib/journalEntry';
+  import type { calendarEventSelects } from '$lib/prismaHelpers/calendarEventHelper';
   import type { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
   import type { widgetSelects } from '$lib/prismaHelpers/widgetHelper';
   import type { TrainingProgramRepo } from '$lib/trainingProgram';
@@ -19,7 +19,7 @@
   export let widget: Prisma.WidgetGetPayload<typeof widgetSelects.everythingValidator>;
   export let customQueryResults: CustomQueryResults[];
   export let calendarEvents: Prisma.CalendarEventGetPayload<
-    typeof CalendarEventRepo.selectEverythingValidator
+    typeof calendarEventSelects.everythingValidator
   >[];
   export let journalEntries: Prisma.JournalEntryGetPayload<
     typeof JournalEntryRepo.selectMinimalValidator

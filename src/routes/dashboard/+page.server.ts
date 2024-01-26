@@ -1,13 +1,14 @@
-import { CalendarEventRepo } from '$lib/calendarEvent';
 import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
 import { ExerciseRepo } from '$lib/exercise';
 import { JournalEntryRepo } from '$lib/journalEntry';
 import { MetricRepo } from '$lib/metric';
+import { calendarEventSelects } from '$lib/prismaHelpers/calendarEventHelper';
 import { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
 import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
 import { widgetSelects } from '$lib/prismaHelpers/widgetHelper';
 import { ProfileRepo } from '$lib/profile';
 import { prisma } from '$lib/server/prisma';
+import { CalendarEventRepo } from '$lib/server/repos/calendarEvent';
 import { ExerciseEventRepo } from '$lib/server/repos/exerciseEventRepo';
 import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
 import { WidgetRepo } from '$lib/server/repos/widgetRepo';
@@ -45,7 +46,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   });
   const calendarEvents = await calendarEventRepo.getManyForUser({
     userId: user.userId,
-    select: CalendarEventRepo.selectEverything,
+    select: calendarEventSelects.everything,
   });
   const ownedTrainingPrograms = await trainingProgramRepo.getManyForUser({
     userId: user.userId,
