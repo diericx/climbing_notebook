@@ -1,7 +1,7 @@
 <script lang="ts">
   // @ts-nocheck
-  import type { CustomQueryResults } from '$lib/customQuery';
   import type { widgetSelects } from '$lib/prismaHelpers/widgetHelper';
+  import type { CustomQueryResults } from '$lib/server/repos/customQuery';
   import type { ExerciseEvent, Metric, Prisma } from '@prisma/client';
   import {
     BarController,

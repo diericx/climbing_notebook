@@ -1,9 +1,9 @@
 import { getSignedUrlPromises } from '$lib/aws/s3';
-import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
 import { APIError } from '$lib/errors';
 import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
 import { widgetSelects } from '$lib/prismaHelpers/widgetHelper';
 import { prisma } from '$lib/server/prisma';
+import { CustomQueryRepo, type CustomQueryResults } from '$lib/server/repos/customQuery';
 import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
 import { WidgetRepo } from '$lib/server/repos/widgetRepo';
 import { getSessionOrRedirect } from '$lib/utils';

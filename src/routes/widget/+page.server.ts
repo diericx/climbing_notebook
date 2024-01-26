@@ -1,7 +1,7 @@
 import { getSignedUrlPromises } from '$lib/aws/s3';
-import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
 import { widgetSelects } from '$lib/prismaHelpers/widgetHelper';
 import { prisma } from '$lib/server/prisma';
+import { CustomQueryRepo, type CustomQueryResults } from '$lib/server/repos/customQuery';
 import { WidgetRepo } from '$lib/server/repos/widgetRepo';
 import { getSessionOrRedirect } from '$lib/utils';
 import { widgetSchema } from '$lib/zodSchemas';

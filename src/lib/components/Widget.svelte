@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { CustomQueryResults } from '$lib/customQuery';
   import type { JournalEntryRepo } from '$lib/journalEntry';
   import type { calendarEventSelects } from '$lib/prismaHelpers/calendarEventHelper';
   import type { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
   import type { widgetSelects } from '$lib/prismaHelpers/widgetHelper';
+  import type { CustomQueryResults } from '$lib/server/repos/customQuery';
   import type { TrainingProgramRepo } from '$lib/trainingProgram';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';

@@ -1,8 +1,8 @@
 <!-- This component does not support calendar or daily exercises -->
 
 <script lang="ts">
-  import type { CustomQueryResults } from '$lib/customQuery';
   import type { widgetSelects } from '$lib/prismaHelpers/widgetHelper';
+  import type { CustomQueryResults } from '$lib/server/repos/customQuery';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';

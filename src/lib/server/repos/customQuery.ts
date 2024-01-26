@@ -1,9 +1,15 @@
-import type { CustomQuery, ExerciseEvent, Metric, PrismaClient, Widget } from '@prisma/client';
-import { Prisma } from '@prisma/client';
+import type {
+  CustomQuery,
+  ExerciseEvent,
+  Metric,
+  Prisma,
+  PrismaClient,
+  Widget,
+} from '@prisma/client';
 import type { z } from 'zod';
-import { APIError } from './errors';
-import type { Repo } from './repo';
-import type { CustomQueryConditionSchema, CustomQuerySchema } from './zodSchemas';
+import { APIError } from '../../errors';
+import type { Repo } from '../../repo';
+import type { CustomQueryConditionSchema, CustomQuerySchema } from '../../zodSchemas';
 
 export type CustomQueryResults = {
   customQueryId: string;
@@ -12,27 +18,6 @@ export type CustomQueryResults = {
 
 export class CustomQueryRepo implements Repo<CustomQuery, Prisma.CustomQuerySelect> {
   constructor(private readonly prisma: PrismaClient) {}
-  static makeCustomQuerySelect<T extends Prisma.CustomQuerySelect>(
-    select: Prisma.Subset<T, Prisma.CustomQuerySelect>
-  ): T {
-    return select;
-  }
-
-  static selectEverything = this.makeCustomQuerySelect({
-    id: true,
-    ownerId: true,
-    name: true,
-    table: true,
-    equation: true,
-    metric: true,
-    conditions: true,
-    dataset: true,
-    createdAt: true,
-    exercise: true,
-  });
-  static selectEverythingValidator = Prisma.validator<Prisma.CustomQueryDefaultArgs>()({
-    select: CustomQueryRepo.selectEverything,
-  });
 
   canUserRead(
     userId: string | undefined,
