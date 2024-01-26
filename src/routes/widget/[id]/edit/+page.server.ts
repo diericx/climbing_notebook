@@ -1,3 +1,4 @@
+import { exerciseSelects } from '$lib/prismaHelpers/exerciseHelper';
 import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
 import { widgetSelects } from '$lib/prismaHelpers/widgetHelper';
 import { prisma } from '$lib/server/prisma';
@@ -50,7 +51,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   }
 
   const exercises = await exerciseRepo.getMany({
-    select: ExerciseRepo.selectMinimal,
+    select: exerciseSelects.minimal,
   });
 
   return {

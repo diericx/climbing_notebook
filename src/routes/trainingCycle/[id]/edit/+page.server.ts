@@ -1,3 +1,4 @@
+import { exerciseSelects } from '$lib/prismaHelpers/exerciseHelper';
 import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
 import { prisma } from '$lib/server/prisma';
 import { ExerciseRepo } from '$lib/server/repos/exercise';
@@ -20,7 +21,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   });
 
   const exercises = await exerciseRepo.getMany({
-    select: ExerciseRepo.selectMinimal,
+    select: exerciseSelects.minimal,
   });
 
   // Manually override breadcrumbs to show training program path

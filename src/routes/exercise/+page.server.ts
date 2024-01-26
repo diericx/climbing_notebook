@@ -1,3 +1,4 @@
+import { exerciseSelects } from '$lib/prismaHelpers/exerciseHelper';
 import { prisma } from '$lib/server/prisma';
 import { ExerciseRepo } from '$lib/server/repos/exercise';
 import { getSessionOrRedirect } from '$lib/utils';
@@ -12,7 +13,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
   const exerciseRepo = new ExerciseRepo(prisma);
   const exercises = await exerciseRepo.getMany({
-    select: ExerciseRepo.selectMinimal,
+    select: exerciseSelects.minimal,
   });
   return {
     exercises,

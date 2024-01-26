@@ -1,5 +1,6 @@
 import { calendarEventSelects } from '$lib/prismaHelpers/calendarEventHelper';
 import { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
+import { exerciseSelects } from '$lib/prismaHelpers/exerciseHelper';
 import { journalEntrySelects } from '$lib/prismaHelpers/journalEntryHelper';
 import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
 import { trainingProgramSelects } from '$lib/prismaHelpers/trainingProgramHelper';
@@ -38,7 +39,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     select: exerciseEventSelects.minimal,
   });
   const exercises = await exerciseRepo.getMany({
-    select: ExerciseRepo.selectMinimal,
+    select: exerciseSelects.minimal,
   });
   // Get metris in the past month for the charts
   const metrics = await metricRepo.get(user?.userId);

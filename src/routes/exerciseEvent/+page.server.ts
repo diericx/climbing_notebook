@@ -1,4 +1,5 @@
 import { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
+import { exerciseSelects } from '$lib/prismaHelpers/exerciseHelper';
 import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
 import { prisma } from '$lib/server/prisma';
 import { ExerciseRepo } from '$lib/server/repos/exercise';
@@ -30,7 +31,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   });
   const profile = await profileRepo.getOne(user?.userId);
   const exercises = await exerciseRepo.getMany({
-    select: ExerciseRepo.selectMinimal,
+    select: exerciseSelects.minimal,
   });
 
   const activeCycles = await trainingCycleRepo.getManyForUser({

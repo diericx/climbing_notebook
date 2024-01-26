@@ -1,63 +1,11 @@
-import { Prisma, type Exercise, type PrismaClient } from '@prisma/client';
+import type { Exercise, Prisma, PrismaClient } from '@prisma/client';
 import type { z } from 'zod';
 import { APIError } from '../../errors';
-import { exerciseEventSelects } from '../../prismaHelpers/exerciseEventHelper';
 import type { ExerciseSchema } from '../../zodSchemas';
 import type { Repo } from './repo';
 
 export class ExerciseRepo implements Repo<Exercise, Prisma.ExerciseSelect> {
   constructor(private readonly prisma: PrismaClient) {}
-
-  static makeSelect<T extends Prisma.ExerciseSelect>(
-    select: Prisma.Subset<T, Prisma.ExerciseSelect>
-  ): T {
-    return select;
-  }
-
-  static selectEverything = this.makeSelect({
-    id: true,
-    createdByAuthUserId: true,
-    type: true,
-    difficulty: true,
-    muscleGroup: true,
-    primeMoverMuscle: true,
-    secondaryMuscle: true,
-    tertiaryMuscle: true,
-    primaryEquipment: true,
-    posture: true,
-    fieldsToShow: true,
-    videoUrl: true,
-    name: true,
-    createdAt: true,
-    exerciseEvents: {
-      select: {
-        ...exerciseEventSelects.everything,
-      },
-    },
-    _count: {
-      select: {
-        exerciseEvents: true,
-      },
-    },
-  });
-  static selectEverythingValidator = Prisma.validator<Prisma.ExerciseDefaultArgs>()({
-    select: ExerciseRepo.selectEverything,
-  });
-
-  static selectMinimal = this.makeSelect({
-    id: true,
-    createdByAuthUserId: true,
-    name: true,
-    fieldsToShow: true,
-    _count: {
-      select: {
-        exerciseEvents: true,
-      },
-    },
-  });
-  static selectMinimalValidator = Prisma.validator<Prisma.ExerciseDefaultArgs>()({
-    select: ExerciseRepo.selectMinimal,
-  });
 
   canUserRead() {
     return true;
