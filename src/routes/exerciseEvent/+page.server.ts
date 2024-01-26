@@ -5,7 +5,7 @@ import { ExerciseRepo } from '$lib/server/repos/exercise';
 import { ExerciseEventRepo } from '$lib/server/repos/exerciseEventRepo';
 import { ProfileRepo } from '$lib/server/repos/profile';
 import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
-import { TrainingProgramActivationRepo } from '$lib/trainingProgramActivation';
+import { TrainingProgramActivationRepo } from '$lib/server/repos/trainingProgramActivation';
 import {
   getActiveTrainingCycleForTrainingProgramActivation,
   getSessionOrRedirect,
