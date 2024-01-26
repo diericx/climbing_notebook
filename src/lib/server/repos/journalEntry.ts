@@ -1,38 +1,12 @@
-import { Prisma, type JournalEntry, type PrismaClient } from '@prisma/client';
+import type { JournalEntry, Prisma, PrismaClient } from '@prisma/client';
 import type { z } from 'zod';
-import { APIError } from './errors';
-import type { Repo } from './repo';
-import { matchMetricsInString, parseMetricStrings, toNum } from './utils';
-import type { JournalEntrySchema } from './zodSchemas';
+import { APIError } from '../../errors';
+import type { Repo } from '../../repo';
+import { matchMetricsInString, parseMetricStrings, toNum } from '../../utils';
+import type { JournalEntrySchema } from '../../zodSchemas';
 
 export class JournalEntryRepo implements Repo<JournalEntry, Prisma.JournalEntrySelect> {
   constructor(private readonly prisma: PrismaClient) {}
-
-  static makeSelect<T extends Prisma.JournalEntrySelect>(
-    select: Prisma.Subset<T, Prisma.JournalEntrySelect>
-  ): T {
-    return select;
-  }
-
-  static selectEverything = this.makeSelect({
-    id: true,
-    date: true,
-    content: true,
-    createdAt: true,
-    owner: true,
-  });
-  static selectEverythingValidator = Prisma.validator<Prisma.JournalEntryDefaultArgs>()({
-    select: JournalEntryRepo.selectEverything,
-  });
-
-  static selectMinimal = this.makeSelect({
-    id: true,
-    date: true,
-    content: true,
-  });
-  static selectMinimalValidator = Prisma.validator<Prisma.JournalEntryDefaultArgs>()({
-    select: JournalEntryRepo.selectMinimal,
-  });
 
   canUserRead(
     userId: string | undefined,

@@ -1,7 +1,7 @@
-import { JournalEntryRepo } from '$lib/journalEntry';
 import { MetricRepo } from '$lib/metric';
 import { calendarEventSelects } from '$lib/prismaHelpers/calendarEventHelper';
 import { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
+import { journalEntrySelects } from '$lib/prismaHelpers/journalEntryHelper';
 import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
 import { widgetSelects } from '$lib/prismaHelpers/widgetHelper';
 import { ProfileRepo } from '$lib/profile';
@@ -10,6 +10,7 @@ import { CalendarEventRepo } from '$lib/server/repos/calendarEvent';
 import { CustomQueryRepo, type CustomQueryResults } from '$lib/server/repos/customQuery';
 import { ExerciseRepo } from '$lib/server/repos/exercise';
 import { ExerciseEventRepo } from '$lib/server/repos/exerciseEventRepo';
+import { JournalEntryRepo } from '$lib/server/repos/journalEntry';
 import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
 import { WidgetRepo } from '$lib/server/repos/widgetRepo';
 import { TrainingProgramRepo } from '$lib/trainingProgram';
@@ -42,7 +43,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const metrics = await metricRepo.get(user?.userId);
   const journalEntries = await journalEntryRepo.getManyForUser({
     userId: user?.userId,
-    select: JournalEntryRepo.selectMinimal,
+    select: journalEntrySelects.minimal,
   });
   const calendarEvents = await calendarEventRepo.getManyForUser({
     userId: user.userId,

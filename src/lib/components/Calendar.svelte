@@ -1,8 +1,8 @@
 <script lang="ts">
   import dayjs from '$lib/dayjs';
-  import type { JournalEntryRepo } from '$lib/journalEntry';
   import type { calendarEventSelects } from '$lib/prismaHelpers/calendarEventHelper';
   import type { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
+  import type { journalEntrySelects } from '$lib/prismaHelpers/journalEntryHelper';
   import type { TrainingProgramRepo } from '$lib/trainingProgram';
   import { exerciseTypeColors } from '$lib/utils';
   // @ts-ignore
@@ -20,7 +20,7 @@
     typeof calendarEventSelects.everythingValidator
   >[];
   export let journalEntries: Prisma.JournalEntryGetPayload<
-    typeof JournalEntryRepo.selectMinimalValidator
+    typeof journalEntrySelects.minimalValidator
   >[];
   export let trainingProgramActivations: Prisma.TrainingProgramActivationGetPayload<{
     include: {
