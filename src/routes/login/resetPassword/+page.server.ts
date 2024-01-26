@@ -1,7 +1,7 @@
 import { SERVER_ERROR } from '$lib/helperTypes';
-import { PasswordResetRepo } from '$lib/passwordReset';
 import { auth } from '$lib/server/lucia';
 import { prisma } from '$lib/server/prisma';
+import { PasswordResetRepo } from '$lib/server/repos/passwordReset';
 import { resetPasswordSchema } from '$lib/zodSchemas';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms/server';
