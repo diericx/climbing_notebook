@@ -1,9 +1,9 @@
 import { Prisma, type Exercise, type PrismaClient } from '@prisma/client';
 import type { z } from 'zod';
-import { APIError } from './errors';
-import { exerciseEventSelects } from './prismaHelpers/exerciseEventHelper';
-import type { Repo } from './repo';
-import type { ExerciseSchema } from './zodSchemas';
+import { APIError } from '../../errors';
+import { exerciseEventSelects } from '../../prismaHelpers/exerciseEventHelper';
+import type { Repo } from '../../repo';
+import type { ExerciseSchema } from '../../zodSchemas';
 
 export class ExerciseRepo implements Repo<Exercise, Prisma.ExerciseSelect> {
   constructor(private readonly prisma: PrismaClient) {}

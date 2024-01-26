@@ -1,8 +1,8 @@
-import { ExerciseRepo } from '$lib/exercise';
 import { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
 import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
 import { ProfileRepo } from '$lib/profile';
 import { prisma } from '$lib/server/prisma';
+import { ExerciseRepo } from '$lib/server/repos/exercise';
 import { ExerciseEventRepo } from '$lib/server/repos/exerciseEventRepo';
 import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
 import { TrainingProgramActivationRepo } from '$lib/trainingProgramActivation';

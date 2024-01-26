@@ -1,6 +1,6 @@
-import { ExerciseRepo } from '$lib/exercise';
 import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
 import { prisma } from '$lib/server/prisma';
+import { ExerciseRepo } from '$lib/server/repos/exercise';
 import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
 import { getSessionOrRedirect } from '$lib/utils';
 import type { Crumb } from 'svelte-breadcrumbs';
