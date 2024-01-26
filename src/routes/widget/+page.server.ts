@@ -1,5 +1,5 @@
-import { getSignedUrlPromises } from '$lib/aws/s3';
 import { widgetSelects } from '$lib/prismaHelpers/widgetHelper';
+import { getSignedUrlPromises } from '$lib/server/aws/s3';
 import { prisma } from '$lib/server/prisma';
 import { CustomQueryRepo, type CustomQueryResults } from '$lib/server/repos/customQuery';
 import { WidgetRepo } from '$lib/server/repos/widgetRepo';

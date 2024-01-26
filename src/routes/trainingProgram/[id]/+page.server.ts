@@ -1,6 +1,6 @@
-import { getSignedUrlPromises } from '$lib/aws/s3';
 import { APIError } from '$lib/errors';
 import { trainingProgramSelects } from '$lib/prismaHelpers/trainingProgramHelper';
+import { getSignedUrlPromises } from '$lib/server/aws/s3';
 import { prisma } from '$lib/server/prisma';
 import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
 import { TrainingProgramRepo } from '$lib/server/repos/trainingProgram';

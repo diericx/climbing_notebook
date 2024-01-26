@@ -1,6 +1,6 @@
-import { getSignedUrlPromises } from '$lib/aws/s3';
 import dayjs from '$lib/dayjs';
 import { trainingProgramSelects } from '$lib/prismaHelpers/trainingProgramHelper';
+import { getSignedUrlPromises } from '$lib/server/aws/s3';
 import { prisma } from '$lib/server/prisma';
 import { TrainingProgramRepo } from '$lib/server/repos/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';

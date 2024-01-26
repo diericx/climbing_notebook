@@ -1,4 +1,4 @@
-import { deleteFile, getSignedUrlsAndMetadata, uploadFile } from '$lib/aws/s3';
+import { deleteFile, getSignedUrlsAndMetadata, uploadFile } from '$lib/server/aws/s3';
 import { prisma } from '$lib/server/prisma';
 import { ProjectRepo } from '$lib/server/repos/project';
 import { getSessionOrRedirect } from '$lib/utils';

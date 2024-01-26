@@ -1,6 +1,6 @@
-import { deleteFile, getSignedUrlsAndMetadata, uploadFile } from '$lib/aws/s3';
 import { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
 import { journalEntrySelects } from '$lib/prismaHelpers/journalEntryHelper';
+import { deleteFile, getSignedUrlsAndMetadata, uploadFile } from '$lib/server/aws/s3';
 import { prisma } from '$lib/server/prisma';
 import { ExerciseEventRepo } from '$lib/server/repos/exerciseEventRepo';
 import { JournalEntryRepo } from '$lib/server/repos/journalEntry';
