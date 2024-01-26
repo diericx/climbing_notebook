@@ -1,88 +1,11 @@
-import { Prisma, type Exercise, type PrismaClient } from '@prisma/client';
-import { z } from 'zod';
-import { APIError } from './errors';
-import { ExerciseEventRepo } from './exerciseEvent';
+import type { Exercise, Prisma, PrismaClient } from '@prisma/client';
+import type { z } from 'zod';
+import { APIError } from '../../errors';
+import type { ExerciseSchema } from '../../zodSchemas';
 import type { Repo } from './repo';
-import {
-  difficulties,
-  equipments,
-  exerciseEventFieldsToShow,
-  exerciseTypes,
-  muscleGroups,
-  muscles,
-  postures,
-} from './utils';
-
-export const exerciseSchema = z.object({
-  name: z.string().min(1),
-  type: z.enum(exerciseTypes),
-  difficulty: z.enum(difficulties).nullish(),
-  videoUrl: z.string().nullish(),
-  muscleGroup: z.enum(muscleGroups).nullish().default(null),
-  primeMoverMuscle: z.enum(muscles).nullish().default(null),
-  secondaryMuscle: z.enum(muscles).nullish().default(null),
-  tertiaryMuscle: z.enum(muscles).nullish().default(null),
-  primaryEquipment: z.enum(equipments).nullish().default(null),
-  posture: z.enum(postures).nullish().default(null),
-  fieldsToShow: z.array(z.enum(exerciseEventFieldsToShow)).refine((val) => val.length > 0, {
-    message: 'At least one field is required',
-  }),
-});
-export type ExerciseSchema = typeof exerciseSchema;
 
 export class ExerciseRepo implements Repo<Exercise, Prisma.ExerciseSelect> {
   constructor(private readonly prisma: PrismaClient) {}
-
-  static makeSelect<T extends Prisma.ExerciseSelect>(
-    select: Prisma.Subset<T, Prisma.ExerciseSelect>
-  ): T {
-    return select;
-  }
-
-  static selectEverything = this.makeSelect({
-    id: true,
-    createdByAuthUserId: true,
-    type: true,
-    difficulty: true,
-    muscleGroup: true,
-    primeMoverMuscle: true,
-    secondaryMuscle: true,
-    tertiaryMuscle: true,
-    primaryEquipment: true,
-    posture: true,
-    fieldsToShow: true,
-    videoUrl: true,
-    name: true,
-    createdAt: true,
-    exerciseEvents: {
-      select: {
-        ...ExerciseEventRepo.selectEverything,
-      },
-    },
-    _count: {
-      select: {
-        exerciseEvents: true,
-      },
-    },
-  });
-  static selectEverythingValidator = Prisma.validator<Prisma.ExerciseDefaultArgs>()({
-    select: ExerciseRepo.selectEverything,
-  });
-
-  static selectMinimal = this.makeSelect({
-    id: true,
-    createdByAuthUserId: true,
-    name: true,
-    fieldsToShow: true,
-    _count: {
-      select: {
-        exerciseEvents: true,
-      },
-    },
-  });
-  static selectMinimalValidator = Prisma.validator<Prisma.ExerciseDefaultArgs>()({
-    select: ExerciseRepo.selectMinimal,
-  });
 
   canUserRead() {
     return true;

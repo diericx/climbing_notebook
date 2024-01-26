@@ -1,5 +1,6 @@
-import { ExerciseRepo } from '$lib/exercise';
-import { prisma } from '$lib/prisma';
+import { exerciseSelects } from '$lib/prismaHelpers/exerciseHelper';
+import { prisma } from '$lib/server/prisma';
+import { ExerciseRepo } from '$lib/server/repos/exercise';
 import { getSessionOrRedirect } from '$lib/utils';
 import type { PageServerLoad } from './$types';
 
@@ -9,7 +10,7 @@ export const load: PageServerLoad = async ({ locals, url, params }) => {
   const exercise = await exerciseRepo.getOne({
     id: params.id,
     userId: user.userId,
-    select: ExerciseRepo.selectEverything,
+    select: exerciseSelects.everything,
   });
   return {
     exercise,

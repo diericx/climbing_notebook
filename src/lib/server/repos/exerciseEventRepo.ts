@@ -1,69 +1,12 @@
-import { Prisma, type ExerciseEvent, type PrismaClient } from '@prisma/client';
-import { z } from 'zod';
-import { APIError } from './errors';
+import type { ExerciseEvent, Prisma, PrismaClient } from '@prisma/client';
+import type { z } from 'zod';
+import { APIError } from '../../errors';
+import { isDateInTheSameWeekAsToday } from '../../utils';
+import type { ExerciseEventSchema } from '../../zodSchemas';
 import type { Repo } from './repo';
-import { isDateInTheSameWeekAsToday } from './utils';
-
-export const exerciseEventSchema = z.object({
-  date: z.date().default(new Date()).nullish(),
-  name: z.string().nullish().default(''),
-  sets: z.number().default(0),
-  reps: z.number().default(0),
-  weight: z.number().default(0),
-  seconds: z.number().default(0),
-  minutes: z.number().default(0),
-  difficulty: z.number().default(0).nullish(),
-  notes: z.string().nullish(),
-  trainingCycleDayId: z.number().nullish(),
-  exerciseGroupId: z.number().nullish(),
-  exerciseId: z.string().min(1, { message: 'Exercise is required' }),
-});
-export type ExerciseEventSchema = typeof exerciseEventSchema;
 
 export class ExerciseEventRepo implements Repo<ExerciseEvent, Prisma.ExerciseEventSelect> {
   constructor(private readonly prisma: PrismaClient) {}
-  static makeSelect<T extends Prisma.ExerciseEventSelect>(
-    select: Prisma.Subset<T, Prisma.ExerciseEventSelect>
-  ): T {
-    return select;
-  }
-  static selectMinimal = this.makeSelect({
-    id: true,
-    name: true,
-    date: true,
-    exercise: {
-      select: {
-        name: true,
-        type: true,
-      },
-    },
-    // This is used for the drop downs to select exercise AND to detect
-    // migration status from legacy exercise
-    exerciseId: true,
-    ownerId: true,
-    reps: true,
-    sets: true,
-    minutes: true,
-    seconds: true,
-    difficulty: true,
-    weight: true,
-    notes: true,
-  });
-  static selectMinimalValidator = Prisma.validator<Prisma.ExerciseEventDefaultArgs>()({
-    select: ExerciseEventRepo.selectMinimal,
-  });
-
-  static selectEverything = this.makeSelect({
-    ...this.selectMinimal,
-    createdAt: true,
-    owner: true,
-    markedCompletions: true,
-    exerciseGroup: true,
-    trainingCycleDay: true,
-  });
-  static selectEverythingValidator = Prisma.validator<Prisma.ExerciseEventDefaultArgs>()({
-    select: ExerciseEventRepo.selectEverything,
-  });
 
   canUserRead(
     userId: string | undefined,

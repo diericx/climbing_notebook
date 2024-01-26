@@ -1,13 +1,15 @@
 import { getSignedUrlPromises } from '$lib/aws/s3';
 import { APIError } from '$lib/errors';
-import { prisma } from '$lib/prisma';
-import { TrainingCycleRepo, trainingCycleSchema } from '$lib/trainingCycle';
+import { trainingProgramSelects } from '$lib/prismaHelpers/trainingProgramHelper';
+import { prisma } from '$lib/server/prisma';
+import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
+import { TrainingProgramRepo } from '$lib/server/repos/trainingProgram';
+import { getSessionOrRedirect } from '$lib/utils';
 import {
-  TrainingProgramRepo,
+  trainingCycleSchema,
   trainingProgramScheduledSlotSchema,
   trainingProgramSchema,
-} from '$lib/trainingProgram';
-import { getSessionOrRedirect } from '$lib/utils';
+} from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
@@ -20,7 +22,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const trainingProgram = await trainingProgramRepo.getOne({
     id: params.id,
     userId: session?.user.userId,
-    select: TrainingProgramRepo.selectEverything,
+    select: trainingProgramSelects.everything,
     privateAccessToken: token || undefined,
   });
 
@@ -107,7 +109,7 @@ export const actions: Actions = {
     const trainingProgram = await trainingProgramRepo.getOne({
       id: params.id,
       userId: user.userId,
-      select: TrainingProgramRepo.selectEverything,
+      select: trainingProgramSelects.everything,
     });
     if (!trainingProgram.description) {
       throw new APIError(

@@ -1,97 +1,17 @@
-import { Prisma, type PrismaClient, type TrainingProgram } from '@prisma/client';
+import type { Prisma, PrismaClient, TrainingProgram } from '@prisma/client';
 import cuid from 'cuid';
-import { z } from 'zod';
-import { APIError } from './errors';
+import type { z } from 'zod';
+import { APIError } from '../../errors';
+import type {
+  TrainingProgramActivationSchema,
+  TrainingProgramPartialSchema,
+  TrainingProgramScheduledSlotSchema,
+  TrainingProgramSchema,
+} from '../../zodSchemas';
 import type { Repo } from './repo';
-import { TrainingCycleRepo } from './trainingCycle';
-
-export const trainingProgramSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  description: z.string().nullish(),
-  isPublic: z.boolean().optional().default(false),
-});
-export const trainingProgramPartialSchema = trainingProgramSchema.partial();
-export type TrainingProgramSchema = typeof trainingProgramSchema;
-export type TrainingProgramPartialSchema = typeof trainingProgramPartialSchema;
-
-export const trainingProgramScheduledSlotSchema = z.object({
-  duration: z.number().min(1, 'Duration must be greater than 0'),
-  order: z.number(),
-  trainingCycleId: z.number(),
-});
-export type TrainingProgramScheduledSlotSchema = typeof trainingProgramScheduledSlotSchema;
-
-export const trainingProgramActivationSchema = z.object({
-  startDate: z.date().default(new Date()),
-  trainingProgramId: z.string(),
-});
-export type TrainingProgramActivationSchema = typeof trainingProgramActivationSchema;
 
 export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.TrainingProgramSelect> {
   constructor(private readonly prisma: PrismaClient) {}
-
-  static makeSelect<T extends Prisma.TrainingProgramSelect>(
-    select: Prisma.Subset<T, Prisma.TrainingProgramSelect>
-  ): T {
-    return select;
-  }
-
-  static selectMinimal = this.makeSelect({
-    id: true,
-    name: true,
-    isPublic: true,
-    description: true,
-    privateAccessToken: true,
-    ownerId: true,
-    owner: {
-      select: {
-        username: true,
-        profile: {
-          select: {
-            imageS3ObjectKey: true,
-          },
-        },
-      },
-    },
-    _count: {
-      select: {
-        saves: true,
-      },
-    },
-    saves: {
-      select: {
-        userId: true,
-      },
-    },
-  });
-  static selectMinimalValidator = Prisma.validator<Prisma.TrainingProgramDefaultArgs>()({
-    select: TrainingProgramRepo.selectMinimal,
-  });
-
-  static selectEverything = this.makeSelect({
-    ...this.selectMinimal,
-    createdAt: true,
-    trainingProgramActivations: true,
-    trainingProgramScheduledSlots: {
-      orderBy: {
-        order: 'asc',
-      },
-      select: {
-        id: true,
-        order: true,
-        duration: true,
-        trainingCycles: {
-          select: TrainingCycleRepo.selectEverything,
-        },
-      },
-    },
-    trainingCycles: {
-      select: TrainingCycleRepo.selectEverything,
-    },
-  });
-  static selectEverythingValidator = Prisma.validator<Prisma.TrainingProgramDefaultArgs>()({
-    select: TrainingProgramRepo.selectEverything,
-  });
 
   canUserRead(
     userId: string | undefined,

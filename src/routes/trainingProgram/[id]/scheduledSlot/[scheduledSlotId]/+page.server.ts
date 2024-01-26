@@ -1,6 +1,8 @@
-import { prisma } from '$lib/prisma';
-import { TrainingProgramRepo, trainingProgramScheduledSlotSchema } from '$lib/trainingProgram';
+import { trainingProgramSelects } from '$lib/prismaHelpers/trainingProgramHelper';
+import { prisma } from '$lib/server/prisma';
+import { TrainingProgramRepo } from '$lib/server/repos/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
+import { trainingProgramScheduledSlotSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/client';
 import type { Actions, PageServerLoad } from './$types';
@@ -12,7 +14,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const trainingProgram = await trainingProgramRepo.getOne({
     id: params.id,
     userId: user.userId,
-    select: TrainingProgramRepo.selectMinimal,
+    select: trainingProgramSelects.minimal,
   });
   return { trainingProgram };
 };

@@ -1,9 +1,9 @@
 <!-- This component does not support calendar or daily exercises -->
 
 <script lang="ts">
-  import type { CustomQueryResults } from '$lib/customQuery';
+  import type { widgetSelects } from '$lib/prismaHelpers/widgetHelper';
+  import type { CustomQueryResults } from '$lib/server/repos/customQuery';
   import { confirmDelete } from '$lib/utils';
-  import type { WidgetRepo } from '$lib/widget';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
   import { popup } from '@skeletonlabs/skeleton';
@@ -12,7 +12,7 @@
   import S3Avatar from './S3Avatar.svelte';
   import FormButton from './forms/FormButton.svelte';
 
-  export let widget: Prisma.WidgetGetPayload<typeof WidgetRepo.selectEverythingValidator>;
+  export let widget: Prisma.WidgetGetPayload<typeof widgetSelects.everythingValidator>;
   export let customQueryResults: CustomQueryResults[];
   export let user: any;
   export let s3ObjectUrlPromises: { [key: string]: Promise<string> };

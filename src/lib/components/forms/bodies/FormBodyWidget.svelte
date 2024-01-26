@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { isSimpleFieldInUse } from '$lib/widget';
+  import { isSimpleFieldInUse } from '$lib/prismaHelpers/widgetHelper';
   import type { Prisma, TrainingCycle } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
   import type { SuperForm } from 'sveltekit-superforms/client';

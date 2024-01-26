@@ -1,11 +1,13 @@
 import { deleteFile, getSignedUrlsAndMetadata, uploadFile } from '$lib/aws/s3';
-import { ExerciseEventRepo } from '$lib/exerciseEvent';
-import { fileUploadSchema } from '$lib/file';
-import { JournalEntryRepo } from '$lib/journalEntry';
-import { MetricRepo } from '$lib/metric';
-import { prisma } from '$lib/prisma';
-import { ProfileRepo, profileSchema } from '$lib/profile';
+import { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
+import { journalEntrySelects } from '$lib/prismaHelpers/journalEntryHelper';
+import { prisma } from '$lib/server/prisma';
+import { ExerciseEventRepo } from '$lib/server/repos/exerciseEventRepo';
+import { JournalEntryRepo } from '$lib/server/repos/journalEntry';
+import { MetricRepo } from '$lib/server/repos/metric';
+import { ProfileRepo } from '$lib/server/repos/profile';
 import { getSessionOrRedirect } from '$lib/utils';
+import { fileUploadSchema, profileSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
 import sharp from 'sharp';
 import { setError, superValidate } from 'sveltekit-superforms/server';
@@ -23,11 +25,11 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const profile = await profileRepo.getOne(user?.userId);
   const exerciseEvents = await exerciseEventRepo.getManyForUser({
     userId: user?.userId,
-    select: ExerciseEventRepo.selectMinimal,
+    select: exerciseEventSelects.minimal,
   });
   const journalEntries = await journalEntryRepo.getManyForUser({
     userId: user?.userId,
-    select: JournalEntryRepo.selectMinimal,
+    select: journalEntrySelects.minimal,
   });
   const metrics = await metricsRepo.get(user?.userId);
 

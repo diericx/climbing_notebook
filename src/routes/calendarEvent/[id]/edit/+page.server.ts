@@ -1,5 +1,6 @@
-import { CalendarEventRepo } from '$lib/calendarEvent';
-import { prisma } from '$lib/prisma';
+import { calendarEventSelects } from '$lib/prismaHelpers/calendarEventHelper';
+import { prisma } from '$lib/server/prisma';
+import { CalendarEventRepo } from '$lib/server/repos/calendarEvent';
 import { getSessionOrRedirect } from '$lib/utils';
 import type { PageServerLoad } from './$types';
 
@@ -12,7 +13,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const calendarEvent = await repo.getOne({
     id,
     userId: user.userId,
-    select: CalendarEventRepo.selectEverything,
+    select: calendarEventSelects.everything,
   });
 
   return {

@@ -1,0 +1,1 @@
+Prisma Helpers contain any code that sits alongside the Prisma Type for a resource, but is not concerned with the business logic or data itself. This sepperation is necessary so the client side can import things like select generators without worrying about accidentally touching server code that could cause issues.

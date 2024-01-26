@@ -3,8 +3,8 @@
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import FormBodyJournalEntry from '$lib/components/forms/bodies/FormBodyJournalEntry.svelte';
   import dayjs from '$lib/dayjs';
-  import { journalEntrySchema } from '$lib/journalEntry';
   import { confirmDelete } from '$lib/utils';
+  import { journalEntrySchema } from '$lib/zodSchemas';
   import Icon from '@iconify/svelte';
   import type { PageData } from './$types';
 

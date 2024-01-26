@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { exerciseGroupSchema } from '$lib/exerciseGroup';
+  import { exerciseGroupSchema } from '$lib/zodSchemas';
   import FormBodyExerciseGroup from '../../forms/bodies/FormBodyExerciseGroup.svelte';
   import FormModal from './FormModal.svelte';
 </script>

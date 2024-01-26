@@ -1,5 +1,5 @@
-import { ExerciseEventRepo } from '$lib/exerciseEvent';
-import { prisma } from '$lib/prisma';
+import { prisma } from '$lib/server/prisma';
+import { ExerciseEventRepo } from '$lib/server/repos/exerciseEventRepo';
 import { loadFlash } from 'sveltekit-flash-message/server';
 import type { PageServerLoad } from './$types';
 

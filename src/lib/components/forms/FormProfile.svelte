@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { profileSchema } from '$lib/profile';
+  import { profileSchema } from '$lib/zodSchemas';
   import type { Profile } from '@prisma/client';
   import { v4 as uuidv4 } from 'uuid';
   import Form from './Form.svelte';

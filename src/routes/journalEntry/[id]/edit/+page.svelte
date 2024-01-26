@@ -1,7 +1,7 @@
 <script lang="ts">
   import Form from '$lib/components/forms/Form.svelte';
   import FormBodyJournalEntry from '$lib/components/forms/bodies/FormBodyJournalEntry.svelte';
-  import { journalEntrySchema } from '$lib/journalEntry';
+  import { journalEntrySchema } from '$lib/zodSchemas';
   import type { PageData } from './$types';
 
   export let data: PageData;

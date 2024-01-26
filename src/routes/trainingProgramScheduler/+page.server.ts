@@ -1,5 +1,6 @@
-import { prisma } from '$lib/prisma';
-import { TrainingProgramRepo } from '$lib/trainingProgram';
+import { trainingProgramSelects } from '$lib/prismaHelpers/trainingProgramHelper';
+import { prisma } from '$lib/server/prisma';
+import { TrainingProgramRepo } from '$lib/server/repos/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
 import type { PageServerLoad } from './$types';
 
@@ -10,11 +11,11 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
   const ownedTrainingPrograms = await trainingProgramRepo.getManyForUser({
     userId: user.userId,
-    select: TrainingProgramRepo.selectEverything,
+    select: trainingProgramSelects.everything,
   });
   const savedTrainingPrograms = await trainingProgramRepo.getManySavedForUser({
     userId: user.userId,
-    select: TrainingProgramRepo.selectEverything,
+    select: trainingProgramSelects.everything,
   });
 
   const trainingProgramActivations = await trainingProgramRepo.getActivations(user?.userId);

@@ -1,6 +1,8 @@
-import { prisma } from '$lib/prisma';
-import { TrainingCycleRepo } from '$lib/trainingCycle';
-import { TrainingProgramRepo } from '$lib/trainingProgram';
+import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
+import { trainingProgramSelects } from '$lib/prismaHelpers/trainingProgramHelper';
+import { prisma } from '$lib/server/prisma';
+import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
+import { TrainingProgramRepo } from '$lib/server/repos/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
 import type { PageServerLoad } from './$types';
 
@@ -14,7 +16,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const trainingProgram = await trainingProgramRepo.getOne({
     id,
     userId: user?.userId,
-    select: TrainingProgramRepo.selectEverything,
+    select: trainingProgramSelects.everything,
   });
   const ownedTrainingCycles = await trainingCycleRepo.getManyForUser({
     userId: user.userId,
@@ -22,12 +24,12 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
     extraFilters: {
       isTemplate: true,
     },
-    select: TrainingCycleRepo.selectNameAndIdOnly,
+    select: trainingCycleSelects.nameAndId,
   });
   const savedTrainingCycles = await trainingCycleRepo.getManyForUser({
     userId: user.userId,
     query: 'saved',
-    select: TrainingCycleRepo.selectNameAndIdOnly,
+    select: trainingCycleSelects.nameAndId,
   });
 
   return {

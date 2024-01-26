@@ -1,6 +1,6 @@
 <script lang="ts">
   import FormBodyTrainingProgram from '$lib/components/forms/bodies/FormBodyTrainingProgram.svelte';
-  import { trainingProgramSchema } from '$lib/trainingProgram';
+  import { trainingProgramSchema } from '$lib/zodSchemas';
   import FormModal from './FormModal.svelte';
 </script>
 

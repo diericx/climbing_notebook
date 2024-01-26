@@ -1,8 +1,9 @@
 <script lang="ts">
-  import type { CalendarEventRepo } from '$lib/calendarEvent';
   import dayjs from '$lib/dayjs';
-  import type { ExerciseEventRepo } from '$lib/exerciseEvent';
-  import type { JournalEntryRepo } from '$lib/journalEntry';
+  import type { calendarEventSelects } from '$lib/prismaHelpers/calendarEventHelper';
+  import type { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
+  import type { journalEntrySelects } from '$lib/prismaHelpers/journalEntryHelper';
+  import type { trainingProgramSelects } from '$lib/prismaHelpers/trainingProgramHelper';
   import { exerciseTypeColors } from '$lib/utils';
   // @ts-ignore
   import Calendar from '@event-calendar/core';
@@ -11,17 +12,15 @@
   // @ts-ignore
   import Interaction from '@event-calendar/interaction';
   // @ts-ignore
-  import type { TrainingProgramRepo } from '$lib/trainingProgram';
-  // @ts-ignore
   import TimeGrid from '@event-calendar/time-grid';
   import type { Prisma } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
 
   export let calendarEvents: Prisma.CalendarEventGetPayload<
-    typeof CalendarEventRepo.selectEverythingValidator
+    typeof calendarEventSelects.everythingValidator
   >[];
   export let journalEntries: Prisma.JournalEntryGetPayload<
-    typeof JournalEntryRepo.selectMinimalValidator
+    typeof journalEntrySelects.minimalValidator
   >[];
   export let trainingProgramActivations: Prisma.TrainingProgramActivationGetPayload<{
     include: {
@@ -43,15 +42,15 @@
     };
   }>[];
   export let exerciseEvents: Prisma.ExerciseEventGetPayload<
-    typeof ExerciseEventRepo.selectMinimalValidator
+    typeof exerciseEventSelects.minimalValidator
   >[];
 
   // For the activation modal program select
   export let ownedTrainingPrograms: Prisma.TrainingProgramGetPayload<
-    typeof TrainingProgramRepo.selectEverythingValidator
+    typeof trainingProgramSelects.everythingValidator
   >[];
   export let savedTrainingPrograms: Prisma.TrainingProgramGetPayload<
-    typeof TrainingProgramRepo.selectEverythingValidator
+    typeof trainingProgramSelects.everythingValidator
   >[];
   // For the exercise event form modals
   export let exercises: Prisma.ExerciseGetPayload<{

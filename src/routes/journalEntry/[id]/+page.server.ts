@@ -1,6 +1,7 @@
-import { JournalEntryRepo, journalEntrySchema } from '$lib/journalEntry';
-import { prisma } from '$lib/prisma';
+import { prisma } from '$lib/server/prisma';
+import { JournalEntryRepo } from '$lib/server/repos/journalEntry';
 import { getSessionOrRedirect } from '$lib/utils';
+import { journalEntrySchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions } from './$types';

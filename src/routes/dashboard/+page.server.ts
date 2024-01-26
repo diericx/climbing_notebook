@@ -1,15 +1,22 @@
-import { CalendarEventRepo } from '$lib/calendarEvent';
-import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
-import { ExerciseRepo } from '$lib/exercise';
-import { ExerciseEventRepo } from '$lib/exerciseEvent';
-import { JournalEntryRepo } from '$lib/journalEntry';
-import { MetricRepo } from '$lib/metric';
-import { prisma } from '$lib/prisma';
-import { ProfileRepo } from '$lib/profile';
-import { TrainingCycleRepo } from '$lib/trainingCycle';
-import { TrainingProgramRepo } from '$lib/trainingProgram';
+import { calendarEventSelects } from '$lib/prismaHelpers/calendarEventHelper';
+import { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
+import { exerciseSelects } from '$lib/prismaHelpers/exerciseHelper';
+import { journalEntrySelects } from '$lib/prismaHelpers/journalEntryHelper';
+import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
+import { trainingProgramSelects } from '$lib/prismaHelpers/trainingProgramHelper';
+import { widgetSelects } from '$lib/prismaHelpers/widgetHelper';
+import { prisma } from '$lib/server/prisma';
+import { CalendarEventRepo } from '$lib/server/repos/calendarEvent';
+import { CustomQueryRepo, type CustomQueryResults } from '$lib/server/repos/customQuery';
+import { ExerciseRepo } from '$lib/server/repos/exercise';
+import { ExerciseEventRepo } from '$lib/server/repos/exerciseEventRepo';
+import { JournalEntryRepo } from '$lib/server/repos/journalEntry';
+import { MetricRepo } from '$lib/server/repos/metric';
+import { ProfileRepo } from '$lib/server/repos/profile';
+import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
+import { TrainingProgramRepo } from '$lib/server/repos/trainingProgram';
+import { WidgetRepo } from '$lib/server/repos/widgetRepo';
 import { getSessionOrRedirect } from '$lib/utils';
-import { WidgetRepo } from '$lib/widget';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
@@ -29,40 +36,40 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const profile = await profileRepo.getOne(user?.userId);
   const exerciseEvents = await exerciseEventRepo.getManyForUser({
     userId: user?.userId,
-    select: ExerciseEventRepo.selectMinimal,
+    select: exerciseEventSelects.minimal,
   });
   const exercises = await exerciseRepo.getMany({
-    select: ExerciseRepo.selectMinimal,
+    select: exerciseSelects.minimal,
   });
   // Get metris in the past month for the charts
   const metrics = await metricRepo.get(user?.userId);
   const journalEntries = await journalEntryRepo.getManyForUser({
     userId: user?.userId,
-    select: JournalEntryRepo.selectMinimal,
+    select: journalEntrySelects.minimal,
   });
   const calendarEvents = await calendarEventRepo.getManyForUser({
     userId: user.userId,
-    select: CalendarEventRepo.selectEverything,
+    select: calendarEventSelects.everything,
   });
   const ownedTrainingPrograms = await trainingProgramRepo.getManyForUser({
     userId: user.userId,
-    select: TrainingProgramRepo.selectEverything,
+    select: trainingProgramSelects.everything,
   });
   const savedTrainingPrograms = await trainingProgramRepo.getManySavedForUser({
     userId: user.userId,
-    select: TrainingProgramRepo.selectEverything,
+    select: trainingProgramSelects.everything,
   });
   const trainingProgramActivations = trainingProgramRepo.getActivations(user?.userId);
 
   const widgets = await widgetRepo.getManyForUserDashboardWidgets(
     user.userId,
-    WidgetRepo.selectEverything
+    widgetSelects.everything
   );
 
   const trainingCycles = await trainingCycleRepo.getManyForUser({
     userId: user.userId,
     query: 'owned',
-    select: TrainingCycleRepo.selectNameAndIdOnly,
+    select: trainingCycleSelects.nameAndId,
   });
 
   // compile datasets for widgets

@@ -1,6 +1,6 @@
 import type { PrismaClient } from '@prisma/client';
-import dayjs from './dayjs';
-import { APIError } from './errors';
+import dayjs from '../../dayjs';
+import { APIError } from '../../errors';
 
 export class PasswordResetRepo {
   constructor(private readonly prisma: PrismaClient) {}

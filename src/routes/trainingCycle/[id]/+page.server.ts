@@ -1,9 +1,10 @@
 import { getSignedUrlPromises } from '$lib/aws/s3';
 import { APIError } from '$lib/errors';
-import { exerciseGroupSchema } from '$lib/exerciseGroup';
-import { prisma } from '$lib/prisma';
-import { TrainingCycleRepo, trainingCycleSchema } from '$lib/trainingCycle';
+import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
+import { prisma } from '$lib/server/prisma';
+import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
 import { getSessionOrRedirect } from '$lib/utils';
+import { exerciseGroupSchema, trainingCycleSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
 import type { Crumb } from 'svelte-breadcrumbs';
 import { superValidate } from 'sveltekit-superforms/server';
@@ -17,7 +18,7 @@ export const load: PageServerLoad = async ({ url, locals, params }) => {
   const trainingCycle = await trainingCycleRepo.getOne({
     id: Number(params.id),
     select: {
-      ...TrainingCycleRepo.selectEverything,
+      ...trainingCycleSelects.everything,
       saves: {
         where: session ? { userId: session.user.userId } : undefined,
       },
@@ -179,7 +180,7 @@ export const actions: Actions = {
     return { form };
   },
 
-  addExerciseGroup: async ({ locals, request, url, params }) => {
+  _addExerciseGroup: async ({ locals, request, url, params }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
     const formData = await request.formData();
     const id = Number(params.id);
@@ -195,6 +196,12 @@ export const actions: Actions = {
     await repo.addExerciseGroup(form.data, id, user?.userId);
 
     return { form };
+  },
+  get addExerciseGroup() {
+    return this._addExerciseGroup;
+  },
+  set addExerciseGroup(value) {
+    this._addExerciseGroup = value;
   },
 
   deleteExerciseGroup: async ({ locals, request, url, params }) => {

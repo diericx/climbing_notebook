@@ -1,8 +1,10 @@
 import { APIError } from '$lib/errors';
 import { SERVER_ERROR } from '$lib/helperTypes';
-import { JournalEntryRepo, journalEntrySchema } from '$lib/journalEntry';
-import { prisma } from '$lib/prisma';
+import { journalEntrySelects } from '$lib/prismaHelpers/journalEntryHelper';
+import { prisma } from '$lib/server/prisma';
+import { JournalEntryRepo } from '$lib/server/repos/journalEntry';
 import { getSessionOrRedirect } from '$lib/utils';
+import { journalEntrySchema } from '$lib/zodSchemas';
 import { error, fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
@@ -13,7 +15,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const repo = new JournalEntryRepo(prisma);
   const journalEntries = await repo.getManyForUser({
     userId: user?.userId,
-    select: JournalEntryRepo.selectMinimal,
+    select: journalEntrySelects.minimal,
   });
 
   return {

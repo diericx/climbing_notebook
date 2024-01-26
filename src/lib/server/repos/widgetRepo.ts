@@ -1,133 +1,17 @@
-import { Prisma, type PrismaClient, type Widget } from '@prisma/client';
-import { z } from 'zod';
-import { APIError } from './errors';
+import { isSimpleFieldInUse, widgetSelects } from '$lib/prismaHelpers/widgetHelper';
+import type { Prisma, PrismaClient, Widget } from '@prisma/client';
+import type { z } from 'zod';
+import { APIError } from '../../errors';
+import type {
+  DatasetSchema,
+  WidgetSchema,
+  WidgetSchemaPartial,
+  WidgetTemplateSchema,
+} from '../../zodSchemas';
 import type { Repo } from './repo';
-import { TrainingCycleRepo } from './trainingCycle';
-
-export const widgetSchemaBase = z.object({
-  name: z.string().min(1, { message: 'Name is required' }),
-  description: z.string().nullish(),
-  width: z.enum(['half', 'full']).default('half'),
-  order: z.number(),
-  type: z.enum(['chart', 'calendar', 'heatmapCalendar', 'dailyExerciseCalendar']).default('chart'),
-  isTemplate: z.boolean(),
-  sets: z.number().nullish(),
-  reps: z.number().nullish(),
-  weight: z.number().nullish(),
-  seconds: z.number().nullish(),
-  minutes: z.number().nullish(),
-  trainingCycleId: z.number().nullish(),
-  parentId: z.string().nullish(),
-  isPublished: z.boolean().optional(),
-});
-export const widgetSchemaBasePartial = widgetSchemaBase.partial();
-
-// Split out the refinement function so we can reuse it to compose a partial schema
-// below
-function refinementFunc(
-  val: z.infer<typeof widgetSchemaBase> | z.infer<typeof widgetSchemaBasePartial>,
-  ctx: z.RefinementCtx
-) {
-  if (val.isTemplate) {
-    if (!val.description) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: `Description is required`,
-        path: ['description'],
-      });
-    }
-  }
-}
-export const widgetSchema = widgetSchemaBase.superRefine(refinementFunc);
-export type WidgetSchema = typeof widgetSchema;
-
-export const widgetSchemaPartial = widgetSchemaBasePartial.superRefine(refinementFunc);
-export type WidgetSchemaPartial = typeof widgetSchemaPartial;
-
-export const widgetTemplateSchema = z.object({
-  name: z.string().min(1, { message: 'Name is required' }),
-  description: z.string().min(1, { message: 'Description is required' }),
-});
-export type WidgetTemplateSchema = typeof widgetTemplateSchema;
-
-export const datasetSchema = z.object({
-  type: z.enum(['line', 'bar']).default('line'),
-  color: z.string(),
-  name: z.string().min(1, { message: 'Name is required' }),
-});
-export type DatasetSchema = typeof datasetSchema;
 
 export class WidgetRepo implements Repo<Widget, Prisma.WidgetSelect> {
   constructor(private readonly prisma: PrismaClient) {}
-
-  static makeSelect<T extends Prisma.WidgetSelect>(
-    select: Prisma.Subset<T, Prisma.WidgetSelect>
-  ): T {
-    return select;
-  }
-
-  static selectEverything = this.makeSelect({
-    id: true,
-    useCount: true,
-    isPublished: true,
-    isTemplate: true,
-    name: true,
-    description: true,
-    ownerId: true,
-    width: true,
-    order: true,
-    type: true,
-    sets: true,
-    reps: true,
-    weight: true,
-    minutes: true,
-    seconds: true,
-    owner: {
-      select: {
-        username: true,
-        profile: {
-          select: {
-            imageS3ObjectKey: true,
-          },
-        },
-      },
-    },
-    datasets: {
-      select: {
-        id: true,
-        type: true,
-        color: true,
-        name: true,
-        widgetId: true,
-        customQueries: {
-          select: {
-            name: true,
-            datasetId: true,
-            id: true,
-            table: true,
-            equation: true,
-            metric: true,
-            conditions: true,
-            exerciseId: true,
-            exercise: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        },
-      },
-      orderBy: {
-        name: 'asc',
-      },
-    },
-    trainingCycle: {
-      select: TrainingCycleRepo.selectEverything,
-    },
-  });
-  static selectEverythingValidator = Prisma.validator<Prisma.WidgetDefaultArgs>()({
-    select: WidgetRepo.selectEverything,
-  });
 
   canUserRead(
     userId: string | undefined,
@@ -181,7 +65,7 @@ export class WidgetRepo implements Repo<Widget, Prisma.WidgetSelect> {
     const source = await this.getOne({
       id,
       userId,
-      select: WidgetRepo.selectEverything,
+      select: widgetSelects.everything,
     });
     if (!this.canUserUpdate(userId, source)) {
       throw new APIError('INVALID_PERMISSIONS');
@@ -297,7 +181,7 @@ export class WidgetRepo implements Repo<Widget, Prisma.WidgetSelect> {
       userId,
       select: {
         datasets: {
-          ...WidgetRepo.selectEverything.datasets,
+          ...widgetSelects.everything.datasets,
         },
       },
     });
@@ -428,7 +312,7 @@ export class WidgetRepo implements Repo<Widget, Prisma.WidgetSelect> {
     const sourceWidget = await this.getOne({
       id: widgetId,
       userId,
-      select: WidgetRepo.selectEverything,
+      select: widgetSelects.everything,
     });
 
     // Can only be done on templates
@@ -495,29 +379,4 @@ export class WidgetRepo implements Repo<Widget, Prisma.WidgetSelect> {
       }),
     ]);
   }
-}
-
-export function isSimpleFieldInUse(
-  widget: Prisma.WidgetGetPayload<{
-    select: {
-      datasets: {
-        select: {
-          customQueries: {
-            select: {
-              conditions: true;
-            };
-          };
-        };
-      };
-    };
-  }>,
-  field: string
-) {
-  return (
-    widget.datasets.find((d) =>
-      d.customQueries.find((q) =>
-        q.conditions.find((c) => c.useWidgetField === true && c.widgetFieldToUse === field)
-      )
-    ) !== undefined
-  );
 }

@@ -1,7 +1,7 @@
 <script lang="ts">
   import Form from '$lib/components/forms/Form.svelte';
   import FormBodyExercise from '$lib/components/forms/bodies/FormBodyExercise.svelte';
-  import { exerciseSchema } from '$lib/exercise';
+  import { exerciseSchema } from '$lib/zodSchemas';
 </script>
 
 <h1 class="mb-4">New Exercise</h1>

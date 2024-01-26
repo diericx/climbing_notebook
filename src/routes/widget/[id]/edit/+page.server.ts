@@ -1,9 +1,12 @@
-import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
-import { ExerciseRepo } from '$lib/exercise';
-import { prisma } from '$lib/prisma';
-import { TrainingCycleRepo } from '$lib/trainingCycle';
+import { exerciseSelects } from '$lib/prismaHelpers/exerciseHelper';
+import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
+import { widgetSelects } from '$lib/prismaHelpers/widgetHelper';
+import { prisma } from '$lib/server/prisma';
+import { CustomQueryRepo, type CustomQueryResults } from '$lib/server/repos/customQuery';
+import { ExerciseRepo } from '$lib/server/repos/exercise';
+import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
+import { WidgetRepo } from '$lib/server/repos/widgetRepo';
 import { getSessionOrRedirect } from '$lib/utils';
-import { WidgetRepo } from '$lib/widget';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params, url }) => {
@@ -19,13 +22,13 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const widget = await widgetRepo.getOne({
     id,
     userId: user.userId,
-    select: WidgetRepo.selectEverything,
+    select: widgetSelects.everything,
   });
 
   const trainingCycles = await trainingCycleRepo.getManyForUser({
     userId: user.userId,
     query: 'owned',
-    select: TrainingCycleRepo.selectNameAndIdOnly,
+    select: trainingCycleSelects.nameAndId,
   });
   // compile datasets for widgets
   const customQueryResults: CustomQueryResults[] = [];
@@ -48,7 +51,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   }
 
   const exercises = await exerciseRepo.getMany({
-    select: ExerciseRepo.selectMinimal,
+    select: exerciseSelects.minimal,
   });
 
   return {

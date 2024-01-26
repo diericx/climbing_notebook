@@ -1,7 +1,9 @@
 import { getSignedUrlPromises } from '$lib/aws/s3';
-import { prisma } from '$lib/prisma';
-import { TrainingCycleRepo, trainingCycleSchema } from '$lib/trainingCycle';
+import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
+import { prisma } from '$lib/server/prisma';
+import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
 import { getSessionOrRedirect } from '$lib/utils';
+import { trainingCycleSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
@@ -21,7 +23,7 @@ export const load: PageServerLoad = async ({ locals }) => {
             isTemplate: true,
           },
           select: {
-            ...TrainingCycleRepo.selectMinimal,
+            ...trainingCycleSelects.minimal,
             privateAccessToken: true,
             saves: { where: { userId: session.user.userId } },
             activations: { where: { userId: session.user.userId } },
@@ -35,14 +37,14 @@ export const load: PageServerLoad = async ({ locals }) => {
           userId: session.user.userId,
           query: 'saved',
           select: {
-            ...TrainingCycleRepo.selectMinimal,
+            ...trainingCycleSelects.minimal,
             saves: { where: { userId: session?.user.userId } },
             activations: { where: { userId: session?.user.userId } },
           },
         });
 
   const publicTrainingCycles = await trainingCycleRepo.getAllPublic({
-    ...TrainingCycleRepo.selectMinimal,
+    ...trainingCycleSelects.minimal,
     // NOTE: it would be ideal to not include this in the query if the user is null,
     // but if we set this to an optional variable the type is defined as always having
     // this value which makes it difficult to develop the front end.

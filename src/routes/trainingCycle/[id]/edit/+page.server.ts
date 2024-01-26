@@ -1,6 +1,8 @@
-import { ExerciseRepo } from '$lib/exercise';
-import { prisma } from '$lib/prisma';
-import { TrainingCycleRepo } from '$lib/trainingCycle';
+import { exerciseSelects } from '$lib/prismaHelpers/exerciseHelper';
+import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
+import { prisma } from '$lib/server/prisma';
+import { ExerciseRepo } from '$lib/server/repos/exercise';
+import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
 import { getSessionOrRedirect } from '$lib/utils';
 import type { Crumb } from 'svelte-breadcrumbs';
 import type { PageServerLoad } from './$types';
@@ -14,12 +16,12 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const exerciseRepo = new ExerciseRepo(prisma);
   const trainingCycle = await trainingCycleRepo.getOne({
     id: Number(id),
-    select: TrainingCycleRepo.selectEverything,
+    select: trainingCycleSelects.everything,
     userId: user.userId,
   });
 
   const exercises = await exerciseRepo.getMany({
-    select: ExerciseRepo.selectMinimal,
+    select: exerciseSelects.minimal,
   });
 
   // Manually override breadcrumbs to show training program path

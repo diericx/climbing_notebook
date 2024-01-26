@@ -1,12 +1,10 @@
 import { getSignedUrlPromises } from '$lib/aws/s3';
 import dayjs from '$lib/dayjs';
-import { prisma } from '$lib/prisma';
-import {
-  trainingProgramActivationSchema,
-  TrainingProgramRepo,
-  trainingProgramSchema,
-} from '$lib/trainingProgram';
+import { trainingProgramSelects } from '$lib/prismaHelpers/trainingProgramHelper';
+import { prisma } from '$lib/server/prisma';
+import { TrainingProgramRepo } from '$lib/server/repos/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
+import { trainingProgramActivationSchema, trainingProgramSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
 import { setError, superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
@@ -19,17 +17,17 @@ export const load: PageServerLoad = async ({ locals }) => {
   const ownedTrainingPrograms = await trainingProgramRepo.getManyForUser({
     // Default to empty string so query defaults to returning empty array
     userId: session?.user.userId || '',
-    select: TrainingProgramRepo.selectMinimal,
+    select: trainingProgramSelects.minimal,
   });
 
   const savedTrainingPrograms = await trainingProgramRepo.getManySavedForUser({
     // Default to empty string so query defaults to returning empty array
     userId: session?.user.userId || '',
-    select: TrainingProgramRepo.selectMinimal,
+    select: trainingProgramSelects.minimal,
   });
 
   const publicTrainingPrograms = await trainingProgramRepo.getManyPublic({
-    select: TrainingProgramRepo.selectMinimal,
+    select: trainingProgramSelects.minimal,
   });
 
   const s3ObjectUrlPromises = await getSignedUrlPromises([

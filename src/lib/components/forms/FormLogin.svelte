@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { loginSchema } from '$lib/user';
+  import { loginSchema } from '$lib/zodSchemas';
   import { v4 as uuidv4 } from 'uuid';
+  import Form from './Form.svelte';
   import PasswordField from './fields/PasswordField.svelte';
   import SubmitButton from './fields/SubmitButton.svelte';
   import TextField from './fields/TextField.svelte';
-  import Form from './Form.svelte';
 
   // Form action to execute
   export let action = '';

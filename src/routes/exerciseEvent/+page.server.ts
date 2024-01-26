@@ -1,13 +1,17 @@
-import { ExerciseRepo } from '$lib/exercise';
-import { ExerciseEventRepo, exerciseEventSchema } from '$lib/exerciseEvent';
-import { prisma } from '$lib/prisma';
-import { ProfileRepo } from '$lib/profile';
-import { TrainingCycleRepo } from '$lib/trainingCycle';
-import { TrainingProgramActivationRepo } from '$lib/trainingProgramActivation';
+import { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
+import { exerciseSelects } from '$lib/prismaHelpers/exerciseHelper';
+import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
+import { prisma } from '$lib/server/prisma';
+import { ExerciseRepo } from '$lib/server/repos/exercise';
+import { ExerciseEventRepo } from '$lib/server/repos/exerciseEventRepo';
+import { ProfileRepo } from '$lib/server/repos/profile';
+import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
+import { TrainingProgramActivationRepo } from '$lib/server/repos/trainingProgramActivation';
 import {
   getActiveTrainingCycleForTrainingProgramActivation,
   getSessionOrRedirect,
 } from '$lib/utils';
+import { exerciseEventSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
@@ -23,17 +27,17 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
   const exerciseEvents = await exerciseEventsRepo.getManyForUser({
     userId: user?.userId,
-    select: ExerciseEventRepo.selectMinimal,
+    select: exerciseEventSelects.minimal,
   });
   const profile = await profileRepo.getOne(user?.userId);
   const exercises = await exerciseRepo.getMany({
-    select: ExerciseRepo.selectMinimal,
+    select: exerciseSelects.minimal,
   });
 
   const activeCycles = await trainingCycleRepo.getManyForUser({
     userId: user.userId,
     query: 'owned',
-    select: TrainingCycleRepo.selectEverything,
+    select: trainingCycleSelects.everything,
   });
 
   // Note: this does not filter for training programs that are active yet have

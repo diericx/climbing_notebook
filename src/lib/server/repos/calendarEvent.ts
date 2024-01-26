@@ -1,40 +1,11 @@
-import { Prisma, type CalendarEvent, type PrismaClient } from '@prisma/client';
-import { z } from 'zod';
-import { APIError } from './errors';
+import type { CalendarEvent, Prisma, PrismaClient } from '@prisma/client';
+import type { z } from 'zod';
+import { APIError } from '../../errors';
+import type { CalendarEventPartialSchema, CalendarEventSchema } from '../../zodSchemas';
 import type { Repo } from './repo';
-
-export const calendarEventSchema = z.object({
-  dateStart: z.date().default(new Date()),
-  dateEnd: z.date().default(new Date()),
-  title: z.string().min(1).default(''),
-  content: z.string().nullish(),
-  color: z.string().default('green'),
-});
-export const calendarEventPartialSchema = calendarEventSchema.partial();
-export type CalendarEventSchema = typeof calendarEventSchema;
-export type CalendarEventPartialSchema = typeof calendarEventPartialSchema;
 
 export class CalendarEventRepo implements Repo<CalendarEvent, Prisma.CalendarEventSelect> {
   constructor(private readonly prisma: PrismaClient) {}
-
-  static makeCalendarEventSelect<T extends Prisma.CalendarEventSelect>(
-    select: Prisma.Subset<T, Prisma.CalendarEventSelect>
-  ): T {
-    return select;
-  }
-
-  static selectEverything = this.makeCalendarEventSelect({
-    id: true,
-    ownerId: true,
-    dateStart: true,
-    dateEnd: true,
-    title: true,
-    content: true,
-    color: true,
-  });
-  static selectEverythingValidator = Prisma.validator<Prisma.CalendarEventDefaultArgs>()({
-    select: CalendarEventRepo.selectEverything,
-  });
 
   canUserRead(
     userId: string | undefined,
