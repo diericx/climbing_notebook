@@ -57,6 +57,26 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
     return trainingCycle.ownerId == userId;
   }
 
+  async new(data: z.infer<TrainingCycleSchema>, userId: string, trainingProgramId?: string) {
+    return await this.prisma.trainingCycle.create({
+      data: {
+        name: data.name,
+        description: data.description,
+        ownerId: userId,
+        trainingProgramId,
+        days: {
+          create: Array.from(Array(7)).map((_, i) => {
+            return {
+              assignedBy: userId,
+              dayOfTheWeek: i,
+              description: '',
+            };
+          }),
+        },
+      },
+    });
+  }
+
   // Note: everywhere we want to check permissions for an update or delete
   // we need to also check/throw on read permissions here for read...
   // does that make sense?
@@ -315,25 +335,6 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
     });
 
     return newCycle;
-  }
-
-  async new(data: z.infer<TrainingCycleSchema>, userId: string, trainingProgramId?: string) {
-    return await this.prisma.trainingCycle.create({
-      data: {
-        name: data.name,
-        ownerId: userId,
-        trainingProgramId,
-        days: {
-          create: Array.from(Array(7)).map((_, i) => {
-            return {
-              assignedBy: userId,
-              dayOfTheWeek: i,
-              description: '',
-            };
-          }),
-        },
-      },
-    });
   }
 
   async update(data: z.infer<TrainingCyclePartialSchema>, id: number, userId: string) {
