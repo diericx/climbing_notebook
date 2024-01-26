@@ -1,4 +1,3 @@
-import { MetricRepo } from '$lib/metric';
 import { calendarEventSelects } from '$lib/prismaHelpers/calendarEventHelper';
 import { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
 import { journalEntrySelects } from '$lib/prismaHelpers/journalEntryHelper';
@@ -11,6 +10,7 @@ import { CustomQueryRepo, type CustomQueryResults } from '$lib/server/repos/cust
 import { ExerciseRepo } from '$lib/server/repos/exercise';
 import { ExerciseEventRepo } from '$lib/server/repos/exerciseEventRepo';
 import { JournalEntryRepo } from '$lib/server/repos/journalEntry';
+import { MetricRepo } from '$lib/server/repos/metric';
 import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
 import { WidgetRepo } from '$lib/server/repos/widgetRepo';
 import { TrainingProgramRepo } from '$lib/trainingProgram';

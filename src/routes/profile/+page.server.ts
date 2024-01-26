@@ -1,11 +1,11 @@
 import { deleteFile, getSignedUrlsAndMetadata, uploadFile } from '$lib/aws/s3';
-import { MetricRepo } from '$lib/metric';
 import { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
 import { journalEntrySelects } from '$lib/prismaHelpers/journalEntryHelper';
 import { ProfileRepo } from '$lib/profile';
 import { prisma } from '$lib/server/prisma';
 import { ExerciseEventRepo } from '$lib/server/repos/exerciseEventRepo';
 import { JournalEntryRepo } from '$lib/server/repos/journalEntry';
+import { MetricRepo } from '$lib/server/repos/metric';
 import { getSessionOrRedirect } from '$lib/utils';
 import { fileUploadSchema, profileSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
