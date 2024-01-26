@@ -1,5 +1,6 @@
+import { trainingProgramSelects } from '$lib/prismaHelpers/trainingProgramHelper';
 import { prisma } from '$lib/server/prisma';
-import { TrainingProgramRepo } from '$lib/trainingProgram';
+import { TrainingProgramRepo } from '$lib/server/repos/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
 import { trainingProgramScheduledSlotSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
@@ -13,7 +14,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const trainingProgram = await trainingProgramRepo.getOne({
     id: params.id,
     userId: user.userId,
-    select: TrainingProgramRepo.selectMinimal,
+    select: trainingProgramSelects.minimal,
   });
   return { trainingProgram };
 };

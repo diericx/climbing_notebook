@@ -3,7 +3,7 @@
   import type { calendarEventSelects } from '$lib/prismaHelpers/calendarEventHelper';
   import type { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
   import type { journalEntrySelects } from '$lib/prismaHelpers/journalEntryHelper';
-  import type { TrainingProgramRepo } from '$lib/trainingProgram';
+  import type { trainingProgramSelects } from '$lib/prismaHelpers/trainingProgramHelper';
   import { exerciseTypeColors } from '$lib/utils';
   // @ts-ignore
   import Calendar from '@event-calendar/core';
@@ -47,10 +47,10 @@
 
   // For the activation modal program select
   export let ownedTrainingPrograms: Prisma.TrainingProgramGetPayload<
-    typeof TrainingProgramRepo.selectEverythingValidator
+    typeof trainingProgramSelects.everythingValidator
   >[];
   export let savedTrainingPrograms: Prisma.TrainingProgramGetPayload<
-    typeof TrainingProgramRepo.selectEverythingValidator
+    typeof trainingProgramSelects.everythingValidator
   >[];
   // For the exercise event form modals
   export let exercises: Prisma.ExerciseGetPayload<{

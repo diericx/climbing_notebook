@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TrainingProgramRepo } from '$lib/trainingProgram';
+  import type { trainingProgramSelects } from '$lib/prismaHelpers/trainingProgramHelper';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
@@ -10,7 +10,7 @@
   import FormButton from '../forms/FormButton.svelte';
 
   export let trainingProgram: Prisma.TrainingProgramGetPayload<
-    typeof TrainingProgramRepo.selectMinimalValidator
+    typeof trainingProgramSelects.minimalValidator
   >;
   export let session: Session | null;
   export let showVisibility = false;

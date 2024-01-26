@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TrainingProgramRepo } from '$lib/trainingProgram';
+  import type { trainingProgramSelects } from '$lib/prismaHelpers/trainingProgramHelper';
   import type { Prisma } from '@prisma/client';
   import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
   import List from './List.svelte';
@@ -7,7 +7,7 @@
   import WeeklyCalendar from './WeeklyCalendar.svelte';
 
   export let trainingProgram: Prisma.TrainingProgramGetPayload<
-    typeof TrainingProgramRepo.selectEverythingValidator
+    typeof trainingProgramSelects.everythingValidator
   >;
 </script>
 

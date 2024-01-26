@@ -1,7 +1,8 @@
 import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
+import { trainingProgramSelects } from '$lib/prismaHelpers/trainingProgramHelper';
 import { prisma } from '$lib/server/prisma';
 import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
-import { TrainingProgramRepo } from '$lib/trainingProgram';
+import { TrainingProgramRepo } from '$lib/server/repos/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
 import type { PageServerLoad } from './$types';
 
@@ -15,7 +16,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const trainingProgram = await trainingProgramRepo.getOne({
     id,
     userId: user?.userId,
-    select: TrainingProgramRepo.selectEverything,
+    select: trainingProgramSelects.everything,
   });
   const ownedTrainingCycles = await trainingCycleRepo.getManyForUser({
     userId: user.userId,

@@ -2,9 +2,9 @@
   import type { calendarEventSelects } from '$lib/prismaHelpers/calendarEventHelper';
   import type { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
   import type { journalEntrySelects } from '$lib/prismaHelpers/journalEntryHelper';
+  import type { trainingProgramSelects } from '$lib/prismaHelpers/trainingProgramHelper';
   import type { widgetSelects } from '$lib/prismaHelpers/widgetHelper';
   import type { CustomQueryResults } from '$lib/server/repos/customQuery';
-  import type { TrainingProgramRepo } from '$lib/trainingProgram';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
@@ -62,10 +62,10 @@
   }>[] = [];
   // For the activation modal program select
   export let ownedTrainingPrograms: Prisma.TrainingProgramGetPayload<
-    typeof TrainingProgramRepo.selectEverythingValidator
+    typeof trainingProgramSelects.everythingValidator
   >[];
   export let savedTrainingPrograms: Prisma.TrainingProgramGetPayload<
-    typeof TrainingProgramRepo.selectEverythingValidator
+    typeof trainingProgramSelects.everythingValidator
   >[];
 </script>
 
