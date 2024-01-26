@@ -1,7 +1,7 @@
 import type { PrismaClient } from '@prisma/client';
 import type { z } from 'zod';
-import { APIError } from './errors';
-import type { ProfilePartialSchema } from './zodSchemas';
+import { APIError } from '../../errors';
+import type { ProfilePartialSchema } from '../../zodSchemas';
 
 export class ProfileRepo {
   constructor(private readonly prisma: PrismaClient) {}

@@ -1,5 +1,5 @@
-import { ProfileRepo } from '$lib/profile';
 import { prisma } from '$lib/server/prisma';
+import { ProfileRepo } from '$lib/server/repos/profile';
 import { getSessionOrRedirect } from '$lib/utils';
 import type { PageServerLoad } from '../$types';
 
