@@ -1,8 +1,8 @@
 import type { CalendarEvent, Prisma, PrismaClient } from '@prisma/client';
 import type { z } from 'zod';
 import { APIError } from '../../errors';
-import type { Repo } from '../../repo';
 import type { CalendarEventPartialSchema, CalendarEventSchema } from '../../zodSchemas';
+import type { Repo } from './repo';
 
 export class CalendarEventRepo implements Repo<CalendarEvent, Prisma.CalendarEventSelect> {
   constructor(private readonly prisma: PrismaClient) {}

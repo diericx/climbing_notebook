@@ -1,9 +1,9 @@
 import type { ExerciseEvent, Prisma, PrismaClient } from '@prisma/client';
 import type { z } from 'zod';
 import { APIError } from '../../errors';
-import type { Repo } from '../../repo';
 import { isDateInTheSameWeekAsToday } from '../../utils';
 import type { ExerciseEventSchema } from '../../zodSchemas';
+import type { Repo } from './repo';
 
 export class ExerciseEventRepo implements Repo<ExerciseEvent, Prisma.ExerciseEventSelect> {
   constructor(private readonly prisma: PrismaClient) {}

@@ -2,13 +2,13 @@ import { isSimpleFieldInUse, widgetSelects } from '$lib/prismaHelpers/widgetHelp
 import type { Prisma, PrismaClient, Widget } from '@prisma/client';
 import type { z } from 'zod';
 import { APIError } from '../../errors';
-import type { Repo } from '../../repo';
 import type {
   DatasetSchema,
   WidgetSchema,
   WidgetSchemaPartial,
   WidgetTemplateSchema,
 } from '../../zodSchemas';
+import type { Repo } from './repo';
 
 export class WidgetRepo implements Repo<Widget, Prisma.WidgetSelect> {
   constructor(private readonly prisma: PrismaClient) {}

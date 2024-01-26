@@ -8,8 +8,8 @@ import type {
 } from '@prisma/client';
 import type { z } from 'zod';
 import { APIError } from '../../errors';
-import type { Repo } from '../../repo';
 import type { CustomQueryConditionSchema, CustomQuerySchema } from '../../zodSchemas';
+import type { Repo } from './repo';
 
 export type CustomQueryResults = {
   customQueryId: string;

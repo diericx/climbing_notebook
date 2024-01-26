@@ -2,13 +2,13 @@ import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
 import type { Prisma, PrismaClient, TrainingCycle } from '@prisma/client';
 import type { z } from 'zod';
 import { APIError } from '../../errors';
-import type { Repo } from '../../repo';
 import type {
   ExerciseGroupSchema,
   TrainingCycleDaySchema,
   TrainingCyclePartialSchema,
   TrainingCycleSchema,
 } from '../../zodSchemas';
+import type { Repo } from './repo';
 
 export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCycleSelect> {
   constructor(private readonly prisma: PrismaClient) {}

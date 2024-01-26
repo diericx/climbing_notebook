@@ -2,13 +2,13 @@ import type { Prisma, PrismaClient, TrainingProgram } from '@prisma/client';
 import cuid from 'cuid';
 import type { z } from 'zod';
 import { APIError } from '../../errors';
-import type { Repo } from '../../repo';
 import type {
   TrainingProgramActivationSchema,
   TrainingProgramPartialSchema,
   TrainingProgramScheduledSlotSchema,
   TrainingProgramSchema,
 } from '../../zodSchemas';
+import type { Repo } from './repo';
 
 export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.TrainingProgramSelect> {
   constructor(private readonly prisma: PrismaClient) {}

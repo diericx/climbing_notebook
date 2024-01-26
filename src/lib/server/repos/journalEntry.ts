@@ -1,9 +1,9 @@
 import type { JournalEntry, Prisma, PrismaClient } from '@prisma/client';
 import type { z } from 'zod';
 import { APIError } from '../../errors';
-import type { Repo } from '../../repo';
 import { matchMetricsInString, parseMetricStrings, toNum } from '../../utils';
 import type { JournalEntrySchema } from '../../zodSchemas';
+import type { Repo } from './repo';
 
 export class JournalEntryRepo implements Repo<JournalEntry, Prisma.JournalEntrySelect> {
   constructor(private readonly prisma: PrismaClient) {}
