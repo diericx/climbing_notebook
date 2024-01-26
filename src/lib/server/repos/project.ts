@@ -1,7 +1,7 @@
 import type { PrismaClient } from '@prisma/client';
 import type { z } from 'zod';
-import { APIError } from './errors';
-import type { ProjectPartialSchema, ProjectSchema, ProjectSessionSchema } from './zodSchemas';
+import { APIError } from '../../errors';
+import type { ProjectPartialSchema, ProjectSchema, ProjectSessionSchema } from '../../zodSchemas';
 
 export class ProjectRepo {
   constructor(private readonly prisma: PrismaClient) {}

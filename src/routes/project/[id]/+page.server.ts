@@ -1,6 +1,6 @@
 import { deleteFile, getSignedUrlsAndMetadata, uploadFile } from '$lib/aws/s3';
-import { ProjectRepo } from '$lib/project';
 import { prisma } from '$lib/server/prisma';
+import { ProjectRepo } from '$lib/server/repos/project';
 import { getSessionOrRedirect } from '$lib/utils';
 import { fileUploadSchema, projectPartialSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';

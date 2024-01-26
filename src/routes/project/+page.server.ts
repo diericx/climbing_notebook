@@ -1,5 +1,5 @@
-import { ProjectRepo } from '$lib/project';
 import { prisma } from '$lib/server/prisma';
+import { ProjectRepo } from '$lib/server/repos/project';
 import { getSessionOrRedirect } from '$lib/utils';
 import { projectSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
