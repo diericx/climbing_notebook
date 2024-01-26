@@ -1,116 +1,17 @@
-import { Prisma, type PrismaClient, type TrainingCycle } from '@prisma/client';
+import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
+import type { Prisma, PrismaClient, TrainingCycle } from '@prisma/client';
 import type { z } from 'zod';
-import { APIError } from './errors';
-import { ExerciseEventRepo } from './exerciseEvent';
-import type { Repo } from './repo';
+import { APIError } from '../../errors';
+import type { Repo } from '../../repo';
 import type {
   ExerciseGroupSchema,
   TrainingCycleDaySchema,
   TrainingCyclePartialSchema,
   TrainingCycleSchema,
-} from './zodSchemas';
+} from '../../zodSchemas';
 
 export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCycleSelect> {
   constructor(private readonly prisma: PrismaClient) {}
-
-  static makeSelect<T extends Prisma.TrainingCycleSelect>(
-    select: Prisma.Subset<T, Prisma.TrainingCycleSelect>
-  ): T {
-    return select;
-  }
-
-  static selectNameAndIdOnly = this.makeSelect({
-    name: true,
-    id: true,
-  });
-
-  static selectMinimal = this.makeSelect({
-    id: true,
-    ownerId: true,
-    name: true,
-    description: true,
-    isPublic: true,
-    privateAccessToken: true,
-    owner: {
-      select: {
-        username: true,
-        profile: {
-          select: {
-            imageS3ObjectKey: true,
-          },
-        },
-      },
-    },
-    _count: {
-      select: {
-        saves: true,
-      },
-    },
-  });
-  static selectMinimalValidator = Prisma.validator<Prisma.TrainingCycleDefaultArgs>()({
-    select: TrainingCycleRepo.selectMinimal,
-  });
-
-  static selectEverything = this.makeSelect({
-    ...this.selectMinimal,
-    trainingProgramId: true,
-    trainingProgramScheduledSlots: true,
-    privateAccessToken: true,
-    trainingProgram: {
-      select: {
-        name: true,
-      },
-    },
-    exerciseGroups: {
-      include: {
-        exercises: {
-          select: {
-            ...ExerciseEventRepo.selectEverything,
-          },
-          orderBy: {
-            name: 'asc',
-          },
-        },
-      },
-      orderBy: {
-        name: 'asc',
-      },
-    },
-    days: {
-      include: {
-        exercises: {
-          select: {
-            ...ExerciseEventRepo.selectEverything,
-          },
-          orderBy: {
-            name: 'asc',
-          },
-        },
-        exerciseGroups: {
-          orderBy: {
-            name: 'asc',
-          },
-          include: {
-            exercises: {
-              select: {
-                ...ExerciseEventRepo.selectEverything,
-              },
-              orderBy: {
-                name: 'asc',
-              },
-            },
-          },
-        },
-      },
-      orderBy: {
-        // Note: ui depends on this being sorted in this way
-        dayOfTheWeek: 'asc',
-      },
-    },
-  });
-  static selectEverythingValidator = Prisma.validator<Prisma.TrainingCycleDefaultArgs>()({
-    select: TrainingCycleRepo.selectEverything,
-  });
 
   canUserRead(
     userId: string | undefined,
@@ -274,7 +175,7 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
   ) {
     const trainingCycle = await this.getOne({
       id,
-      select: TrainingCycleRepo.selectEverything,
+      select: trainingCycleSelects.everything,
       userId,
     });
 

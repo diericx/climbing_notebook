@@ -1,12 +1,12 @@
 <script lang="ts">
   import CalExerciseEvent from '$lib/components/WeeklyCalendarExerciseEvent.svelte';
-  import type { TrainingCycleRepo } from '$lib/trainingCycle';
+  import type { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
   import { getDayWeekStartsMonday } from '$lib/utils';
   import type { Prisma } from '@prisma/client';
 
   // Define prisma types
   export let trainingCycle: Prisma.TrainingCycleGetPayload<
-    typeof TrainingCycleRepo.selectEverythingValidator
+    typeof trainingCycleSelects.everythingValidator
   >;
 
   const todayDayOfTheWeek = getDayWeekStartsMonday(new Date());

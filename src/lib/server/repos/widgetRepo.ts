@@ -1,87 +1,17 @@
-import { Prisma, type PrismaClient, type Widget } from '@prisma/client';
+import { isSimpleFieldInUse, widgetSelects } from '$lib/prismaHelpers/widgetHelper';
+import type { Prisma, PrismaClient, Widget } from '@prisma/client';
 import type { z } from 'zod';
-import { APIError } from './errors';
-import type { Repo } from './repo';
-import { TrainingCycleRepo } from './trainingCycle';
-import { isSimpleFieldInUse } from './widgetHelpers';
+import { APIError } from '../../errors';
+import type { Repo } from '../../repo';
 import type {
   DatasetSchema,
   WidgetSchema,
   WidgetSchemaPartial,
   WidgetTemplateSchema,
-} from './zodSchemas';
+} from '../../zodSchemas';
 
 export class WidgetRepo implements Repo<Widget, Prisma.WidgetSelect> {
   constructor(private readonly prisma: PrismaClient) {}
-
-  static makeSelect<T extends Prisma.WidgetSelect>(
-    select: Prisma.Subset<T, Prisma.WidgetSelect>
-  ): T {
-    return select;
-  }
-
-  static selectEverything = this.makeSelect({
-    id: true,
-    useCount: true,
-    isPublished: true,
-    isTemplate: true,
-    name: true,
-    description: true,
-    ownerId: true,
-    width: true,
-    order: true,
-    type: true,
-    sets: true,
-    reps: true,
-    weight: true,
-    minutes: true,
-    seconds: true,
-    owner: {
-      select: {
-        username: true,
-        profile: {
-          select: {
-            imageS3ObjectKey: true,
-          },
-        },
-      },
-    },
-    datasets: {
-      select: {
-        id: true,
-        type: true,
-        color: true,
-        name: true,
-        widgetId: true,
-        customQueries: {
-          select: {
-            name: true,
-            datasetId: true,
-            id: true,
-            table: true,
-            equation: true,
-            metric: true,
-            conditions: true,
-            exerciseId: true,
-            exercise: {
-              select: {
-                name: true,
-              },
-            },
-          },
-        },
-      },
-      orderBy: {
-        name: 'asc',
-      },
-    },
-    trainingCycle: {
-      select: TrainingCycleRepo.selectEverything,
-    },
-  });
-  static selectEverythingValidator = Prisma.validator<Prisma.WidgetDefaultArgs>()({
-    select: WidgetRepo.selectEverything,
-  });
 
   canUserRead(
     userId: string | undefined,
@@ -135,7 +65,7 @@ export class WidgetRepo implements Repo<Widget, Prisma.WidgetSelect> {
     const source = await this.getOne({
       id,
       userId,
-      select: WidgetRepo.selectEverything,
+      select: widgetSelects.everything,
     });
     if (!this.canUserUpdate(userId, source)) {
       throw new APIError('INVALID_PERMISSIONS');
@@ -251,7 +181,7 @@ export class WidgetRepo implements Repo<Widget, Prisma.WidgetSelect> {
       userId,
       select: {
         datasets: {
-          ...WidgetRepo.selectEverything.datasets,
+          ...widgetSelects.everything.datasets,
         },
       },
     });
@@ -382,7 +312,7 @@ export class WidgetRepo implements Repo<Widget, Prisma.WidgetSelect> {
     const sourceWidget = await this.getOne({
       id: widgetId,
       userId,
-      select: WidgetRepo.selectEverything,
+      select: widgetSelects.everything,
     });
 
     // Can only be done on templates

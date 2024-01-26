@@ -1,7 +1,7 @@
 import { getSignedUrlPromises } from '$lib/aws/s3';
 import { APIError } from '$lib/errors';
 import { prisma } from '$lib/server/prisma';
-import { TrainingCycleRepo } from '$lib/trainingCycle';
+import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
 import { TrainingProgramRepo } from '$lib/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
 import {

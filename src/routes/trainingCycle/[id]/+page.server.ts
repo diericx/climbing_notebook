@@ -1,7 +1,8 @@
 import { getSignedUrlPromises } from '$lib/aws/s3';
 import { APIError } from '$lib/errors';
+import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
 import { prisma } from '$lib/server/prisma';
-import { TrainingCycleRepo } from '$lib/trainingCycle';
+import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
 import { getSessionOrRedirect } from '$lib/utils';
 import { exerciseGroupSchema, trainingCycleSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
@@ -17,7 +18,7 @@ export const load: PageServerLoad = async ({ url, locals, params }) => {
   const trainingCycle = await trainingCycleRepo.getOne({
     id: Number(params.id),
     select: {
-      ...TrainingCycleRepo.selectEverything,
+      ...trainingCycleSelects.everything,
       saves: {
         where: session ? { userId: session.user.userId } : undefined,
       },

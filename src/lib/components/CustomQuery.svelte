@@ -1,15 +1,15 @@
 <script lang="ts">
+  import type { widgetSelects } from '$lib/prismaHelpers/widgetHelper';
   import { confirmDelete } from '$lib/utils';
-  import type { WidgetRepo } from '$lib/widget';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
   import FormButton from './forms/FormButton.svelte';
 
   export let customQuery: Prisma.CustomQueryGetPayload<
-    typeof WidgetRepo.selectEverythingValidator.select.datasets.select.customQueries
+    typeof widgetSelects.everythingValidator.select.datasets.select.customQueries
   >;
-  export let widget: Prisma.WidgetGetPayload<typeof WidgetRepo.selectEverythingValidator>;
+  export let widget: Prisma.WidgetGetPayload<typeof widgetSelects.everythingValidator>;
   export let exercises: Prisma.ExerciseGetPayload<{
     select: {
       name: true;

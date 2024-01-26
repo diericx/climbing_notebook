@@ -1,8 +1,10 @@
 import { ExerciseRepo } from '$lib/exercise';
-import { ExerciseEventRepo } from '$lib/exerciseEvent';
+import { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
+import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
 import { ProfileRepo } from '$lib/profile';
 import { prisma } from '$lib/server/prisma';
-import { TrainingCycleRepo } from '$lib/trainingCycle';
+import { ExerciseEventRepo } from '$lib/server/repos/exerciseEventRepo';
+import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
 import { TrainingProgramActivationRepo } from '$lib/trainingProgramActivation';
 import {
   getActiveTrainingCycleForTrainingProgramActivation,
@@ -24,7 +26,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
   const exerciseEvents = await exerciseEventsRepo.getManyForUser({
     userId: user?.userId,
-    select: ExerciseEventRepo.selectMinimal,
+    select: exerciseEventSelects.minimal,
   });
   const profile = await profileRepo.getOne(user?.userId);
   const exercises = await exerciseRepo.getMany({
@@ -34,7 +36,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const activeCycles = await trainingCycleRepo.getManyForUser({
     userId: user.userId,
     query: 'owned',
-    select: TrainingCycleRepo.selectEverything,
+    select: trainingCycleSelects.everything,
   });
 
   // Note: this does not filter for training programs that are active yet have

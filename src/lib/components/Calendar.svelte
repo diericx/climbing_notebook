@@ -1,7 +1,6 @@
 <script lang="ts">
   import type { CalendarEventRepo } from '$lib/calendarEvent';
   import dayjs from '$lib/dayjs';
-  import type { ExerciseEventRepo } from '$lib/exerciseEvent';
   import type { JournalEntryRepo } from '$lib/journalEntry';
   import { exerciseTypeColors } from '$lib/utils';
   // @ts-ignore
@@ -12,6 +11,8 @@
   import Interaction from '@event-calendar/interaction';
   // @ts-ignore
   import type { TrainingProgramRepo } from '$lib/trainingProgram';
+  // @ts-ignore
+  import type { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
   // @ts-ignore
   import TimeGrid from '@event-calendar/time-grid';
   import type { Prisma } from '@prisma/client';
@@ -43,7 +44,7 @@
     };
   }>[];
   export let exerciseEvents: Prisma.ExerciseEventGetPayload<
-    typeof ExerciseEventRepo.selectMinimalValidator
+    typeof exerciseEventSelects.minimalValidator
   >[];
 
   // For the activation modal program select

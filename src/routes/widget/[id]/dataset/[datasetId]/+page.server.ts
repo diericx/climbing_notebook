@@ -1,6 +1,6 @@
 import { prisma } from '$lib/server/prisma';
+import { WidgetRepo } from '$lib/server/repos/widgetRepo';
 import { getSessionOrRedirect } from '$lib/utils';
-import { WidgetRepo } from '$lib/widget';
 import { datasetSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';

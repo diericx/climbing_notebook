@@ -1,11 +1,11 @@
 <script lang="ts">
   import type { CalendarEventRepo } from '$lib/calendarEvent';
   import type { CustomQueryResults } from '$lib/customQuery';
-  import type { ExerciseEventRepo } from '$lib/exerciseEvent';
   import type { JournalEntryRepo } from '$lib/journalEntry';
+  import type { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
+  import type { widgetSelects } from '$lib/prismaHelpers/widgetHelper';
   import type { TrainingProgramRepo } from '$lib/trainingProgram';
   import { confirmDelete } from '$lib/utils';
-  import type { WidgetRepo } from '$lib/widget';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
   import { modalStore, popup } from '@skeletonlabs/skeleton';
@@ -16,7 +16,7 @@
   import FormButton from './forms/FormButton.svelte';
 
   // Generate partial prisma types
-  export let widget: Prisma.WidgetGetPayload<typeof WidgetRepo.selectEverythingValidator>;
+  export let widget: Prisma.WidgetGetPayload<typeof widgetSelects.everythingValidator>;
   export let customQueryResults: CustomQueryResults[];
   export let calendarEvents: Prisma.CalendarEventGetPayload<
     typeof CalendarEventRepo.selectEverythingValidator
@@ -26,7 +26,7 @@
   >[];
   export let trainingCycles: Prisma.TrainingCycleGetPayload<{ select: { name: true } }>[];
   export let exerciseEvents: Prisma.ExerciseEventGetPayload<
-    typeof ExerciseEventRepo.selectMinimalValidator
+    typeof exerciseEventSelects.minimalValidator
   >[];
   export let exercises: Prisma.ExerciseGetPayload<{
     select: {

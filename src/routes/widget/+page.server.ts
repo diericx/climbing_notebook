@@ -1,8 +1,9 @@
 import { getSignedUrlPromises } from '$lib/aws/s3';
 import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
+import { widgetSelects } from '$lib/prismaHelpers/widgetHelper';
 import { prisma } from '$lib/server/prisma';
+import { WidgetRepo } from '$lib/server/repos/widgetRepo';
 import { getSessionOrRedirect } from '$lib/utils';
-import { WidgetRepo } from '$lib/widget';
 import { widgetSchema } from '$lib/zodSchemas';
 import { fail, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
@@ -16,7 +17,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
   const widgets = await widgetRepo.getManyForUserPublishedOrOwnedTemplates(
     user.userId,
-    WidgetRepo.selectEverything
+    widgetSelects.everything
   );
   // compile datasets for widgets
   const customQueryResults: CustomQueryResults[] = [];

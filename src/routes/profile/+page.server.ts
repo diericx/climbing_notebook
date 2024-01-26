@@ -1,9 +1,10 @@
 import { deleteFile, getSignedUrlsAndMetadata, uploadFile } from '$lib/aws/s3';
-import { ExerciseEventRepo } from '$lib/exerciseEvent';
 import { JournalEntryRepo } from '$lib/journalEntry';
 import { MetricRepo } from '$lib/metric';
+import { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
 import { ProfileRepo } from '$lib/profile';
 import { prisma } from '$lib/server/prisma';
+import { ExerciseEventRepo } from '$lib/server/repos/exerciseEventRepo';
 import { getSessionOrRedirect } from '$lib/utils';
 import { fileUploadSchema, profileSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
@@ -23,7 +24,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const profile = await profileRepo.getOne(user?.userId);
   const exerciseEvents = await exerciseEventRepo.getManyForUser({
     userId: user?.userId,
-    select: ExerciseEventRepo.selectMinimal,
+    select: exerciseEventSelects.minimal,
   });
   const journalEntries = await journalEntryRepo.getManyForUser({
     userId: user?.userId,

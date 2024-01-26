@@ -2,8 +2,8 @@ import { Prisma, type PrismaClient, type TrainingProgram } from '@prisma/client'
 import cuid from 'cuid';
 import type { z } from 'zod';
 import { APIError } from './errors';
+import { trainingCycleSelects } from './prismaHelpers/trainingCycleHelper';
 import type { Repo } from './repo';
-import { TrainingCycleRepo } from './trainingCycle';
 import type {
   TrainingProgramActivationSchema,
   TrainingProgramPartialSchema,
@@ -65,12 +65,12 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
         order: true,
         duration: true,
         trainingCycles: {
-          select: TrainingCycleRepo.selectEverything,
+          select: trainingCycleSelects.everything,
         },
       },
     },
     trainingCycles: {
-      select: TrainingCycleRepo.selectEverything,
+      select: trainingCycleSelects.everything,
     },
   });
   static selectEverythingValidator = Prisma.validator<Prisma.TrainingProgramDefaultArgs>()({

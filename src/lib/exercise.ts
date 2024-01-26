@@ -1,7 +1,7 @@
 import { Prisma, type Exercise, type PrismaClient } from '@prisma/client';
 import type { z } from 'zod';
 import { APIError } from './errors';
-import { ExerciseEventRepo } from './exerciseEvent';
+import { exerciseEventSelects } from './prismaHelpers/exerciseEventHelper';
 import type { Repo } from './repo';
 import type { ExerciseSchema } from './zodSchemas';
 
@@ -31,7 +31,7 @@ export class ExerciseRepo implements Repo<Exercise, Prisma.ExerciseSelect> {
     createdAt: true,
     exerciseEvents: {
       select: {
-        ...ExerciseEventRepo.selectEverything,
+        ...exerciseEventSelects.everything,
       },
     },
     _count: {

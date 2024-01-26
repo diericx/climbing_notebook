@@ -1,7 +1,7 @@
 <script lang="ts">
   import dayjs from '$lib/dayjs';
   import type { ExerciseRepo } from '$lib/exercise';
-  import type { ExerciseEventRepo } from '$lib/exerciseEvent';
+  import type { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
@@ -11,7 +11,7 @@
   import FormButton from './forms/FormButton.svelte';
 
   export let exerciseEvents: Prisma.ExerciseEventGetPayload<
-    typeof ExerciseEventRepo.selectMinimalValidator
+    typeof exerciseEventSelects.minimalValidator
   >[];
   export let exercises: Prisma.ExerciseGetPayload<typeof ExerciseRepo.selectMinimalValidator>[];
 

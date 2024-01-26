@@ -1,15 +1,18 @@
 import { CalendarEventRepo } from '$lib/calendarEvent';
 import { CustomQueryRepo, type CustomQueryResults } from '$lib/customQuery';
 import { ExerciseRepo } from '$lib/exercise';
-import { ExerciseEventRepo } from '$lib/exerciseEvent';
 import { JournalEntryRepo } from '$lib/journalEntry';
 import { MetricRepo } from '$lib/metric';
+import { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
+import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
+import { widgetSelects } from '$lib/prismaHelpers/widgetHelper';
 import { ProfileRepo } from '$lib/profile';
 import { prisma } from '$lib/server/prisma';
-import { TrainingCycleRepo } from '$lib/trainingCycle';
+import { ExerciseEventRepo } from '$lib/server/repos/exerciseEventRepo';
+import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
+import { WidgetRepo } from '$lib/server/repos/widgetRepo';
 import { TrainingProgramRepo } from '$lib/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
-import { WidgetRepo } from '$lib/widget';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
@@ -29,7 +32,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const profile = await profileRepo.getOne(user?.userId);
   const exerciseEvents = await exerciseEventRepo.getManyForUser({
     userId: user?.userId,
-    select: ExerciseEventRepo.selectMinimal,
+    select: exerciseEventSelects.minimal,
   });
   const exercises = await exerciseRepo.getMany({
     select: ExerciseRepo.selectMinimal,
@@ -56,13 +59,13 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
   const widgets = await widgetRepo.getManyForUserDashboardWidgets(
     user.userId,
-    WidgetRepo.selectEverything
+    widgetSelects.everything
   );
 
   const trainingCycles = await trainingCycleRepo.getManyForUser({
     userId: user.userId,
     query: 'owned',
-    select: TrainingCycleRepo.selectNameAndIdOnly,
+    select: trainingCycleSelects.nameAndId,
   });
 
   // compile datasets for widgets

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TrainingCycleRepo } from '$lib/trainingCycle';
+  import type { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
@@ -14,7 +14,7 @@
   // to be any way to generate types with optional values directly via
   // Prisma.
   export let trainingCycle: Prisma.TrainingCycleGetPayload<
-    typeof TrainingCycleRepo.selectMinimalValidator
+    typeof trainingCycleSelects.minimalValidator
   > &
     Prisma.TrainingCycleGetPayload<{
       select: {
