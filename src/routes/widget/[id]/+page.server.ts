@@ -21,7 +21,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
 
   const widget = await widgetRepo.getOne({
     id,
-    userId: undefined,
+    userId: user.userId,
     select: widgetSelects.everything,
   });
   // This page is only for template widgets
