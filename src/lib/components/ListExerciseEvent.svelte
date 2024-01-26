@@ -76,9 +76,31 @@
           <Icon icon="material-symbols:edit-outline" height="18" />
           <span>Edit</span>
         </button>
+        <div />
+        <button
+          class="btn btn-sm w-full justify-start"
+          on:click={() =>
+            modalStore.trigger({
+              type: 'component',
+              component: 'formModalExerciseEvent',
+              meta: {
+                data: { ...exerciseEvent, date: new Date() },
+                action: `/exerciseEvent?/new`,
+                title: 'Duplicate Exercise Event',
+                formProps: {
+                  showDate,
+                  showDifficulty,
+                  exercises,
+                },
+              },
+            })}
+        >
+          <Icon icon="material-symbols:control-point-duplicate-outline" height="18" />
+          <span>Duplicate</span>
+        </button>
         <FormButton
           action={`/exerciseEvent/${exerciseEvent.id}?/delete`}
-          class="btn btn-sm w-full"
+          class="btn btn-sm w-full justify-start"
           onClick={confirmDelete}
         >
           <Icon icon="mdi:trash-outline" height="18" />
