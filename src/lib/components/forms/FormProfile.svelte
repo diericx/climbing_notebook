@@ -3,6 +3,7 @@
   import type { Profile } from '@prisma/client';
   import { v4 as uuidv4 } from 'uuid';
   import Form from './Form.svelte';
+  import SelectField from './fields/SelectField.svelte';
   import SubmitButton from './fields/SubmitButton.svelte';
   import TextArea from './fields/TextArea.svelte';
 
@@ -16,6 +17,12 @@
 
 <Form schema={profileSchema} {data} {action} {id} {onSuccess} let:superForm>
   <input type="hidden" name="type" value="climbing" />
+
+  <SelectField name="weightUnit" field="weightUnit" form={superForm}>
+    <option value={'kg'}>Kilograms</option>
+    <option value={'lb'}>Pounds</option>
+  </SelectField>
+
   <TextArea
     name="goals"
     field="goals"
