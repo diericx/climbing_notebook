@@ -6,6 +6,9 @@
   import type { PopupSettings } from '@skeletonlabs/skeleton';
   import { modalStore, popup } from '@skeletonlabs/skeleton';
 
+  // This is a public facing component so the profile may not exist
+  export let profile: Prisma.ProfileGetPayload<{ select: { weightUnit: true } }> | undefined =
+    undefined;
   export let exerciseEvent: Prisma.ExerciseEventGetPayload<
     typeof exerciseEventSelects.everythingValidator
   >;
@@ -87,33 +90,36 @@
     {/if}
 
     <div class="pt-1">
-      <button
-        class="btn btn-sm variant-filled-primary bg-green-500 py-0 text-white"
-        disabled={isMarkedCompleted || disableActionButtons || isLegacy}
-        on:click={() =>
-          modalStore.trigger({
-            type: 'component',
-            component: 'formModalExerciseEvent',
-            meta: {
-              action: `/exerciseEvent?/new`,
-              title: 'Complete Exercise',
-              // remove group id and program id so this will be considered an exercise event
-              data: {
-                ...exerciseEvent,
-                exerciseGroupId: null,
-                trainingCycleDayId: null,
-                date: new Date(),
+      {#if profile != undefined}
+        <button
+          class="btn btn-sm variant-filled-primary bg-green-500 py-0 text-white"
+          disabled={isMarkedCompleted || disableActionButtons || isLegacy}
+          on:click={() =>
+            modalStore.trigger({
+              type: 'component',
+              component: 'formModalExerciseEvent',
+              meta: {
+                action: `/exerciseEvent?/new`,
+                title: 'Complete Exercise',
+                // remove group id and program id so this will be considered an exercise event
+                data: {
+                  ...exerciseEvent,
+                  exerciseGroupId: null,
+                  trainingCycleDayId: null,
+                  date: new Date(),
+                },
+                formProps: {
+                  exercises,
+                  exerciseToMarkCompleted: exerciseEvent,
+                  dateToMarkCompleted: date,
+                  profile,
+                },
               },
-              formProps: {
-                exercises,
-                exerciseToMarkCompleted: exerciseEvent,
-                dateToMarkCompleted: date,
-              },
-            },
-          })}
-      >
-        <span>Complete</span>
-      </button>
+            })}
+        >
+          <span>Complete</span>
+        </button>
+      {/if}
     </div>
   </div>
 </div>

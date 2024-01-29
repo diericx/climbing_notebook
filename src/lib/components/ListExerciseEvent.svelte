@@ -2,7 +2,7 @@
   import dayjs from '$lib/dayjs';
   import type { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
   import type { exerciseSelects } from '$lib/prismaHelpers/exerciseHelper';
-  import { confirmDelete } from '$lib/utils';
+  import { confirmDelete, kgToLb } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
@@ -10,6 +10,11 @@
   import ListItem from './ListItem.svelte';
   import FormButton from './forms/FormButton.svelte';
 
+  export let profile: Prisma.ProfileGetPayload<{
+    select: {
+      weightUnit: true;
+    };
+  }>;
   export let exerciseEvents: Prisma.ExerciseEventGetPayload<
     typeof exerciseEventSelects.minimalValidator
   >[];
@@ -45,7 +50,9 @@
               </span>
             {/if}
             {exerciseEvent.sets}x{exerciseEvent.reps} :
-            {exerciseEvent.minutes}m{exerciseEvent.seconds}s : {exerciseEvent.weight}kg
+            {exerciseEvent.minutes}m{exerciseEvent.seconds}s : {profile.weightUnit == 'kg'
+              ? exerciseEvent.weight
+              : kgToLb(exerciseEvent.weight)}{profile.weightUnit}
             {#if exerciseEvent.difficulty && showDifficulty}
               : {exerciseEvent.difficulty}
               difficulty
@@ -69,6 +76,7 @@
                   showDate,
                   showDifficulty,
                   exercises,
+                  profile,
                 },
               },
             })}
@@ -91,6 +99,7 @@
                   showDate,
                   showDifficulty,
                   exercises,
+                  profile,
                 },
               },
             })}

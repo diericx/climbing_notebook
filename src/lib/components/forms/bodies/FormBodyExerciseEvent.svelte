@@ -10,6 +10,11 @@
 
   export let superForm: SuperForm<z.AnyZodObject, any>;
 
+  export let profile: Prisma.ProfileGetPayload<{
+    select: {
+      weightUnit: true;
+    };
+  }>;
   export let exercises: Prisma.ExerciseGetPayload<{
     select: {
       _count: {
@@ -108,7 +113,14 @@
       <div class="w-full md:hidden" />
 
       {#if exercise.fieldsToShow.find((f) => f == 'weight')}
-        <NumberField class="w-20" name="weight" field="weight" step={'0.1'} form={superForm} />
+        <NumberField
+          class="w-20"
+          label={'Weight (' + profile.weightUnit + ')'}
+          name="weight"
+          field="weight"
+          step={'0.1'}
+          form={superForm}
+        />
       {/if}
 
       {#if showDifficulty}

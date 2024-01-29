@@ -6,6 +6,9 @@
   import type { Prisma } from '@prisma/client';
   import { onMount } from 'svelte';
 
+  // This is a public facing component so the profile may not exist
+  export let profile: Prisma.ProfileGetPayload<{ select: { weightUnit: true } }> | undefined =
+    undefined;
   export let trainingCycle: Prisma.TrainingCycleGetPayload<
     typeof trainingCycleSelects.everythingValidator
   >;
@@ -59,6 +62,7 @@
               {/if}
               {#each day.exercises as exerciseEvent}
                 <CalExerciseEvent
+                  {profile}
                   {exerciseEvent}
                   {exercises}
                   {disableActionButtons}
@@ -71,6 +75,7 @@
                 <p class="font-bold">{group.name}</p>
                 {#each group.exercises as exerciseEvent}
                   <CalExerciseEvent
+                    {profile}
                     {disableActionButtons}
                     {exerciseEvent}
                     {exercises}

@@ -13,6 +13,7 @@
   let scrollY: number;
   $: trainingCycle = data.trainingCycle;
   $: exercises = data.exercises;
+  $: profile = data.profile;
 
   let daysOfTheWeek = [
     'Monday',
@@ -235,6 +236,7 @@
                         showDifficulty: false,
                         showMigrationOption: false,
                         exercises,
+                        profile,
                       },
                     },
                   })}
@@ -244,7 +246,12 @@
               </button>
             </div>
 
-            <ListExerciseEvent {exercises} exerciseEvents={group.exercises} showDate={false} />
+            <ListExerciseEvent
+              {profile}
+              {exercises}
+              exerciseEvents={group.exercises}
+              showDate={false}
+            />
           </div>
         </ListItem>
       {/each}
@@ -376,6 +383,7 @@
                     showDifficulty: false,
                     showMigrationOption: false,
                     exercises,
+                    profile,
                   },
                 },
               })}
@@ -384,7 +392,7 @@
             <span>Add Exercise</span>
           </button>
         </div>
-        <ListExerciseEvent {exercises} exerciseEvents={day.exercises} showDate={false} />
+        <ListExerciseEvent {profile} {exercises} exerciseEvents={day.exercises} showDate={false} />
       </div>
     {/each}
   </div>

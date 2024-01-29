@@ -9,6 +9,8 @@
     typeof trainingCycleSelects.everythingValidator
   >;
 
+  export let profile: Prisma.ProfileGetPayload<{ select: { weightUnit: true } }>;
+
   const todayDayOfTheWeek = getDayWeekStartsMonday(new Date());
   let daysOfTheWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -24,13 +26,13 @@
             <p class="text-gray-400 italic">No exercises for this day</p>
           {/if}
           {#each day.exercises as exerciseEvent}
-            <CalExerciseEvent {exerciseEvent} date={new Date()} />
+            <CalExerciseEvent {profile} {exerciseEvent} date={new Date()} />
           {/each}
 
           {#each day.exerciseGroups as group}
             <p class="font-bold">{group.name}</p>
             {#each group.exercises as exerciseEvent}
-              <CalExerciseEvent {exerciseEvent} date={new Date()} />
+              <CalExerciseEvent {profile} {exerciseEvent} date={new Date()} />
             {/each}
           {/each}
         </div>

@@ -17,6 +17,7 @@
 
   // Generate partial prisma types
   export let widget: Prisma.WidgetGetPayload<typeof widgetSelects.everythingValidator>;
+  export let profile: Prisma.ProfileGetPayload<{ select: { weightUnit: true } }>;
   export let customQueryResults: CustomQueryResults[];
   export let calendarEvents: Prisma.CalendarEventGetPayload<
     typeof calendarEventSelects.everythingValidator
@@ -121,6 +122,7 @@
 
       <div>
         <Calendar
+          {profile}
           {calendarEvents}
           {journalEntries}
           {exerciseEvents}
@@ -142,7 +144,7 @@
           You must set a Training Cycle for this widget to display exercises.
         </p>
       {:else}
-        <DailyCalendar trainingCycle={widget.trainingCycle} />
+        <DailyCalendar {profile} trainingCycle={widget.trainingCycle} />
       {/if}
     </div>
   {/if}

@@ -15,6 +15,7 @@
   import { clipboard, toastStore } from '@skeletonlabs/skeleton';
 
   export let data: PageData;
+  $: profile = data.profile;
   $: trainingCycle = data.trainingCycle;
   $: session = data.session;
   $: isSaved = () => {
@@ -115,6 +116,7 @@
 </div>
 
 <WeeklyCalendar
+  {profile}
   {trainingCycle}
   shouldScrollIntoView={false}
   disableActionButtons={true}

@@ -2,6 +2,7 @@ import { APIError } from '$lib/errors';
 import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
 import { getSignedUrlPromises } from '$lib/server/aws/s3';
 import { prisma } from '$lib/server/prisma';
+import { ProfileRepo } from '$lib/server/repos/profile';
 import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
 import { getSessionOrRedirect } from '$lib/utils';
 import { exerciseGroupSchema, trainingCycleSchema } from '$lib/zodSchemas';
@@ -15,6 +16,9 @@ export const load: PageServerLoad = async ({ url, locals, params }) => {
   const token = url.searchParams.get('token');
 
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
+  const profileRepo = new ProfileRepo(prisma);
+
+  const profile = session == null ? undefined : await profileRepo.getOne(session?.user.userId);
   const trainingCycle = await trainingCycleRepo.getOne({
     id: Number(params.id),
     select: {
@@ -56,6 +60,7 @@ export const load: PageServerLoad = async ({ url, locals, params }) => {
     session,
     crumbs,
     s3ObjectUrlPromises,
+    profile,
   };
 };
 
