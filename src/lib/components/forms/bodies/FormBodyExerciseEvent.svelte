@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { kgToLb, lbToKg } from '$lib/utils';
   import type { ExerciseEvent, Prisma } from '@prisma/client';
   import type { SuperForm } from 'sveltekit-superforms/client';
   import type { z } from 'zod';
@@ -120,6 +121,9 @@
           field="weight"
           step={'0.1'}
           form={superForm}
+          shouldPerformUnitConversion={profile.weightUnit == 'lb'}
+          unitConversionFunc={kgToLb}
+          unitDeconversionFunc={lbToKg}
         />
       {/if}
 

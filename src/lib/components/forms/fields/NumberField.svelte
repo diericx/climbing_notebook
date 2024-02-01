@@ -1,4 +1,6 @@
 <script lang="ts">
+  import type { Writable } from 'svelte/store';
+
   import { camelToTitle } from '$lib/utils';
   import type { FormPathLeaves, ZodValidation } from 'sveltekit-superforms';
   import type { SuperForm } from 'sveltekit-superforms/client';
@@ -12,10 +14,20 @@
   export let placeholder = '';
   export let step = '1';
   export let label: string | undefined = undefined;
+  export let shouldPerformUnitConversion = false;
+  export let unitConversionFunc = (value: number) => value;
+  export let unitDeconversionFunc = (value: number) => value;
   let className: string = '';
   export { className as class };
 
   const { path, value, errors, constraints } = formFieldProxy(form, field);
+  $: numberValue = value as Writable<number>;
+
+  // Account for any unit conversions
+  let formValue = shouldPerformUnitConversion ? unitConversionFunc(Number($value)) : Number($value);
+  $: {
+    $numberValue = shouldPerformUnitConversion ? unitDeconversionFunc(formValue) : formValue;
+  }
 </script>
 
 <label>
@@ -27,7 +39,7 @@
     {placeholder}
     {step}
     data-invalid={$errors}
-    bind:value={$value}
+    bind:value={formValue}
     {...$constraints}
     {...$$restProps}
   />
