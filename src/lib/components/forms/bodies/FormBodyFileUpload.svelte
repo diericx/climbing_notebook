@@ -21,7 +21,7 @@
 <!-- Files are not handled by SuperForms so all errors are sent manually to 'file'-->
 {#if $errors.file}<span class="invalid">{$errors.file}</span>{/if}
 
-<FileDropzone class={className} name="file" field="file" bind:files>
+<FileDropzone class={className} padding={'p-4'} name="file" field="file" bind:files>
   <svelte:fragment slot="lead">
     {#if !files || files.length == 0}
       <div class="flex justify-center">
@@ -35,7 +35,7 @@
   </svelte:fragment>
   <svelte:fragment slot="message">
     {#if !files || files.length == 0}
-      <b>Upload an image </b> or drag and drop
+      <b>Upload an image </b>
     {:else}
       {files[0].name}
     {/if}
@@ -48,5 +48,5 @@
 </FileDropzone>
 
 {#if showSubmitButton}
-  <SubmitButton {superForm} />
+  <SubmitButton label="Upload" {superForm} />
 {/if}

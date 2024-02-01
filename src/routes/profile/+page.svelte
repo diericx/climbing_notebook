@@ -48,7 +48,11 @@
 <p><b>Username: </b> {user?.username}</p>
 <p><b>Email: </b> {user?.email}</p>
 
-<p><b>Profile Image: </b></p>
+<br />
+
+<h1>Profile Picture</h1>
+<hr />
+
 {#if profile.imageS3ObjectKey}
   <div class="">
     <Image
@@ -71,35 +75,42 @@
   </div>
 {:else}
   <Form schema={fileUploadSchema} let:superForm action={`/profile?/uploadImage`}>
-    <FormBodyFileUpload class="w-72" label="" {superForm} />
+    <FormBodyFileUpload class="w-60" label="" {superForm} />
   </Form>
 {/if}
 <br />
 
+<div>
+  <div class="flex flex-wrap mb-2 justify-between items-center">
+    <div>
+      <h1 class="inline">Profile</h1>
+    </div>
+    <div>
+      <a class="btn btn-sm variant-ringed" href={`/profile/edit?redirectTo=/profile`}>
+        <Icon icon="material-symbols:edit-outline" height="18" />
+        <span> Edit </span>
+      </a>
+    </div>
+  </div>
+  <hr />
+
+  <p><b>Weight Unit: </b>{profile.weightUnit == 'kg' ? 'Kilograms' : 'Pounds'}</p>
+
+  <b>Goals: </b>
+
+  <div class="whitespace-pre bg-white w-full px-1 py-3 rounded">
+    {profile?.goals}
+  </div>
+</div>
+
+<br />
+
 <div class="flex flex-wrap mb-4 justify-between items-center">
   <div>
-    <h1 class="inline">Profile</h1>
-  </div>
-  <div>
-    <a class="btn btn-sm variant-ringed" href={`/profile/edit?redirectTo=/profile`}>
-      <Icon icon="material-symbols:edit-outline" height="18" />
-      <span> Edit </span>
-    </a>
+    <h1 class="inline">Data Exporter</h1>
   </div>
 </div>
 <hr />
-
-<p><b>Weight Unit: </b>{profile.weightUnit == 'kg' ? 'Kilograms' : 'Pounds'}</p>
-
-<b>Goals: </b>
-
-<div class="whitespace-pre bg-white w-full px-1 py-3 rounded">
-  {profile?.goals}
-</div>
-
-<br />
-
-<br />
 
 <div class="mb-2">
   <button
