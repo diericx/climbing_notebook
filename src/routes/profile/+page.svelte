@@ -76,11 +76,22 @@
 {/if}
 <br />
 
-<h1 class="inline">Profile</h1>
-<a href={`/profile/edit?redirectTo=/profile`}>Edit</a>
+<div class="flex flex-wrap mb-4 justify-between items-center">
+  <div>
+    <h1 class="inline">Profile</h1>
+  </div>
+  <div>
+    <a class="btn btn-sm variant-ringed" href={`/profile/edit?redirectTo=/profile`}>
+      <Icon icon="material-symbols:edit-outline" height="18" />
+      <span> Edit </span>
+    </a>
+  </div>
+</div>
 <hr />
 
-<h2>Goals</h2>
+<p><b>Weight Unit: </b>{profile.weightUnit == 'kg' ? 'Kilograms' : 'Pounds'}</p>
+
+<b>Goals: </b>
 
 <div class="whitespace-pre bg-white w-full px-1 py-3 rounded">
   {profile?.goals}

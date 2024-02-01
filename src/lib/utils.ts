@@ -443,3 +443,18 @@ export function getActiveTrainingCycleForTrainingProgramActivation(
   }
   return slots[weekDiff].trainingCycles[0];
 }
+
+export function kgToLb(kg: number) {
+  return kg * 2.20462;
+}
+
+export function lbToKg(lb: number) {
+  if (lb == 0) {
+    return 0;
+  }
+  return lb / 2.20462;
+}
+
+export function roundTo(num: number, decimalPlace: number) {
+  return Math.round((num + Number.EPSILON) * (10 * decimalPlace)) / (10 * decimalPlace);
+}

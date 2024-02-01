@@ -16,6 +16,7 @@
   import type { Prisma } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
 
+  export let profile: Prisma.ProfileGetPayload<{ select: { weightUnit: true } }>;
   export let calendarEvents: Prisma.CalendarEventGetPayload<
     typeof calendarEventSelects.everythingValidator
   >[];
@@ -138,6 +139,7 @@
             deleteButtonAction: `/exerciseEvent/${e.id}?/delete`,
             formProps: {
               exercises,
+              profile,
             },
           },
         });

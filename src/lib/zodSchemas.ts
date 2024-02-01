@@ -150,6 +150,7 @@ export type JournalEntrySchema = typeof journalEntrySchema;
 export const profileSchema = z.object({
   goals: z.string().optional(),
   imageS3ObjectKey: z.string().nullish(),
+  weightUnit: z.string(),
 });
 export type ProfileSchema = typeof profileSchema;
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { kgToLb, lbToKg } from '$lib/utils';
   import type { ExerciseEvent, Prisma } from '@prisma/client';
   import type { SuperForm } from 'sveltekit-superforms/client';
   import type { z } from 'zod';
@@ -10,6 +11,11 @@
 
   export let superForm: SuperForm<z.AnyZodObject, any>;
 
+  export let profile: Prisma.ProfileGetPayload<{
+    select: {
+      weightUnit: true;
+    };
+  }>;
   export let exercises: Prisma.ExerciseGetPayload<{
     select: {
       _count: {
@@ -108,7 +114,18 @@
       <div class="w-full md:hidden" />
 
       {#if exercise.fieldsToShow.find((f) => f == 'weight')}
-        <NumberField class="w-20" name="weight" field="weight" step={'0.1'} form={superForm} />
+        <NumberField
+          class="w-20"
+          label={'Weight (' + profile.weightUnit + ')'}
+          name="weight"
+          field="weight"
+          step={'0.1'}
+          form={superForm}
+          shouldPerformUnitConversion={profile.weightUnit == 'lb'}
+          unitConversionFunc={kgToLb}
+          unitDeconversionFunc={lbToKg}
+          shouldRound={true}
+        />
       {/if}
 
       {#if showDifficulty}

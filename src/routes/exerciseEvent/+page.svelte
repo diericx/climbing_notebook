@@ -15,6 +15,7 @@
   $: validTrainingProgramActivations = data.validTrainingProgramActivations;
   $: exerciseEvents = data.exerciseEvents;
   $: exercises = data.exercises;
+  $: profile = data.profile;
 
   // Filter out only todays exercise events
   $: todaysExerciseEvents = exerciseEvents.filter((e) => {
@@ -115,6 +116,7 @@
             formProps: {
               showMigrationOption: false,
               exercises,
+              profile,
             },
           },
         })}
@@ -123,10 +125,10 @@
       <span>New Exercise Event</span>
     </button>
   </div>
-  <ListExerciseEvent {exercises} exerciseEvents={todaysExerciseEvents} />
+  <ListExerciseEvent {profile} {exercises} exerciseEvents={todaysExerciseEvents} />
 </div>
 
 <div class="pt-8">
   <h1 class="mb-3">History</h1>
-  <ListExerciseEvent {exercises} exerciseEvents={pastExerciseEvents} />
+  <ListExerciseEvent {profile} {exercises} exerciseEvents={pastExerciseEvents} />
 </div>

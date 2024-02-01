@@ -95,6 +95,7 @@
     {#each widgets as widget}
       <div class={widget.width == 'full' ? 'md:col-span-2' : 'md:col-span-1'}>
         <Widget
+          {profile}
           {widget}
           {customQueryResults}
           {calendarEvents}

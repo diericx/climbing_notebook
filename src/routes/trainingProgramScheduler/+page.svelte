@@ -8,6 +8,7 @@
   $: trainingProgramActivations = data.trainingProgramActivations;
   $: ownedTrainingPrograms = data.ownedTrainingPrograms;
   $: savedTrainingPrograms = data.savedTrainingPrograms;
+  $: profile = data.profile;
 </script>
 
 <div class="flex justify-between mb-4">
@@ -36,6 +37,7 @@
 </div>
 
 <Calendar
+  {profile}
   journalEntries={[]}
   calendarEvents={[]}
   exerciseEvents={[]}
