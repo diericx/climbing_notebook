@@ -199,7 +199,7 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
       userId,
     });
 
-    // Create the new program
+    // Create the new cycle
     const newCycle = await this.prisma.trainingCycle.create({
       data: {
         name: data?.name || trainingCycle.name + ' Duplicate',
@@ -218,7 +218,9 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
                   ...e,
                   userId: undefined,
                   exerciseGroupId: undefined,
+                  exerciseGroup: undefined,
                   trainingCycleDayId: undefined,
+                  trainingCycleDay: undefined,
                   exerciseId: undefined,
                   id: undefined,
                   exercise:
@@ -229,6 +231,7 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
                             id: e.exerciseId,
                           },
                         },
+                  ownerId: undefined,
                   owner: {
                     connect: {
                       id: userId,
@@ -272,11 +275,13 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
           exercises: {
             create: g.exercises.map((e) => ({
               ...e,
-              userId: undefined,
-              exerciseGroupId: undefined,
-              trainingCycleDayId: undefined,
-              exerciseId: undefined,
               id: undefined,
+              userId: undefined,
+              trainingCycleDayId: undefined,
+              trainingCycleDay: undefined,
+              exerciseGroupId: undefined,
+              exerciseGroup: undefined,
+              exerciseId: undefined,
               exercise:
                 e.exerciseId === null
                   ? undefined
@@ -285,6 +290,7 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
                         id: e.exerciseId,
                       },
                     },
+              ownerId: undefined,
               owner: {
                 connect: {
                   id: userId,
@@ -362,6 +368,7 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
           select: {
             trainingProgramScheduledSlots: true,
             activations: true,
+            saves: true,
           },
         },
       },
@@ -376,6 +383,20 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
       throw new APIError(
         'INVALID_INPUT',
         'Training Cycle cannot be deleted because it is scheduled in one or more Training Programs'
+      );
+    }
+
+    if (trainingCycle._count.activations != 0) {
+      throw new APIError(
+        'INVALID_INPUT',
+        'Training Cycle cannot be deleted because it is activated by someone'
+      );
+    }
+
+    if (trainingCycle._count.saves != 0) {
+      throw new APIError(
+        'INVALID_INPUT',
+        'Training Cycle cannot be deleted because it is saved by someone'
       );
     }
 
