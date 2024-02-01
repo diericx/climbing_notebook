@@ -2,7 +2,7 @@
   import dayjs from '$lib/dayjs';
   import type { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
   import type { exerciseSelects } from '$lib/prismaHelpers/exerciseHelper';
-  import { confirmDelete, kgToLb } from '$lib/utils';
+  import { confirmDelete, kgToLb, roundTo } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
@@ -51,8 +51,8 @@
             {/if}
             {exerciseEvent.sets}x{exerciseEvent.reps} :
             {exerciseEvent.minutes}m{exerciseEvent.seconds}s : {profile.weightUnit == 'kg'
-              ? exerciseEvent.weight
-              : kgToLb(exerciseEvent.weight)}{profile.weightUnit}
+              ? roundTo(exerciseEvent.weight, 1)
+              : roundTo(kgToLb(exerciseEvent.weight), 1)}{profile.weightUnit}
             {#if exerciseEvent.difficulty && showDifficulty}
               : {exerciseEvent.difficulty}
               difficulty

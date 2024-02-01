@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Writable } from 'svelte/store';
 
-  import { camelToTitle } from '$lib/utils';
+  import { camelToTitle, roundTo } from '$lib/utils';
   import type { FormPathLeaves, ZodValidation } from 'sveltekit-superforms';
   import type { SuperForm } from 'sveltekit-superforms/client';
   import { formFieldProxy } from 'sveltekit-superforms/client';
@@ -13,6 +13,8 @@
   export let field: FormPathLeaves<z.infer<T>>;
   export let placeholder = '';
   export let step = '1';
+  export let shouldRound = false;
+  export let roundFunc = (x: number) => roundTo(x, 1);
   export let label: string | undefined = undefined;
   export let shouldPerformUnitConversion = false;
   export let unitConversionFunc = (value: number) => value;
@@ -25,6 +27,10 @@
 
   // Account for any unit conversions
   let formValue = shouldPerformUnitConversion ? unitConversionFunc(Number($value)) : Number($value);
+  if (shouldRound) {
+    formValue = roundFunc(formValue);
+  }
+
   $: {
     $numberValue = shouldPerformUnitConversion ? unitDeconversionFunc(formValue) : formValue;
   }

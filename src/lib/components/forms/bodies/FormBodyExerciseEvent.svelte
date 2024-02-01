@@ -124,6 +124,7 @@
           shouldPerformUnitConversion={profile.weightUnit == 'lb'}
           unitConversionFunc={kgToLb}
           unitDeconversionFunc={lbToKg}
+          shouldRound={true}
         />
       {/if}
 
