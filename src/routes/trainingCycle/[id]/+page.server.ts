@@ -18,7 +18,7 @@ export const load: PageServerLoad = async ({ url, locals, params }) => {
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
   const profileRepo = new ProfileRepo(prisma);
 
-  const profile = session == null ? undefined : await profileRepo.getOne(session?.user.userId);
+  const profile = session == null ? null : await profileRepo.getOne(session?.user.userId);
   const trainingCycle = await trainingCycleRepo.getOne({
     id: Number(params.id),
     select: {

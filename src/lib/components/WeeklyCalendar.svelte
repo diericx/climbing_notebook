@@ -7,8 +7,7 @@
   import { onMount } from 'svelte';
 
   // This is a public facing component so the profile may not exist
-  export let profile: Prisma.ProfileGetPayload<{ select: { weightUnit: true } }> | undefined =
-    undefined;
+  export let profile: Prisma.ProfileGetPayload<{ select: { weightUnit: true } }> | null;
   export let trainingCycle: Prisma.TrainingCycleGetPayload<
     typeof trainingCycleSelects.everythingValidator
   >;
