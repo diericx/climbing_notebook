@@ -113,4 +113,5 @@
     <div class="leading-none mt-0 font-bold text-xl">{trainingProgram.owner.username}</div>
   </div>
 </div>
-<TrainingProgram {trainingProgram} />
+<!-- We don't allow button usage when viewing a program so just enter null profile -->
+<TrainingProgram profile={null} {trainingProgram} />

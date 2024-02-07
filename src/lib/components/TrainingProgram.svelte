@@ -9,6 +9,7 @@
   export let trainingProgram: Prisma.TrainingProgramGetPayload<
     typeof trainingProgramSelects.everythingValidator
   >;
+  export let profile: Prisma.ProfileGetPayload<{ select: { weightUnit: true } }> | null;
 </script>
 
 <div class="mb-12">
@@ -51,7 +52,11 @@
                         </div>
                       </svelte:fragment>
                       <svelte:fragment slot="content">
-                        <WeeklyCalendar trainingCycle={s.trainingCycles[0]} height="350px" />
+                        <WeeklyCalendar
+                          {profile}
+                          trainingCycle={s.trainingCycles[0]}
+                          height="350px"
+                        />
                       </svelte:fragment>
                     </AccordionItem>
                   </Accordion>

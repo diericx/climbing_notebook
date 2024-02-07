@@ -94,7 +94,7 @@
               {/if}
             </div>
           </div>
-          <WeeklyCalendar {exercises} trainingCycle={tabData[tabSet].cycle} />
+          <WeeklyCalendar {profile} {exercises} trainingCycle={tabData[tabSet].cycle} />
         </svelte:fragment>
       </TabGroup>
     {/if}
