@@ -3,7 +3,7 @@ import { auth } from '$lib/server/lucia';
 import { prisma } from '$lib/server/prisma';
 import { loginSchema, signupSchema } from '$lib/zodSchemas';
 import { Prisma } from '@prisma/client';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import { LuciaError } from 'lucia';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
@@ -45,7 +45,7 @@ export const actions: Actions = {
 
       // Print and communicate unknown errors
       console.error(e);
-      throw error(500, { message: SERVER_ERROR });
+      return fail(500, { message: SERVER_ERROR });
     }
 
     return {
@@ -107,7 +107,7 @@ export const actions: Actions = {
       }
       // Print and communicate unknown errors
       console.error(e.name, e.message);
-      throw error(500, { message: SERVER_ERROR });
+      return fail(500, { message: SERVER_ERROR });
     }
 
     return {

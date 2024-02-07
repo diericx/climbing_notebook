@@ -40,7 +40,7 @@ export const actions: Actions = {
     }
     if (token == undefined) {
       console.error('Token or token user undefined: ', token);
-      throw error(500, SERVER_ERROR);
+      return fail(500, SERVER_ERROR);
     }
 
     try {
@@ -49,7 +49,7 @@ export const actions: Actions = {
       await passwordResetRepo.delete(token.user.id);
     } catch (e) {
       console.error(e);
-      throw error(500, SERVER_ERROR);
+      return fail(500, SERVER_ERROR);
     }
 
     throw redirect(303, '/login/resetPassword/success');

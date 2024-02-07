@@ -5,7 +5,7 @@ import { prisma } from '$lib/server/prisma';
 import { JournalEntryRepo } from '$lib/server/repos/journalEntry';
 import { getSessionOrRedirect } from '$lib/utils';
 import { journalEntrySchema } from '$lib/zodSchemas';
-import { error, fail } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -47,7 +47,7 @@ export const actions: Actions = {
         }
       }
       console.error(e);
-      throw error(500, { message: SERVER_ERROR });
+      return fail(500, { message: SERVER_ERROR });
     }
 
     return { form };
