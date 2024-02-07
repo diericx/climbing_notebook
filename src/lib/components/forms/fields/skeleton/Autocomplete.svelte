@@ -130,7 +130,7 @@
   $: inputWords = String(input).split(' ');
 </script>
 
-<!-- animate:flip={{ duration }} transition:slide|local={{ duration }} -->
+<!-- animate:flip={{ duration }} transition:slide={{ duration }} -->
 <div class="autocomplete {classesBase}" data-testid="autocomplete">
   {#if optionsFiltered.length > 0}
     <nav class="autocomplete-nav {classesNav}">
