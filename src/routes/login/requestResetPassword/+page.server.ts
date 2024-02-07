@@ -39,6 +39,6 @@ https://climbingnotebook.com/login/resetPassword?token=${token.token}
       }
     }
 
-    throw redirect(303, '/login/requestResetPassword/success');
+    redirect(303, '/login/requestResetPassword/success');
   },
 };
