@@ -59,7 +59,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     userId: user.userId,
     select: trainingProgramSelects.everything,
   });
-  const trainingProgramActivations = trainingProgramRepo.getActivations(user?.userId);
+  const trainingProgramActivations = await trainingProgramRepo.getActivations(user?.userId);
 
   const widgets = await widgetRepo.getManyForUserDashboardWidgets(
     user.userId,

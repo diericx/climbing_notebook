@@ -8,6 +8,7 @@
   import Legend from 'cal-heatmap/plugins/Legend';
   // @ts-ignore
   import Tooltip from 'cal-heatmap/plugins/Tooltip';
+  // @ts-ignore
   import type { DataGroupType, DataRecord } from 'cal-heatmap/src/options/Options';
   import type dayjs from 'dayjs';
   import { onMount } from 'svelte';
@@ -57,6 +58,7 @@
   }
 
   onMount(() => {
+    // @ts-ignore
     const cal = new CalHeatmap();
     cal.paint(
       {

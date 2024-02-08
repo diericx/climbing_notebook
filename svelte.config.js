@@ -9,6 +9,9 @@ const config = {
 
   kit: {
     adapter: adapter(),
+    alias: {
+      $app: './node_modules/@sveltejs/kit/assets/app',
+    },
   },
 };
 
