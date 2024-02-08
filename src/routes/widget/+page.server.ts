@@ -76,7 +76,7 @@ export const actions: Actions = {
     // Redirect to the edit page for charts and heatmap calendars (basically charts)
     // because by default they are not complete and need more info
     if (widget.type == 'chart' || widget.type == 'heatmapCalendar') {
-      throw redirect(303, `/widget/${widget.id}/edit`);
+      redirect(303, `/widget/${widget.id}/edit`);
     }
 
     return { form };

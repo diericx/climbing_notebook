@@ -6,7 +6,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   // Unprotected page, session may not exist
   const session = await locals.auth.validate();
   if (session !== null) {
-    throw redirect(303, '/dashboard');
+    redirect(303, '/dashboard');
   }
 };
 

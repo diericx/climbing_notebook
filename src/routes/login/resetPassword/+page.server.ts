@@ -10,13 +10,13 @@ import type { Actions, PageServerLoad } from './$types';
 export const load: PageServerLoad = async ({ url }) => {
   const token = url.searchParams.get('token');
   if (token == undefined) {
-    throw error(403, 'Invalid token');
+    error(403, 'Invalid token');
   }
 
   const passwordResetRepo = new PasswordResetRepo(prisma);
   const { isValid } = await passwordResetRepo.canResetPassword(token);
   if (!isValid) {
-    throw error(403, 'Invalid token');
+    error(403, 'Invalid token');
   }
 
   return { token };
@@ -40,7 +40,7 @@ export const actions: Actions = {
     }
     if (token == undefined) {
       console.error('Token or token user undefined: ', token);
-      throw error(500, SERVER_ERROR);
+      return fail(500, { message: SERVER_ERROR });
     }
 
     try {
@@ -49,9 +49,9 @@ export const actions: Actions = {
       await passwordResetRepo.delete(token.user.id);
     } catch (e) {
       console.error(e);
-      throw error(500, SERVER_ERROR);
+      return fail(500, { message: SERVER_ERROR });
     }
 
-    throw redirect(303, '/login/resetPassword/success');
+    redirect(303, '/login/resetPassword/success');
   },
 };

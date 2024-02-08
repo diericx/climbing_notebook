@@ -78,7 +78,7 @@
 
 <div class="mb-7">
   <div class="mb-4">
-    <span
+    <button
       class="chip {shouldApplyFilterMadeByMe ? 'variant-filled' : 'variant-soft'}"
       on:click={() => {
         shouldApplyFilterMadeByMe = !shouldApplyFilterMadeByMe;
@@ -86,8 +86,8 @@
       on:keypress
     >
       <span>Made By Me</span>
-    </span>
-    <span
+    </button>
+    <button
       class="chip {shouldApplyFilterChart ? 'variant-filled' : 'variant-soft'}"
       on:click={() => {
         shouldApplyFilterChart = !shouldApplyFilterChart;
@@ -95,8 +95,8 @@
       on:keypress
     >
       <span>Charts</span>
-    </span>
-    <span
+    </button>
+    <button
       class="chip {shouldApplyFilterHeatmap ? 'variant-filled' : 'variant-soft'}"
       on:click={() => {
         shouldApplyFilterHeatmap = !shouldApplyFilterHeatmap;
@@ -104,7 +104,7 @@
       on:keypress
     >
       <span>Heatmaps</span>
-    </span>
+    </button>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-2">

@@ -351,10 +351,10 @@ export async function getSessionOrRedirect({ locals, url }: { locals: App.Locals
   if (session === null) {
     if (url === undefined) {
       console.error('Cannot redirect because url was not provided.', new Error().stack);
-      throw redirect(302, '/login');
+      redirect(302, '/login');
     }
     const redirectToAuthFallback = url.searchParams.get('redirectToAuthFallback');
-    throw redirect(302, `/login?redirectTo=${redirectToAuthFallback || url.pathname + url.search}`);
+    redirect(302, `/login?redirectTo=${redirectToAuthFallback || url.pathname + url.search}`);
   }
 
   // The session definitely exists now, so return it
