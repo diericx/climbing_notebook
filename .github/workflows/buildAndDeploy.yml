@@ -86,7 +86,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            docker image prune -f -a ; echo "${{ steps.render_template.outputs.result }}" | docker stack deploy --with-registry-auth --resolve-image always -c - cn
+            docker container prune -f ; docker image prune -f -a ; echo "${{ steps.render_template.outputs.result }}" | docker stack deploy --with-registry-auth --resolve-image always -c - cn
 
   deploy-staging:
     name: Deploy Staging
@@ -117,4 +117,4 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            docker image prune -f -a ; echo "${{ steps.render_template.outputs.result }}" | docker stack deploy --with-registry-auth --resolve-image always -c - cn
+            docker container prune -f ; docker image prune -f -a ; echo "${{ steps.render_template.outputs.result }}" | docker stack deploy --with-registry-auth --resolve-image always -c - cn
