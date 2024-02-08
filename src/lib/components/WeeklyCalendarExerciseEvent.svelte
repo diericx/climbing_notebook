@@ -2,6 +2,7 @@
   import { enhance } from '$app/forms';
   import type { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
   import type { exerciseSelects } from '$lib/prismaHelpers/exerciseHelper';
+  import { kgToLb, roundTo } from '$lib/utils';
   import type { Prisma } from '@prisma/client';
   import type { PopupSettings } from '@skeletonlabs/skeleton';
   import { modalStore, popup } from '@skeletonlabs/skeleton';
@@ -78,7 +79,13 @@
         : {exerciseEvent.minutes}m{exerciseEvent.seconds}s
       {/if}
       {#if exerciseEvent.weight != 0}
-        : {exerciseEvent.weight}kg
+        {#if profile == null}
+          {exerciseEvent.weight}kg
+        {:else}
+          {profile.weightUnit == 'kg'
+            ? roundTo(exerciseEvent.weight, 1)
+            : roundTo(kgToLb(exerciseEvent.weight), 1)}{profile.weightUnit}
+        {/if}
       {/if}
     </div>
     {#if exerciseEvent.notes}
