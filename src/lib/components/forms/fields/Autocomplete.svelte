@@ -43,7 +43,7 @@
     type="search"
     bind:value={searchValue}
     on:keyup
-    placeholder="Search..."
+    placeholder="Type to Search..."
     use:popup={popupSettings}
     {...$$restProps}
   />

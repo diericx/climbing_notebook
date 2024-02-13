@@ -123,6 +123,9 @@
             </button>
           </li>
         {/each}
+        <li>
+          <div class="text-gray-400 {classesEmpty}">Start typing to see more results...</div>
+        </li>
       </ul>
     </nav>
   {:else}
