@@ -81,6 +81,39 @@ export class ExerciseRepo implements Repo<Exercise, Prisma.ExerciseSelect> {
     });
   }
 
+  async searchByName<S extends Prisma.ExerciseSelect>(options: {
+    select: S;
+    nameQuery?: string;
+    limit?: number;
+  }) {
+    const { nameQuery, limit } = options;
+
+    // Run search query as raw so we can utilize trigrams
+    const results = await this.prisma.$queryRaw<
+      (Prisma.ExerciseGetPayload<{
+        select: {
+          name: true;
+          id: true;
+          fieldsToShow: true;
+          _count: {
+            select: {
+              exerciseEvents: true;
+            };
+          };
+        };
+      }> & { _aggr_count_exerciseEvents: number })[]
+    >`SELECT
+    exercise.id as "id", exercise.name as "name", fields_to_show as "fieldsToShow", COUNT(exercise_event.exercise_id)::int AS "_aggr_count_exerciseEvents"
+    FROM exercise
+    LEFT JOIN exercise_event
+    ON exercise_event.exercise_id = exercise.id
+    GROUP BY exercise.id
+    ORDER BY SIMILARITY(exercise.name,${nameQuery}) DESC 
+    LIMIT ${limit} ;`;
+    results.map((r) => (r._count = { exerciseEvents: r._aggr_count_exerciseEvents }));
+    return results;
+  }
+
   async update(data: z.infer<ExerciseSchema>, id: string) {
     return await this.prisma.exercise.update({
       data: {

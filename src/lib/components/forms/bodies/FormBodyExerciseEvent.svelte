@@ -1,6 +1,9 @@
 <script lang="ts">
+  import { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
+  import type { exerciseSelects } from '$lib/prismaHelpers/exerciseHelper';
   import { kgToLb, lbToKg } from '$lib/utils';
   import type { ExerciseEvent, Prisma } from '@prisma/client';
+  import { onMount } from 'svelte';
   import type { SuperForm } from 'sveltekit-superforms/client';
   import type { z } from 'zod';
   import Autocomplete from '../fields/Autocomplete.svelte';
@@ -11,23 +14,15 @@
 
   export let superForm: SuperForm<z.AnyZodObject, any>;
 
+  export let data:
+    | Prisma.ExerciseEventGetPayload<typeof exerciseEventSelects.minimalValidator>
+    | undefined;
   export let profile: Prisma.ProfileGetPayload<{
     select: {
       weightUnit: true;
     };
   }>;
-  export let exercises: Prisma.ExerciseGetPayload<{
-    select: {
-      _count: {
-        select: {
-          exerciseEvents: true;
-        };
-      };
-      id: true;
-      name: true;
-      fieldsToShow: true;
-    };
-  }>[];
+  export let exercises: Prisma.ExerciseGetPayload<typeof exerciseSelects.minimalValidator>[] = [];
   export let dateToMarkCompleted: Date | undefined = undefined;
   export let exerciseToMarkCompleted: ExerciseEvent | undefined = undefined;
   export let showDifficulty = true;
@@ -35,11 +30,37 @@
   export let showSubmitButton = true;
   export let showMigrationOption = true;
 
-  const exerciseOptions = exercises.map((e) => ({
+  let exerciseSearchValue = '';
+  let timer: NodeJS.Timeout;
+
+  $: exerciseOptions = exercises.map((e) => ({
     label: e.name,
     value: e.id,
     meta: { _count: { ...e._count } },
   }));
+
+  async function refreshExercises() {
+    const res = await fetch(`/api/exercise?q=${exerciseSearchValue}&limit=${5}`);
+    const values = await res.json();
+    exercises = values;
+    // Ensure the selected exercise from the incoming event is always in the list
+    if (data && data.exercise) {
+      if (!exercises.find((e) => e.id == data?.exercise?.id)) {
+        exercises = [...exercises, data.exercise];
+      }
+    }
+  }
+
+  onMount(() => {
+    refreshExercises();
+  });
+
+  const debounce = () => {
+    clearTimeout(timer);
+    timer = setTimeout(async () => {
+      refreshExercises();
+    }, 200);
+  };
 
   const { form } = superForm;
 </script>
@@ -59,11 +80,13 @@
 
 <div class="w-full sm:w-64">
   <Autocomplete
+    bind:searchValue={exerciseSearchValue}
     name="exerciseId"
     field="exerciseId"
     options={exerciseOptions}
     form={superForm}
     label="Exercise"
+    on:keyup={() => debounce()}
   >
     <div slot="pre">
       {#if $form.exerciseId}

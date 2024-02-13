@@ -14,10 +14,10 @@
   export let field: FormPathLeaves<z.infer<T>>;
   export let label: string | undefined = undefined;
   export let options: AutocompleteOption[];
+  export let searchValue = '';
 
   const { path, value, errors } = formFieldProxy(form, field);
 
-  let searchValue = '';
   let popupSettings: PopupSettings = {
     event: 'click',
     target: 'popupAutocomplete',
@@ -42,6 +42,7 @@
     class="autocomplete w-full"
     type="search"
     bind:value={searchValue}
+    on:keyup
     placeholder="Search..."
     use:popup={popupSettings}
     {...$$restProps}

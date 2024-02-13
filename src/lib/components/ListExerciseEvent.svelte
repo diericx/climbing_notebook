@@ -1,7 +1,6 @@
 <script lang="ts">
   import dayjs from '$lib/dayjs';
   import type { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
-  import type { exerciseSelects } from '$lib/prismaHelpers/exerciseHelper';
   import { confirmDelete, kgToLb, roundTo } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
@@ -18,7 +17,6 @@
   export let exerciseEvents: Prisma.ExerciseEventGetPayload<
     typeof exerciseEventSelects.minimalValidator
   >[];
-  export let exercises: Prisma.ExerciseGetPayload<typeof exerciseSelects.minimalValidator>[];
 
   export let showDate = true;
   export let showDifficulty = true;
@@ -75,7 +73,6 @@
                 formProps: {
                   showDate,
                   showDifficulty,
-                  exercises,
                   profile,
                 },
               },
@@ -98,7 +95,6 @@
                 formProps: {
                   showDate,
                   showDifficulty,
-                  exercises,
                   profile,
                 },
               },
