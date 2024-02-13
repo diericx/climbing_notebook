@@ -41,7 +41,6 @@
   journalEntries={[]}
   calendarEvents={[]}
   exerciseEvents={[]}
-  exercises={[]}
   {trainingProgramActivations}
   {ownedTrainingPrograms}
   {savedTrainingPrograms}
