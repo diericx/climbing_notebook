@@ -125,10 +125,10 @@
       <span>New Exercise Event</span>
     </button>
   </div>
-  <ListExerciseEvent {profile} {exercises} exerciseEvents={todaysExerciseEvents} />
+  <ListExerciseEvent {profile} exerciseEvents={todaysExerciseEvents} />
 </div>
 
 <div class="pt-8">
   <h1 class="mb-3">History</h1>
-  <ListExerciseEvent {profile} {exercises} exerciseEvents={pastExerciseEvents} />
+  <ListExerciseEvent {profile} exerciseEvents={pastExerciseEvents} />
 </div>

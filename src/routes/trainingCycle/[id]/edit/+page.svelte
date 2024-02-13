@@ -246,12 +246,7 @@
               </button>
             </div>
 
-            <ListExerciseEvent
-              {profile}
-              {exercises}
-              exerciseEvents={group.exercises}
-              showDate={false}
-            />
+            <ListExerciseEvent {profile} exerciseEvents={group.exercises} showDate={false} />
           </div>
         </ListItem>
       {/each}
@@ -392,7 +387,7 @@
             <span>Add Exercise</span>
           </button>
         </div>
-        <ListExerciseEvent {profile} {exercises} exerciseEvents={day.exercises} showDate={false} />
+        <ListExerciseEvent {profile} exerciseEvents={day.exercises} showDate={false} />
       </div>
     {/each}
   </div>

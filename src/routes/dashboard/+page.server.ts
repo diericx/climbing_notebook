@@ -1,6 +1,5 @@
 import { calendarEventSelects } from '$lib/prismaHelpers/calendarEventHelper';
 import { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
-import { exerciseSelects } from '$lib/prismaHelpers/exerciseHelper';
 import { journalEntrySelects } from '$lib/prismaHelpers/journalEntryHelper';
 import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
 import { trainingProgramSelects } from '$lib/prismaHelpers/trainingProgramHelper';
@@ -8,7 +7,6 @@ import { widgetSelects } from '$lib/prismaHelpers/widgetHelper';
 import { prisma } from '$lib/server/prisma';
 import { CalendarEventRepo } from '$lib/server/repos/calendarEvent';
 import { CustomQueryRepo, type CustomQueryResults } from '$lib/server/repos/customQuery';
-import { ExerciseRepo } from '$lib/server/repos/exercise';
 import { ExerciseEventRepo } from '$lib/server/repos/exerciseEventRepo';
 import { JournalEntryRepo } from '$lib/server/repos/journalEntry';
 import { MetricRepo } from '$lib/server/repos/metric';
@@ -31,15 +29,11 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const customQueryRepo = new CustomQueryRepo(prisma);
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
-  const exerciseRepo = new ExerciseRepo(prisma);
 
   const profile = await profileRepo.getOne(user?.userId);
   const exerciseEvents = await exerciseEventRepo.getManyForUser({
     userId: user?.userId,
     select: exerciseEventSelects.minimal,
-  });
-  const exercises = await exerciseRepo.getMany({
-    select: exerciseSelects.minimal,
   });
   // Get metris in the past month for the charts
   const metrics = await metricRepo.get(user?.userId);
@@ -98,7 +92,6 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     user,
     profile,
     exerciseEvents,
-    exercises,
     metrics,
     journalEntries,
     calendarEvents,

@@ -14,6 +14,14 @@ const selectMinimal = makeSelect({
     select: {
       name: true,
       type: true,
+      id: true,
+      createdByAuthUserId: true,
+      fieldsToShow: true,
+      _count: {
+        select: {
+          exerciseEvents: true,
+        },
+      },
     },
   },
   // This is used for the drop downs to select exercise AND to detect

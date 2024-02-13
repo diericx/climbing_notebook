@@ -42,7 +42,7 @@
       let:superForm
     >
       <section class="p-4 overflow-scroll">
-        <slot {superForm} {formProps} />
+        <slot {superForm} formProps={{ ...formProps, data }} />
       </section>
       <footer class="card-footer float-right space-x-4">
         <button

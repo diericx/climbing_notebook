@@ -15,7 +15,6 @@
   $: savedTrainingPrograms = data.savedTrainingPrograms;
   $: trainingProgramActivations = data.trainingProgramActivations;
   $: exerciseEvents = data.exerciseEvents;
-  $: exercises = data.exercises;
 </script>
 
 <div class="mb-16">
@@ -102,7 +101,6 @@
           {journalEntries}
           {trainingCycles}
           {exerciseEvents}
-          {exercises}
           {trainingProgramActivations}
           {ownedTrainingPrograms}
           {savedTrainingPrograms}
