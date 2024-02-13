@@ -40,7 +40,7 @@
   }));
 
   async function refreshExercises() {
-    const res = await fetch(`/api/exercise?q=${exerciseSearchValue}&limit=${5}`);
+    const res = await fetch(`/api/exercise?q=${exerciseSearchValue}&limit=${10}`);
     const values = await res.json();
     exercises = values;
     // Ensure the selected exercise from the incoming event is always in the list
