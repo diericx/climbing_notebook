@@ -53,19 +53,6 @@
   export let savedTrainingPrograms: Prisma.TrainingProgramGetPayload<
     typeof trainingProgramSelects.everythingValidator
   >[];
-  // For the exercise event form modals
-  export let exercises: Prisma.ExerciseGetPayload<{
-    select: {
-      _count: {
-        select: {
-          exerciseEvents: true;
-        };
-      };
-      id: true;
-      name: true;
-      fieldsToShow: true;
-    };
-  }>[];
 
   type EventExtendedProps = {
     onClick: () => void;
@@ -138,7 +125,6 @@
             showDeleteButton: true,
             deleteButtonAction: `/exerciseEvent/${e.id}?/delete`,
             formProps: {
-              exercises,
               profile,
             },
           },
