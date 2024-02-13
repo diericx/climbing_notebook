@@ -43,7 +43,11 @@
     const res = await fetch(`/api/exercise?q=${exerciseSearchValue}&limit=${10}`);
     const values = await res.json();
     exercises = values;
-    // Ensure the selected exercise from the incoming event is always in the list
+    ensureSelectedExerciseIsInList();
+  }
+
+  // Ensure the selected exercise from the incoming event is always in the list
+  function ensureSelectedExerciseIsInList() {
     if (data && data.exercise) {
       if (!exercises.find((e) => e.id == data?.exercise?.id)) {
         exercises = [...exercises, data.exercise];
@@ -52,6 +56,7 @@
   }
 
   onMount(() => {
+    ensureSelectedExerciseIsInList();
     refreshExercises();
   });
 
