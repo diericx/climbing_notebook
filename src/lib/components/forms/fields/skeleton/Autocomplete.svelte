@@ -78,38 +78,6 @@
     }
   }
 
-  function filterOptions(): AutocompleteOption[] {
-    // Create a local copy of options
-    let _options = [...listedOptions];
-
-    // Exercises where the name includes every word from the search string
-    let optionsAllWordsMatch = _options.filter((o) => {
-      for (const w of inputWords) {
-        if (!o.label.toLowerCase().includes(w.toLowerCase())) {
-          return false;
-        }
-      }
-      return true;
-    });
-
-    // // Filter options
-    // _options = _options.filter((option: AutocompleteOption) => {
-    // 	// Format the input search value
-    // 	const inputFormatted = String(input).toLowerCase().trim();
-    // 	// Format the option
-    // 	let optionFormatted = JSON.stringify([
-    // 		option.label,
-    // 		option.value,
-    // 		option.keywords
-    // 	]).toLowerCase();
-    // 	// Check Match
-    // 	if (optionFormatted.includes(inputFormatted)) return option;
-    // });
-    // return _options;
-
-    return optionsAllWordsMatch;
-  }
-
   function onSelection(option: AutocompleteOption) {
     /** @event {AutocompleteOption} selection - Fire on option select. */
     dispatch('selection', option);
@@ -118,8 +86,7 @@
   // State
   $: if (allowlist) filterByAllowed();
   $: if (denylist) filterByDenied();
-  $: optionsFiltered = input ? filterOptions() : listedOptions;
-  $: sliceLimit = limit !== undefined ? limit : optionsFiltered.length;
+  $: sliceLimit = limit !== undefined ? limit : listedOptions.length;
   // Reactive
   $: classesBase = `${$$props.class ?? ''}`;
   $: classesNav = `${regionNav}`;
@@ -132,10 +99,10 @@
 
 <!-- animate:flip={{ duration }} transition:slide={{ duration }} -->
 <div class="autocomplete {classesBase}" data-testid="autocomplete">
-  {#if optionsFiltered.length > 0}
+  {#if listedOptions.length > 0}
     <nav class="autocomplete-nav {classesNav}">
       <ul class="autocomplete-list {classesList}">
-        {#each optionsFiltered.slice(0, sliceLimit) as option (option)}
+        {#each listedOptions.slice(0, sliceLimit) as option (option)}
           <li class="autocomplete-item {classesItem}">
             <button
               class="autocomplete-button {classesButton} my-2"
