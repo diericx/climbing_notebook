@@ -39,7 +39,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ${{ steps.login-ecr.outputs.registry }}/climbing-notebook
+            ${{ steps.login-ecr.outputs.registry }}/z5p3p3j8/climbing-notebook
           # generate Docker tags based on the following events/attributes
           tags: |
             type=ref,event=branch
