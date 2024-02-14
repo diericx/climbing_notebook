@@ -29,6 +29,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
         with:
           registry-type: public
+          mask-password: true
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -75,7 +76,7 @@ jobs:
         with:
           template: docker-compose.yml.template
           vars: |
-            image: 279721711046.dkr.ecr.us-west-2.amazonaws.com/climbingnotebook:sha-${{ steps.vars.outputs.sha_short }}
+            image: public.ecr.aws/z5p3p3j8/climbing-notebook:sha-${{ steps.vars.outputs.sha_short }}
             host: climbingnotebook.com
             db_url_secret: cn_prod_db_url
             name: prod
@@ -106,7 +107,7 @@ jobs:
         with:
           template: docker-compose.yml.template
           vars: |
-            image: 279721711046.dkr.ecr.us-west-2.amazonaws.com/climbingnotebook:sha-${{ steps.vars.outputs.sha_short }}
+            image: public.ecr.aws/z5p3p3j8/climbing-notebook:sha-${{ steps.vars.outputs.sha_short }}
             host: staging.climbingnotebook.com
             db_url_secret: cn_staging_db_url
             name: staging
