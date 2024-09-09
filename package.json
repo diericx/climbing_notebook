@@ -83,7 +83,7 @@
     "mathjs": "^11.8.0",
     "nprogress": "^0.2.0",
     "sharp": "^0.32.1",
-    "svelte-breadcrumbs": "^1.2.5",
+    "svelte-breadcrumbs": "^1.2.7",
     "svelte-chartjs": "^3.1.5",
     "svelte-frappe-charts": "^1.10.0",
     "uuid": "^9.0.0"
