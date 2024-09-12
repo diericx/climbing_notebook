@@ -122,6 +122,6 @@ jobs:
           script: |
             docker container prune -f
             docker image prune -f -a
-            echo "${{ steps.render_template.outputs.result }}" >> /home/decker/docker_compose/cn_staging.yml
+            echo "${{ steps.render_template.outputs.result }}" > /home/decker/docker_compose/cn_staging.yml
             docker compose -f /home/decker/docker_compose/cn_staging.yml pull
             docker compose -f /home/decker/docker_compose/cn_staging.yml -p cn up -d
