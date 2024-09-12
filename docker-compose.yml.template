@@ -1,4 +1,3 @@
-version: '3.9'
 services:
   {{ .name }}:
     image: {{ .image }}
@@ -26,13 +25,13 @@ services:
 
 secrets:
   cn_staging_db_url:
-    external: true
+    file: /etc/secrets/cn_staging_db_url.txt
   cn_prod_db_url:
-    external: true
+    file: /etc/secrets/cn_prod_db_url.txt
   cn_prod_aws_access_key_id:
-    external: true
+    file: /etc/secrets/cn_prod_aws_access_key_id.txt
   cn_prod_aws_secret_access_key:
-    external: true
+    file: /etc/secrets/cn_prod_aws_secret_access_key.txt
 
 networks:
   traefik:
