@@ -104,7 +104,7 @@ jobs:
 
   deploy-staging:
     name: Deploy Staging
-    runs-on: self-hosted
+    runs-on: ubuntu-24.04
     needs: build
     if: startsWith( github.ref, 'refs/heads/')
     steps:
