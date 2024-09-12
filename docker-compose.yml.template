@@ -1,23 +1,19 @@
 version: '3.9'
 services:
   {{ .name }}:
-    image: {{ .image }} 
+    image: {{ .image }}
     networks:
       - traefik
       - postgres
-    deploy:
-      labels:
-        - 'traefik.enable=true'
-        - 'traefik.http.routers.{{ .name }}.rule=Host(\`{{ .host }}\`)'
-        - 'traefik.http.routers.{{ .name }}.entrypoints=websecure'
-        - 'traefik.http.routers.{{ .name }}.tls.certresolver=letsencrypt'
-        - 'traefik.http.services.{{ .name }}.loadbalancer.server.port=3000'
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.{{ .name }}.rule=Host(\`{{ .host }}\`)'
+      - 'traefik.http.routers.{{ .name }}.entrypoints=websecure'
+      - 'traefik.http.routers.{{ .name }}.tls.certresolver=letsencrypt'
+      - 'traefik.http.services.{{ .name }}.loadbalancer.server.port=3000'
     secrets:
       - source: {{ .db_url_secret }}
         target: db_url
-        uid: '103'
-        gid: '103'
-        mode: 0440
       - cn_prod_aws_access_key_id
       - cn_prod_aws_secret_access_key
     entrypoint:
