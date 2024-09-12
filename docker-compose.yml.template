@@ -1,6 +1,7 @@
 services:
   {{ .name }}:
     image: {{ .image }}
+    restart: always
     networks:
       - traefik
       - postgres
