@@ -84,12 +84,16 @@ jobs:
       - name: run commands to deploy
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.PORT }}
+          host: ${{ secrets.HOST_PROD }}
+          username: ${{ secrets.USERNAME_PROD }}
+          key: ${{ secrets.SSH_KEY_PROD }}
+          port: ${{ secrets.PORT_PROD }}
           script: |
-            docker container prune -f ; docker image prune -f -a ; echo "${{ steps.render_template.outputs.result }}" | docker stack deploy --with-registry-auth --resolve-image always -c - cn
+            docker container prune -f
+            docker image prune -f -a
+            echo "${{ steps.render_template.outputs.result }}" > /home/decker/docker_compose/cn_prod.yml
+            docker compose -f /home/decker/docker_compose/cn_prod.yml pull
+            docker compose -f /home/decker/docker_compose/cn_prod.yml -p cn up -d
 
   deploy-staging:
     name: Deploy Staging
