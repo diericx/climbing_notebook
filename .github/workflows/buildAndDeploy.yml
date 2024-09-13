@@ -114,16 +114,24 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Set outputs
-        id: vars
-        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-
       - name: Tailscale
         uses: tailscale/github-action@v2
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:ci
+
+      # There is a bug either in ssh-action or tailscale action that precludes the use
+      # of DNS in the former, so IPs must be captured here.
+      - name: netmap
+        id: tailscale-netmap
+        run: |
+          ip=$(tailscale status | grep '${{ secrets.HOST_STAGING }}' | awk '{print $1}')
+          echo "HOST_IP=$ip" >> "$GITHUB_OUTPUT"
+
+      - name: Set outputs
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Render template
         id: render_template
@@ -139,7 +147,7 @@ jobs:
       - name: run commands to deploy
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{ secrets.HOST_STAGING }}
+          host: ${{ steps.tailscale-netmap.outputs.HOST_IP }}
           username: ${{ secrets.USERNAME_STAGING }}
           key: ${{ secrets.SSH_KEY_STAGING }}
           port: ${{ secrets.PORT_STAGING }}
