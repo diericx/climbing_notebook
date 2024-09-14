@@ -76,6 +76,14 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:ci
 
+      # There is a bug either in ssh-action or tailscale action that precludes the use
+      # of DNS in the former, so IPs must be captured here.
+      - name: netmap
+        id: tailscale-netmap
+        run: |
+          ip=$(tailscale status | grep '${{ secrets.HOST_STAGING }}' | awk '{print $1}')
+          echo "HOST_IP=$ip" >> "$GITHUB_OUTPUT"
+
       - name: Set outputs
         id: vars
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
@@ -94,7 +102,7 @@ jobs:
       - name: run commands to deploy
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{ secrets.HOST_PROD }}
+          host: ${{ steps.tailscale-netmap.outputs.HOST_IP }}
           username: ${{ secrets.USERNAME_PROD }}
           key: ${{ secrets.SSH_KEY_PROD }}
           port: ${{ secrets.PORT_PROD }}
