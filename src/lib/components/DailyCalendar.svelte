@@ -21,7 +21,7 @@
   <div class="row">
     <div class="grid grid-cols-1">
       <div id={daysOfTheWeek[todayDayOfTheWeek].toString()} class="px-2">
-        <div style="height: 425px;" class="overflow-scroll">
+        <div class="overflow-scroll">
           {#if day.exercises.length == 0 && day.exerciseGroups.length == 0}
             <p class="text-gray-400 italic">No exercises for this day</p>
           {/if}
