@@ -9,7 +9,6 @@
   import Form from '$lib/components/forms/Form.svelte';
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import FormBodyFileUpload from '$lib/components/forms/bodies/FormBodyFileUpload.svelte';
-  import dayjs from '$lib/dayjs';
   import { confirmDelete } from '$lib/utils';
   import { fileUploadSchema } from '$lib/zodSchemas';
   import Icon from '@iconify/svelte';
@@ -131,7 +130,11 @@
         <div class="flex w-full justify-between">
           <div>
             <h3 class="font-bold">
-              {dayjs.tz(session.date, 'UTC').format('L')}
+              {session.date?.toLocaleString(undefined, {
+                month: 'numeric',
+                year: 'numeric',
+                day: 'numeric',
+              })}
             </h3>
             <div class="text-green-400 font-bold">{session.sent ? 'Sent' : ''}</div>
           </div>

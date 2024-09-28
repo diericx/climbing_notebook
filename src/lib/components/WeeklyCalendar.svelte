@@ -2,7 +2,7 @@
   import CalExerciseEvent from '$lib/components/WeeklyCalendarExerciseEvent.svelte';
   import type { exerciseSelects } from '$lib/prismaHelpers/exerciseHelper';
   import type { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
-  import { daysFromToday, getDayWeekStartsMonday } from '$lib/utils';
+  import { daysFromToday, getDayWhenWeekStartsMonday } from '$lib/utils';
   import type { Prisma } from '@prisma/client';
   import { onMount } from 'svelte';
 
@@ -25,8 +25,8 @@
     }
   });
 
-  const todayDayOfTheWeek = getDayWeekStartsMonday(new Date());
-  let daysOfTheWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const todayDayOfTheWeek = getDayWhenWeekStartsMonday(new Date());
+  const daysOfTheWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   function scrollIntoView() {
     const el = document.querySelector('#' + daysOfTheWeek[todayDayOfTheWeek]);
     if (!el) return;
@@ -66,7 +66,7 @@
                   {exercises}
                   {disableActionButtons}
                   {showMarkedCompleted}
-                  date={daysFromToday(i - getDayWeekStartsMonday(new Date()))}
+                  date={daysFromToday(i - getDayWhenWeekStartsMonday(new Date()))}
                 />
               {/each}
 
@@ -79,7 +79,7 @@
                     {exerciseEvent}
                     {exercises}
                     {showMarkedCompleted}
-                    date={daysFromToday(i - getDayWeekStartsMonday(new Date()))}
+                    date={daysFromToday(i - getDayWhenWeekStartsMonday(new Date()))}
                   />
                 {/each}
               {/each}
