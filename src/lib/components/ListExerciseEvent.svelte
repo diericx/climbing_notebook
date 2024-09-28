@@ -32,7 +32,11 @@
         </div>
         {#if showDate}
           <div class="flex-initial hidden md:block">
-            {dayjs.tz(exerciseEvent.date || '', 'utc').format('L')}
+            {exerciseEvent.date?.toLocaleString(undefined, {
+              month: 'numeric',
+              year: 'numeric',
+              day: 'numeric',
+            })}
           </div>
         {/if}
         <div class="flex-1 min-w-0">
@@ -43,7 +47,11 @@
           <p class="text-sm text-gray-400">
             {#if showDate}
               <span class="md:hidden">
-                {dayjs.tz(exerciseEvent.date || '', 'utc').format('L')}
+                {exerciseEvent.date?.toLocaleString(undefined, {
+                  month: 'numeric',
+                  year: 'numeric',
+                  day: 'numeric',
+                })}
                 <br />
               </span>
             {/if}

@@ -13,7 +13,11 @@
   </header>
   <section class="p-4">
     <h4>
-      {dayjs.tz(calendarEvent?.dateStart || '', 'utc').format('L')}
+      {calendarEvent.dateStart?.toLocaleString(undefined, {
+        month: 'numeric',
+        year: 'numeric',
+        day: 'numeric',
+      })}
     </h4>
     <h4>{calendarEvent.title}</h4>
     {#if calendarEvent?.content}

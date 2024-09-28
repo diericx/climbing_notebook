@@ -30,7 +30,13 @@
         <div>
           <div class="flex w-full justify-between">
             <div>
-              <h3 class="font-bold">{dayjs.tz(item.date, 'UTC').format('L')}</h3>
+              <h3 class="font-bold">
+                {item.date?.toLocaleString(undefined, {
+                  month: 'numeric',
+                  year: 'numeric',
+                  day: 'numeric',
+                })}
+              </h3>
             </div>
             <div>
               <a

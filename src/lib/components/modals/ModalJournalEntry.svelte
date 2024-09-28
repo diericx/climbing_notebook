@@ -1,10 +1,9 @@
 <script lang="ts">
-  import dayjs from '$lib/dayjs';
   import { confirmDelete } from '$lib/utils';
   import type { JournalEntry } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
   import FormButton from '../forms/FormButton.svelte';
-  let journalEntry = $modalStore[0]?.meta?.data as JournalEntry;
+  const journalEntry = $modalStore[0]?.meta?.data as JournalEntry;
 </script>
 
 <div class="card w-modal">
@@ -13,7 +12,11 @@
   </header>
   <section class="p-4">
     <h4>
-      {dayjs.tz(journalEntry?.date || '', 'utc').format('L')}
+      {journalEntry.date?.toLocaleString(undefined, {
+        month: 'numeric',
+        year: 'numeric',
+        day: 'numeric',
+      })}
     </h4>
     <p class="whitespace-pre-wrap">{journalEntry?.content || ''}</p>
   </section>

@@ -131,7 +131,11 @@
         <div class="flex w-full justify-between">
           <div>
             <h3 class="font-bold">
-              {dayjs.tz(session.date, 'UTC').format('L')}
+              {session.date?.toLocaleString(undefined, {
+                month: 'numeric',
+                year: 'numeric',
+                day: 'numeric',
+              })}
             </h3>
             <div class="text-green-400 font-bold">{session.sent ? 'Sent' : ''}</div>
           </div>

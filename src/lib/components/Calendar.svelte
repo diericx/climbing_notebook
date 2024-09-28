@@ -4,7 +4,7 @@
   import type { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
   import type { journalEntrySelects } from '$lib/prismaHelpers/journalEntryHelper';
   import type { trainingProgramSelects } from '$lib/prismaHelpers/trainingProgramHelper';
-  import { exerciseTypeColors } from '$lib/utils';
+  import { exerciseTypeColors, getLocalDateWithZeroTime } from '$lib/utils';
   // @ts-ignore
   import Calendar from '@event-calendar/core';
   // @ts-ignore
@@ -67,8 +67,8 @@
 
   $: journalEntryEvents = journalEntries.map((j) => {
     return {
-      start: dayjs.tz(j.date, 'UTC').startOf('day').format(),
-      end: dayjs.tz(j.date, 'UTC').startOf('day').format(),
+      start: getLocalDateWithZeroTime(j.date),
+      end: getLocalDateWithZeroTime(j.date),
       backgroundColor: '#7dd3fc',
       allDay: true,
       title: j.content.substring(0, 15),
@@ -87,6 +87,8 @@
   });
 
   $: _calendarEvents = calendarEvents.map((e) => ({
+    // we use the raw UTC here because we are blocking out DAYS and we want
+    // no interference from time
     start: dayjs.tz(e.dateStart, 'UTC').startOf('day').format(),
     end: dayjs.tz(e.dateEnd, 'UTC').startOf('day').format(),
     backgroundColor: e.color,
@@ -105,9 +107,14 @@
     },
   }));
 
+  let _exerciseEvents = [];
   $: _exerciseEvents = exerciseEvents.map((e) => ({
-    start: dayjs.tz(e.date, 'UTC').startOf('day').format(),
-    end: dayjs.tz(e.date, 'UTC').startOf('day').format(),
+    // If the date is null and for some reason in this list, set the date
+    // to zero so it won't show up
+    start: e.date,
+    end: e.date,
+    // start: dayjs.tz(e.date, 'UTC').startOf('day').format(),
+    // end: dayjs.tz(e.date, 'UTC').startOf('day').format(),
     backgroundColor: 'transparent',
     allDay: false,
     title: e.exercise?.name,
@@ -138,9 +145,11 @@
     trainingProgramActivationEvents = [];
     trainingProgramActivations.forEach((a) => {
       const { trainingProgramScheduledSlots } = a.trainingProgram;
+      // Again we use UTC here because there is no time involved in these
+      // data structures
       let startDate = dayjs.tz(a.startDate, 'UTC');
       trainingProgramScheduledSlots.forEach((s, i) => {
-        let endDate = startDate.add(s.duration, 'weeks');
+        const endDate = startDate.add(s.duration, 'weeks');
         trainingProgramActivationEvents.push({
           start: startDate.startOf('day').format(),
           // Subtract one day from the end date if it is not the last one so there
@@ -180,7 +189,7 @@
     trainingProgramActivationEvents = trainingProgramActivationEvents;
   }
 
-  let plugins = [TimeGrid, DayGrid, Interaction];
+  const plugins = [TimeGrid, DayGrid, Interaction];
   // Note: I don't think the 'pointer' option works so it is applied via css
   $: options = {
     view: 'dayGridMonth',

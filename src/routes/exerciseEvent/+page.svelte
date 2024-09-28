@@ -30,9 +30,7 @@
     if (!e.date) {
       return false;
     }
-    const [todayStr] = new Date().toISOString().split('T');
-    const [eDateStr] = e.date.toISOString().split('T');
-    return eDateStr != todayStr;
+    return !isDateInTheSameDayAsToday(e.date);
   });
 
   interface TabData {
