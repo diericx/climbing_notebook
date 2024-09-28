@@ -275,25 +275,34 @@ export function parseMetricStrings(s: string[]) {
   }, []);
 }
 
-export function getFirstDayOfTheWeek(d: Date) {
-  d = new Date(d);
-  const day = getDayWeekStartsMonday(d);
-  d.setDate(d.getDate() - day);
-  return d;
+export function getDayWhenWeekStartsMonday(d: Date) {
+  const numberdayweek = [6, 0, 1, 2, 3, 4, 5];
+  return numberdayweek[d.getDay()];
 }
 
+// returns the first day of the week that the given date is in with
+// time zeroed
+export function getFirstDayOfTheWeek(d: Date) {
+  d = new Date(d);
+  const day = getDayWhenWeekStartsMonday(d);
+  d.setDate(d.getDate() - day);
+  return getLocalDateWithZeroTime(d);
+}
+
+// returns the last day of the week that the given date is in with
+// time zeroed
 export function getLastDayOfTheWeek(d: Date) {
   d = new Date(d);
-  const day = getDayWeekStartsMonday(d);
+  const day = getDayWhenWeekStartsMonday(d);
   d.setDate(d.getDate() + (6 - day));
-  return d;
+  return getLocalDateWithZeroTime(d);
 }
 
 export function isDateInTheSameWeekAsToday(d: Date) {
   // Convert all to iso string to just compare the days
-  const [t] = d.toISOString().split('T');
-  const [f] = getFirstDayOfTheWeek(new Date()).toISOString().split('T');
-  const [l] = getLastDayOfTheWeek(new Date()).toISOString().split('T');
+  const t = getLocalDateWithZeroTime(d);
+  const f = getFirstDayOfTheWeek(new Date());
+  const l = getLastDayOfTheWeek(new Date());
   return t >= f && t <= l;
 }
 
@@ -323,11 +332,6 @@ export function getLocalDateWithZeroTime(d: Date) {
   localDate.setHours(0, 0, 0, 0);
 
   return localDate;
-}
-
-export function getDayWeekStartsMonday(d: Date) {
-  const numberdayweek = [6, 0, 1, 2, 3, 4, 5];
-  return numberdayweek[d.getDay()];
 }
 
 export function daysFromToday(i: number) {
