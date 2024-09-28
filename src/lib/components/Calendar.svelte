@@ -107,7 +107,6 @@
     },
   }));
 
-  let _exerciseEvents = [];
   $: _exerciseEvents = exerciseEvents.map((e) => ({
     // If the date is null and for some reason in this list, set the date
     // to zero so it won't show up

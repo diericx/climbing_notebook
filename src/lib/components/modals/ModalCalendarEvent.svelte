@@ -1,10 +1,9 @@
 <script lang="ts">
-  import dayjs from '$lib/dayjs';
   import { confirmDelete } from '$lib/utils';
   import type { CalendarEvent } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
   import FormButton from '../forms/FormButton.svelte';
-  let calendarEvent = $modalStore[0]?.meta?.data as CalendarEvent;
+  const calendarEvent = $modalStore[0]?.meta?.data as CalendarEvent;
 </script>
 
 <div class="card w-modal">

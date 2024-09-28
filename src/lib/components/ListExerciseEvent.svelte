@@ -1,5 +1,4 @@
 <script lang="ts">
-  import dayjs from '$lib/dayjs';
   import type { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
   import { confirmDelete, kgToLb, roundTo } from '$lib/utils';
   import Icon from '@iconify/svelte';

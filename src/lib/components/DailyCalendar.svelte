@@ -1,7 +1,7 @@
 <script lang="ts">
   import CalExerciseEvent from '$lib/components/WeeklyCalendarExerciseEvent.svelte';
   import type { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
-  import { getDayWeekStartsMonday } from '$lib/utils';
+  import { getDayWhenWeekStartsMonday } from '$lib/utils';
   import type { Prisma } from '@prisma/client';
 
   // Define prisma types
@@ -11,8 +11,8 @@
 
   export let profile: Prisma.ProfileGetPayload<{ select: { weightUnit: true } }>;
 
-  const todayDayOfTheWeek = getDayWeekStartsMonday(new Date());
-  let daysOfTheWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const todayDayOfTheWeek = getDayWhenWeekStartsMonday(new Date());
+  const daysOfTheWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   const day = trainingCycle.days[todayDayOfTheWeek];
 </script>

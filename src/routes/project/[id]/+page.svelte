@@ -9,7 +9,6 @@
   import Form from '$lib/components/forms/Form.svelte';
   import FormButton from '$lib/components/forms/FormButton.svelte';
   import FormBodyFileUpload from '$lib/components/forms/bodies/FormBodyFileUpload.svelte';
-  import dayjs from '$lib/dayjs';
   import { confirmDelete } from '$lib/utils';
   import { fileUploadSchema } from '$lib/zodSchemas';
   import Icon from '@iconify/svelte';
