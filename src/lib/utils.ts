@@ -308,18 +308,9 @@ export function isDateInTheSameWeekAsToday(d: Date) {
 
 // Checks if a given date is in the same day as today in local time
 export function isDateInTheSameDayAsToday(d: Date) {
-  const todayStr = new Date().toLocaleString(undefined, {
-    month: 'numeric',
-    year: 'numeric',
-    day: 'numeric',
-  });
-  const dateStr = d.toLocaleString(undefined, {
-    month: 'numeric',
-    year: 'numeric',
-    day: 'numeric',
-  });
-  console.log(todayStr, dateStr);
-  return todayStr == dateStr;
+  const d1 = getLocalDateWithZeroTime(new Date());
+  const d2 = getLocalDateWithZeroTime(d);
+  return d1.getTime() == d2.getTime();
 }
 
 // Given a date this function returns the same date with zeroed time to compare

@@ -35,8 +35,6 @@ test('isDateInTheSameWeekAsToday returns false if dates are just one hour off of
   vi.setSystemTime(mockDate);
 
   const d = new Date('2024-09-23T06:00:00.225Z'); // 22 11pm Sunday PST
-  console.log(mockDate.toLocaleString());
-  console.log(d.toLocaleString());
   expect(isDateInTheSameWeekAsToday(d)).toBe(false);
 
   vi.useRealTimers();
