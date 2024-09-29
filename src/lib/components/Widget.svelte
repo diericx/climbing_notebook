@@ -1,7 +1,4 @@
 <script lang="ts">
-  import type { calendarEventSelects } from '$lib/prismaHelpers/calendarEventHelper';
-  import type { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
-  import type { journalEntrySelects } from '$lib/prismaHelpers/journalEntryHelper';
   import type { trainingProgramSelects } from '$lib/prismaHelpers/trainingProgramHelper';
   import type { widgetSelects } from '$lib/prismaHelpers/widgetHelper';
   import type { CustomQueryResults } from '$lib/server/repos/customQuery';
@@ -19,36 +16,8 @@
   export let widget: Prisma.WidgetGetPayload<typeof widgetSelects.everythingValidator>;
   export let profile: Prisma.ProfileGetPayload<{ select: { weightUnit: true } }>;
   export let customQueryResults: CustomQueryResults[];
-  export let calendarEvents: Prisma.CalendarEventGetPayload<
-    typeof calendarEventSelects.everythingValidator
-  >[];
-  export let journalEntries: Prisma.JournalEntryGetPayload<
-    typeof journalEntrySelects.minimalValidator
-  >[];
   export let trainingCycles: Prisma.TrainingCycleGetPayload<{ select: { name: true } }>[];
-  export let exerciseEvents: Prisma.ExerciseEventGetPayload<
-    typeof exerciseEventSelects.minimalValidator
-  >[];
 
-  export let trainingProgramActivations: Prisma.TrainingProgramActivationGetPayload<{
-    include: {
-      trainingProgram: {
-        select: {
-          name: true;
-          trainingProgramScheduledSlots: {
-            select: {
-              duration: true;
-              trainingCycles: {
-                select: {
-                  name: true;
-                };
-              };
-            };
-          };
-        };
-      };
-    };
-  }>[] = [];
   // For the activation modal program select
   export let ownedTrainingPrograms: Prisma.TrainingProgramGetPayload<
     typeof trainingProgramSelects.everythingValidator
@@ -109,14 +78,7 @@
       </div>
 
       <div>
-        <Calendar
-          {profile}
-          {calendarEvents}
-          {exerciseEvents}
-          {trainingProgramActivations}
-          {ownedTrainingPrograms}
-          {savedTrainingPrograms}
-        />
+        <Calendar {profile} {ownedTrainingPrograms} {savedTrainingPrograms} />
       </div>
     </div>
   {:else if widget.type == 'heatmapCalendar'}

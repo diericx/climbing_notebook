@@ -6,14 +6,11 @@
 
   export let data: PageData;
   $: profile = data.profile;
-  $: calendarEvents = data.calendarEvents;
   $: widgets = data.widgets;
   $: customQueryResults = data.customQueryResults;
   $: trainingCycles = data.trainingCycles;
   $: ownedTrainingPrograms = data.ownedTrainingPrograms;
   $: savedTrainingPrograms = data.savedTrainingPrograms;
-  $: trainingProgramActivations = data.trainingProgramActivations;
-  $: exerciseEvents = data.exerciseEvents;
 </script>
 
 <div class="mb-16">
@@ -96,10 +93,7 @@
           {profile}
           {widget}
           {customQueryResults}
-          {calendarEvents}
           {trainingCycles}
-          {exerciseEvents}
-          {trainingProgramActivations}
           {ownedTrainingPrograms}
           {savedTrainingPrograms}
         />

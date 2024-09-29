@@ -3,15 +3,44 @@ import { prisma } from '$lib/server/prisma';
 import { ExerciseRepo } from '$lib/server/repos/exercise';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import type { CalendarEvent, JournalEntry } from '@prisma/client';
+import type {
+  CalendarEvent,
+  ExerciseEvent,
+  JournalEntry,
+  Prisma,
+  TrainingProgramActivation,
+} from '@prisma/client';
 import { JournalEntryRepo } from '$lib/server/repos/journalEntry';
 import { journalEntrySelects } from '$lib/prismaHelpers/journalEntryHelper';
 import { CalendarEventRepo } from '$lib/server/repos/calendarEvent';
 import { calendarEventSelects } from '$lib/prismaHelpers/calendarEventHelper';
+import { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
+import { ExerciseEventRepo } from '$lib/server/repos/exerciseEventRepo';
+import { TrainingProgramRepo } from '$lib/server/repos/trainingProgram';
 
 export type ApiCalendarEventGet = {
   journalEntries: JournalEntry[];
   calendarEvents: CalendarEvent[];
+  exerciseEvents: Prisma.ExerciseEventGetPayload<typeof exerciseEventSelects.minimalValidator>[];
+  trainingProgramActivations: Prisma.TrainingProgramActivationGetPayload<{
+    include: {
+      trainingProgram: {
+        select: {
+          name: true;
+          trainingProgramScheduledSlots: {
+            select: {
+              duration: true;
+              trainingCycles: {
+                select: {
+                  name: true;
+                };
+              };
+            };
+          };
+        };
+      };
+    };
+  }>[];
 };
 
 export const GET: RequestHandler = async ({ url, locals }) => {
@@ -23,6 +52,8 @@ export const GET: RequestHandler = async ({ url, locals }) => {
   const user = session.user;
   const journalEntryRepo = new JournalEntryRepo(prisma);
   const calendarEventRepo = new CalendarEventRepo(prisma);
+  const exerciseEventRepo = new ExerciseEventRepo(prisma);
+  const trainingProgramRepo = new TrainingProgramRepo(prisma);
 
   const start = url.searchParams.get('start');
   const end = url.searchParams.get('end');
@@ -73,5 +104,28 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     },
   });
 
-  return json({ journalEntries, calendarEvents });
+  const exerciseEvents = await exerciseEventRepo.getManyForUser({
+    userId: user?.userId,
+    select: exerciseEventSelects.minimal,
+    dateMin: startDate,
+    // This is inclusive but should be exclusive... may cause issues
+    dateMax: endDate,
+  });
+
+  const trainingProgramActivations = await trainingProgramRepo.getActivations({
+    ownerId: user?.userId,
+    where: {
+      startDate: {
+        gte: startDate,
+        lte: endDate,
+      },
+    },
+  });
+
+  return json({
+    journalEntries,
+    calendarEvents,
+    exerciseEvents,
+    trainingProgramActivations,
+  } as ApiCalendarEventGet);
 };

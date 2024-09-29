@@ -21,30 +21,15 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const { user } = await getSessionOrRedirect({ locals, url });
 
   const profileRepo = new ProfileRepo(prisma);
-  const exerciseEventRepo = new ExerciseEventRepo(prisma);
   const metricRepo = new MetricRepo(prisma);
-  const journalEntryRepo = new JournalEntryRepo(prisma);
-  const calendarEventRepo = new CalendarEventRepo(prisma);
   const widgetRepo = new WidgetRepo(prisma);
   const customQueryRepo = new CustomQueryRepo(prisma);
   const trainingCycleRepo = new TrainingCycleRepo(prisma);
   const trainingProgramRepo = new TrainingProgramRepo(prisma);
 
   const profile = await profileRepo.getOne(user?.userId);
-  const exerciseEvents = await exerciseEventRepo.getManyForUser({
-    userId: user?.userId,
-    select: exerciseEventSelects.minimal,
-  });
   // Get metris in the past month for the charts
   const metrics = await metricRepo.get(user?.userId);
-  const journalEntries = await journalEntryRepo.getManyForUser({
-    userId: user?.userId,
-    select: journalEntrySelects.minimal,
-  });
-  const calendarEvents = await calendarEventRepo.getManyForUser({
-    userId: user.userId,
-    select: calendarEventSelects.everything,
-  });
   const ownedTrainingPrograms = await trainingProgramRepo.getManyForUser({
     userId: user.userId,
     select: trainingProgramSelects.everything,
@@ -53,7 +38,6 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     userId: user.userId,
     select: trainingProgramSelects.everything,
   });
-  const trainingProgramActivations = await trainingProgramRepo.getActivations(user?.userId);
 
   const widgets = await widgetRepo.getManyForUserDashboardWidgets(
     user.userId,
@@ -91,15 +75,11 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   return {
     user,
     profile,
-    exerciseEvents,
     metrics,
-    journalEntries,
-    calendarEvents,
     widgets,
     customQueryResults,
     trainingCycles,
     ownedTrainingPrograms,
     savedTrainingPrograms,
-    trainingProgramActivations,
   };
 };

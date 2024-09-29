@@ -1,6 +1,5 @@
 <script lang="ts">
   import dayjs from '$lib/dayjs';
-  import type { calendarEventSelects } from '$lib/prismaHelpers/calendarEventHelper';
   import type { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
   import type { trainingProgramSelects } from '$lib/prismaHelpers/trainingProgramHelper';
   import { exerciseTypeColors, getLocalDateWithZeroTime } from '$lib/utils';
@@ -17,33 +16,10 @@
   import type { ApiCalendarEventGet } from '../../routes/api/calendar_events/+server';
 
   export let profile: Prisma.ProfileGetPayload<{ select: { weightUnit: true } }>;
-  export let calendarEvents: Prisma.CalendarEventGetPayload<
-    typeof calendarEventSelects.everythingValidator
-  >[];
-  export let trainingProgramActivations: Prisma.TrainingProgramActivationGetPayload<{
-    include: {
-      trainingProgram: {
-        select: {
-          name: true;
-          trainingProgramScheduledSlots: {
-            select: {
-              duration: true;
-              trainingCycles: {
-                select: {
-                  name: true;
-                };
-              };
-            };
-          };
-        };
-      };
-    };
-  }>[];
-  export let exerciseEvents: Prisma.ExerciseEventGetPayload<
-    typeof exerciseEventSelects.minimalValidator
-  >[];
 
   // For the activation modal program select
+  // TODO: remove this functionality and just have the edit page link to the page for
+  // the activation?
   export let ownedTrainingPrograms: Prisma.TrainingProgramGetPayload<
     typeof trainingProgramSelects.everythingValidator
   >[];
@@ -62,87 +38,6 @@
     extendedProps: EventExtendedProps;
   };
 
-  $: _exerciseEvents = exerciseEvents.map((e) => ({
-    // If the date is null and for some reason in this list, set the date
-    // to zero so it won't show up
-    start: e.date,
-    end: e.date,
-    // start: dayjs.tz(e.date, 'UTC').startOf('day').format(),
-    // end: dayjs.tz(e.date, 'UTC').startOf('day').format(),
-    backgroundColor: 'transparent',
-    allDay: false,
-    title: e.exercise?.name,
-    extendedProps: {
-      isExerciseEvent: true,
-      exerciseEvent: e,
-      onClick: () => {
-        modalStore.trigger({
-          type: 'component',
-          component: 'formModalExerciseEvent',
-          meta: {
-            data: e,
-            title: 'Edit Exercise Event',
-            action: `/exerciseEvent/${e.id}?/edit`,
-            showDeleteButton: true,
-            deleteButtonAction: `/exerciseEvent/${e.id}?/delete`,
-            formProps: {
-              profile,
-            },
-          },
-        });
-      },
-    },
-  }));
-
-  $: trainingProgramActivationEvents = [] as any[];
-  $: {
-    trainingProgramActivationEvents = [];
-    trainingProgramActivations.forEach((a) => {
-      const { trainingProgramScheduledSlots } = a.trainingProgram;
-      // Again we use UTC here because there is no time involved in these
-      // data structures
-      let startDate = dayjs.tz(a.startDate, 'UTC');
-      trainingProgramScheduledSlots.forEach((s, i) => {
-        const endDate = startDate.add(s.duration, 'weeks');
-        trainingProgramActivationEvents.push({
-          start: startDate.startOf('day').format(),
-          // Subtract one day from the end date if it is not the last one so there
-          // is no overlap in the calendar view
-          end: (i != trainingProgramScheduledSlots.length - 1
-            ? endDate.subtract(1, 'day')
-            : endDate
-          )
-            .startOf('day')
-            .format(),
-          backgroundColor: '#8bfca9',
-          allDay: true,
-          title: `${a.trainingProgram.name} - ${s.trainingCycles[0].name} `,
-          extendedProps: {
-            onClick: () => {
-              modalStore.trigger({
-                type: 'component',
-                component: 'formModalTrainingProgramActivation',
-                meta: {
-                  action: `/trainingProgram/${a.trainingProgramId}/activation/${a.id}?/edit`,
-                  data: a,
-                  title: 'Edit Scheduled Program',
-                  showDeleteButton: true,
-                  deleteButtonAction: `/trainingProgram/${a.trainingProgramId}/activation/${a.id}?/delete`,
-                  formProps: {
-                    ownedTrainingPrograms,
-                    savedTrainingPrograms,
-                  },
-                },
-              });
-            },
-          },
-        });
-        startDate = endDate;
-      });
-    });
-    trainingProgramActivationEvents = trainingProgramActivationEvents;
-  }
-
   async function fetchCalendarEvents(
     { startStr, endStr }: { startStr: string; endStr: string },
     successCallback,
@@ -151,9 +46,9 @@
     const res = await fetch(`/api/calendar_events?start=${startStr}&end=${endStr}`);
     const values = (await res.json()) as ApiCalendarEventGet;
 
-    let events: Event[] = [];
-    events = [
-      ...events,
+    // TODO: where is the type for this? Adding things like exercise eventsextended props seems to break
+    // type
+    const events: any[] = [
       ...values.journalEntries.map((j) => {
         return {
           start: getLocalDateWithZeroTime(j.date),
@@ -194,7 +89,82 @@
           },
         },
       })),
+      ...values.exerciseEvents.map((e) => ({
+        // If the date is null and for some reason in this list, set the date
+        // to zero so it won't show up
+        start: e.date || new Date(0),
+        end: e.date || new Date(0),
+        // start: dayjs.tz(e.date, 'UTC').startOf('day').format(),
+        // end: dayjs.tz(e.date, 'UTC').startOf('day').format(),
+        backgroundColor: 'transparent',
+        allDay: false,
+        title: e.exercise?.name,
+        extendedProps: {
+          isExerciseEvent: true,
+          exerciseEvent: e,
+          onClick: () => {
+            modalStore.trigger({
+              type: 'component',
+              component: 'formModalExerciseEvent',
+              meta: {
+                data: e,
+                title: 'Edit Exercise Event',
+                action: `/exerciseEvent/${e.id}?/edit`,
+                showDeleteButton: true,
+                deleteButtonAction: `/exerciseEvent/${e.id}?/delete`,
+                formProps: {
+                  profile,
+                },
+              },
+            });
+          },
+        },
+      })),
     ];
+
+    values.trainingProgramActivations.forEach((a) => {
+      const { trainingProgramScheduledSlots } = a.trainingProgram;
+      // Again we use UTC here because there is no time involved in these
+      // data structures
+      let startDate = dayjs.tz(a.startDate, 'UTC');
+      trainingProgramScheduledSlots.forEach((s, i) => {
+        const endDate = startDate.add(s.duration, 'weeks');
+        events.push({
+          start: startDate.startOf('day').format(),
+          // Subtract one day from the end date if it is not the last one so there
+          // is no overlap in the calendar view
+          end: (i != trainingProgramScheduledSlots.length - 1
+            ? endDate.subtract(1, 'day')
+            : endDate
+          )
+            .startOf('day')
+            .format(),
+          backgroundColor: '#8bfca9',
+          allDay: true,
+          title: `${a.trainingProgram.name} - ${s.trainingCycles[0].name} `,
+          extendedProps: {
+            onClick: () => {
+              modalStore.trigger({
+                type: 'component',
+                component: 'formModalTrainingProgramActivation',
+                meta: {
+                  action: `/trainingProgram/${a.trainingProgramId}/activation/${a.id}?/edit`,
+                  data: a,
+                  title: 'Edit Scheduled Program',
+                  showDeleteButton: true,
+                  deleteButtonAction: `/trainingProgram/${a.trainingProgramId}/activation/${a.id}?/delete`,
+                  formProps: {
+                    ownedTrainingPrograms,
+                    savedTrainingPrograms,
+                  },
+                },
+              });
+            },
+          },
+        });
+        startDate = endDate;
+      });
+    });
 
     successCallback(events);
   }
@@ -215,7 +185,9 @@
         title: string;
         extendedProps?: {
           isExerciseEvent: boolean;
-          exerciseEvent?: (typeof exerciseEvents)[number];
+          exerciseEvent?: Prisma.ExerciseEventGetPayload<
+            typeof exerciseEventSelects.minimalValidator
+          >;
         };
       };
     }) => {

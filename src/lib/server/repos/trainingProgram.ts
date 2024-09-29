@@ -555,10 +555,16 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
     ]);
   }
 
-  async getActivations(ownerId: string) {
+  async getActivations(options: {
+    ownerId: string;
+    where?: Prisma.TrainingProgramActivationWhereInput;
+  }) {
+    const { ownerId, where } = options;
+
     return this.prisma.trainingProgramActivation.findMany({
       where: {
         ownerId,
+        ...where,
       },
       include: {
         trainingProgram: {
