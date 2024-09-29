@@ -7,6 +7,14 @@ function makeSelect<T extends Prisma.TrainingProgramSelect>(
   return select;
 }
 
+const selectListMinimal = makeSelect({
+  id: true,
+  name: true,
+});
+const selectListMinimalValidator = Prisma.validator<Prisma.TrainingProgramDefaultArgs>()({
+  select: selectListMinimal,
+});
+
 const selectMinimal = makeSelect({
   id: true,
   name: true,
@@ -67,6 +75,8 @@ const selectEverythingValidator = Prisma.validator<Prisma.TrainingProgramDefault
 const trainingProgramSelects = {
   minimal: selectMinimal,
   minimalValidator: selectMinimalValidator,
+  listMinimal: selectListMinimal,
+  listMinimalValidator: selectListMinimalValidator,
   everything: selectEverything,
   everythingValidator: selectEverythingValidator,
 };

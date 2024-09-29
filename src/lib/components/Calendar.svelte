@@ -142,6 +142,7 @@
           backgroundColor: '#8bfca9',
           allDay: true,
           title: `${a.trainingProgram.name} - ${s.trainingCycles[0].name} `,
+          // TODO: this modal doesn't seem to have the date value filled in...
           extendedProps: {
             onClick: () => {
               modalStore.trigger({

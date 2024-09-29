@@ -1,14 +1,8 @@
-import { calendarEventSelects } from '$lib/prismaHelpers/calendarEventHelper';
-import { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
-import { journalEntrySelects } from '$lib/prismaHelpers/journalEntryHelper';
 import { trainingCycleSelects } from '$lib/prismaHelpers/trainingCycleHelper';
 import { trainingProgramSelects } from '$lib/prismaHelpers/trainingProgramHelper';
 import { widgetSelects } from '$lib/prismaHelpers/widgetHelper';
 import { prisma } from '$lib/server/prisma';
-import { CalendarEventRepo } from '$lib/server/repos/calendarEvent';
 import { CustomQueryRepo, type CustomQueryResults } from '$lib/server/repos/customQuery';
-import { ExerciseEventRepo } from '$lib/server/repos/exerciseEventRepo';
-import { JournalEntryRepo } from '$lib/server/repos/journalEntry';
 import { MetricRepo } from '$lib/server/repos/metric';
 import { ProfileRepo } from '$lib/server/repos/profile';
 import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
@@ -32,11 +26,11 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const metrics = await metricRepo.get(user?.userId);
   const ownedTrainingPrograms = await trainingProgramRepo.getManyForUser({
     userId: user.userId,
-    select: trainingProgramSelects.everything,
+    select: trainingProgramSelects.listMinimal,
   });
   const savedTrainingPrograms = await trainingProgramRepo.getManySavedForUser({
     userId: user.userId,
-    select: trainingProgramSelects.everything,
+    select: trainingProgramSelects.listMinimal,
   });
 
   const widgets = await widgetRepo.getManyForUserDashboardWidgets(
