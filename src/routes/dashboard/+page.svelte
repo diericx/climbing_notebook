@@ -6,7 +6,6 @@
 
   export let data: PageData;
   $: profile = data.profile;
-  $: journalEntries = data.journalEntries;
   $: calendarEvents = data.calendarEvents;
   $: widgets = data.widgets;
   $: customQueryResults = data.customQueryResults;
@@ -98,7 +97,6 @@
           {widget}
           {customQueryResults}
           {calendarEvents}
-          {journalEntries}
           {trainingCycles}
           {exerciseEvents}
           {trainingProgramActivations}

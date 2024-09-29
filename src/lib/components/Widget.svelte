@@ -112,7 +112,6 @@
         <Calendar
           {profile}
           {calendarEvents}
-          {journalEntries}
           {exerciseEvents}
           {trainingProgramActivations}
           {ownedTrainingPrograms}

@@ -2,7 +2,6 @@
   import dayjs from '$lib/dayjs';
   import type { calendarEventSelects } from '$lib/prismaHelpers/calendarEventHelper';
   import type { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
-  import type { journalEntrySelects } from '$lib/prismaHelpers/journalEntryHelper';
   import type { trainingProgramSelects } from '$lib/prismaHelpers/trainingProgramHelper';
   import { exerciseTypeColors, getLocalDateWithZeroTime } from '$lib/utils';
   // @ts-ignore
@@ -15,13 +14,11 @@
   import TimeGrid from '@event-calendar/time-grid';
   import type { Prisma } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
+  import type { ApiCalendarEventGet } from '../../routes/api/calendar_events/+server';
 
   export let profile: Prisma.ProfileGetPayload<{ select: { weightUnit: true } }>;
   export let calendarEvents: Prisma.CalendarEventGetPayload<
     typeof calendarEventSelects.everythingValidator
-  >[];
-  export let journalEntries: Prisma.JournalEntryGetPayload<
-    typeof journalEntrySelects.minimalValidator
   >[];
   export let trainingProgramActivations: Prisma.TrainingProgramActivationGetPayload<{
     include: {
@@ -64,48 +61,6 @@
     title: string;
     extendedProps: EventExtendedProps;
   };
-
-  $: journalEntryEvents = journalEntries.map((j) => {
-    return {
-      start: getLocalDateWithZeroTime(j.date),
-      end: getLocalDateWithZeroTime(j.date),
-      backgroundColor: '#7dd3fc',
-      allDay: true,
-      title: j.content.substring(0, 15),
-      extendedProps: {
-        onClick: () => {
-          modalStore.trigger({
-            type: 'component',
-            component: 'modalJournalEntry',
-            meta: {
-              data: j,
-            },
-          });
-        },
-      },
-    };
-  });
-
-  $: _calendarEvents = calendarEvents.map((e) => ({
-    // we use the raw UTC here because we are blocking out DAYS and we want
-    // no interference from time
-    start: dayjs.tz(e.dateStart, 'UTC').startOf('day').format(),
-    end: dayjs.tz(e.dateEnd, 'UTC').startOf('day').format(),
-    backgroundColor: e.color,
-    allDay: true,
-    title: e.title,
-    extendedProps: {
-      onClick: () => {
-        modalStore.trigger({
-          type: 'component',
-          component: 'modalCalendarEvent',
-          meta: {
-            data: e,
-          },
-        });
-      },
-    },
-  }));
 
   $: _exerciseEvents = exerciseEvents.map((e) => ({
     // If the date is null and for some reason in this list, set the date
@@ -188,6 +143,62 @@
     trainingProgramActivationEvents = trainingProgramActivationEvents;
   }
 
+  async function fetchCalendarEvents(
+    { startStr, endStr }: { startStr: string; endStr: string },
+    successCallback,
+    failureCallback
+  ) {
+    const res = await fetch(`/api/calendar_events?start=${startStr}&end=${endStr}`);
+    const values = (await res.json()) as ApiCalendarEventGet;
+
+    let events: Event[] = [];
+    events = [
+      ...events,
+      ...values.journalEntries.map((j) => {
+        return {
+          start: getLocalDateWithZeroTime(j.date),
+          end: getLocalDateWithZeroTime(j.date),
+          backgroundColor: '#7dd3fc',
+          allDay: true,
+          title: j.content.substring(0, 15),
+          extendedProps: {
+            onClick: () => {
+              modalStore.trigger({
+                type: 'component',
+                component: 'modalJournalEntry',
+                meta: {
+                  data: j,
+                },
+              });
+            },
+          },
+        };
+      }),
+      ...values.calendarEvents.map((e) => ({
+        // we use the raw UTC here because we are blocking out DAYS and we want
+        // no interference from time
+        start: dayjs.tz(e.dateStart, 'UTC').startOf('day').format(),
+        end: dayjs.tz(e.dateEnd, 'UTC').startOf('day').format(),
+        backgroundColor: e.color,
+        allDay: true,
+        title: e.title,
+        extendedProps: {
+          onClick: () => {
+            modalStore.trigger({
+              type: 'component',
+              component: 'modalCalendarEvent',
+              meta: {
+                data: e,
+              },
+            });
+          },
+        },
+      })),
+    ];
+
+    successCallback(events);
+  }
+
   const plugins = [TimeGrid, DayGrid, Interaction];
   // Note: I don't think the 'pointer' option works so it is applied via css
   $: options = {
@@ -228,11 +239,10 @@
       }
       return arg.event.title;
     },
-    events: [
-      ...trainingProgramActivationEvents,
-      ...journalEntryEvents,
-      ..._calendarEvents,
-      ..._exerciseEvents,
+    eventSources: [
+      {
+        events: fetchCalendarEvents,
+      },
     ],
     eventClick: ({ event }: { event: Event }) => {
       event.extendedProps.onClick && event.extendedProps.onClick();

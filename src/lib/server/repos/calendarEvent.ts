@@ -77,12 +77,14 @@ export class CalendarEventRepo implements Repo<CalendarEvent, Prisma.CalendarEve
   async getManyForUser<S extends Prisma.CalendarEventSelect>(options: {
     userId: string;
     select: S;
+    where?: Prisma.CalendarEventWhereInput;
   }): Promise<Prisma.CalendarEventGetPayload<{ select: S }>[]> {
-    const { userId, select } = options;
+    const { userId, select, where } = options;
     // Fetch all
     return await this.prisma.calendarEvent.findMany({
       where: {
         ownerId: userId,
+        ...where,
       },
       orderBy: {
         dateStart: 'desc',
