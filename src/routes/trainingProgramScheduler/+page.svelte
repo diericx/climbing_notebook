@@ -36,12 +36,4 @@
   </div>
 </div>
 
-<Calendar
-  {profile}
-  journalEntries={[]}
-  calendarEvents={[]}
-  exerciseEvents={[]}
-  {trainingProgramActivations}
-  {ownedTrainingPrograms}
-  {savedTrainingPrograms}
-/>
+<Calendar {profile} {ownedTrainingPrograms} {savedTrainingPrograms} />

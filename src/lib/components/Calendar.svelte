@@ -18,8 +18,6 @@
   export let profile: Prisma.ProfileGetPayload<{ select: { weightUnit: true } }>;
 
   // For the activation modal program select
-  // TODO: remove this functionality and just have the edit page link to the page for
-  // the activation?
   export let ownedTrainingPrograms: Prisma.TrainingProgramGetPayload<
     typeof trainingProgramSelects.everythingValidator
   >[];
@@ -142,7 +140,6 @@
           backgroundColor: '#8bfca9',
           allDay: true,
           title: `${a.trainingProgram.name} - ${s.trainingCycles[0].name} `,
-          // TODO: this modal doesn't seem to have the date value filled in...
           extendedProps: {
             onClick: () => {
               modalStore.trigger({
