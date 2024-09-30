@@ -20,10 +20,10 @@
 
   // For the activation modal program select
   export let ownedTrainingPrograms: Prisma.TrainingProgramGetPayload<
-    typeof trainingProgramSelects.everythingValidator
+    typeof trainingProgramSelects.listMinimalValidator
   >[];
   export let savedTrainingPrograms: Prisma.TrainingProgramGetPayload<
-    typeof trainingProgramSelects.everythingValidator
+    typeof trainingProgramSelects.listMinimalValidator
   >[];
 </script>
 
