@@ -36,18 +36,11 @@
     extendedProps: EventExtendedProps;
   };
 
-  async function fetchCalendarEvents(
-    { startStr, endStr }: { startStr: string; endStr: string },
-    successCallback,
-    failureCallback
-  ) {
-    const res = await fetch(`/api/calendar_events?start=${startStr}&end=${endStr}`);
-    const values = (await res.json()) as ApiCalendarEventGet;
-
+  function formatApiCalendarEventResponseToEvents(data: ApiCalendarEventGet): Event[] {
     // TODO: where is the type for this? Adding things like exercise eventsextended props seems to break
     // type
     const events: any[] = [
-      ...values.journalEntries.map((j) => {
+      ...data.journalEntries.map((j) => {
         return {
           start: getLocalDateWithZeroTime(j.date),
           end: getLocalDateWithZeroTime(j.date),
@@ -67,7 +60,7 @@
           },
         };
       }),
-      ...values.calendarEvents.map((e) => ({
+      ...data.calendarEvents.map((e) => ({
         // we use the raw UTC here because we are blocking out DAYS and we want
         // no interference from time
         start: dayjs.tz(e.dateStart, 'UTC').startOf('day').format(),
@@ -87,7 +80,7 @@
           },
         },
       })),
-      ...values.exerciseEvents.map((e) => ({
+      ...data.exerciseEvents.map((e) => ({
         // If the date is null and for some reason in this list, set the date
         // to zero so it won't show up
         start: e.date || new Date(0),
@@ -120,7 +113,7 @@
       })),
     ];
 
-    values.trainingProgramActivations.forEach((a) => {
+    data.trainingProgramActivations.forEach((a) => {
       const { trainingProgramScheduledSlots } = a.trainingProgram;
       // Again we use UTC here because there is no time involved in these
       // data structures
@@ -164,7 +157,27 @@
       });
     });
 
-    successCallback(events);
+    return events;
+  }
+
+  // The calendar does not play nice with making this function Async so we will use traditional
+  // promise -> await style
+  function fetchCalendarEvents(
+    { startStr, endStr }: { startStr: string; endStr: string },
+    successCallback: (events: Event[]) => Event[],
+    failureCallback: (info: any) => void
+  ) {
+    fetch(`/api/calendar_events?start=${startStr}&end=${endStr}`)
+      .then((res) => res.json())
+      .then((d) => {
+        successCallback(formatApiCalendarEventResponseToEvents(d));
+      })
+      .catch((e) => {
+        console.error(e);
+        failureCallback('There was a server error while fetching calendar events.');
+      });
+
+    failureCallback('There was an unknown problem fetching calendar events.');
   }
 
   const plugins = [TimeGrid, DayGrid, Interaction];
