@@ -20,6 +20,13 @@
       name: true;
     };
   }>[];
+
+  // TODO: this is a hack to get around the fact that we are not parsing input from API calls
+  // to typed variables or rich objects. That would be the root cause solution.
+  const dateValue = superForm.fields.startDate.value;
+  if (typeof $dateValue == 'string') {
+    $dateValue = new Date($dateValue);
+  }
 </script>
 
 <!-- TODO: this modal doesn't seem to have the date value filled in... -->

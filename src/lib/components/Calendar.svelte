@@ -11,7 +11,7 @@
   import Interaction from '@event-calendar/interaction';
   // @ts-ignore
   import TimeGrid from '@event-calendar/time-grid';
-  import type { Prisma } from '@prisma/client';
+  import { Prisma } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
   import type { ApiCalendarEventGet } from '../../routes/api/calendar_events/+server';
 

@@ -5,7 +5,6 @@
   import type { PageData } from './$types';
 
   export let data: PageData;
-  $: trainingProgramActivations = data.trainingProgramActivations;
   $: ownedTrainingPrograms = data.ownedTrainingPrograms;
   $: savedTrainingPrograms = data.savedTrainingPrograms;
   $: profile = data.profile;

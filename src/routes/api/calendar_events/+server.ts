@@ -1,22 +1,14 @@
-import { exerciseSelects } from '$lib/prismaHelpers/exerciseHelper';
-import { prisma } from '$lib/server/prisma';
-import { ExerciseRepo } from '$lib/server/repos/exercise';
-import { error, json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import type {
-  CalendarEvent,
-  ExerciseEvent,
-  JournalEntry,
-  Prisma,
-  TrainingProgramActivation,
-} from '@prisma/client';
-import { JournalEntryRepo } from '$lib/server/repos/journalEntry';
-import { journalEntrySelects } from '$lib/prismaHelpers/journalEntryHelper';
-import { CalendarEventRepo } from '$lib/server/repos/calendarEvent';
 import { calendarEventSelects } from '$lib/prismaHelpers/calendarEventHelper';
 import { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
+import { journalEntrySelects } from '$lib/prismaHelpers/journalEntryHelper';
+import { prisma } from '$lib/server/prisma';
+import { CalendarEventRepo } from '$lib/server/repos/calendarEvent';
 import { ExerciseEventRepo } from '$lib/server/repos/exerciseEventRepo';
+import { JournalEntryRepo } from '$lib/server/repos/journalEntry';
 import { TrainingProgramRepo } from '$lib/server/repos/trainingProgram';
+import { Prisma, type CalendarEvent, type JournalEntry } from '@prisma/client';
+import { error, json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
 
 export type ApiCalendarEventGet = {
   journalEntries: JournalEntry[];
@@ -127,5 +119,5 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     calendarEvents,
     exerciseEvents,
     trainingProgramActivations,
-  } as ApiCalendarEventGet);
+  });
 };
