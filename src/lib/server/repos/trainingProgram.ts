@@ -111,7 +111,6 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
   async getManyForUser<S extends Prisma.TrainingProgramSelect>(options: {
     userId: string;
     select: S;
-    // TODO: Delete this where input?
     where?: Prisma.TrainingProgramWhereInput;
   }) {
     const { userId, select, where } = options;

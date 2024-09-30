@@ -29,7 +29,6 @@ export interface Repo<ResourceType, ResourceSelectType> {
     query: any;
     select: S;
     extraFilters?: any;
-    // TODO: remove this where?
     where: any;
   }): Promise<any[]>;
   getMany?<S extends ResourceSelectType>(options: {

@@ -29,7 +29,6 @@
   }
 </script>
 
-<!-- TODO: this modal doesn't seem to have the date value filled in... -->
 <DateField name="startDate" field="startDate" form={superForm} />
 
 <SelectField

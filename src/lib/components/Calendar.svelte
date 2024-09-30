@@ -37,8 +37,6 @@
   };
 
   function formatApiCalendarEventResponseToEvents(data: ApiCalendarEventGet): Event[] {
-    // TODO: where is the type for this? Adding things like exercise eventsextended props seems to break
-    // type
     const events: any[] = [
       ...data.journalEntries.map((j) => {
         return {
