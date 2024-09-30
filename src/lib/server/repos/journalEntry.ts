@@ -119,13 +119,15 @@ export class JournalEntryRepo implements Repo<JournalEntry, Prisma.JournalEntryS
 
   async getManyForUser<S extends Prisma.JournalEntrySelect>(options: {
     userId: string;
+    where?: Prisma.JournalEntryWhereInput;
     select: S;
   }) {
-    const { userId, select } = options;
+    const { userId, select, where } = options;
 
     return (await this.prisma.journalEntry.findMany({
       where: {
         ownerId: userId,
+        ...where,
       },
       orderBy: {
         date: 'desc',

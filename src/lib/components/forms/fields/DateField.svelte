@@ -11,10 +11,17 @@
   export let field: FormPathLeaves<z.infer<T>>;
   export let placeholder = '';
 
-  const { path, errors, constraints } = formFieldProxy(form, field);
+  const { value, path, errors, constraints } = formFieldProxy(form, field);
   const dateValue = dateProxy(form.form, field, {
     format: 'date',
   });
+
+  // TODO: this is a hack to get around the fact that we are not parsing input from API calls
+  // to typed variables or rich objects or going through zod. That would be the root cause solution.
+  if (typeof $value == 'string') {
+    // @ts-ignore
+    $value = new Date($value);
+  }
 </script>
 
 <label>

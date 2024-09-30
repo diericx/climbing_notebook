@@ -118,8 +118,8 @@ export class ExerciseEventRepo implements Repo<ExerciseEvent, Prisma.ExerciseEve
         trainingCycleDay: null,
         exerciseGroup: null,
         date: {
-          lte: dateMax ? new Date(dateMax) : undefined,
           gte: dateMin ? new Date(dateMin) : undefined,
+          lte: dateMax ? new Date(dateMax) : undefined,
         },
       },
       orderBy: {

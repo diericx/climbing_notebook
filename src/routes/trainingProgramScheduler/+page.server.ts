@@ -22,11 +22,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     select: trainingProgramSelects.everything,
   });
 
-  const trainingProgramActivations = await trainingProgramRepo.getActivations(user?.userId);
   return {
     ownedTrainingPrograms,
     savedTrainingPrograms,
-    trainingProgramActivations,
     profile,
   };
 };

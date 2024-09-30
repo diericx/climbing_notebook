@@ -5,7 +5,6 @@
   import type { PageData } from './$types';
 
   export let data: PageData;
-  $: trainingProgramActivations = data.trainingProgramActivations;
   $: ownedTrainingPrograms = data.ownedTrainingPrograms;
   $: savedTrainingPrograms = data.savedTrainingPrograms;
   $: profile = data.profile;
@@ -36,12 +35,4 @@
   </div>
 </div>
 
-<Calendar
-  {profile}
-  journalEntries={[]}
-  calendarEvents={[]}
-  exerciseEvents={[]}
-  {trainingProgramActivations}
-  {ownedTrainingPrograms}
-  {savedTrainingPrograms}
-/>
+<Calendar {profile} {ownedTrainingPrograms} {savedTrainingPrograms} />

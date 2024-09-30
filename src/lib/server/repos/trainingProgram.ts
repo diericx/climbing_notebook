@@ -111,7 +111,6 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
   async getManyForUser<S extends Prisma.TrainingProgramSelect>(options: {
     userId: string;
     select: S;
-    // TODO: Delete this where input?
     where?: Prisma.TrainingProgramWhereInput;
   }) {
     const { userId, select, where } = options;
@@ -555,10 +554,16 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
     ]);
   }
 
-  async getActivations(ownerId: string) {
+  async getActivations(options: {
+    ownerId: string;
+    where?: Prisma.TrainingProgramActivationWhereInput;
+  }) {
+    const { ownerId, where } = options;
+
     return this.prisma.trainingProgramActivation.findMany({
       where: {
         ownerId,
+        ...where,
       },
       include: {
         trainingProgram: {
