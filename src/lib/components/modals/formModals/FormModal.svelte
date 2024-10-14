@@ -23,6 +23,7 @@
     showDeleteButton,
     deleteButtonAction,
   } = meta;
+  export let onSuccess: (() => void) | undefined = undefined;
 </script>
 
 <div style="max-height: 90vh" class="card w-modal">
@@ -38,6 +39,9 @@
       {debug}
       onSuccess={() => {
         modalStore.close();
+        if (onSuccess) {
+          onSuccess();
+        }
       }}
       let:superForm
     >

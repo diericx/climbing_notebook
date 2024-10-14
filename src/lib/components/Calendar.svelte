@@ -13,6 +13,7 @@
   import TimeGrid from '@event-calendar/time-grid';
   import { Prisma } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
+  import { useQuery } from '@sveltestack/svelte-query';
   import type { ApiCalendarEventGet } from '../../routes/api/calendar_events/+server';
 
   export let profile: Prisma.ProfileGetPayload<{ select: { weightUnit: true } }>;
@@ -37,6 +38,9 @@
   };
 
   function formatApiCalendarEventResponseToEvents(data: ApiCalendarEventGet): Event[] {
+    if (!data) {
+      return [];
+    }
     const events: any[] = [
       ...data.journalEntries.map((j) => {
         return {
@@ -178,8 +182,31 @@
     failureCallback('There was an unknown problem fetching calendar events.');
   }
 
+  $: startStr = '';
+  $: endStr = '';
+
+  async function testFetch(startStr, endStr) {
+    if (startStr == '' || endStr == '' || !startStr || !endStr) {
+      return undefined;
+    }
+    const data = await fetch(`/api/calendar_events?start=${startStr}&end=${endStr}`);
+    return data.json();
+  }
+
+  $: queryResult = useQuery(['calendarEvents', { startStr, endStr }], () =>
+    testFetch(startStr, endStr)
+  );
+
   const plugins = [TimeGrid, DayGrid, Interaction];
   // Note: I don't think the 'pointer' option works so it is applied via css
+  let events = [];
+  $: {
+    if (!$queryResult || $queryResult.isLoading || $queryResult.error) {
+      events = [];
+    } else {
+      events = formatApiCalendarEventResponseToEvents($queryResult.data);
+    }
+  }
   $: options = {
     view: 'dayGridMonth',
     // Note: I don't think the 'editable' option works so we need to specify each one individually
@@ -220,15 +247,30 @@
       }
       return arg.event.title;
     },
-    eventSources: [
-      {
-        events: fetchCalendarEvents,
-      },
-    ],
+    // eventSources: [
+    //   {
+    //     events: fetchCalendarEvents,
+    //   },
+    // ],
+    events,
+    datesSet: (info) => {
+      startStr = info.startStr;
+      endStr = info.endStr;
+    },
     eventClick: ({ event }: { event: Event }) => {
       event.extendedProps.onClick && event.extendedProps.onClick();
     },
   };
 </script>
+
+<!-- <div slot="query" let:queryResult>
+  {#if queryResult.status === 'loading'}
+    Loading...
+  {:else if queryResult.status === 'error'}
+    {queryResult.error.message}
+  {:else}
+    {JSON.stringify(queryResult.data)}
+  {/if}
+</div> -->
 
 <Calendar {plugins} {options} />
