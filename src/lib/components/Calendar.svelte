@@ -14,7 +14,6 @@
   import { getExerciseEvents } from '$lib/api/exerciseEvents';
   import { getJournalEntries } from '$lib/api/journalEntries';
   import { getTrainingProgramActivations } from '$lib/api/trainingProgramActivations';
-  import TimeGrid from '@event-calendar/time-grid';
   import { Prisma } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
   import type { APICalendarEventsResponse } from '../../routes/api/calendarEvents/+server';
@@ -214,7 +213,7 @@
   }
 
   // Construct options using events
-  const plugins = [TimeGrid, DayGrid, Interaction];
+  const plugins = [DayGrid, Interaction];
   $: options = {
     view: 'dayGridMonth',
     // Note: I don't think the 'editable' option works so we need to specify each one individually
