@@ -10,7 +10,7 @@
   schema={trainingProgramActivationSchema}
   let:superForm
   let:formProps
-  onSuccess={() => queryClient.invalidateQueries('exerciseEvents')}
+  onSuccess={() => queryClient.invalidateQueries('trainingProgramActivations')}
 >
   <FormBodyTrainingProgramActivation {superForm} {...formProps} showSubmitButton={false} />
 </FormModal>
