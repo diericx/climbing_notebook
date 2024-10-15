@@ -10,10 +10,16 @@
   // @ts-ignore
   import Interaction from '@event-calendar/interaction';
   // @ts-ignore
-  import TimeGrid from '@event-calendar/time-grid';
+  import { getCalendarEvents } from '$lib/api/calendarEvents';
+  import { getExerciseEvents } from '$lib/api/exerciseEvents';
+  import { getJournalEntries } from '$lib/api/journalEntries';
+  import { getTrainingProgramActivations } from '$lib/api/trainingProgramActivations';
   import { Prisma } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
-  import type { ApiCalendarEventGet } from '../../routes/api/calendar_events/+server';
+  import type { APICalendarEventsResponse } from '../../routes/api/calendarEvents/+server';
+  import type { APIExerciseEventsResponse } from '../../routes/api/exerciseEvents/+server';
+  import type { APIJournalEntriesResponse } from '../../routes/api/journalEntries/+server';
+  import type { APITrainingProgramActivationsResponse } from '../../routes/api/trainingProgramActivations/+server';
 
   export let profile: Prisma.ProfileGetPayload<{ select: { weightUnit: true } }>;
 
@@ -25,6 +31,7 @@
     typeof trainingProgramSelects.listMinimalValidator
   >[];
 
+  // The following types are descriptive types for the Calendar data as they are not provided
   type EventExtendedProps = {
     onClick: () => void;
   };
@@ -34,84 +41,95 @@
     backgroundColor: string;
     title: string;
     extendedProps: EventExtendedProps;
+    allDay?: boolean;
   };
 
-  function formatApiCalendarEventResponseToEvents(data: ApiCalendarEventGet): Event[] {
-    const events: any[] = [
-      ...data.journalEntries.map((j) => {
-        return {
-          start: getLocalDateWithZeroTime(j.date),
-          end: getLocalDateWithZeroTime(j.date),
-          backgroundColor: '#7dd3fc',
-          allDay: true,
-          title: j.content.substring(0, 15),
-          extendedProps: {
-            onClick: () => {
-              modalStore.trigger({
-                type: 'component',
-                component: 'modalJournalEntry',
-                meta: {
-                  data: j,
-                },
-              });
-            },
-          },
-        };
-      }),
-      ...data.calendarEvents.map((e) => ({
-        // we use the raw UTC here because we are blocking out DAYS and we want
-        // no interference from time
-        start: dayjs.tz(e.dateStart, 'UTC').startOf('day').format(),
-        end: dayjs.tz(e.dateEnd, 'UTC').startOf('day').format(),
-        backgroundColor: e.color,
-        allDay: true,
-        title: e.title,
-        extendedProps: {
-          onClick: () => {
-            modalStore.trigger({
-              type: 'component',
-              component: 'modalCalendarEvent',
-              meta: {
-                data: e,
-              },
-            });
-          },
-        },
-      })),
-      ...data.exerciseEvents.map((e) => ({
-        // If the date is null and for some reason in this list, set the date
-        // to zero so it won't show up
-        start: e.date || new Date(0),
-        end: e.date || new Date(0),
-        // start: dayjs.tz(e.date, 'UTC').startOf('day').format(),
-        // end: dayjs.tz(e.date, 'UTC').startOf('day').format(),
-        backgroundColor: 'transparent',
-        allDay: false,
-        title: e.exercise?.name,
-        extendedProps: {
-          isExerciseEvent: true,
-          exerciseEvent: e,
-          onClick: () => {
-            modalStore.trigger({
-              type: 'component',
-              component: 'formModalExerciseEvent',
-              meta: {
-                data: e,
-                title: 'Edit Exercise Event',
-                action: `/exerciseEvent/${e.id}?/edit`,
-                showDeleteButton: true,
-                deleteButtonAction: `/exerciseEvent/${e.id}?/delete`,
-                formProps: {
-                  profile,
-                },
-              },
-            });
-          },
-        },
-      })),
-    ];
+  // ---
+  // Below are helper functions for formatting data into Event objects the Calendar will accept
+  // ---
 
-    data.trainingProgramActivations.forEach((a) => {
+  function formatCalendarEvents(data: APICalendarEventsResponse): Event[] {
+    return data.map((e) => ({
+      // we use the raw UTC here because we are blocking out DAYS and we want
+      // no interference from time
+      start: dayjs.tz(e.dateStart, 'UTC').startOf('day').toDate(),
+      end: dayjs.tz(e.dateEnd, 'UTC').startOf('day').toDate(),
+      backgroundColor: e.color,
+      allDay: true,
+      title: e.title,
+      extendedProps: {
+        onClick: () => {
+          modalStore.trigger({
+            type: 'component',
+            component: 'modalCalendarEvent',
+            meta: {
+              data: e,
+            },
+          });
+        },
+      },
+    }));
+  }
+
+  function formatJournalEntries(data: APIJournalEntriesResponse): Event[] {
+    return data.map((j) => {
+      return {
+        start: getLocalDateWithZeroTime(j.date),
+        end: getLocalDateWithZeroTime(j.date),
+        backgroundColor: '#7dd3fc',
+        allDay: true,
+        title: j.content.substring(0, 15),
+        extendedProps: {
+          onClick: () => {
+            modalStore.trigger({
+              type: 'component',
+              component: 'modalJournalEntry',
+              meta: {
+                data: j,
+              },
+            });
+          },
+        },
+      };
+    });
+  }
+  function formatExerciseEvents(data: APIExerciseEventsResponse): Event[] {
+    return data.map((e) => ({
+      // If the date is null and for some reason in this list, set the date
+      // to zero so it won't show up
+      start: e.date || new Date(0),
+      end: e.date || new Date(0),
+      // start: dayjs.tz(e.date, 'UTC').startOf('day').format(),
+      // end: dayjs.tz(e.date, 'UTC').startOf('day').format(),
+      backgroundColor: 'transparent',
+      allDay: false,
+      title: e.exercise?.name || 'Unknown Exercise',
+      extendedProps: {
+        isExerciseEvent: true,
+        exerciseEvent: e,
+        onClick: () => {
+          modalStore.trigger({
+            type: 'component',
+            component: 'formModalExerciseEvent',
+            meta: {
+              data: e,
+              title: 'Edit Exercise Event',
+              action: `/exerciseEvent/${e.id}?/edit`,
+              showDeleteButton: true,
+              deleteButtonAction: `/exerciseEvent/${e.id}?/delete`,
+              formProps: {
+                profile,
+              },
+            },
+          });
+        },
+      },
+    }));
+  }
+
+  function formatTrainingProgramActivations(data: APITrainingProgramActivationsResponse): Event[] {
+    const events: Event[] = [];
+    data.forEach((a) => {
       const { trainingProgramScheduledSlots } = a.trainingProgram;
       // Again we use UTC here because there is no time involved in these
       // data structures
@@ -119,7 +137,7 @@
       trainingProgramScheduledSlots.forEach((s, i) => {
         const endDate = startDate.add(s.duration, 'weeks');
         events.push({
-          start: startDate.startOf('day').format(),
+          start: startDate.startOf('day').toDate(),
           // Subtract one day from the end date if it is not the last one so there
           // is no overlap in the calendar view
           end: (i != trainingProgramScheduledSlots.length - 1
@@ -127,7 +145,7 @@
             : endDate
           )
             .startOf('day')
-            .format(),
+            .toDate(),
           backgroundColor: '#8bfca9',
           allDay: true,
           title: `${a.trainingProgram.name} - ${s.trainingCycles[0].name} `,
@@ -154,32 +172,48 @@
         startDate = endDate;
       });
     });
-
     return events;
   }
 
-  // The calendar does not play nice with making this function Async so we will use traditional
-  // promise -> await style
-  function fetchCalendarEvents(
-    { startStr, endStr }: { startStr: string; endStr: string },
-    successCallback: (events: Event[]) => Event[],
-    failureCallback: (info: any) => void
-  ) {
-    fetch(`/api/calendar_events?start=${startStr}&end=${endStr}`)
-      .then((res) => res.json())
-      .then((d) => {
-        successCallback(formatApiCalendarEventResponseToEvents(d));
-      })
-      .catch((e) => {
-        console.error(e);
-        failureCallback('There was a server error while fetching calendar events.');
-      });
+  // Seed the start string and end string values
+  $: startStr = '';
+  $: endStr = '';
 
-    failureCallback('There was an unknown problem fetching calendar events.');
+  // Create all of the queries if the startStr and endStr have been set, otherwise default to undefined
+  // so we don't send in a useless API request
+  $: calendarEventsQuery = startStr && endStr ? getCalendarEvents(startStr, endStr) : undefined;
+  $: journalEntriesQuery = startStr && endStr ? getJournalEntries(startStr, endStr) : undefined;
+  $: exerciseEventsQuery = startStr && endStr ? getExerciseEvents(startStr, endStr) : undefined;
+  $: trainingProgramActivationsQuery =
+    startStr && endStr ? getTrainingProgramActivations(startStr, endStr) : undefined;
+
+  // Construct events using the reactive data from each of the queries defined above
+  let events: Event[] = [];
+  $: {
+    events = [];
+    if ($calendarEventsQuery && !$calendarEventsQuery.isLoading && !$calendarEventsQuery.error) {
+      events = [...events, ...formatCalendarEvents($calendarEventsQuery.data)];
+    }
+    if ($journalEntriesQuery && !$journalEntriesQuery.isLoading && !$journalEntriesQuery.error) {
+      events = [...events, ...formatJournalEntries($journalEntriesQuery.data)];
+    }
+    if ($exerciseEventsQuery && !$exerciseEventsQuery.isLoading && !$exerciseEventsQuery.error) {
+      events = [...events, ...formatExerciseEvents($exerciseEventsQuery.data)];
+    }
+    if (
+      $trainingProgramActivationsQuery &&
+      !$trainingProgramActivationsQuery.isLoading &&
+      !$trainingProgramActivationsQuery.error
+    ) {
+      events = [
+        ...events,
+        ...formatTrainingProgramActivations($trainingProgramActivationsQuery.data),
+      ];
+    }
   }
 
-  const plugins = [TimeGrid, DayGrid, Interaction];
-  // Note: I don't think the 'pointer' option works so it is applied via css
+  // Construct options using events
+  const plugins = [DayGrid, Interaction];
   $: options = {
     view: 'dayGridMonth',
     // Note: I don't think the 'editable' option works so we need to specify each one individually
@@ -220,11 +254,11 @@
       }
       return arg.event.title;
     },
-    eventSources: [
-      {
-        events: fetchCalendarEvents,
-      },
-    ],
+    events,
+    datesSet: (info: { start: Date; end: Date; startStr: string; endStr: string }) => {
+      startStr = info.startStr;
+      endStr = info.endStr;
+    },
     eventClick: ({ event }: { event: Event }) => {
       event.extendedProps.onClick && event.extendedProps.onClick();
     },

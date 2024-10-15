@@ -2,7 +2,9 @@
   import { confirmDelete } from '$lib/utils';
   import type { JournalEntry } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
+  import { useQueryClient } from '@sveltestack/svelte-query';
   import FormButton from '../forms/FormButton.svelte';
+  const queryClient = useQueryClient();
   const journalEntry = $modalStore[0]?.meta?.data as JournalEntry;
 </script>
 
@@ -28,6 +30,7 @@
       class="btn variant-filled"
       onSuccess={() => {
         modalStore.clear();
+        queryClient.invalidateQueries('exerciseEvents');
       }}
       onClick={confirmDelete}
     >
