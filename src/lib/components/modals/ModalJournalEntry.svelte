@@ -30,7 +30,7 @@
       class="btn variant-filled"
       onSuccess={() => {
         modalStore.clear();
-        queryClient.invalidateQueries('exerciseEvents');
+        queryClient.invalidateQueries('journalEntries');
       }}
       onClick={confirmDelete}
     >
