@@ -13,7 +13,7 @@
 
   const { value, path, errors, constraints } = formFieldProxy(form, field);
   const dateValue = dateProxy(form.form, field, {
-    format: 'date',
+    format: 'date-local',
   });
 
   // TODO: this is a hack to get around the fact that we are not parsing input from API calls
@@ -22,6 +22,8 @@
     // @ts-ignore
     $value = new Date($value);
   }
+  console.log($value);
+  console.log($dateValue);
 </script>
 
 <label>
