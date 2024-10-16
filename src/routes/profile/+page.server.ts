@@ -10,6 +10,7 @@ import { getSessionOrRedirect } from '$lib/utils';
 import { fileUploadSchema, profileSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
 import sharp from 'sharp';
+import { zod } from 'sveltekit-superforms/adapters';
 import { setError, superValidate } from 'sveltekit-superforms/server';
 import { v4 as uuidv4 } from 'uuid';
 import type { Actions, PageServerLoad } from './$types';
@@ -53,7 +54,7 @@ export const actions: Actions = {
     const { user } = await getSessionOrRedirect({ locals, url });
 
     const formData = await request.formData();
-    const form = await superValidate(formData, profileSchema, {
+    const form = await superValidate(formData, zod(profileSchema), {
       id: formData.get('_formId')?.toString(),
     });
 
@@ -71,7 +72,7 @@ export const actions: Actions = {
     const { user } = await getSessionOrRedirect({ locals, url });
 
     const formData = await request.formData();
-    const form = await superValidate(formData, fileUploadSchema, {
+    const form = await superValidate(formData, zod(fileUploadSchema), {
       id: formData.get('_formId')?.toString(),
     });
 
@@ -127,7 +128,7 @@ export const actions: Actions = {
     const { user } = await getSessionOrRedirect({ locals, url });
 
     const formData = await request.formData();
-    const form = await superValidate(formData, profileSchema, {
+    const form = await superValidate(formData, zod(profileSchema), {
       id: formData.get('_formId')?.toString(),
     });
 

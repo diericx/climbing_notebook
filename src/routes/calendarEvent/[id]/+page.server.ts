@@ -3,6 +3,7 @@ import { CalendarEventRepo } from '$lib/server/repos/calendarEvent';
 import { getSessionOrRedirect } from '$lib/utils';
 import { calendarEventSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
+import { zod } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions } from './$types';
 
@@ -12,7 +13,7 @@ export const actions: Actions = {
 
     const formData = await request.formData();
     const id = Number(params.id);
-    const form = await superValidate(formData, calendarEventSchema, {
+    const form = await superValidate(formData, zod(calendarEventSchema), {
       id: formData.get('_formId')?.toString(),
     });
 

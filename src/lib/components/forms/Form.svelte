@@ -1,15 +1,16 @@
 <script lang="ts">
-  import type { ZodValidation } from 'sveltekit-superforms';
+  import { zod } from 'sveltekit-superforms/adapters';
 
   import { page } from '$app/stores';
-  import { superForm, superValidateSync } from 'sveltekit-superforms/client';
+  import { defaults } from 'sveltekit-superforms';
+  import { superForm } from 'sveltekit-superforms/client';
   import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
   import { v4 as uuidv4 } from 'uuid';
   import type { AnyZodObject } from 'zod';
 
   let className = '';
 
-  export let schema: ZodValidation<AnyZodObject>;
+  export let schema: AnyZodObject;
 
   export let data: any = {};
   export let id: string = uuidv4();
@@ -31,7 +32,7 @@
 
   // As we are just initializing the form with the provided data, disable errors.
   // Errors will come in after submit either from the server or from client.
-  const newSuperForm = superForm(superValidateSync(data, schema, { errors: false }), {
+  const newSuperForm = superForm(defaults(data, zod(schema)), {
     resetForm,
     applyAction: true,
     invalidateAll: true,

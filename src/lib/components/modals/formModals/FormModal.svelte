@@ -3,14 +3,12 @@
 
   import FormButton from '$lib/components/forms/FormButton.svelte';
 
-  import type { ZodValidation } from 'sveltekit-superforms';
-
   import { modalStore } from '@skeletonlabs/skeleton';
+  import type { AnyZodObject } from 'zod';
   import Form from '../../forms/Form.svelte';
   import SubmitButton from '../../forms/fields/SubmitButton.svelte';
 
-  type T = $$Generic<AnyZodObject>;
-  export let schema: ZodValidation<T>;
+  export let schema: AnyZodObject;
 
   let meta = $modalStore[0]?.meta || {};
   const {

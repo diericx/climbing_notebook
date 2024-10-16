@@ -9,6 +9,7 @@ import { WidgetRepo } from '$lib/server/repos/widgetRepo';
 import { getSessionOrRedirect } from '$lib/utils';
 import { widgetSchema, widgetTemplateSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
+import { zod } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -71,7 +72,7 @@ export const actions: Actions = {
   update: async ({ locals, request, url, params }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
     const formData = await request.formData();
-    const form = await superValidate(formData, widgetSchema, {
+    const form = await superValidate(formData, zod(widgetSchema), {
       id: formData.get('_formId')?.toString(),
     });
     const id = params.id;
@@ -117,7 +118,7 @@ export const actions: Actions = {
     const { user } = await getSessionOrRedirect({ locals, url });
 
     const formData = await request.formData();
-    const form = await superValidate(formData, widgetTemplateSchema, {
+    const form = await superValidate(formData, zod(widgetTemplateSchema), {
       id: formData.get('_formId')?.toString(),
     });
     const id = params.id;

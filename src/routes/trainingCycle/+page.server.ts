@@ -5,6 +5,7 @@ import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
 import { getSessionOrRedirect } from '$lib/utils';
 import { trainingCycleSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
+import { zod } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -85,7 +86,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
   new: async ({ locals, request, url }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
-    const form = await superValidate(request, trainingCycleSchema);
+    const form = await superValidate(request, zod(trainingCycleSchema));
 
     if (!form.valid) {
       return fail(400, { form });

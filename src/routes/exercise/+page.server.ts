@@ -5,6 +5,7 @@ import { getSessionOrRedirect } from '$lib/utils';
 import { exerciseSchema } from '$lib/zodSchemas';
 import { Prisma } from '@prisma/client';
 import { fail, redirect, type Actions } from '@sveltejs/kit';
+import { zod } from 'sveltekit-superforms/adapters';
 import { setError, superValidate } from 'sveltekit-superforms/server';
 import type { PageServerLoad } from './$types';
 
@@ -26,7 +27,7 @@ export const actions: Actions = {
     const { user } = await getSessionOrRedirect({ locals, url });
 
     const formData = await request.formData();
-    const form = await superValidate(formData, exerciseSchema, {
+    const form = await superValidate(formData, zod(exerciseSchema), {
       id: formData.get('_formId')?.toString(),
     });
 

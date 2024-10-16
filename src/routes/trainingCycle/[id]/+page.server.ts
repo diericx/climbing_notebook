@@ -8,6 +8,7 @@ import { getSessionOrRedirect } from '$lib/utils';
 import { exerciseGroupSchema, trainingCycleSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
 import type { Crumb } from 'svelte-breadcrumbs';
+import { zod } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -171,7 +172,7 @@ export const actions: Actions = {
     const { user } = await getSessionOrRedirect({ locals, url });
     const formData = await request.formData();
     const id = Number(params.id);
-    const form = await superValidate(formData, trainingCycleSchema, {
+    const form = await superValidate(formData, zod(trainingCycleSchema), {
       id: formData.get('_formId')?.toString(),
     });
 
@@ -189,7 +190,7 @@ export const actions: Actions = {
     const { user } = await getSessionOrRedirect({ locals, url });
     const formData = await request.formData();
     const id = Number(params.id);
-    const form = await superValidate(formData, exerciseGroupSchema, {
+    const form = await superValidate(formData, zod(exerciseGroupSchema), {
       id: formData.get('_formId')?.toString(),
     });
 

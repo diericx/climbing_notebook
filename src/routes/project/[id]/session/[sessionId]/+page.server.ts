@@ -3,6 +3,7 @@ import { ProjectRepo } from '$lib/server/repos/project';
 import { getSessionOrRedirect } from '$lib/utils';
 import { projectSessionSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
+import { zod } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions } from './$types';
 
@@ -25,7 +26,7 @@ export const actions: Actions = {
     const formData = await request.formData();
     const projectId = params.id;
     const sessionId = params.sessionId;
-    const form = await superValidate(formData, projectSessionSchema, {
+    const form = await superValidate(formData, zod(projectSessionSchema), {
       id: formData.get('_formId')?.toString(),
     });
 
