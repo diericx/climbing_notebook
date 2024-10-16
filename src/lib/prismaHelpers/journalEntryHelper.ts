@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 
 function makeSelect<T extends Prisma.JournalEntrySelect>(
-  select: Prisma.Subset<T, Prisma.JournalEntrySelect>
+  select: Prisma.Subset<T, Prisma.JournalEntrySelect>,
 ): T {
   return select;
 }

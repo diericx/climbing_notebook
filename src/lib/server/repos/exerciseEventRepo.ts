@@ -12,7 +12,7 @@ export class ExerciseEventRepo implements Repo<ExerciseEvent, Prisma.ExerciseEve
     userId: string | undefined,
     exerciseEvent: Prisma.ExerciseEventGetPayload<{
       select: { ownerId: true };
-    }>
+    }>,
   ) {
     return exerciseEvent.ownerId == userId;
   }
@@ -21,7 +21,7 @@ export class ExerciseEventRepo implements Repo<ExerciseEvent, Prisma.ExerciseEve
     userId: string | undefined,
     exerciseEvent: Prisma.ExerciseEventGetPayload<{
       select: { ownerId: true };
-    }>
+    }>,
   ) {
     return exerciseEvent.ownerId == userId;
   }
@@ -30,7 +30,7 @@ export class ExerciseEventRepo implements Repo<ExerciseEvent, Prisma.ExerciseEve
     userId: string | undefined,
     exerciseEvent: Prisma.ExerciseEventGetPayload<{
       select: { ownerId: true };
-    }>
+    }>,
   ) {
     return exerciseEvent.ownerId == userId;
   }
@@ -45,7 +45,7 @@ export class ExerciseEventRepo implements Repo<ExerciseEvent, Prisma.ExerciseEve
       if (exerciseGroup == null || exerciseGroup.ownerId != ownerId) {
         throw new APIError(
           'INVALID_PERMISSIONS',
-          'You do not have permission to edit this object.'
+          'You do not have permission to edit this object.',
         );
       }
     }
@@ -61,7 +61,7 @@ export class ExerciseEventRepo implements Repo<ExerciseEvent, Prisma.ExerciseEve
       if (trainingCycleDay == null || trainingCycleDay.trainingCycle.ownerId != ownerId) {
         throw new APIError(
           'INVALID_PERMISSIONS',
-          'You do not have permission to edit this object.'
+          'You do not have permission to edit this object.',
         );
       }
     }
@@ -133,7 +133,7 @@ export class ExerciseEventRepo implements Repo<ExerciseEvent, Prisma.ExerciseEve
     data: z.infer<ExerciseEventSchema>,
     id: number,
     userId: string,
-    shouldApplyMigrationToAll = false
+    shouldApplyMigrationToAll = false,
   ) {
     const original = await this.getOne({ id, userId, select: { exerciseId: true, name: true } });
     if (!this.canUserUpdate(userId, original)) {
@@ -204,7 +204,7 @@ export class ExerciseEventRepo implements Repo<ExerciseEvent, Prisma.ExerciseEve
     // Either add or remove the given date
     if (isCompleted) {
       const alreadyExists = e.markedCompletions.find(
-        (c) => c.toISOString().split('T')[0] == newDateStr
+        (c) => c.toISOString().split('T')[0] == newDateStr,
       );
       if (alreadyExists) {
         return e;

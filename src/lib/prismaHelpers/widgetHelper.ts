@@ -15,19 +15,19 @@ function isSimpleFieldInUse(
       };
     };
   }>,
-  field: string
+  field: string,
 ) {
   return (
     widget.datasets.find((d) =>
       d.customQueries.find((q) =>
-        q.conditions.find((c) => c.useWidgetField === true && c.widgetFieldToUse === field)
-      )
+        q.conditions.find((c) => c.useWidgetField === true && c.widgetFieldToUse === field),
+      ),
     ) !== undefined
   );
 }
 
 function makeSelect<T extends Prisma.WidgetSelect>(
-  select: Prisma.Subset<T, Prisma.WidgetSelect>
+  select: Prisma.Subset<T, Prisma.WidgetSelect>,
 ): T {
   return select;
 }

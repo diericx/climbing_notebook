@@ -37,7 +37,7 @@ export const actions: Actions = {
       form.data,
       params.id,
       params.scheduledSlotId,
-      user?.userId
+      user?.userId,
     );
 
     return { form };
@@ -69,7 +69,7 @@ export const actions: Actions = {
       trainingProgramId,
       slotId,
       Number(order),
-      user?.userId
+      user?.userId,
     );
 
     return { success: true };

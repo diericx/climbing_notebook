@@ -23,7 +23,7 @@ export const actions: Actions = {
       trainingCycleId,
       exerciseGroupId,
       trainingCycleDayId,
-      user?.userId
+      user?.userId,
     );
 
     return {};
@@ -44,7 +44,7 @@ export const actions: Actions = {
       trainingCycleId,
       exerciseGroupId,
       trainingCycleDayId,
-      user?.userId
+      user?.userId,
     );
 
     return {};

@@ -17,7 +17,7 @@ export class WidgetRepo implements Repo<Widget, Prisma.WidgetSelect> {
     userId: string | undefined,
     widget: Prisma.WidgetGetPayload<{
       select: { ownerId: true; isPublished: true };
-    }>
+    }>,
   ) {
     // if it is public anyone can read
     if (widget.isPublished) {
@@ -36,7 +36,7 @@ export class WidgetRepo implements Repo<Widget, Prisma.WidgetSelect> {
     userId: string | undefined,
     widget: Prisma.WidgetGetPayload<{
       select: { ownerId: true };
-    }>
+    }>,
   ) {
     return widget.ownerId == userId;
   }
@@ -45,7 +45,7 @@ export class WidgetRepo implements Repo<Widget, Prisma.WidgetSelect> {
     userId: string | undefined,
     widget: Prisma.WidgetGetPayload<{
       select: { ownerId: true };
-    }>
+    }>,
   ) {
     return widget.ownerId == userId;
   }
@@ -139,7 +139,7 @@ export class WidgetRepo implements Repo<Widget, Prisma.WidgetSelect> {
 
   async getManyForUserPublishedOrOwnedTemplates<S extends Prisma.WidgetSelect>(
     userId: string,
-    select: S
+    select: S,
   ) {
     return await this.prisma.widget.findMany({
       where: {
@@ -256,7 +256,7 @@ export class WidgetRepo implements Repo<Widget, Prisma.WidgetSelect> {
     data: z.infer<DatasetSchema>,
     widgetId: string,
     datasetId: string,
-    userId: string
+    userId: string,
   ) {
     const widget = await this.getOne({
       id: widgetId,

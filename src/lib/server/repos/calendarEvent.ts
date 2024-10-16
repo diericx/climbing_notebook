@@ -11,7 +11,7 @@ export class CalendarEventRepo implements Repo<CalendarEvent, Prisma.CalendarEve
     userId: string | undefined,
     calendarEvent: Prisma.CalendarEventGetPayload<{
       select: { ownerId: true };
-    }>
+    }>,
   ) {
     return calendarEvent.ownerId == userId;
   }
@@ -20,7 +20,7 @@ export class CalendarEventRepo implements Repo<CalendarEvent, Prisma.CalendarEve
     userId: string | undefined,
     calendarEvent: Prisma.CalendarEventGetPayload<{
       select: { ownerId: true };
-    }>
+    }>,
   ) {
     return calendarEvent.ownerId == userId;
   }
@@ -29,7 +29,7 @@ export class CalendarEventRepo implements Repo<CalendarEvent, Prisma.CalendarEve
     userId: string | undefined,
     calendarEvent: Prisma.CalendarEventGetPayload<{
       select: { ownerId: true };
-    }>
+    }>,
   ) {
     return calendarEvent.ownerId == userId;
   }

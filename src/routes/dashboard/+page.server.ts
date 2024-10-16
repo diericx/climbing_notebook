@@ -35,7 +35,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
   const widgets = await widgetRepo.getManyForUserDashboardWidgets(
     user.userId,
-    widgetSelects.everything
+    widgetSelects.everything,
   );
 
   const trainingCycles = await trainingCycleRepo.getManyForUser({

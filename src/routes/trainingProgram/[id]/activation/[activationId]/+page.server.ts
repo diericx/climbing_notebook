@@ -49,7 +49,7 @@ export const actions: Actions = {
       return setError(
         form,
         'startDate',
-        'Start Date must be on a Monday or Sunday. This is because cycles are structured around a full week.'
+        'Start Date must be on a Monday or Sunday. This is because cycles are structured around a full week.',
       );
     }
 

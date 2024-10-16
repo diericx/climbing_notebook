@@ -28,7 +28,7 @@ export const actions: Actions = {
 <br/>
 <br/>
 https://climbingnotebook.com/login/resetPassword?token=${token.token}
-`
+`,
       );
       await sesClient.send(sendEmailCommand);
     } catch (e) {

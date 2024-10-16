@@ -445,7 +445,7 @@ export function getActiveTrainingCycleForTrainingProgramActivation(
         };
       };
     };
-  }>
+  }>,
 ) {
   const slots = activation.trainingProgram.trainingProgramScheduledSlots;
   const startDateWeekOfYear = dayjs.tz(activation.startDate, 'UTC').week();

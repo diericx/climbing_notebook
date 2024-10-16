@@ -17,7 +17,7 @@ const s3ObjectMetadataCache: { [key: string]: any } = {};
 const uploadFile = async (
   key: string,
   file: File,
-  metadata: Record<string, string> | undefined
+  metadata: Record<string, string> | undefined,
 ) => {
   // Invalidate metadata cache
   delete s3ObjectMetadataCache[key];

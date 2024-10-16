@@ -18,7 +18,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
   const widgets = await widgetRepo.getManyForUserPublishedOrOwnedTemplates(
     user.userId,
-    widgetSelects.everything
+    widgetSelects.everything,
   );
   // compile datasets for widgets
   const customQueryResults: CustomQueryResults[] = [];
@@ -48,7 +48,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
         return [...acc, cur.owner.profile.imageS3ObjectKey];
       }
       return acc;
-    }, [] as string[])
+    }, [] as string[]),
   );
 
   return {

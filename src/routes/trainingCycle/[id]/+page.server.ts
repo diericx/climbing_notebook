@@ -53,7 +53,7 @@ export const load: PageServerLoad = async ({ url, locals, params }) => {
   const s3ObjectUrlPromises = getSignedUrlPromises(
     trainingCycle.owner.profile?.imageS3ObjectKey
       ? [trainingCycle.owner.profile.imageS3ObjectKey]
-      : []
+      : [],
   );
 
   return {
@@ -147,7 +147,7 @@ export const actions: Actions = {
     if (!cycle.description) {
       throw new APIError(
         'INVALID_INPUT',
-        'Training Cycle requires a description to be published. Be as descriptive as possible.'
+        'Training Cycle requires a description to be published. Be as descriptive as possible.',
       );
     }
 

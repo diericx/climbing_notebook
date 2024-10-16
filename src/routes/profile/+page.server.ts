@@ -35,7 +35,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const metrics = await metricsRepo.get(user?.userId);
 
   const { s3ObjectMetadatas, s3ObjectUrls } = await getSignedUrlsAndMetadata(
-    profile.imageS3ObjectKey === null ? [] : [profile.imageS3ObjectKey]
+    profile.imageS3ObjectKey === null ? [] : [profile.imageS3ObjectKey],
   );
 
   return {

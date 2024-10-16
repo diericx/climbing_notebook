@@ -17,7 +17,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const project = await repo.getOneAndValidateOwner(params.id, user?.userId);
 
   const { s3ObjectMetadatas, s3ObjectUrls } = await getSignedUrlsAndMetadata(
-    project.imageS3ObjectKey === null ? [] : [project.imageS3ObjectKey]
+    project.imageS3ObjectKey === null ? [] : [project.imageS3ObjectKey],
   );
 
   return {

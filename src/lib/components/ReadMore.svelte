@@ -22,7 +22,7 @@
     maxCharacters: number | undefined,
     isOpen: boolean,
     children: string,
-    text: string
+    text: string,
   ) => {
     if (maxCharacters) {
       if (isOpen) {
@@ -48,7 +48,7 @@
     maxWords: number | undefined,
     isOpen: boolean,
     children: string,
-    text: string
+    text: string,
   ) => {
     if (maxWords) {
       if (isOpen) {

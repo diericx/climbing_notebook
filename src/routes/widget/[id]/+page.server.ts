@@ -56,7 +56,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   }
 
   const s3ObjectUrlPromises = getSignedUrlPromises(
-    widget.owner.profile?.imageS3ObjectKey ? [widget.owner.profile.imageS3ObjectKey] : []
+    widget.owner.profile?.imageS3ObjectKey ? [widget.owner.profile.imageS3ObjectKey] : [],
   );
 
   return {

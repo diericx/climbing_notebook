@@ -105,7 +105,7 @@
                 if (value == 'combo') {
                   // Find all the values existing on this date and apend
                   const dataPoints = chartData.filter(
-                    (d) => d.date == new Date(timestamp).toISOString().split('T')[0]
+                    (d) => d.date == new Date(timestamp).toISOString().split('T')[0],
                   );
                   for (const p of dataPoints) {
                     label += p.value + ', ';
@@ -118,7 +118,7 @@
             },
           },
         ],
-      ]
+      ],
     );
   });
 </script>

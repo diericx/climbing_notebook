@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { exerciseEventSelects } from './exerciseEventHelper';
 function makeSelect<T extends Prisma.ExerciseSelect>(
-  select: Prisma.Subset<T, Prisma.ExerciseSelect>
+  select: Prisma.Subset<T, Prisma.ExerciseSelect>,
 ): T {
   return select;
 }

@@ -19,7 +19,7 @@ export class ExerciseRepo implements Repo<Exercise, Prisma.ExerciseSelect> {
     userId: string | undefined,
     exercise: Prisma.ExerciseGetPayload<{
       select: { createdByAuthUserId: true };
-    }>
+    }>,
   ) {
     return exercise.createdByAuthUserId == userId;
   }
@@ -140,7 +140,7 @@ export class ExerciseRepo implements Repo<Exercise, Prisma.ExerciseSelect> {
     if (dependingExerciseEvent != null) {
       throw new APIError(
         'INVALID_ACTION',
-        'There are exercise events depending on this exercise and thus it cannot be removed.'
+        'There are exercise events depending on this exercise and thus it cannot be removed.',
       );
     }
 
