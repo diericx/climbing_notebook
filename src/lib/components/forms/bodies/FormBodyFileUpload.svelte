@@ -1,11 +1,12 @@
 <script lang="ts">
+  import type { FileUploadSchema } from '$lib/zodSchemas';
   import Icon from '@iconify/svelte';
   import { FileDropzone } from '@skeletonlabs/skeleton';
+  import type { Infer } from 'sveltekit-superforms';
   import type { SuperForm } from 'sveltekit-superforms/client';
-  import type { z } from 'zod';
   import SubmitButton from '../fields/SubmitButton.svelte';
 
-  export let superForm: SuperForm<z.AnyZodObject, any>;
+  export let superForm: SuperForm<Infer<FileUploadSchema>>;
   export let showSubmitButton = true;
   export let label = 'Files';
   let className = '';

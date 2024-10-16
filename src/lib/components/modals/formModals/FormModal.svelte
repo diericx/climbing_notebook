@@ -4,11 +4,12 @@
   import FormButton from '$lib/components/forms/FormButton.svelte';
 
   import { modalStore } from '@skeletonlabs/skeleton';
-  import type { AnyZodObject } from 'zod';
   import Form from '../../forms/Form.svelte';
   import SubmitButton from '../../forms/fields/SubmitButton.svelte';
 
-  export let schema: AnyZodObject;
+  // TODO: how can we be more specific here rather than any? ZodObject produces errors when
+  // passing in ZodEffect which should be resolved in Zod 4 but...
+  export let schema: any;
 
   let meta = $modalStore[0]?.meta || {};
   const {

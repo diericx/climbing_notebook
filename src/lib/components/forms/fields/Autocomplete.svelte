@@ -1,17 +1,14 @@
-<script lang="ts">
+<script lang="ts" generics="T extends Record<string, unknown>">
   import { camelToTitle } from '$lib/utils';
   import type { AutocompleteOption } from '@skeletonlabs/skeleton';
   import { popup, type PopupSettings } from '@skeletonlabs/skeleton';
-  import type { FormPathLeaves, ZodValidation } from 'sveltekit-superforms';
+  import type { FormPathLeaves } from 'sveltekit-superforms';
   import type { SuperForm } from 'sveltekit-superforms/client';
   import { formFieldProxy } from 'sveltekit-superforms/client';
-  import type { AnyZodObject, z } from 'zod';
   import Autocomplete from './skeleton/Autocomplete.svelte';
 
-  type T = $$Generic<AnyZodObject>;
-
-  export let form: SuperForm<ZodValidation<T>, unknown>;
-  export let field: FormPathLeaves<z.infer<T>>;
+  export let form: SuperForm<T>;
+  export let field: FormPathLeaves<T>;
   export let label: string | undefined = undefined;
   export let options: AutocompleteOption[];
   export let searchValue = '';

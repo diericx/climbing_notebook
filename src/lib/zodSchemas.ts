@@ -124,9 +124,10 @@ export const exerciseSchema = z.object({
   tertiaryMuscle: z.enum(muscles).nullish().default(null),
   primaryEquipment: z.enum(equipments).nullish().default(null),
   posture: z.enum(postures).nullish().default(null),
-  fieldsToShow: z.array(z.enum(exerciseEventFieldsToShow)).refine((val) => val.length > 0, {
-    message: 'At least one field is required',
-  }),
+  fieldsToShow: z
+    .enum(exerciseEventFieldsToShow)
+    .array()
+    .min(1, 'Please select at least one field'),
 });
 export type ExerciseSchema = typeof exerciseSchema;
 

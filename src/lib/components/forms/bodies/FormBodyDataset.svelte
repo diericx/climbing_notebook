@@ -1,12 +1,13 @@
 <script lang="ts">
+  import type { DatasetSchema } from '$lib/zodSchemas';
+  import type { Infer } from 'sveltekit-superforms';
   import type { SuperForm } from 'sveltekit-superforms/client';
-  import type { z } from 'zod';
   import ColorField from '../fields/ColorField.svelte';
   import SelectField from '../fields/SelectField.svelte';
   import SubmitButton from '../fields/SubmitButton.svelte';
   import TextField from '../fields/TextField.svelte';
 
-  export let superForm: SuperForm<z.AnyZodObject, any>;
+  export let superForm: SuperForm<Infer<DatasetSchema>>;
 
   export let showSubmitButton = true;
   export let showColor = true;

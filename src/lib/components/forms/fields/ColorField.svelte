@@ -1,14 +1,11 @@
-<script lang="ts">
+<script lang="ts" generics="T extends Record<string, unknown>">
   import { camelToTitle } from '$lib/utils';
-  import type { FormPathLeaves, ZodValidation } from 'sveltekit-superforms';
+  import type { FormPathLeaves } from 'sveltekit-superforms';
   import type { SuperForm } from 'sveltekit-superforms/client';
   import { formFieldProxy } from 'sveltekit-superforms/client';
-  import type { AnyZodObject, z } from 'zod';
 
-  type T = $$Generic<AnyZodObject>;
-
-  export let form: SuperForm<ZodValidation<T>, unknown>;
-  export let field: FormPathLeaves<z.infer<T>>;
+  export let form: SuperForm<T>;
+  export let field: FormPathLeaves<T>;
   export let placeholder = '';
 
   const { path, value, errors, constraints } = formFieldProxy(form, field);

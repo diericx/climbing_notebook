@@ -1,14 +1,15 @@
 <script lang="ts">
   import { gradeSystems, grades } from '$lib/utils';
+  import type { ProjectSchema } from '$lib/zodSchemas';
+  import type { Infer } from 'sveltekit-superforms';
   import type { SuperForm } from 'sveltekit-superforms/client';
-  import type { z } from 'zod';
   import SelectField from '../fields/SelectField.svelte';
   import SubmitButton from '../fields/SubmitButton.svelte';
   import TextArea from '../fields/TextArea.svelte';
   import TextField from '../fields/TextField.svelte';
 
   // Form action to execute
-  export let superForm: SuperForm<z.AnyZodObject, any>;
+  export let superForm: SuperForm<Infer<ProjectSchema>>;
   export let showSubmitButton = true;
 
   const { form } = superForm;

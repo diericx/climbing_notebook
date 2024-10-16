@@ -1,7 +1,8 @@
 <script lang="ts">
+  import type { CustomQuerySchema } from '$lib/zodSchemas';
   import type { Prisma } from '@prisma/client';
+  import type { Infer } from 'sveltekit-superforms';
   import type { SuperForm } from 'sveltekit-superforms/client';
-  import type { z } from 'zod';
   import Autocomplete from '../fields/Autocomplete.svelte';
   import SelectField from '../fields/SelectField.svelte';
   import SubmitButton from '../fields/SubmitButton.svelte';
@@ -19,7 +20,7 @@
       fieldsToShow: true;
     };
   }>[];
-  export let superForm: SuperForm<z.AnyZodObject, any>;
+  export let superForm: SuperForm<Infer<CustomQuerySchema>>;
   export let showSubmitButton = true;
   export let showEquation = true;
 

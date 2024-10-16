@@ -8,15 +8,17 @@
     muscles,
     postures,
   } from '$lib/utils';
+  import type { ExerciseSchema } from '$lib/zodSchemas';
+  import type { Infer } from 'sveltekit-superforms';
   import type { SuperForm } from 'sveltekit-superforms/client';
-  import type { z } from 'zod';
-  import MultipleSelectField from '../fields/MultipleSelectField.svelte';
   import SelectField from '../fields/SelectField.svelte';
   import SubmitButton from '../fields/SubmitButton.svelte';
   import TextField from '../fields/TextField.svelte';
 
-  export let superForm: SuperForm<z.AnyZodObject, any>;
+  export let superForm: SuperForm<Infer<ExerciseSchema>>;
   export let showSubmitButton = true;
+
+  const { form, errors } = superForm;
 </script>
 
 <TextField name="name" field="name" form={superForm} />
@@ -71,15 +73,26 @@
   {/each}
 </SelectField>
 
-<MultipleSelectField
-  name="fieldsToShow"
-  field="fieldsToShow"
-  options={[...exerciseEventFieldsToShow]}
-  form={superForm}
-/>
+<label>
+  <span class="font-bold">Fields to Show</span>
+  <slot name="description" />
+</label>
+{#each exerciseEventFieldsToShow as option}
+  <label class="text-black">
+    <input type="checkbox" bind:group={$form.fieldsToShow} value={option} {...$$restProps} />
+    {option}
+  </label>
+{/each}
+{#if $errors.fieldsToShow?._errors}<p class="invalid">{$errors.fieldsToShow._errors}</p>{/if}
 
 <TextField name="videoUrl" field="videoUrl" form={superForm} />
 
 {#if showSubmitButton}
   <SubmitButton {superForm} />
 {/if}
+
+<style lang="scss">
+  .invalid {
+    color: orangered;
+  }
+</style>

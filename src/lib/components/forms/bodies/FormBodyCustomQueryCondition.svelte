@@ -1,7 +1,8 @@
 <script lang="ts">
+  import type { CustomQueryConditionSchema } from '$lib/zodSchemas';
   import type { CustomQuery, Widget } from '@prisma/client';
+  import type { Infer } from 'sveltekit-superforms';
   import type { SuperForm } from 'sveltekit-superforms/client';
-  import type { z } from 'zod';
   import Checkbox from '../fields/Checkbox.svelte';
   import NumberField from '../fields/NumberField.svelte';
   import SelectField from '../fields/SelectField.svelte';
@@ -10,7 +11,7 @@
   // Parent widget is required in order to fill in the values for
   // simple editor field selection
   export let widget: Widget;
-  export let superForm: SuperForm<z.AnyZodObject, any>;
+  export let superForm: SuperForm<Infer<CustomQueryConditionSchema>>;
   export let showSubmitButton = true;
   export let query: CustomQuery;
 
