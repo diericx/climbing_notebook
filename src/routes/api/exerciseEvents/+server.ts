@@ -9,7 +9,7 @@ import type { RequestHandler } from './$types';
 // remove any types that are not primitives in JSON
 export type APIExerciseEventsResponse = (Prisma.ExerciseEventGetPayload<
   typeof exerciseEventSelects.minimalValidator
-> & {date: string})[];
+> & { date: string })[];
 
 export const GET: RequestHandler = async ({ url, locals }) => {
   const session = await locals.auth.validate();
