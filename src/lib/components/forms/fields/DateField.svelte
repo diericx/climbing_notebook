@@ -8,8 +8,11 @@
   export let placeholder = '';
 
   const { value, path, errors, constraints } = formFieldProxy(form, field);
+  // This can be confusing, but we are editing with local time so the editor makes
+  // logical sense to the user, but this date is sent directly to the server and is
+  // stored as is in the UTC time zone.
   const dateValue = dateProxy(form.form, field, {
-    format: 'date',
+    format: 'date-local',
   });
 
   // TODO: this is a hack to get around the fact that we are not parsing input from API calls
@@ -18,6 +21,9 @@
     // @ts-ignore
     $value = new Date($value);
   }
+
+  // Clean the date by erasing all time value as this is only a Date field not a DateTime field
+  $value.setHours(0, 0, 0, 0);
 </script>
 
 <label>

@@ -18,6 +18,7 @@
         month: 'numeric',
         year: 'numeric',
         day: 'numeric',
+        timeZone: 'UTC',
       })}
     </h4>
     <p class="whitespace-pre-wrap">{journalEntry?.content || ''}</p>

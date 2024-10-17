@@ -134,6 +134,7 @@
                 month: 'numeric',
                 year: 'numeric',
                 day: 'numeric',
+                timeZone: 'UTC',
               })}
             </h3>
             <div class="text-green-400 font-bold">{session.sent ? 'Sent' : ''}</div>

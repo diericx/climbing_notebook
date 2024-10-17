@@ -52,7 +52,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   });
 
   const validTrainingProgramActivations = trainingProgramActivations.filter(
-    (a) => getActiveTrainingCycleForTrainingProgramActivation(a) !== undefined,
+    (a) => getActiveTrainingCycleForTrainingProgramActivation(a) !== undefined
   );
 
   return {
@@ -88,7 +88,7 @@ export const actions: Actions = {
         Number(exerciseToMarkCompletedId),
         user?.userId,
         new Date(dateToMarkCompleted.toString()),
-        true,
+        true
       );
     }
 

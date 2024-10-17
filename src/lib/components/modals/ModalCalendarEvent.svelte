@@ -16,6 +16,7 @@
         month: 'numeric',
         year: 'numeric',
         day: 'numeric',
+        timeZone: 'UTC',
       })}
     </h4>
     <h4>{calendarEvent.title}</h4>
