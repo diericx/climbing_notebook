@@ -5,7 +5,9 @@ import { type CalendarEvent } from '@prisma/client';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-export type APICalendarEventsResponse = CalendarEvent[];
+// Create a type for the API response and
+// remove any types that are not primitives in JSON
+export type APICalendarEventsResponse = (CalendarEvent & { dateStart: string; dateEnd: string })[];
 
 export const GET: RequestHandler = async ({ url, locals }) => {
   const session = await locals.auth.validate();

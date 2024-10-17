@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-export type APITrainingProgramActivationsResponse = Prisma.TrainingProgramActivationGetPayload<{
+export type APITrainingProgramActivationsResponse = (Prisma.TrainingProgramActivationGetPayload<{
   include: {
     trainingProgram: {
       select: {
@@ -22,7 +22,7 @@ export type APITrainingProgramActivationsResponse = Prisma.TrainingProgramActiva
       };
     };
   };
-}>[];
+}> & { startDate: string; endDate: string })[];
 
 export const GET: RequestHandler = async ({ url, locals }) => {
   const session = await locals.auth.validate();
