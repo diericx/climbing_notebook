@@ -12,7 +12,7 @@ export class JournalEntryRepo implements Repo<JournalEntry, Prisma.JournalEntryS
     userId: string | undefined,
     journalEntry: Prisma.JournalEntryGetPayload<{
       select: { ownerId: true };
-    }>
+    }>,
   ) {
     return journalEntry.ownerId == userId;
   }
@@ -21,7 +21,7 @@ export class JournalEntryRepo implements Repo<JournalEntry, Prisma.JournalEntryS
     userId: string | undefined,
     journalEntry: Prisma.JournalEntryGetPayload<{
       select: { ownerId: true };
-    }>
+    }>,
   ) {
     return journalEntry.ownerId == userId;
   }
@@ -30,7 +30,7 @@ export class JournalEntryRepo implements Repo<JournalEntry, Prisma.JournalEntryS
     userId: string | undefined,
     journalEntry: Prisma.JournalEntryGetPayload<{
       select: { ownerId: true };
-    }>
+    }>,
   ) {
     return journalEntry.ownerId == userId;
   }

@@ -3,17 +3,17 @@ export interface Repo<ResourceType, ResourceSelectType> {
   canUserRead<T extends ResourceType>(
     userId: string | undefined,
     resource: T,
-    otherOptions?: any
+    otherOptions?: any,
   ): boolean;
   canUserUpdate<T extends ResourceType>(
     userId: string | undefined,
     resource: T,
-    otherOptions?: any
+    otherOptions?: any,
   ): boolean;
   canUserDelete<T extends ResourceType>(
     userId: string | undefined,
     resource: T,
-    otherOptions?: any
+    otherOptions?: any,
   ): boolean;
   // Queries
   // Note: we use objects here so that the optional fields don't need to be ordered

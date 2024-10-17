@@ -35,6 +35,7 @@
               month: 'numeric',
               year: 'numeric',
               day: 'numeric',
+              timeZone: 'UTC',
             })}
           </div>
         {/if}
@@ -50,6 +51,7 @@
                   month: 'numeric',
                   year: 'numeric',
                   day: 'numeric',
+                  timeZone: 'UTC',
                 })}
                 <br />
               </span>

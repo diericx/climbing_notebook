@@ -57,7 +57,7 @@
   function filterByAllowed(): void {
     if (allowlist.length) {
       listedOptions = [...options].filter((option: AutocompleteOption) =>
-        allowlist.includes(option.value)
+        allowlist.includes(option.value),
       );
     } else {
       // IMPORTANT: required if the list goes from populated -> empty
@@ -70,7 +70,7 @@
     if (denylist.length) {
       const denySet = new Set(denylist);
       listedOptions = [...options].filter(
-        (option: AutocompleteOption) => !denySet.has(option.value)
+        (option: AutocompleteOption) => !denySet.has(option.value),
       );
     } else {
       // IMPORTANT: required if the list goes from populated -> empty

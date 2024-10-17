@@ -13,6 +13,7 @@ import {
 } from '$lib/utils';
 import { exerciseEventSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
+import { zod } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -51,7 +52,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   });
 
   const validTrainingProgramActivations = trainingProgramActivations.filter(
-    (a) => getActiveTrainingCycleForTrainingProgramActivation(a) !== undefined
+    (a) => getActiveTrainingCycleForTrainingProgramActivation(a) !== undefined,
   );
 
   return {
@@ -69,7 +70,7 @@ export const actions: Actions = {
     const { user } = await getSessionOrRedirect({ locals, url });
 
     const formData = await request.formData();
-    const form = await superValidate(formData, exerciseEventSchema, {
+    const form = await superValidate(formData, zod(exerciseEventSchema), {
       id: formData.get('_formId')?.toString(),
     });
 
@@ -87,7 +88,7 @@ export const actions: Actions = {
         Number(exerciseToMarkCompletedId),
         user?.userId,
         new Date(dateToMarkCompleted.toString()),
-        true
+        true,
       );
     }
 

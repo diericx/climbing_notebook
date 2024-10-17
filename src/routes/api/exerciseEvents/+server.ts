@@ -5,9 +5,11 @@ import { Prisma } from '@prisma/client';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-export type APIExerciseEventsResponse = Prisma.ExerciseEventGetPayload<
+// Create a type for the API response and
+// remove any types that are not primitives in JSON
+export type APIExerciseEventsResponse = (Prisma.ExerciseEventGetPayload<
   typeof exerciseEventSelects.minimalValidator
->[];
+> & { date: string })[];
 
 export const GET: RequestHandler = async ({ url, locals }) => {
   const session = await locals.auth.validate();

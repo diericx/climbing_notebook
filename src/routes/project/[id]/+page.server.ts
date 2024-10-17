@@ -5,6 +5,7 @@ import { getSessionOrRedirect } from '$lib/utils';
 import { fileUploadSchema, projectPartialSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
 import sharp from 'sharp';
+import { zod } from 'sveltekit-superforms/adapters';
 import { setError, superValidate } from 'sveltekit-superforms/server';
 import { v4 as uuidv4 } from 'uuid';
 import type { Actions, PageServerLoad } from './$types';
@@ -16,7 +17,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const project = await repo.getOneAndValidateOwner(params.id, user?.userId);
 
   const { s3ObjectMetadatas, s3ObjectUrls } = await getSignedUrlsAndMetadata(
-    project.imageS3ObjectKey === null ? [] : [project.imageS3ObjectKey]
+    project.imageS3ObjectKey === null ? [] : [project.imageS3ObjectKey],
   );
 
   return {
@@ -48,7 +49,7 @@ export const actions: Actions = {
 
     const formData = await request.formData();
     const id = params.id;
-    const form = await superValidate(formData, projectPartialSchema, {
+    const form = await superValidate(formData, zod(projectPartialSchema), {
       id: formData.get('_formId')?.toString(),
     });
 
@@ -67,7 +68,7 @@ export const actions: Actions = {
 
     const formData = await request.formData();
     const id = params.id;
-    const form = await superValidate(formData, fileUploadSchema, {
+    const form = await superValidate(formData, zod(fileUploadSchema), {
       id: formData.get('_formId')?.toString(),
     });
 
@@ -117,7 +118,7 @@ export const actions: Actions = {
     const { user } = await getSessionOrRedirect({ locals, url });
 
     const formData = await request.formData();
-    const form = await superValidate(formData, projectPartialSchema, {
+    const form = await superValidate(formData, zod(projectPartialSchema), {
       id: formData.get('_formId')?.toString(),
     });
 

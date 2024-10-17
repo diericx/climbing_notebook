@@ -6,6 +6,7 @@ import { WidgetRepo } from '$lib/server/repos/widgetRepo';
 import { getSessionOrRedirect } from '$lib/utils';
 import { widgetSchema } from '$lib/zodSchemas';
 import { fail, redirect } from '@sveltejs/kit';
+import { zod } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -17,7 +18,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
   const widgets = await widgetRepo.getManyForUserPublishedOrOwnedTemplates(
     user.userId,
-    widgetSelects.everything
+    widgetSelects.everything,
   );
   // compile datasets for widgets
   const customQueryResults: CustomQueryResults[] = [];
@@ -47,7 +48,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
         return [...acc, cur.owner.profile.imageS3ObjectKey];
       }
       return acc;
-    }, [] as string[])
+    }, [] as string[]),
   );
 
   return {
@@ -62,7 +63,7 @@ export const actions: Actions = {
   new: async ({ locals, request, url }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
     const formData = await request.formData();
-    const form = await superValidate(formData, widgetSchema, {
+    const form = await superValidate(formData, zod(widgetSchema), {
       id: formData.get('_formId')?.toString(),
     });
 

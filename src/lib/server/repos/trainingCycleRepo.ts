@@ -20,7 +20,7 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
     }>,
     otherOptions?: {
       privateAccessToken?: string;
-    }
+    },
   ) {
     // if it is public anyone can read
     if (trainingCycle.isPublic) {
@@ -43,7 +43,7 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
     userId: string,
     trainingCycle: Prisma.TrainingCycleGetPayload<{
       select: { ownerId: true };
-    }>
+    }>,
   ) {
     return trainingCycle.ownerId == userId;
   }
@@ -52,7 +52,7 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
     userId: string,
     trainingCycle: Prisma.TrainingCycleGetPayload<{
       select: { ownerId: true };
-    }>
+    }>,
   ) {
     return trainingCycle.ownerId == userId;
   }
@@ -171,7 +171,7 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
   }
 
   async getAllPublic<S extends Prisma.TrainingCycleSelect>(
-    select: S
+    select: S,
   ): Promise<Prisma.TrainingCycleGetPayload<{ select: S }>[]> {
     // Fetch all
     return await this.prisma.trainingCycle.findMany({
@@ -191,7 +191,7 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
     data?: {
       name?: string;
       description?: string;
-    }
+    },
   ) {
     const trainingCycle = await this.getOne({
       id,
@@ -382,21 +382,21 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
     if (trainingCycle._count.trainingProgramScheduledSlots != 0) {
       throw new APIError(
         'INVALID_INPUT',
-        'Training Cycle cannot be deleted because it is scheduled in one or more Training Programs'
+        'Training Cycle cannot be deleted because it is scheduled in one or more Training Programs',
       );
     }
 
     if (trainingCycle._count.activations != 0) {
       throw new APIError(
         'INVALID_INPUT',
-        'Training Cycle cannot be deleted because it is activated by someone'
+        'Training Cycle cannot be deleted because it is activated by someone',
       );
     }
 
     if (trainingCycle._count.saves != 0) {
       throw new APIError(
         'INVALID_INPUT',
-        'Training Cycle cannot be deleted because it is saved by someone'
+        'Training Cycle cannot be deleted because it is saved by someone',
       );
     }
 
@@ -493,7 +493,7 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
     exerciseGroup: z.infer<ExerciseGroupSchema>,
     trainingCycleId: number,
     exerciseGroupId: number,
-    userId: string
+    userId: string,
   ) {
     const trainingCycle = await this.getOne({
       id: trainingCycleId,
@@ -561,7 +561,7 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
     trainingCycleId: number,
     groupId: number,
     trainingCycleDayId: number,
-    userId: string
+    userId: string,
   ) {
     const trainingCycle = await this.getOne({ id: trainingCycleId, select: {}, userId });
     if (!this.canUserUpdate(userId, trainingCycle)) {
@@ -593,7 +593,7 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
     trainingCycleId: number,
     groupId: number,
     trainingCycleDayId: number,
-    userId: string
+    userId: string,
   ) {
     const trainingCycle = await this.getOne({ id: trainingCycleId, select: {}, userId });
     if (!this.canUserUpdate(userId, trainingCycle)) {
@@ -625,7 +625,7 @@ export class TrainingCycleRepo implements Repo<TrainingCycle, Prisma.TrainingCyc
     data: z.infer<TrainingCycleDaySchema>,
     trainingCycleId: number,
     trainingCycleDayId: number,
-    userId: string
+    userId: string,
   ) {
     const trainingCycle = await this.getOne({ id: trainingCycleId, select: {}, userId });
     if (!this.canUserUpdate(userId, trainingCycle)) {
@@ -711,7 +711,7 @@ export function doesTrainingCycleHaveLegacyExercises(
         };
       };
     };
-  }>
+  }>,
 ) {
   for (const d of p.days) {
     if (

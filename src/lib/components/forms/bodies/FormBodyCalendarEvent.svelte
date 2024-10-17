@@ -1,13 +1,13 @@
 <script lang="ts">
-  import type { ZodValidation } from 'sveltekit-superforms';
+  import type { CalendarEventSchema } from '$lib/zodSchemas';
+  import type { Infer } from 'sveltekit-superforms';
   import type { SuperForm } from 'sveltekit-superforms/client';
-  import type { AnyZodObject } from 'zod';
   import DateField from '../fields/DateField.svelte';
   import SubmitButton from '../fields/SubmitButton.svelte';
   import TextArea from '../fields/TextArea.svelte';
   import TextField from '../fields/TextField.svelte';
 
-  export let superForm: SuperForm<ZodValidation<AnyZodObject>, unknown>;
+  export let superForm: SuperForm<Infer<CalendarEventSchema>>;
   export let showSubmitButton = true;
 </script>
 

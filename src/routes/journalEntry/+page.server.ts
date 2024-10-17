@@ -6,6 +6,7 @@ import { JournalEntryRepo } from '$lib/server/repos/journalEntry';
 import { getSessionOrRedirect } from '$lib/utils';
 import { journalEntrySchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
+import { zod } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -28,7 +29,7 @@ export const actions: Actions = {
     const { user } = await getSessionOrRedirect({ locals, url });
 
     const formData = await request.formData();
-    const form = await superValidate(formData, journalEntrySchema, {
+    const form = await superValidate(formData, zod(journalEntrySchema), {
       id: formData.get('_formId')?.toString(),
     });
 

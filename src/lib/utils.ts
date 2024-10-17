@@ -235,13 +235,7 @@ export const difficulties: readonly [string, ...string[]] = [
   'intermediate',
   'advanced',
 ];
-export const exerciseEventFieldsToShow: readonly [string, ...string[]] = [
-  'sets',
-  'reps',
-  'weight',
-  'minutes',
-  'seconds',
-];
+export const exerciseEventFieldsToShow = ['sets', 'reps', 'weight', 'minutes', 'seconds'] as const;
 
 export function confirmDelete(e: MouseEvent) {
   e.stopPropagation();
@@ -445,7 +439,7 @@ export function getActiveTrainingCycleForTrainingProgramActivation(
         };
       };
     };
-  }>
+  }>,
 ) {
   const slots = activation.trainingProgram.trainingProgramScheduledSlots;
   const startDateWeekOfYear = dayjs.tz(activation.startDate, 'UTC').week();

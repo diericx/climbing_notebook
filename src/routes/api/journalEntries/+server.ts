@@ -5,7 +5,7 @@ import { type JournalEntry } from '@prisma/client';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-export type APIJournalEntriesResponse = JournalEntry[];
+export type APIJournalEntriesResponse = (JournalEntry & { date: string })[];
 
 export const GET: RequestHandler = async ({ url, locals }) => {
   const session = await locals.auth.validate();

@@ -1,9 +1,8 @@
-<script lang="ts">
+<script lang="ts" generics="T extends Record<string, unknown>">
   import Icon from '@iconify/svelte';
   import type { SuperForm } from 'sveltekit-superforms/client';
-  import type { z } from 'zod';
 
-  export let superForm: SuperForm<z.AnyZodObject, any>;
+  export let superForm: SuperForm<T>;
   export let label = 'Submit';
 
   const { delayed, formId } = superForm;

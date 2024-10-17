@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 
 function makeCalendarEventSelect<T extends Prisma.CalendarEventSelect>(
-  select: Prisma.Subset<T, Prisma.CalendarEventSelect>
+  select: Prisma.Subset<T, Prisma.CalendarEventSelect>,
 ): T {
   return select;
 }

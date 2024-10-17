@@ -20,7 +20,7 @@
   $: session = data.session;
   // Ordering by count not supported in prisma...
   $: publicTrainingCycles = data.publicTrainingCycles.sort(
-    (a, b) => b._count.saves - a._count.saves
+    (a, b) => b._count.saves - a._count.saves,
   );
   $: savedTrainingCycles = data.savedTrainingCycles;
   $: ownedTrainingCycles = data.ownedTrainingCycles;

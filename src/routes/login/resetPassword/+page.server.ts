@@ -4,6 +4,7 @@ import { prisma } from '$lib/server/prisma';
 import { PasswordResetRepo } from '$lib/server/repos/passwordReset';
 import { resetPasswordSchema } from '$lib/zodSchemas';
 import { error, fail, redirect } from '@sveltejs/kit';
+import { zod } from 'sveltekit-superforms/adapters';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -25,7 +26,7 @@ export const load: PageServerLoad = async ({ url }) => {
 export const actions: Actions = {
   resetPassword: async ({ request }) => {
     const formData = await request.formData();
-    const form = await superValidate(formData, resetPasswordSchema, {
+    const form = await superValidate(formData, zod(resetPasswordSchema), {
       id: formData.get('_formId')?.toString(),
     });
 

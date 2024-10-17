@@ -32,7 +32,7 @@
     BarElement,
     Legend,
     Tooltip,
-    Title
+    Title,
   );
 
   type ChartDataPoint = {

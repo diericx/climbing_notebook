@@ -2,7 +2,7 @@
   import dayjs from '$lib/dayjs';
   import type { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
   import type { trainingProgramSelects } from '$lib/prismaHelpers/trainingProgramHelper';
-  import { exerciseTypeColors, getLocalDateWithZeroTime } from '$lib/utils';
+  import { exerciseTypeColors } from '$lib/utils';
   // @ts-ignore
   import Calendar from '@event-calendar/core';
   // @ts-ignore
@@ -36,8 +36,8 @@
     onClick: () => void;
   };
   type Event = {
-    start: Date;
-    end: Date;
+    start: Date | string;
+    end: Date | string;
     backgroundColor: string;
     title: string;
     extendedProps: EventExtendedProps;
@@ -52,8 +52,8 @@
     return data.map((e) => ({
       // we use the raw UTC here because we are blocking out DAYS and we want
       // no interference from time
-      start: dayjs.tz(e.dateStart, 'UTC').startOf('day').toDate(),
-      end: dayjs.tz(e.dateEnd, 'UTC').startOf('day').toDate(),
+      start: e.dateStart.split('T', 1)[0],
+      end: e.dateEnd.split('T', 1)[0],
       backgroundColor: e.color,
       allDay: true,
       title: e.title,
@@ -74,8 +74,8 @@
   function formatJournalEntries(data: APIJournalEntriesResponse): Event[] {
     return data.map((j) => {
       return {
-        start: getLocalDateWithZeroTime(j.date),
-        end: getLocalDateWithZeroTime(j.date),
+        start: j.date.split('T', 1)[0],
+        end: j.date.split('T', 1)[0],
         backgroundColor: '#7dd3fc',
         allDay: true,
         title: j.content.substring(0, 15),
@@ -97,8 +97,8 @@
     return data.map((e) => ({
       // If the date is null and for some reason in this list, set the date
       // to zero so it won't show up
-      start: e.date || new Date(0),
-      end: e.date || new Date(0),
+      start: e.date.split('T', 1)[0] || new Date(0),
+      end: e.date.split('T', 1)[0] || new Date(0),
       // start: dayjs.tz(e.date, 'UTC').startOf('day').format(),
       // end: dayjs.tz(e.date, 'UTC').startOf('day').format(),
       backgroundColor: 'transparent',
@@ -137,7 +137,7 @@
       trainingProgramScheduledSlots.forEach((s, i) => {
         const endDate = startDate.add(s.duration, 'weeks');
         events.push({
-          start: startDate.startOf('day').toDate(),
+          start: startDate.startOf('day').toDate().toISOString().split('T', 1)[0],
           // Subtract one day from the end date if it is not the last one so there
           // is no overlap in the calendar view
           end: (i != trainingProgramScheduledSlots.length - 1
@@ -145,7 +145,9 @@
             : endDate
           )
             .startOf('day')
-            .toDate(),
+            .toDate()
+            .toISOString()
+            .split('T', 1)[0],
           backgroundColor: '#8bfca9',
           allDay: true,
           title: `${a.trainingProgram.name} - ${s.trainingCycles[0].name} `,

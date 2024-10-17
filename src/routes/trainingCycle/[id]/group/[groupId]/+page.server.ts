@@ -4,6 +4,7 @@ import { TrainingCycleRepo } from '$lib/server/repos/trainingCycleRepo';
 import { getSessionOrRedirect } from '$lib/utils';
 import { exerciseEventSchema, exerciseGroupSchema } from '$lib/zodSchemas';
 import { fail, type Actions } from '@sveltejs/kit';
+import { zod } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms/server';
 
 export const actions: Actions = {
@@ -12,7 +13,7 @@ export const actions: Actions = {
     const formData = await request.formData();
     const trainingCycleId = Number(params.id);
     const exerciseGroupId = Number(params.groupId);
-    const form = await superValidate(formData, exerciseGroupSchema, {
+    const form = await superValidate(formData, zod(exerciseGroupSchema), {
       id: formData.get('_formId')?.toString(),
     });
 
@@ -40,7 +41,7 @@ export const actions: Actions = {
   newExerciseEvent: async ({ locals, request, url, params }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
     const formData = await request.formData();
-    const form = await superValidate(formData, exerciseEventSchema, {
+    const form = await superValidate(formData, zod(exerciseEventSchema), {
       id: formData.get('_formId')?.toString(),
     });
     const groupId = Number(params.groupId);

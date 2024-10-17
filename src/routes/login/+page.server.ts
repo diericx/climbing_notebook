@@ -5,6 +5,7 @@ import { loginSchema, signupSchema } from '$lib/zodSchemas';
 import { Prisma } from '@prisma/client';
 import { fail, redirect } from '@sveltejs/kit';
 import { LuciaError } from 'lucia';
+import { zod } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -17,7 +18,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
   login: async ({ request, locals }) => {
     const formData = await request.formData();
-    const form = await superValidate(formData, loginSchema, {
+    const form = await superValidate(formData, zod(loginSchema), {
       id: formData.get('_formId')?.toString(),
     });
 
@@ -55,7 +56,7 @@ export const actions: Actions = {
 
   register: async ({ request, locals }) => {
     const formData = await request.formData();
-    const form = await superValidate(formData, signupSchema, {
+    const form = await superValidate(formData, zod(signupSchema), {
       id: formData.get('_formId')?.toString(),
     });
 

@@ -4,7 +4,7 @@ const sesClient = new SESClient({ region: 'us-west-2' });
 const createSendEmailCommand = (
   toAddress: string,
   htmlBodyData: string,
-  fromAddress = 'noreply@climbingnotebook.com'
+  fromAddress = 'noreply@climbingnotebook.com',
 ) => {
   return new SendEmailCommand({
     Destination: {

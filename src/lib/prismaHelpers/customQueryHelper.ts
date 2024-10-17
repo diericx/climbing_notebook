@@ -7,7 +7,7 @@ export type CustomQueryResults = {
 };
 
 function makeSelect<T extends Prisma.CustomQuerySelect>(
-  select: Prisma.Subset<T, Prisma.CustomQuerySelect>
+  select: Prisma.Subset<T, Prisma.CustomQuerySelect>,
 ): T {
   return select;
 }

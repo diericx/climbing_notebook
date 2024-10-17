@@ -20,7 +20,7 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
     }>,
     otherOptions?: {
       privateAccessToken?: string;
-    }
+    },
   ) {
     // if it is public anyone can read
     if (trainingProgram.isPublic) {
@@ -43,7 +43,7 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
     userId: string | undefined,
     trainingProgram: Prisma.TrainingProgramGetPayload<{
       select: { ownerId: true };
-    }>
+    }>,
   ) {
     return trainingProgram.ownerId == userId;
   }
@@ -52,7 +52,7 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
     userId: string | undefined,
     trainingProgram: Prisma.TrainingProgramGetPayload<{
       select: { ownerId: true };
-    }>
+    }>,
   ) {
     return trainingProgram.ownerId == userId;
   }
@@ -321,7 +321,7 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
   async addTrainingProgramScheduledSlot(
     data: z.infer<TrainingProgramScheduledSlotSchema>,
     id: string,
-    userId: string
+    userId: string,
   ) {
     const trainingProgram = await this.getOne({
       id,
@@ -350,7 +350,7 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
           data: {
             order: s.order + 1,
           },
-        })
+        }),
       );
 
     // Update training program
@@ -379,7 +379,7 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
   async deleteTrainingProgramScheduledSlot(
     trainingProgramId: string,
     trainingProgramScheduledSlotId: string,
-    userId: string
+    userId: string,
   ) {
     const trainingProgram = await this.getOne({
       id: trainingProgramId,
@@ -410,7 +410,7 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
           data: {
             order: s.order - 1,
           },
-        })
+        }),
       );
 
     const deleteSlot = this.prisma.trainingProgram.update({
@@ -433,7 +433,7 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
     data: z.infer<TrainingProgramScheduledSlotSchema>,
     trainingProgramId: string,
     slotId: string,
-    userId: string
+    userId: string,
   ) {
     const trainingProgram = await this.getOne({
       id: trainingProgramId,
@@ -483,7 +483,7 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
     trainingProgramId: string,
     trainingProgramScheduledSlotId: string,
     order: number,
-    userId: string
+    userId: string,
   ) {
     const trainingProgram = await this.getOne({
       id: trainingProgramId,
@@ -521,7 +521,7 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
           data: {
             order: s.order - 1,
           },
-        })
+        }),
       );
 
     // Move all the slots that come before this slot forward
@@ -535,7 +535,7 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
           data: {
             order: s.order + 1,
           },
-        })
+        }),
       );
 
     const moveSlot = this.prisma.trainingProgramScheduledSlot.update({
@@ -608,7 +608,7 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
   async updateActivation(
     data: z.infer<TrainingProgramActivationSchema>,
     activationId: string,
-    userId: string
+    userId: string,
   ) {
     this.validateReadAccess(data.trainingProgramId, userId);
 

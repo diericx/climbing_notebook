@@ -5,6 +5,7 @@ import { TrainingProgramRepo } from '$lib/server/repos/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
 import { trainingProgramActivationSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
+import { zod } from 'sveltekit-superforms/adapters';
 import { setError, superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -36,7 +37,7 @@ export const actions: Actions = {
     const { user } = await getSessionOrRedirect({ locals, url });
     const formData = await request.formData();
     const activationId = params.activationId;
-    const form = await superValidate(formData, trainingProgramActivationSchema, {
+    const form = await superValidate(formData, zod(trainingProgramActivationSchema), {
       id: formData.get('_formId')?.toString(),
     });
 
@@ -48,7 +49,7 @@ export const actions: Actions = {
       return setError(
         form,
         'startDate',
-        'Start Date must be on a Monday or Sunday. This is because cycles are structured around a full week.'
+        'Start Date must be on a Monday or Sunday. This is because cycles are structured around a full week.',
       );
     }
 

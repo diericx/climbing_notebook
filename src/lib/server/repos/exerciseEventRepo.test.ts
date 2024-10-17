@@ -18,7 +18,7 @@ test('creates a new exercise event with correct date', async () => {
       exerciseId: 'clsjsi34u0004f6g5j1o6ypsr',
     },
     // TODO: create this earlier
-    'fogyl2e5w0qpp30'
+    'fogyl2e5w0qpp30',
   );
 
   const getOneResult = await repo.getOne({

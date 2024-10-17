@@ -2,17 +2,18 @@
   import { exerciseEventSelects } from '$lib/prismaHelpers/exerciseEventHelper';
   import type { exerciseSelects } from '$lib/prismaHelpers/exerciseHelper';
   import { kgToLb, lbToKg } from '$lib/utils';
+  import type { ExerciseEventSchema } from '$lib/zodSchemas';
   import type { ExerciseEvent, Prisma } from '@prisma/client';
   import { onMount } from 'svelte';
+  import type { Infer } from 'sveltekit-superforms';
   import type { SuperForm } from 'sveltekit-superforms/client';
-  import type { z } from 'zod';
   import Autocomplete from '../fields/Autocomplete.svelte';
   import DateField from '../fields/DateField.svelte';
   import NumberField from '../fields/NumberField.svelte';
   import SubmitButton from '../fields/SubmitButton.svelte';
   import TextArea from '../fields/TextArea.svelte';
 
-  export let superForm: SuperForm<z.AnyZodObject, any>;
+  export let superForm: SuperForm<Infer<ExerciseEventSchema>>;
 
   export let data:
     | Prisma.ExerciseEventGetPayload<typeof exerciseEventSelects.minimalValidator>

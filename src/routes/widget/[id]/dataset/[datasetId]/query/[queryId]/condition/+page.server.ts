@@ -3,6 +3,7 @@ import { CustomQueryRepo } from '$lib/server/repos/customQuery';
 import { getSessionOrRedirect } from '$lib/utils';
 import { customQueryConditionSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
+import { zod } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions } from './$types';
 
@@ -11,7 +12,7 @@ export const actions: Actions = {
     const { user } = await getSessionOrRedirect({ locals, url });
 
     const formData = await request.formData();
-    const form = await superValidate(formData, customQueryConditionSchema, {
+    const form = await superValidate(formData, zod(customQueryConditionSchema), {
       id: formData.get('_formId')?.toString(),
     });
     const queryId = params.queryId;

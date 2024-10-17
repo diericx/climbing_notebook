@@ -54,7 +54,7 @@ export const handle: Handle = async ({ event, resolve }) => {
         event.url.searchParams.get('redirectToAuthFallback') || event.url.pathname,
         {
           status: 303,
-        }
+        },
       );
       newResult.headers.append('Cache-Control', 'no-store');
       newResult.headers.append(
@@ -68,8 +68,8 @@ export const handle: Handle = async ({ event, resolve }) => {
           {
             sameSite: 'strict',
             path: '/',
-          }
-        )
+          },
+        ),
       );
       return newResult;
     }

@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 import { trainingCycleSelects } from './trainingCycleHelper';
 
 function makeSelect<T extends Prisma.TrainingProgramSelect>(
-  select: Prisma.Subset<T, Prisma.TrainingProgramSelect>
+  select: Prisma.Subset<T, Prisma.TrainingProgramSelect>,
 ): T {
   return select;
 }

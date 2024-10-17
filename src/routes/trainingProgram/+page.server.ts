@@ -6,6 +6,7 @@ import { TrainingProgramRepo } from '$lib/server/repos/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
 import { trainingProgramActivationSchema, trainingProgramSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
+import { zod } from 'sveltekit-superforms/adapters';
 import { setError, superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -63,7 +64,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
   new: async ({ locals, request, url }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
-    const form = await superValidate(request, trainingProgramSchema);
+    const form = await superValidate(request, zod(trainingProgramSchema));
 
     if (!form.valid) {
       return fail(400, { form });
@@ -77,7 +78,7 @@ export const actions: Actions = {
 
   newActivation: async ({ locals, request, url }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
-    const form = await superValidate(request, trainingProgramActivationSchema);
+    const form = await superValidate(request, zod(trainingProgramActivationSchema));
 
     if (!form.valid) {
       return fail(400, { form });

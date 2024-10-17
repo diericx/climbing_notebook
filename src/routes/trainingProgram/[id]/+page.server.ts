@@ -11,6 +11,7 @@ import {
   trainingProgramSchema,
 } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
+import { zod } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -29,7 +30,7 @@ export const load: PageServerLoad = async ({ locals, params, url }) => {
   const s3ObjectUrlPromises = getSignedUrlPromises(
     trainingProgram.owner.profile?.imageS3ObjectKey
       ? [trainingProgram.owner.profile.imageS3ObjectKey]
-      : []
+      : [],
   );
 
   return {
@@ -54,7 +55,7 @@ export const actions: Actions = {
     const { user } = await getSessionOrRedirect({ locals, url });
     const formData = await request.formData();
     const id = params.id;
-    const form = await superValidate(formData, trainingProgramSchema, {
+    const form = await superValidate(formData, zod(trainingProgramSchema), {
       id: formData.get('_formId')?.toString(),
     });
 
@@ -114,7 +115,7 @@ export const actions: Actions = {
     if (!trainingProgram.description) {
       throw new APIError(
         'INVALID_INPUT',
-        'Training Program requires a description to be published. Be as descriptive as possible.'
+        'Training Program requires a description to be published. Be as descriptive as possible.',
       );
     }
 
@@ -139,7 +140,7 @@ export const actions: Actions = {
     const { user } = await getSessionOrRedirect({ locals, url });
     const formData = await request.formData();
     const id = params.id;
-    const form = await superValidate(formData, trainingCycleSchema, {
+    const form = await superValidate(formData, zod(trainingCycleSchema), {
       id: formData.get('_formId')?.toString(),
     });
 
@@ -157,7 +158,7 @@ export const actions: Actions = {
     const { user } = await getSessionOrRedirect({ locals, url });
     const formData = await request.formData();
     const id = params.id;
-    const form = await superValidate(formData, trainingProgramScheduledSlotSchema, {
+    const form = await superValidate(formData, zod(trainingProgramScheduledSlotSchema), {
       id: formData.get('_formId')?.toString(),
     });
 

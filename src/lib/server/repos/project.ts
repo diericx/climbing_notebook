@@ -128,7 +128,7 @@ export class ProjectRepo {
     data: z.infer<ProjectSessionSchema>,
     projectId: string,
     sessionId: string,
-    ownerId: string
+    ownerId: string,
   ) {
     await this.getOneAndValidateOwner(projectId, ownerId);
     return await this.prisma.project.update({

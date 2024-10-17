@@ -4,6 +4,7 @@ import { TrainingProgramRepo } from '$lib/server/repos/trainingProgram';
 import { getSessionOrRedirect } from '$lib/utils';
 import { trainingProgramScheduledSlotSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
+import { zod } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms/client';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -23,7 +24,7 @@ export const actions: Actions = {
   update: async ({ locals, request, url, params }) => {
     const { user } = await getSessionOrRedirect({ locals, url });
     const formData = await request.formData();
-    const form = await superValidate(formData, trainingProgramScheduledSlotSchema, {
+    const form = await superValidate(formData, zod(trainingProgramScheduledSlotSchema), {
       id: formData.get('_formId')?.toString(),
     });
 
@@ -36,7 +37,7 @@ export const actions: Actions = {
       form.data,
       params.id,
       params.scheduledSlotId,
-      user?.userId
+      user?.userId,
     );
 
     return { form };
@@ -68,7 +69,7 @@ export const actions: Actions = {
       trainingProgramId,
       slotId,
       Number(order),
-      user?.userId
+      user?.userId,
     );
 
     return { success: true };

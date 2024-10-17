@@ -1,9 +1,12 @@
 <script lang="ts">
+  import type { Infer } from 'sveltekit-superforms';
+  import { type SuperForm } from 'sveltekit-superforms';
+
+  import type { WidgetSchema } from '$lib/zodSchemas';
+
   import { isSimpleFieldInUse } from '$lib/prismaHelpers/widgetHelper';
   import type { Prisma, TrainingCycle } from '@prisma/client';
   import { modalStore } from '@skeletonlabs/skeleton';
-  import type { SuperForm } from 'sveltekit-superforms/client';
-  import type { z } from 'zod';
   import NumberField from '../fields/NumberField.svelte';
   import SelectField from '../fields/SelectField.svelte';
   import SubmitButton from '../fields/SubmitButton.svelte';
@@ -11,7 +14,7 @@
   import TextField from '../fields/TextField.svelte';
 
   // Form action to execute
-  export let superForm: SuperForm<z.AnyZodObject, any>;
+  export let superForm: SuperForm<Infer<WidgetSchema>>;
   export let widget: Prisma.WidgetGetPayload<{
     include: {
       datasets: {

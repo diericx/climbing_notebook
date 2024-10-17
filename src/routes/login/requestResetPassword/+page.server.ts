@@ -4,13 +4,14 @@ import { prisma } from '$lib/server/prisma';
 import { PasswordResetRepo } from '$lib/server/repos/passwordReset';
 import { requestPasswordResetSchema } from '$lib/zodSchemas';
 import { fail, redirect } from '@sveltejs/kit';
+import { zod } from 'sveltekit-superforms/adapters';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import type { Actions } from './$types';
 
 export const actions: Actions = {
   requestResetPassword: async ({ request }) => {
     const formData = await request.formData();
-    const form = await superValidate(formData, requestPasswordResetSchema, {
+    const form = await superValidate(formData, zod(requestPasswordResetSchema), {
       id: formData.get('_formId')?.toString(),
     });
 
@@ -27,7 +28,7 @@ export const actions: Actions = {
 <br/>
 <br/>
 https://climbingnotebook.com/login/resetPassword?token=${token.token}
-`
+`,
       );
       await sesClient.send(sendEmailCommand);
     } catch (e) {

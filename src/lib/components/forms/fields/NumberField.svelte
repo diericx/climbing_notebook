@@ -1,16 +1,12 @@
-<script lang="ts">
+<script lang="ts" generics="T extends Record<string, unknown>">
   import type { Writable } from 'svelte/store';
 
   import { camelToTitle, roundTo } from '$lib/utils';
-  import type { FormPathLeaves, ZodValidation } from 'sveltekit-superforms';
-  import type { SuperForm } from 'sveltekit-superforms/client';
-  import { formFieldProxy } from 'sveltekit-superforms/client';
-  import type { AnyZodObject, z } from 'zod';
+  import type { FormPathLeaves, SuperForm } from 'sveltekit-superforms';
+  import { formFieldProxy } from 'sveltekit-superforms';
 
-  type T = $$Generic<AnyZodObject>;
-
-  export let form: SuperForm<ZodValidation<T>, unknown>;
-  export let field: FormPathLeaves<z.infer<T>>;
+  export let form: SuperForm<T>;
+  export let field: FormPathLeaves<T>;
   export let placeholder = '';
   export let step = '1';
   export let shouldRound = false;

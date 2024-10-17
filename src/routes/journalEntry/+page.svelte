@@ -34,6 +34,7 @@
                   month: 'numeric',
                   year: 'numeric',
                   day: 'numeric',
+                  timeZone: 'UTC',
                 })}
               </h3>
             </div>

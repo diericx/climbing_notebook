@@ -23,7 +23,7 @@ export class CustomQueryRepo implements Repo<CustomQuery, Prisma.CustomQuerySele
     userId: string | undefined,
     customQuery: Prisma.CustomQueryGetPayload<{
       select: { ownerId: true };
-    }>
+    }>,
   ) {
     return customQuery.ownerId == userId;
   }
@@ -32,7 +32,7 @@ export class CustomQueryRepo implements Repo<CustomQuery, Prisma.CustomQuerySele
     userId: string | undefined,
     customQuery: Prisma.CustomQueryGetPayload<{
       select: { ownerId: true };
-    }>
+    }>,
   ) {
     return customQuery.ownerId == userId;
   }
@@ -41,7 +41,7 @@ export class CustomQueryRepo implements Repo<CustomQuery, Prisma.CustomQuerySele
     userId: string | undefined,
     customQuery: Prisma.CustomQueryGetPayload<{
       select: { ownerId: true };
-    }>
+    }>,
   ) {
     return customQuery.ownerId == userId;
   }
@@ -165,7 +165,7 @@ export class CustomQueryRepo implements Repo<CustomQuery, Prisma.CustomQuerySele
       if (query.ownerId != userId) {
         throw new APIError(
           'INVALID_PERMISSIONS',
-          'You do not have permission to edit this object.'
+          'You do not have permission to edit this object.',
         );
       }
     }
@@ -278,7 +278,7 @@ export class CustomQueryRepo implements Repo<CustomQuery, Prisma.CustomQuerySele
     data: z.infer<CustomQueryConditionSchema>,
     queryId: string,
     conditionId: string,
-    userId: string
+    userId: string,
   ) {
     const customQuery = await this.getOne({ id: queryId, userId, select: {} });
     if (!this.canUserUpdate(userId, customQuery)) {

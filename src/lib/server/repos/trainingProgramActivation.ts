@@ -6,7 +6,7 @@ export class TrainingProgramActivationRepo {
   async get(
     where: Prisma.TrainingProgramActivationWhereInput,
     trainingCycleSaves?: Prisma.TrainingCycle$savesArgs,
-    trainingCycleActivations?: Prisma.TrainingCycle$activationsArgs
+    trainingCycleActivations?: Prisma.TrainingCycle$activationsArgs,
   ) {
     return await this.prisma.trainingProgramActivation.findMany({
       where,

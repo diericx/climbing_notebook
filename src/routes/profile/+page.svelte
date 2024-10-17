@@ -16,7 +16,7 @@
   function downloadAsJson(resources: any, name: string) {
     var a = window.document.createElement('a');
     a.href = window.URL.createObjectURL(
-      new Blob([JSON.stringify(resources)], { type: 'text/json' })
+      new Blob([JSON.stringify(resources)], { type: 'text/json' }),
     );
     a.download = name + '.json';
 

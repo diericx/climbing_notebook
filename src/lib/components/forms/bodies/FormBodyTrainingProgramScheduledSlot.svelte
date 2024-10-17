@@ -1,12 +1,13 @@
 <script lang="ts">
+  import type { TrainingProgramScheduledSlotSchema } from '$lib/zodSchemas';
   import type { TrainingCycle } from '@prisma/client';
+  import type { Infer } from 'sveltekit-superforms';
   import type { SuperForm } from 'sveltekit-superforms/client';
-  import type { z } from 'zod';
   import NumberField from '../fields/NumberField.svelte';
   import SelectField from '../fields/SelectField.svelte';
   import SubmitButton from '../fields/SubmitButton.svelte';
 
-  export let superForm: SuperForm<z.AnyZodObject, any>;
+  export let superForm: SuperForm<Infer<TrainingProgramScheduledSlotSchema>>;
   export let showSubmitButton = true;
   export let trainingCyclesFromTrainingProgram: TrainingCycle[];
   export let ownedTrainingCycles: TrainingCycle[];

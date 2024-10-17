@@ -3,6 +3,7 @@ import { ExerciseEventRepo } from '$lib/server/repos/exerciseEventRepo';
 import { getSessionOrRedirect } from '$lib/utils';
 import { exerciseEventSchema } from '$lib/zodSchemas';
 import { fail } from '@sveltejs/kit';
+import { zod } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions } from './$types';
 
@@ -23,7 +24,7 @@ export const actions: Actions = {
 
     const formData = await request.formData();
     const id = Number(params.id);
-    const form = await superValidate(formData, exerciseEventSchema, {
+    const form = await superValidate(formData, zod(exerciseEventSchema), {
       id: formData.get('_formId')?.toString(),
     });
     const shouldApplyMigrationToAll = formData.get('shouldApplyMigrationToAll')?.toString() == 'on';

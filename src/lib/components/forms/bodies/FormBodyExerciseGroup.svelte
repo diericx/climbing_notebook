@@ -1,10 +1,11 @@
 <script lang="ts">
+  import type { ExerciseGroupSchema } from '$lib/zodSchemas';
+  import type { Infer } from 'sveltekit-superforms';
   import type { SuperForm } from 'sveltekit-superforms/client';
-  import type { z } from 'zod';
   import SubmitButton from '../fields/SubmitButton.svelte';
   import TextField from '../fields/TextField.svelte';
 
-  export let superForm: SuperForm<z.AnyZodObject, any>;
+  export let superForm: SuperForm<Infer<ExerciseGroupSchema>>;
   export let showSubmitButton = true;
 </script>
 

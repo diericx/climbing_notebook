@@ -18,6 +18,7 @@
         month: 'numeric',
         year: 'numeric',
         day: 'numeric',
+        timeZone: 'UTC',
       })}
     </h4>
     <p class="whitespace-pre-wrap">{journalEntry?.content || ''}</p>
@@ -30,7 +31,7 @@
       class="btn variant-filled"
       onSuccess={() => {
         modalStore.clear();
-        queryClient.invalidateQueries('exerciseEvents');
+        queryClient.invalidateQueries('journalEntries');
       }}
       onClick={confirmDelete}
     >
