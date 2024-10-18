@@ -21,9 +21,6 @@
     // @ts-ignore
     $value = new Date($value);
   }
-
-  // Clean the date by erasing all time value as this is only a Date field not a DateTime field
-  $value.setUTCHours(0, 0, 0, 0);
 </script>
 
 <label>
