@@ -12,7 +12,7 @@
   // logical sense to the user, but this date is sent directly to the server and is
   // stored as is in the UTC time zone.
   const dateValue = dateProxy(form.form, field, {
-    format: 'date-local',
+    format: 'date',
   });
 
   // TODO: this is a hack to get around the fact that we are not parsing input from API calls
@@ -23,7 +23,7 @@
   }
 
   // Clean the date by erasing all time value as this is only a Date field not a DateTime field
-  $value.setHours(0, 0, 0, 0);
+  $value.setUTCHours(0, 0, 0, 0);
 </script>
 
 <label>
