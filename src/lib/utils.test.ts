@@ -1,5 +1,9 @@
 import { expect, test, vi } from 'vitest';
-import { isDateInTheSameDayAsToday, isDateInTheSameWeekAsToday } from './utils';
+import {
+  getFirstDayOfTheWeek,
+  isDateInTheSameDayAsToday,
+  isDateInTheSameWeekAsToday,
+} from './utils';
 
 test('isDateInTheSameDayAsToday returns true if dates are same dom in UTC but not in local time', async () => {
   process.env.TZ = 'PST';
@@ -38,4 +42,12 @@ test('isDateInTheSameWeekAsToday returns false if dates are just one hour off of
   expect(isDateInTheSameWeekAsToday(d)).toBe(false);
 
   vi.useRealTimers();
+});
+
+test('getFirstDayOfTheWeek returns Oct 14 for Oct 18', async () => {
+  process.env.TZ = 'PST';
+
+  const d = new Date('2024-10-18T00:00:00.000Z');
+
+  expect(getFirstDayOfTheWeek(d).toISOString()).toBe('2024-10-14T00:00:00.000Z');
 });

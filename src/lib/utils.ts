@@ -270,26 +270,27 @@ export function parseMetricStrings(s: string[]) {
 }
 
 export function getDayWhenWeekStartsMonday(d: Date) {
+  const _d = dayjs.utc(d);
   const numberdayweek = [6, 0, 1, 2, 3, 4, 5];
-  return numberdayweek[d.getDay()];
+  return numberdayweek[_d.get('day')];
 }
 
 // returns the first day of the week that the given date is in with
 // time zeroed
 export function getFirstDayOfTheWeek(d: Date) {
-  const dayjsDate = dayjs.utc(`${d.getFullYear()}-${d.getDate()}-${d.getDay()}`);
-  const day = getDayWhenWeekStartsMonday(dayjsDate.toDate());
-  dayjsDate.subtract(day, 'days');
-  return dayjsDate.toDate();
+  const _d = dayjs.utc(d);
+  const day = getDayWhenWeekStartsMonday(_d.toDate());
+  const firstDayOfWeek = _d.subtract(day, 'days');
+  return firstDayOfWeek.toDate();
 }
 
 // returns the last day of the week that the given date is in with
 // time zeroed
 export function getLastDayOfTheWeek(d: Date) {
-  d = localYearMonthDayInUTC(d);
+  const _d = dayjs.utc(d);
   const day = getDayWhenWeekStartsMonday(d);
-  d.setDate(d.getDate() + (6 - day));
-  return getLocalDateWithZeroTime(d);
+  _d.set('date', d.getDate() + (6 - day));
+  return _d.toDate();
 }
 
 // Returns the browsers local year, month and day but represented in UTC
