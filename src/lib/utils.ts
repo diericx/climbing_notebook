@@ -289,7 +289,7 @@ export function getFirstDayOfTheWeek(d: Date) {
 export function getLastDayOfTheWeek(d: Date) {
   const _d = dayjs.utc(d);
   const day = getDayWhenWeekStartsMonday(d);
-  const result = _d.set('date', d.getDate() + (6 - day));
+  const result = _d.set('date', _d.get('date') + (6 - day));
   return result.toDate();
 }
 
@@ -317,22 +317,10 @@ export function isDateInTheSameDayAsToday(d: Date) {
   );
 }
 
-// Given a date this function returns the same date with zeroed time to compare
-// at day level only.
-export function getLocalDateWithZeroTime(d: Date) {
-  // Create a new Date object to avoid modifying the original
-  const localDate = new Date(d);
-
-  // Set hours, minutes, seconds, and milliseconds to zero
-  localDate.setHours(0, 0, 0, 0);
-
-  return localDate;
-}
-
 export function daysFromToday(i: number) {
-  const d = new Date();
-  d.setDate(d.getDate() + i);
-  return d;
+  const d = dayjs.utc();
+  d.set('date', d.get('date') + i);
+  return d.toDate();
 }
 
 export function camelToTitle(source: string): string {

@@ -8,7 +8,7 @@
     "sync": "svelte-kit sync",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "test:unit": "vitest",
+    "test:unit": "vitest run",
     "prettier-check": "prettier --plugin-search-dir . --check .",
     "eslint-check": "eslint . --ext .ts,.js",
     "typescript-check": "tsc --noEmit",
