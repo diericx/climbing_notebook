@@ -46,8 +46,12 @@ test('isDateInTheSameWeekAsToday returns false if dates are just one hour off of
 
 test('getFirstDayOfTheWeek returns Oct 14 for Oct 18', async () => {
   process.env.TZ = 'PST';
-
   const d = new Date('2024-10-18T00:00:00.000Z');
+  expect(getFirstDayOfTheWeek(d).toISOString()).toBe('2024-10-14T00:00:00.000Z');
+});
 
+test('getFirstDayOfTheWeek returns Oct 14 for Oct 20 (edge case)', async () => {
+  process.env.TZ = 'PST';
+  const d = new Date('2024-10-20T00:00:00.000Z');
   expect(getFirstDayOfTheWeek(d).toISOString()).toBe('2024-10-14T00:00:00.000Z');
 });
