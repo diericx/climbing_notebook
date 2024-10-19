@@ -31,7 +31,7 @@ test('isDateInTheSameDayAsToday returns false if dates are different dom in UTC 
   vi.useRealTimers();
 });
 
-test('isDateInTheSameWeekAsToday returns false if dates are just one hour off of being in the same week in local time', async () => {
+test('isDateInTheSameWeekAsToday returns false if date is one day before today being a Monday', async () => {
   process.env.TZ = 'PST';
   vi.useFakeTimers();
 
@@ -40,6 +40,19 @@ test('isDateInTheSameWeekAsToday returns false if dates are just one hour off of
 
   const d = new Date('2024-09-23T06:00:00.225Z'); // 22 11pm Sunday PST
   expect(isDateInTheSameWeekAsToday(d)).toBe(false);
+
+  vi.useRealTimers();
+});
+
+test('isDateInTheSameWeekAsToday returns true if date is one day after today being a Monday', async () => {
+  process.env.TZ = 'PST';
+  vi.useFakeTimers();
+
+  const mockDate = new Date('2024-09-23T07:00:00.225Z');
+  vi.setSystemTime(mockDate);
+
+  const d = new Date('2024-09-24T06:00:00.225Z');
+  expect(isDateInTheSameWeekAsToday(d)).toBe(true);
 
   vi.useRealTimers();
 });

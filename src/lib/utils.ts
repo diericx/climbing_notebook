@@ -289,8 +289,8 @@ export function getFirstDayOfTheWeek(d: Date) {
 export function getLastDayOfTheWeek(d: Date) {
   const _d = dayjs.utc(d);
   const day = getDayWhenWeekStartsMonday(d);
-  _d.set('date', d.getDate() + (6 - day));
-  return _d.toDate();
+  const result = _d.set('date', d.getDate() + (6 - day));
+  return result.toDate();
 }
 
 // Returns the browsers local year, month and day but represented in UTC
@@ -304,10 +304,10 @@ export function localYearMonthDayInUTC(d: Date = new Date()) {
 
 export function isDateInTheSameWeekAsToday(d: Date) {
   // Convert all to iso string to just compare the days
-  const t = localYearMonthDayInUTC(d);
-  const f = getFirstDayOfTheWeek(new Date());
-  const l = getLastDayOfTheWeek(new Date());
-  return t >= f && t <= l;
+  const _d = dayjs.utc(d);
+  const f = dayjs.utc(getFirstDayOfTheWeek(new Date()));
+  const l = dayjs.utc(getLastDayOfTheWeek(new Date()));
+  return _d >= f && _d <= l;
 }
 
 // Checks if a given date is in the same day as today in local time
