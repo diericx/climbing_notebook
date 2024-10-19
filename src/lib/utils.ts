@@ -277,24 +277,33 @@ export function getDayWhenWeekStartsMonday(d: Date) {
 // returns the first day of the week that the given date is in with
 // time zeroed
 export function getFirstDayOfTheWeek(d: Date) {
-  d = new Date(d);
-  const day = getDayWhenWeekStartsMonday(d);
-  d.setDate(d.getDate() - day);
-  return getLocalDateWithZeroTime(d);
+  const dayjsDate = dayjs.utc(`${d.getFullYear()}-${d.getDate()}-${d.getDay()}`);
+  const day = getDayWhenWeekStartsMonday(dayjsDate.toDate());
+  dayjsDate.subtract(day, 'days');
+  return dayjsDate.toDate();
 }
 
 // returns the last day of the week that the given date is in with
 // time zeroed
 export function getLastDayOfTheWeek(d: Date) {
-  d = new Date(d);
+  d = localYearMonthDayInUTC(d);
   const day = getDayWhenWeekStartsMonday(d);
   d.setDate(d.getDate() + (6 - day));
   return getLocalDateWithZeroTime(d);
 }
 
+// Returns the browsers local year, month and day but represented in UTC
+export function localYearMonthDayInUTC(d: Date = new Date()) {
+  const _d = dayjs(d).utc();
+  const year = _d.get('year');
+  const month = (_d.get('month') + 1).toString().padStart(2, '0');
+  const day = _d.get('date').toString().padStart(2, '0');
+  return new Date(`${year}-${month}-${day}`);
+}
+
 export function isDateInTheSameWeekAsToday(d: Date) {
   // Convert all to iso string to just compare the days
-  const t = getLocalDateWithZeroTime(d);
+  const t = localYearMonthDayInUTC(d);
   const f = getFirstDayOfTheWeek(new Date());
   const l = getLastDayOfTheWeek(new Date());
   return t >= f && t <= l;
@@ -302,9 +311,9 @@ export function isDateInTheSameWeekAsToday(d: Date) {
 
 // Checks if a given date is in the same day as today in local time
 export function isDateInTheSameDayAsToday(d: Date) {
-  const d1 = getLocalDateWithZeroTime(new Date());
-  const d2 = getLocalDateWithZeroTime(d);
-  return d1.getTime() == d2.getTime();
+  return (
+    d.toISOString().split('T', 1)[0] == localYearMonthDayInUTC().toISOString().split('T', 1)[0]
+  );
 }
 
 // Given a date this function returns the same date with zeroed time to compare
