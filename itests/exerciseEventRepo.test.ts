@@ -29,7 +29,5 @@ test('creates a new exercise event with correct date', async () => {
 
   expect(getOneResult.date?.toString() == dateStr);
 
-  // expect(sum(1, 2)).toBe(3);
-
   await repo.delete(newEE.id, newEE.ownerId);
 });
