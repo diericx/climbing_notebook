@@ -187,8 +187,7 @@
   $: calendarEventsQuery = startStr && endStr ? getCalendarEvents(startStr, endStr) : undefined;
   $: journalEntriesQuery = startStr && endStr ? getJournalEntries(startStr, endStr) : undefined;
   $: exerciseEventsQuery = startStr && endStr ? getExerciseEvents(startStr, endStr) : undefined;
-  $: trainingProgramActivationsQuery =
-    startStr && endStr ? getTrainingProgramActivations(startStr, endStr) : undefined;
+  $: trainingProgramActivationsQuery = getTrainingProgramActivations();
 
   // Construct events using the reactive data from each of the queries defined above
   let events: Event[] = [];

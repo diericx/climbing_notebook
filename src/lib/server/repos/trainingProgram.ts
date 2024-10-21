@@ -565,7 +565,10 @@ export class TrainingProgramRepo implements Repo<TrainingProgram, Prisma.Trainin
         ownerId,
         ...where,
       },
-      include: {
+      select: {
+        id: true,
+        startDate: true,
+        trainingProgramId: true,
         trainingProgram: {
           select: {
             name: true,
