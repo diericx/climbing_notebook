@@ -97,7 +97,8 @@ jobs:
             image: public.ecr.aws/z5p3p3j8/climbing-notebook:sha-${{ steps.vars.outputs.sha_short }}
             host: climbingnotebook.com
             db_url_secret: cn_prod_db_url
-            name: web
+            serviceName: web
+            traefikRouterName: cn-web-prod
 
       - name: run commands to deploy
         uses: appleboy/ssh-action@v0.1.10
@@ -150,7 +151,8 @@ jobs:
             image: public.ecr.aws/z5p3p3j8/climbing-notebook:sha-${{ steps.vars.outputs.sha_short }}
             host: staging.climbingnotebook.com
             db_url_secret: cn_staging_db_url
-            name: web
+            serviceName: web
+            traefikRouterName: cn-web-staging
 
       - name: run commands to deploy
         uses: appleboy/ssh-action@v0.1.10

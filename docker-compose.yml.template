@@ -6,7 +6,7 @@
 # ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
 
 services:
-  {{ .name }}:
+  {{ .serviceName }}:
     image: {{ .image }}
     restart: always
     networks:
@@ -14,10 +14,10 @@ services:
       - postgres
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.{{ .name }}.rule=Host(\`{{ .host }}\`)'
-      - 'traefik.http.routers.{{ .name }}.entrypoints=websecure'
-      - 'traefik.http.routers.{{ .name }}.tls.certresolver=letsencrypt'
-      - 'traefik.http.services.{{ .name }}.loadbalancer.server.port=3000'
+      - 'traefik.http.routers.{{ .traefikRouterName }}.rule=Host(\`{{ .host }}\`)'
+      - 'traefik.http.routers.{{ .traefikRouterName }}.entrypoints=websecure'
+      - 'traefik.http.routers.{{ .traefikRouterName }}.tls.certresolver=letsencrypt'
+      - 'traefik.http.services.{{ .traefikRouterName }}.loadbalancer.server.port=3000'
     secrets:
       - source: {{ .db_url_secret }}
         target: db_url
