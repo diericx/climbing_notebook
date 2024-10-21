@@ -111,7 +111,7 @@ jobs:
             docker image prune -f -a
             echo "${{ steps.render_template.outputs.result }}" > /home/decker/docker_compose/cn_prod.yml
             docker compose -f /home/decker/docker_compose/cn_prod.yml pull
-            docker compose -f /home/decker/docker_compose/cn_prod.yml -p cn up -d
+            docker compose -f /home/decker/docker_compose/cn_prod.yml -p cn-prod up -d
 
   deploy-staging:
     name: Deploy Staging
@@ -164,4 +164,4 @@ jobs:
             docker image prune -f -a
             echo "${{ steps.render_template.outputs.result }}" > /home/decker/docker_compose/cn_staging.yml
             docker compose -f /home/decker/docker_compose/cn_staging.yml pull
-            docker compose -f /home/decker/docker_compose/cn_staging.yml -p cn up -d
+            docker compose -f /home/decker/docker_compose/cn_staging.yml -p cn-staging up -d
