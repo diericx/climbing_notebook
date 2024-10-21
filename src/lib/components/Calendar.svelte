@@ -53,7 +53,8 @@
       // we use the raw UTC here because we are blocking out DAYS and we want
       // no interference from time
       start: e.dateStart.split('T', 1)[0],
-      end: e.dateEnd.split('T', 1)[0],
+      // Value is exclusive so we need to add a day
+      end: dayjs.utc(e.dateEnd).add(1, 'day').toISOString().split('T', 1)[0],
       backgroundColor: e.color,
       allDay: true,
       title: e.title,
@@ -133,21 +134,12 @@
       const { trainingProgramScheduledSlots } = a.trainingProgram;
       // Again we use UTC here because there is no time involved in these
       // data structures
-      let startDate = dayjs.tz(a.startDate, 'UTC');
-      trainingProgramScheduledSlots.forEach((s, i) => {
+      let startDate = dayjs.utc(a.startDate);
+      trainingProgramScheduledSlots.forEach((s) => {
         const endDate = startDate.add(s.duration, 'weeks');
         events.push({
-          start: startDate.startOf('day').toDate().toISOString().split('T', 1)[0],
-          // Subtract one day from the end date if it is not the last one so there
-          // is no overlap in the calendar view
-          end: (i != trainingProgramScheduledSlots.length - 1
-            ? endDate.subtract(1, 'day')
-            : endDate
-          )
-            .startOf('day')
-            .toDate()
-            .toISOString()
-            .split('T', 1)[0],
+          start: startDate.toISOString().split('T', 1)[0],
+          end: endDate.toISOString().split('T', 1)[0],
           backgroundColor: '#8bfca9',
           allDay: true,
           title: `${a.trainingProgram.name} - ${s.trainingCycles[0].name} `,
@@ -186,8 +178,7 @@
   $: calendarEventsQuery = startStr && endStr ? getCalendarEvents(startStr, endStr) : undefined;
   $: journalEntriesQuery = startStr && endStr ? getJournalEntries(startStr, endStr) : undefined;
   $: exerciseEventsQuery = startStr && endStr ? getExerciseEvents(startStr, endStr) : undefined;
-  $: trainingProgramActivationsQuery =
-    startStr && endStr ? getTrainingProgramActivations(startStr, endStr) : undefined;
+  $: trainingProgramActivationsQuery = getTrainingProgramActivations();
 
   // Construct events using the reactive data from each of the queries defined above
   let events: Event[] = [];

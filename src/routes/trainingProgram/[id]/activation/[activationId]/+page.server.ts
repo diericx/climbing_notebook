@@ -45,7 +45,7 @@ export const actions: Actions = {
       return fail(400, { form });
     }
 
-    if (dayjs(form.data.startDate).day() > 1) {
+    if (dayjs.utc(form.data.startDate).day() > 1) {
       return setError(
         form,
         'startDate',
