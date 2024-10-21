@@ -270,59 +270,57 @@ export function parseMetricStrings(s: string[]) {
 }
 
 export function getDayWhenWeekStartsMonday(d: Date) {
+  const _d = dayjs.utc(d);
   const numberdayweek = [6, 0, 1, 2, 3, 4, 5];
-  return numberdayweek[d.getDay()];
+  return numberdayweek[_d.get('day')];
 }
 
 // returns the first day of the week that the given date is in with
 // time zeroed
 export function getFirstDayOfTheWeek(d: Date) {
-  d = new Date(d);
-  const day = getDayWhenWeekStartsMonday(d);
-  d.setDate(d.getDate() - day);
-  return getLocalDateWithZeroTime(d);
+  const _d = dayjs.utc(d);
+  const day = getDayWhenWeekStartsMonday(_d.toDate());
+  const firstDayOfWeek = _d.subtract(day, 'days');
+  return firstDayOfWeek.toDate();
 }
 
 // returns the last day of the week that the given date is in with
 // time zeroed
 export function getLastDayOfTheWeek(d: Date) {
-  d = new Date(d);
+  const _d = dayjs.utc(d);
   const day = getDayWhenWeekStartsMonday(d);
-  d.setDate(d.getDate() + (6 - day));
-  return getLocalDateWithZeroTime(d);
+  const result = _d.set('date', _d.get('date') + (6 - day));
+  return result.toDate();
+}
+
+// Returns the browsers local year, month and day but represented in UTC
+export function localYearMonthDayInUTC(d: Date = new Date()) {
+  const _d = dayjs(d).utc();
+  const year = _d.get('year');
+  const month = (_d.get('month') + 1).toString().padStart(2, '0');
+  const day = _d.get('date').toString().padStart(2, '0');
+  return new Date(`${year}-${month}-${day}`);
 }
 
 export function isDateInTheSameWeekAsToday(d: Date) {
   // Convert all to iso string to just compare the days
-  const t = getLocalDateWithZeroTime(d);
-  const f = getFirstDayOfTheWeek(new Date());
-  const l = getLastDayOfTheWeek(new Date());
-  return t >= f && t <= l;
+  const _d = dayjs.utc(d);
+  const f = dayjs.utc(getFirstDayOfTheWeek(new Date()));
+  const l = dayjs.utc(getLastDayOfTheWeek(new Date()));
+  return _d >= f && _d <= l;
 }
 
 // Checks if a given date is in the same day as today in local time
 export function isDateInTheSameDayAsToday(d: Date) {
-  const d1 = getLocalDateWithZeroTime(new Date());
-  const d2 = getLocalDateWithZeroTime(d);
-  return d1.getTime() == d2.getTime();
-}
-
-// Given a date this function returns the same date with zeroed time to compare
-// at day level only.
-export function getLocalDateWithZeroTime(d: Date) {
-  // Create a new Date object to avoid modifying the original
-  const localDate = new Date(d);
-
-  // Set hours, minutes, seconds, and milliseconds to zero
-  localDate.setHours(0, 0, 0, 0);
-
-  return localDate;
+  return (
+    d.toISOString().split('T', 1)[0] == localYearMonthDayInUTC().toISOString().split('T', 1)[0]
+  );
 }
 
 export function daysFromToday(i: number) {
-  const d = new Date();
-  d.setDate(d.getDate() + i);
-  return d;
+  const d = dayjs.utc();
+  d.set('date', d.get('date') + i);
+  return d.toDate();
 }
 
 export function camelToTitle(source: string): string {

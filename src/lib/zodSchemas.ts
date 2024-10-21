@@ -7,13 +7,14 @@ import {
   exerciseTypes,
   grades,
   gradeSystems,
+  localYearMonthDayInUTC,
   muscleGroups,
   muscles,
   postures,
 } from './utils';
 
 export const exerciseEventSchema = z.object({
-  date: z.date().default(new Date()).nullish(),
+  date: z.date().default(localYearMonthDayInUTC()).nullish(),
   name: z.string().nullish().default(''),
   sets: z.number().default(0),
   reps: z.number().default(0),
@@ -29,8 +30,8 @@ export const exerciseEventSchema = z.object({
 export type ExerciseEventSchema = typeof exerciseEventSchema;
 
 export const calendarEventSchema = z.object({
-  dateStart: z.date().default(new Date()),
-  dateEnd: z.date().default(new Date()),
+  dateStart: z.date().default(localYearMonthDayInUTC()),
+  dateEnd: z.date().default(localYearMonthDayInUTC()),
   title: z.string().min(1).default(''),
   content: z.string().nullish(),
   color: z.string().default('green'),
@@ -142,7 +143,7 @@ export const fileUploadSchema = z.object({
 export type FileUploadSchema = typeof fileUploadSchema;
 
 export const journalEntrySchema = z.object({
-  date: z.date().default(new Date()),
+  date: z.date().default(localYearMonthDayInUTC()),
   content: z.string().min(1, { message: 'Journal entry content is required' }),
   type: z.string().default('climbing'),
 });
@@ -196,7 +197,7 @@ export type ProjectPartialSchema = typeof projectPartialSchema;
 
 export const projectSessionSchema = z.object({
   notes: z.string().nullish(),
-  date: z.date(),
+  date: z.date().default(localYearMonthDayInUTC()),
   sent: z.boolean().default(false).optional(),
 });
 export type ProjectSessionSchema = typeof projectSessionSchema;
@@ -238,7 +239,7 @@ export const trainingProgramScheduledSlotSchema = z.object({
 export type TrainingProgramScheduledSlotSchema = typeof trainingProgramScheduledSlotSchema;
 
 export const trainingProgramActivationSchema = z.object({
-  startDate: z.date().default(new Date()),
+  startDate: z.date().default(localYearMonthDayInUTC()),
   trainingProgramId: z.string(),
 });
 export type TrainingProgramActivationSchema = typeof trainingProgramActivationSchema;

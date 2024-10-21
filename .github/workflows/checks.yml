@@ -33,3 +33,5 @@ jobs:
         run: npm run typescript-check
       - name: Svelte
         run: npm run svelte-check
+      - name: Unit tests
+        run: npm run test:unit --run
