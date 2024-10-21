@@ -53,7 +53,8 @@
       // we use the raw UTC here because we are blocking out DAYS and we want
       // no interference from time
       start: e.dateStart.split('T', 1)[0],
-      end: e.dateEnd.split('T', 1)[0],
+      // Value is exclusive so we need to add a day
+      end: dayjs.utc(e.dateEnd).add(1, 'day').toISOString().split('T', 1)[0],
       backgroundColor: e.color,
       allDay: true,
       title: e.title,
