@@ -5,6 +5,8 @@
   import { confirmDelete } from '$lib/utils';
   import { journalEntrySchema } from '$lib/zodSchemas';
   import Icon from '@iconify/svelte';
+  import DOMPurify from 'dompurify';
+  import { marked } from 'marked';
   import type { PageData } from './$types';
 
   export let data: PageData;
@@ -57,7 +59,11 @@
             </div>
           </div>
           <div class="flex">
-            <p class="whitespace-pre-wrap bg-white w-full py-2">{item.content}</p>
+            <p class="whitespace-pre-wrap bg-white w-full py-2">
+              {#if typeof window !== 'undefined'}
+                {@html DOMPurify.sanitize(marked.parse(item.content))}
+              {/if}
+            </p>
           </div>
         </div>
       </li>
