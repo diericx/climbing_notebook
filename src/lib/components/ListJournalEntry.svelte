@@ -3,7 +3,7 @@
   import { confirmDelete } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
-  import { modalStore } from '@skeletonlabs/skeleton';
+  import { clipboard, modalStore, toastStore } from '@skeletonlabs/skeleton';
   import DOMPurify from 'dompurify';
   import { marked } from 'marked';
   import List from './List.svelte';
@@ -28,6 +28,7 @@
               timeZone: 'UTC',
             })}
           </h3>
+          <span class="text-gray-500">{journalEntry.isPublic ? 'Public' : ''}</span>
         </div>
       </div>
 
@@ -60,7 +61,53 @@
           <Icon icon="material-symbols:edit-outline" height="18" />
           <span>Edit</span>
         </button>
-        <div />
+
+        {#if !journalEntry.isPublic}
+          <FormButton
+            action={`/journalEntry/${journalEntry.id}?/publish`}
+            class="btn btn-sm w-full justify-start"
+            onSuccess={() => {
+              toastStore.trigger({
+                message: 'Your Journal Entry is now public and can be shared via public url.',
+                timeout: 5000,
+              });
+            }}
+          >
+            <Icon icon="material-symbols:share" height="18" />
+            <span> Publish </span>
+          </FormButton>
+        {/if}
+
+        {#if journalEntry.isPublic}
+          <FormButton
+            action={`/journalEntry/${journalEntry.id}?/hide`}
+            class="btn btn-sm w-full justify-start"
+            onSuccess={() => {
+              toastStore.trigger({
+                message: 'Your Journal Entry is now private',
+                timeout: 5000,
+              });
+            }}
+          >
+            <Icon icon="mdi:hide-outline" height="18" />
+            <span> Hide </span>
+          </FormButton>
+          <div>
+            <button
+              class="btn btn-sm w-full justify-start"
+              use:clipboard={`https://climbingnotebook.com/journalEntry/${journalEntry.id}`}
+              on:click={() => {
+                toastStore.trigger({
+                  message: 'Public URL copied',
+                });
+              }}
+            >
+              <Icon icon="ph:link-bold" height="18" />
+              <span> Copy Public URL </span>
+            </button>
+          </div>
+        {/if}
+
         <FormButton
           action={`/journalEntry/${journalEntry.id}?/delete`}
           class="btn btn-sm w-full justify-start"

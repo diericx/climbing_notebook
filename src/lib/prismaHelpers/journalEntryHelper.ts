@@ -21,6 +21,7 @@ const selectMinimal = makeSelect({
   id: true,
   date: true,
   content: true,
+  isPublic: true,
 });
 const selectMinimalValidator = Prisma.validator<Prisma.JournalEntryDefaultArgs>()({
   select: selectMinimal,
