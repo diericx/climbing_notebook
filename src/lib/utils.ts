@@ -471,7 +471,7 @@ export function roundTo(num: number, decimalPlace: number) {
 import DOMPurify from 'dompurify';
 import { marked } from 'marked';
 
-export async function renderMarkdown(str: string) {
-  const markdown = await marked.parse(str);
+export function renderMarkdown(str: string) {
+  const markdown = marked.parse(str, { async: false });
   return DOMPurify.sanitize(markdown);
 }
