@@ -28,7 +28,7 @@
   <ul class="list space-y-2">
     {#each data.journalEntries as item}
       <li class="card p-4">
-        <div>
+        <div class="journal-entry">
           <div class="flex w-full justify-between">
             <div>
               <h3 class="font-bold">
@@ -59,7 +59,7 @@
             </div>
           </div>
           <div class="flex">
-            <p class="whitespace-pre-wrap bg-white w-full py-2">
+            <p class="whitespace-pre-wrap bg-white w-full py-2 journal-entry">
               {#if typeof window !== 'undefined'}
                 {@html DOMPurify.sanitize(marked.parse(item.content))}
               {/if}

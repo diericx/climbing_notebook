@@ -19,6 +19,7 @@
     "ts-script-runner": "npx ts-node --esm"
   },
   "devDependencies": {
+    "@fontsource/eb-garamond": "^5.1.1",
     "@playwright/test": "^1.28.1",
     "@skeletonlabs/skeleton": "^1.0",
     "@sveltejs/adapter-auto": "^3.0.0",

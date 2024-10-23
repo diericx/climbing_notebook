@@ -212,3 +212,16 @@ input[type='checkbox'][disabled] {
 input[type='checkbox'][disabled]:hover {
   @apply bg-gray-300;
 }
+
+.journal-entry {
+  font-family: 'EB Garamond Variable';
+}
+.journal-entry h1 {
+  font-weight: 700;
+}
+.journal-entry h2 {
+  font-weight: 700;
+}
+.journal-entry h3 {
+  font-weight: 700;
+}

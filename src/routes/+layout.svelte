@@ -29,6 +29,7 @@
   import FormModalWidget from '$lib/components/modals/formModals/FormModalWidget.svelte';
   import FormModalWidgetTemplate from '$lib/components/modals/formModals/FormModalWidgetTemplate.svelte';
   import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
+  import '@fontsource/eb-garamond';
   import Icon from '@iconify/svelte';
   import type { PopupSettings } from '@skeletonlabs/skeleton';
   import { Drawer, drawerStore, popup, storePopup } from '@skeletonlabs/skeleton';
