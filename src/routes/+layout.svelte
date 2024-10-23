@@ -18,6 +18,7 @@
   import FormModalExercise from '$lib/components/modals/formModals/FormModalExercise.svelte';
   import FormModalExerciseEvent from '$lib/components/modals/formModals/FormModalExerciseEvent.svelte';
   import FormModalExerciseGroup from '$lib/components/modals/formModals/FormModalExerciseGroup.svelte';
+  import FormModalJournalEntry from '$lib/components/modals/formModals/FormModalJournalEntry.svelte';
   import FormModalProject from '$lib/components/modals/formModals/FormModalProject.svelte';
   import FormModalProjectSession from '$lib/components/modals/formModals/FormModalProjectSession.svelte';
   import FormModalTrainingCycle from '$lib/components/modals/formModals/FormModalTrainingCycle.svelte';
@@ -29,6 +30,7 @@
   import FormModalWidget from '$lib/components/modals/formModals/FormModalWidget.svelte';
   import FormModalWidgetTemplate from '$lib/components/modals/formModals/FormModalWidgetTemplate.svelte';
   import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
+  import '@fontsource/eb-garamond';
   import Icon from '@iconify/svelte';
   import type { PopupSettings } from '@skeletonlabs/skeleton';
   import { Drawer, drawerStore, popup, storePopup } from '@skeletonlabs/skeleton';
@@ -77,6 +79,7 @@
     formModalTrainingProgramScheduledSlot: { ref: FormModalTrainingProgramScheduledSlot },
     formModalTrainingProgramActivation: { ref: FormModalTrainingProgramActivation },
     formModalTrainingCycleTemplate: { ref: FormModalTrainingCycleTemplate },
+    formModalJournalEntry: { ref: FormModalJournalEntry },
     modalCalendarEvent: { ref: ModalCalendarEvent },
     modalJournalEntry: { ref: ModalJournalEntry },
     modalShareTrainingCycle: { ref: ModalShareTrainingCycle },

@@ -2,7 +2,7 @@ import type { JournalEntry, Prisma, PrismaClient } from '@prisma/client';
 import type { z } from 'zod';
 import { APIError } from '../../errors';
 import { matchMetricsInString, parseMetricStrings, toNum } from '../../utils';
-import type { JournalEntrySchema } from '../../zodSchemas';
+import type { JournalEntryPartialSchema, JournalEntrySchema } from '../../zodSchemas';
 import type { Repo } from './repo';
 
 export class JournalEntryRepo implements Repo<JournalEntry, Prisma.JournalEntrySelect> {
@@ -11,10 +11,10 @@ export class JournalEntryRepo implements Repo<JournalEntry, Prisma.JournalEntryS
   canUserRead(
     userId: string | undefined,
     journalEntry: Prisma.JournalEntryGetPayload<{
-      select: { ownerId: true };
+      select: { ownerId: true; isPublic: true };
     }>,
   ) {
-    return journalEntry.ownerId == userId;
+    return journalEntry.isPublic || journalEntry.ownerId == userId;
   }
 
   canUserUpdate(
@@ -90,7 +90,7 @@ export class JournalEntryRepo implements Repo<JournalEntry, Prisma.JournalEntryS
 
   async getOne<S extends Prisma.JournalEntrySelect>(options: {
     id: number;
-    userId: string;
+    userId?: string;
     select: S;
   }) {
     const { id, userId, select } = options;
@@ -98,7 +98,7 @@ export class JournalEntryRepo implements Repo<JournalEntry, Prisma.JournalEntryS
       where: {
         id,
       },
-      select: { ...select, ownerId: true } as S,
+      select: { ...select, ownerId: true, isPublic: true } as S,
     });
     if (journalEntry == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
@@ -108,7 +108,7 @@ export class JournalEntryRepo implements Repo<JournalEntry, Prisma.JournalEntryS
       select: S;
     }> &
       Prisma.JournalEntryGetPayload<{
-        select: { ownerId: true };
+        select: { ownerId: true; isPublic: true };
       }>;
     if (!this.canUserRead(userId, _journalEntry)) {
       throw new APIError('INVALID_PERMISSIONS');
@@ -136,7 +136,7 @@ export class JournalEntryRepo implements Repo<JournalEntry, Prisma.JournalEntryS
     })) as JournalEntry[];
   }
 
-  async update(data: z.infer<JournalEntrySchema>, id: number, userId: string) {
+  async update(data: z.infer<JournalEntryPartialSchema>, id: number, userId: string) {
     const journalEntry = await this.getOne({ id, userId, select: { id: true } });
     if (!this.canUserUpdate(userId, journalEntry)) {
       throw new APIError('INVALID_PERMISSIONS');
@@ -144,33 +144,36 @@ export class JournalEntryRepo implements Repo<JournalEntry, Prisma.JournalEntryS
 
     const journalUpdateResult = await this.prisma.journalEntry.update({
       data: {
-        date: new Date(data.date),
+        date: data.date ? new Date(data.date) : undefined,
         content: data.content,
         type: data.type,
+        isPublic: data.isPublic,
       },
       where: {
         id: Number(id),
       },
     });
 
-    const metrics = parseMetricStrings(matchMetricsInString(data.content));
-    const deleteMetrics = this.prisma.metric.deleteMany({
-      where: {
-        ownerId: userId,
-        journalEntryId: Number(journalEntry.id),
-      },
-    });
-    const createMetrics = this.prisma.metric.createMany({
-      data: metrics.map((m) => ({
-        name: m.name,
-        // Number parse is implied succesful with regex match?
-        value: toNum(m.value, 0),
-        date: new Date(data.date),
-        journalEntryId: Number(journalEntry.id),
-        ownerId: userId,
-      })),
-    });
-    await this.prisma.$transaction([deleteMetrics, createMetrics]);
+    if (data.content && data.date) {
+      const metrics = parseMetricStrings(matchMetricsInString(data.content));
+      const deleteMetrics = this.prisma.metric.deleteMany({
+        where: {
+          ownerId: userId,
+          journalEntryId: Number(journalEntry.id),
+        },
+      });
+      const createMetrics = this.prisma.metric.createMany({
+        data: metrics.map((m) => ({
+          name: m.name,
+          // Number parse is implied succesful with regex match?
+          value: toNum(m.value, 0),
+          date: data.date || new Date(),
+          journalEntryId: Number(journalEntry.id),
+          ownerId: userId,
+        })),
+      });
+      await this.prisma.$transaction([deleteMetrics, createMetrics]);
+    }
 
     return journalUpdateResult;
   }

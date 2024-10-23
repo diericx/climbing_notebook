@@ -146,8 +146,11 @@ export const journalEntrySchema = z.object({
   date: z.date().default(localYearMonthDayInUTC()),
   content: z.string().min(1, { message: 'Journal entry content is required' }),
   type: z.string().default('climbing'),
+  isPublic: z.boolean().default(false),
 });
 export type JournalEntrySchema = typeof journalEntrySchema;
+export const journalEntryPartialSchema = journalEntrySchema.partial();
+export type JournalEntryPartialSchema = typeof journalEntryPartialSchema;
 
 export const profileSchema = z.object({
   goals: z.string().optional(),

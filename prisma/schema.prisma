@@ -260,6 +260,7 @@ model JournalEntry {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
   date      DateTime
+  isPublic  Boolean  @default(false) @map("is_public")
   type      String
   content   String
   ownerId   String   @map("owner_id")
