@@ -1,6 +1,8 @@
 import type { Prisma } from '@prisma/client';
 import { redirect } from '@sveltejs/kit';
+import DOMPurify from 'dompurify';
 import 'fs';
+import { marked } from 'marked';
 import dayjs from './dayjs';
 
 export const grades: { [key: string]: string[] } = {
@@ -467,9 +469,6 @@ export function lbToKg(lb: number) {
 export function roundTo(num: number, decimalPlace: number) {
   return Math.round((num + Number.EPSILON) * (10 * decimalPlace)) / (10 * decimalPlace);
 }
-
-import DOMPurify from 'dompurify';
-import { marked } from 'marked';
 
 export function renderMarkdown(str: string) {
   const markdown = marked.parse(str, { async: false });
