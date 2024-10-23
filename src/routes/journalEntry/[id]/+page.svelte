@@ -26,6 +26,6 @@
 </div>
 <div class="font-eb-garamond journal-markdown-content">
   {#if typeof window !== 'undefined'}
-    {@html await renderMarkdown(journalEntry.content)}
+    {@html renderMarkdown(journalEntry.content)}
   {/if}
 </div>

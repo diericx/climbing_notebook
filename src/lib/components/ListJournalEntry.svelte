@@ -35,7 +35,7 @@
           <div class="flex">
             <p class="bg-white w-full py-2 font-eb-garamond journal-markdown-content">
               {#if typeof window !== 'undefined'}
-                {@html await renderMarkdown(journalEntry.content)}
+                {@html renderMarkdown(journalEntry.content)}
               {/if}
             </p>
           </div>
