@@ -225,3 +225,21 @@ input[type='checkbox'][disabled]:hover {
 .font-eb-garamond h3 {
   font-weight: 700;
 }
+
+.journal-markdown-content {
+  h1 {
+    @apply text-4xl pb-4 !important;
+  }
+  ul {
+    @apply list-disc list-inside pl-4;
+    ul {
+      @apply pl-4;
+      ul {
+        @apply pl-4;
+      }
+    }
+  }
+  p {
+    @apply py-2;
+  }
+}

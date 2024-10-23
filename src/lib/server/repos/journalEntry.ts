@@ -11,10 +11,10 @@ export class JournalEntryRepo implements Repo<JournalEntry, Prisma.JournalEntryS
   canUserRead(
     userId: string | undefined,
     journalEntry: Prisma.JournalEntryGetPayload<{
-      select: { ownerId: true };
+      select: { ownerId: true; isPublic: true };
     }>,
   ) {
-    return journalEntry.ownerId == userId;
+    return journalEntry.isPublic || journalEntry.ownerId == userId;
   }
 
   canUserUpdate(
@@ -90,7 +90,7 @@ export class JournalEntryRepo implements Repo<JournalEntry, Prisma.JournalEntryS
 
   async getOne<S extends Prisma.JournalEntrySelect>(options: {
     id: number;
-    userId: string;
+    userId?: string;
     select: S;
   }) {
     const { id, userId, select } = options;
@@ -98,7 +98,7 @@ export class JournalEntryRepo implements Repo<JournalEntry, Prisma.JournalEntryS
       where: {
         id,
       },
-      select: { ...select, ownerId: true } as S,
+      select: { ...select, ownerId: true, isPublic: true } as S,
     });
     if (journalEntry == null) {
       throw new APIError('NOT_FOUND', 'Resource not found');
@@ -108,7 +108,7 @@ export class JournalEntryRepo implements Repo<JournalEntry, Prisma.JournalEntryS
       select: S;
     }> &
       Prisma.JournalEntryGetPayload<{
-        select: { ownerId: true };
+        select: { ownerId: true; isPublic: true };
       }>;
     if (!this.canUserRead(userId, _journalEntry)) {
       throw new APIError('INVALID_PERMISSIONS');

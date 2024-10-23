@@ -35,7 +35,7 @@
       <div slot="content">
         <div>
           <div class="flex">
-            <p class="bg-white w-full py-2 font-eb-garamond">
+            <p class="bg-white w-full py-2 font-eb-garamond journal-markdown-content">
               {#if typeof window !== 'undefined'}
                 {@html DOMPurify.sanitize(marked.parse(journalEntry.content))}
               {/if}
