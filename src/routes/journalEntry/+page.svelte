@@ -28,10 +28,10 @@
   <ul class="list space-y-2">
     {#each data.journalEntries as item}
       <li class="card p-4">
-        <div class="journal-entry">
+        <div>
           <div class="flex w-full justify-between">
             <div>
-              <h3 class="font-bold">
+              <h3 class="font-eb-garamond font-bold">
                 {item.date?.toLocaleString(undefined, {
                   month: 'numeric',
                   year: 'numeric',
@@ -59,7 +59,7 @@
             </div>
           </div>
           <div class="flex">
-            <p class="whitespace-pre-wrap bg-white w-full py-2 journal-entry">
+            <p class="whitespace-pre-wrap bg-white w-full py-2 font-eb-garamond">
               {#if typeof window !== 'undefined'}
                 {@html DOMPurify.sanitize(marked.parse(item.content))}
               {/if}
