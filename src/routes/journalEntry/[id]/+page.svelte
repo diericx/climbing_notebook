@@ -1,7 +1,6 @@
 <script lang="ts">
   import S3Avatar from '$lib/components/S3Avatar.svelte';
-  import DOMPurify from 'dompurify';
-  import { marked } from 'marked';
+  import { renderMarkdown } from '$lib/utils';
   import type { PageData } from './$types';
 
   export let data: PageData;
@@ -27,6 +26,6 @@
 </div>
 <div class="font-eb-garamond journal-markdown-content">
   {#if typeof window !== 'undefined'}
-    {@html DOMPurify.sanitize(marked.parse(journalEntry.content))}
+    {@html await renderMarkdown(journalEntry.content)}
   {/if}
 </div>

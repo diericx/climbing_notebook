@@ -1,11 +1,9 @@
 <script lang="ts">
   import type { journalEntrySelects } from '$lib/prismaHelpers/journalEntryHelper';
-  import { confirmDelete } from '$lib/utils';
+  import { confirmDelete, renderMarkdown } from '$lib/utils';
   import Icon from '@iconify/svelte';
   import type { Prisma } from '@prisma/client';
   import { clipboard, modalStore, toastStore } from '@skeletonlabs/skeleton';
-  import DOMPurify from 'dompurify';
-  import { marked } from 'marked';
   import List from './List.svelte';
   import ListItem from './ListItem.svelte';
   import FormButton from './forms/FormButton.svelte';
@@ -37,7 +35,7 @@
           <div class="flex">
             <p class="bg-white w-full py-2 font-eb-garamond journal-markdown-content">
               {#if typeof window !== 'undefined'}
-                {@html DOMPurify.sanitize(marked.parse(journalEntry.content))}
+                {@html await renderMarkdown(journalEntry.content)}
               {/if}
             </p>
           </div>

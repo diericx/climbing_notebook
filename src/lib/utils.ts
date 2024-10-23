@@ -467,3 +467,11 @@ export function lbToKg(lb: number) {
 export function roundTo(num: number, decimalPlace: number) {
   return Math.round((num + Number.EPSILON) * (10 * decimalPlace)) / (10 * decimalPlace);
 }
+
+import DOMPurify from 'dompurify';
+import { marked } from 'marked';
+
+export async function renderMarkdown(str: string) {
+  const markdown = await marked.parse(str);
+  return DOMPurify.sanitize(markdown);
+}
