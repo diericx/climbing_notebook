@@ -143,7 +143,7 @@ export const fileUploadSchema = z.object({
 export type FileUploadSchema = typeof fileUploadSchema;
 
 export const journalEntrySchema = z.object({
-  date: z.date().default(localYearMonthDayInUTC()),
+  date: z.date().default(localYearMonthDayInUTC()).nullish(),
   content: z.string().min(1, { message: 'Journal entry content is required' }),
   type: z.string().default('climbing'),
 });
