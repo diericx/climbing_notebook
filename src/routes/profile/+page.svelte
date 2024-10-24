@@ -74,7 +74,12 @@
     </FormButton>
   </div>
 {:else}
-  <Form schema={fileUploadSchema} let:superForm action={`/profile?/uploadImage`}>
+  <Form
+    schema={fileUploadSchema}
+    let:superForm
+    action={`/profile?/uploadImage`}
+    enctype="multipart/form-data"
+  >
     <FormBodyFileUpload class="w-60" label="" {superForm} />
   </Form>
 {/if}
