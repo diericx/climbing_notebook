@@ -1,3 +1,4 @@
+import { dev } from '$app/environment';
 import type { Prisma } from '@prisma/client';
 import { redirect } from '@sveltejs/kit';
 import DOMPurify from 'dompurify';
@@ -473,4 +474,14 @@ export function roundTo(num: number, decimalPlace: number) {
 export function renderMarkdown(str: string) {
   const markdown = marked.parse(str, { async: false });
   return DOMPurify.sanitize(markdown);
+}
+
+export function APIBaseURL() {
+  if (process.env.API_BASE_URL) {
+    return process.env.API_BASE_URL;
+  } else if (dev) {
+    return 'http://localhost:5173';
+  } else {
+    return 'http://climbingnotebook.com';
+  }
 }
