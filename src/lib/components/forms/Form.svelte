@@ -21,6 +21,8 @@
   export let debug = false;
   export { className as class };
   export let formElement: HTMLFormElement | undefined = undefined;
+  // https://github.com/sveltejs/kit/issues/9819
+  export let enctype = 'application/x-www-form-urlencoded';
 
   // Add redirect data from the page url only if the action doesn't already have a
   // redirect embedded within
@@ -59,7 +61,15 @@
   <div class="invalid px-4">{$message}</div>
 {/if}
 
-<form bind:this={formElement} method="POST" {action} use:enhance {id} class={`form ${className}`}>
+<form
+  bind:this={formElement}
+  method="POST"
+  {action}
+  use:enhance
+  {id}
+  class={`form ${className}`}
+  {enctype}
+>
   <input type="hidden" name="_formId" value={id} />
   <slot superForm={newSuperForm} />
 </form>
