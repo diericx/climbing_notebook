@@ -26,7 +26,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - run: npm ci
-      - run: npm install --save-dev prettier-plugin-svelte eslint svelte-check @sveltejs/kit
+      - run: npm install --no-save --no-fund --no-audit prettier-plugin-svelte eslint svelte-check @sveltejs/kit
       - name: SvelteKit sync
         run: npm run sync
       - name: Prettier
