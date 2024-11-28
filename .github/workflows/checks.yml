@@ -22,6 +22,7 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
+
       - run: npm install --save-dev prettier-plugin-svelte eslint svelte-check @sveltejs/kit
       - name: SvelteKit sync
         run: npm run sync
