@@ -17,6 +17,7 @@ jobs:
           # Make sure the actual branch is checked out when running on pull requests
           ref: ${{ github.head_ref }}
 
+      # Cache npm modules
       - name: Cache npm dependencies
         uses: actions/cache@v4
         with:
