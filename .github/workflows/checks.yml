@@ -17,17 +17,8 @@ jobs:
           # Make sure the actual branch is checked out when running on pull requests
           ref: ${{ github.head_ref }}
 
-      # Cache npm modules
-      - name: Cache npm dependencies
-        uses: actions/cache@v4
-        with:
-          path: '~/.npm'
-          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-
+      - uses: ./.github/actions/npm-ci-cached
 
-      - run: npm ci --verbose --no-fund --no-audit
-      - run: npm install --verbose --no-save --no-fund --no-audit prettier-plugin-svelte eslint svelte-check @sveltejs/kit
       - name: SvelteKit sync
         run: npm run sync
       - name: Prettier
